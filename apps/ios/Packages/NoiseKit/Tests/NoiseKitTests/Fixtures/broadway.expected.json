@@ -1,0 +1,264 @@
+{
+ "unit": {
+  "floor": 4,
+  "position": "front"
+ },
+ "profile": {
+  "sleep": "light",
+  "wfh": false,
+  "bothers": [
+   "traffic",
+   "people",
+   "sirens"
+  ]
+ },
+ "result": {
+  "score": 39,
+  "scale": "0 to 100, higher is quieter",
+  "street_only_score": 40,
+  "by_time": {
+   "night": 41,
+   "early": 40,
+   "day": 34
+  },
+  "address": {
+   "query": "2900 Broadway, New York",
+   "label": "2900 B'WAY, New York, NY, USA",
+   "lat": 40.806158,
+   "lng": -73.96469,
+   "bbl": "1018857501",
+   "bin": "1057018",
+   "borough": "Manhattan"
+  },
+  "unit": {
+   "floor": 4,
+   "position": "front",
+   "top_floor": false,
+   "building_floors": 14,
+   "ground_floor_commercial": true
+  },
+  "building_facts": {
+   "address": "2900 BROADWAY",
+   "yearbuilt": "2000",
+   "numfloors": "14.0000000",
+   "bldgclass": "RC",
+   "unitsres": "0",
+   "unitstotal": "374"
+  },
+  "ingredients": [
+   {
+    "name": "street",
+    "label": "Street",
+    "levels": {
+     "night": 56.0,
+     "early": 59.0,
+     "day": 61.5
+    },
+    "raw_level": 64.0,
+    "evidence": [
+     "BROADWAY: arterial, 3 travel lanes, 25 mph, bus or truck route, 32 m away",
+     "W  113 ST: two lane, 2 travel lanes, 25 mph, bus or truck route, 45 m away",
+     "W  114 ST: two lane, 2 travel lanes, 25 mph, 57 m away",
+     "1 vehicle noise complaints to 311 within 100 m in 24 months (engine idling 1)"
+    ],
+    "position_db": -3.0,
+    "temporary": false,
+    "scores": {
+     "night": 60,
+     "early": 53,
+     "day": 46
+    },
+    "weighted_up": true
+   },
+   {
+    "name": "nightlife",
+    "label": "Nightlife",
+    "levels": {
+     "night": 55.8,
+     "early": 41.2,
+     "day": 48.5
+    },
+    "raw_level": 51.6,
+    "evidence": [
+     "8 licensed venues within 150 m: 6 restaurants, 2 venues",
+     "nearest loud: HEX NYC LLC (venue), 2911 BROADWAY, 53 m",
+     "nearest loud: BAN BAN SHOP LLC (restaurant), 2911 Broadway Ste A, 53 m",
+     "nearest loud: Trustees of Columbia University (venue), 2920 BROADWAY  LERNER HALL, 85 m",
+     "58 party, music or loud-talking complaints within 150 m in 24 months; 26 of them 10 pm to 5 am"
+    ],
+    "position_db": -3.0,
+    "temporary": false,
+    "scores": {
+     "night": 60,
+     "early": 97,
+     "day": 79
+    },
+    "weighted_up": true
+   },
+   {
+    "name": "building",
+    "label": "Building",
+    "levels": {
+     "night": 46.3,
+     "early": 41.5,
+     "day": 44.0
+    },
+    "raw_level": 44.6,
+    "evidence": [
+     "residential unit count unknown; treated as one unit",
+     "0 residential noise complaints to 311 at this building in 24 months, 1 units: 0.00 per unit-year vs 0.07 for Manhattan (0.9x after shrinkage)",
+     "built 2000: post-2000, likely concrete slab"
+    ],
+    "position_db": 0.0,
+    "temporary": false,
+    "complaints": 0,
+    "units": 1,
+    "rate_vs_borough": 0.91,
+    "scores": {
+     "night": 84,
+     "early": 96,
+     "day": 90
+    },
+    "weighted_up": false
+   },
+   {
+    "name": "sirens",
+    "label": "Sirens",
+    "levels": {
+     "night": 51.0,
+     "early": 52.0,
+     "day": 54.0
+    },
+    "raw_level": 57.0,
+    "evidence": [
+     "2 emergency facilities within 600 m: 1 hospital, 1 firehouse",
+     "ENGINE 47 (firehouse), 500 WEST 113 STREET, 203 m",
+     "MOUNT SINAI MORNINGSIDE (hospital), 1111 AMSTERDAM AVENUE, 277 m"
+    ],
+    "position_db": -3.0,
+    "temporary": false,
+    "scores": {
+     "night": 72,
+     "early": 70,
+     "day": 65
+    },
+    "weighted_up": true
+   },
+   {
+    "name": "construction",
+    "label": "Construction",
+    "levels": {
+     "night": 32.3,
+     "early": 44.3,
+     "day": 47.3
+    },
+    "raw_level": 50.3,
+    "evidence": [
+     "10 construction noise complaints within 100 m in 24 months (noise: construction before/after hours (nm1) 7, noise: construction equipment (nc1) 2)"
+    ],
+    "position_db": -3.0,
+    "temporary": true,
+    "scores": {
+     "night": 100,
+     "early": 89,
+     "day": 82
+    },
+    "weighted_up": false
+   }
+  ],
+  "profile": {
+   "sleep": "light",
+   "wfh": false,
+   "bothers": [
+    "traffic",
+    "people",
+    "sirens"
+   ]
+  },
+  "window_weights": {
+   "night": 1.5,
+   "early": 1.2,
+   "day": 0.6
+  },
+  "internal_level": 64.3,
+  "as_of": "2026-10-21",
+  "lookback_months": 24,
+  "sources": [
+   {
+    "name": "NYC GeoSearch (address, BBL, BIN)",
+    "url": "https://geosearch.planninglabs.nyc/v2/search"
+   },
+   {
+    "name": "NYC 311 Service Requests",
+    "url": "https://data.cityofnewyork.us/resource/erm2-nwe9.json"
+   },
+   {
+    "name": "NYC PLUTO (year built, floors, units, class)",
+    "url": "https://data.cityofnewyork.us/resource/64uk-42ks.json"
+   },
+   {
+    "name": "NYC Street Centerline (road class, lanes, speed)",
+    "url": "https://data.cityofnewyork.us/resource/inkn-q76z.json"
+   },
+   {
+    "name": "DOB NOW approved permits (same tax block)",
+    "url": "https://data.cityofnewyork.us/resource/rbx6-tga4.json"
+   },
+   {
+    "name": "NYS Liquor Authority active licenses",
+    "url": "https://data.ny.gov/resource/9s3h-dpkz.json"
+   },
+   {
+    "name": "MTA subway stations (elevated structures)",
+    "url": "https://data.ny.gov/resource/39hk-dx4f.json"
+   },
+   {
+    "name": "NYC Facilities Database (hospitals, firehouses, police)",
+    "url": "https://data.cityofnewyork.us/resource/67g2-p84d.json"
+   }
+  ],
+  "caveats": [
+   "311 counts measure who complains, not decibels; the count is shown so you can judge it.",
+   "Street loudness is modelled from road class, lanes and speed, not measured.",
+   "Elevated subway proximity uses the nearest station's structure as a proxy for the track.",
+   "Construction is temporary; permits expire and the bar may close."
+  ]
+ },
+ "baseline": {
+  "quieter_than": 53.0,
+  "median_score": 39,
+  "p25_score": 33,
+  "p75_score": 46,
+  "n": 300,
+  "verdict": "Typical"
+ },
+ "windows": {
+  "night": {
+   "window": "night",
+   "level_db": 59.8,
+   "quieter_than": 57.7,
+   "verdict": "Typical",
+   "median_db": 60.5,
+   "p25_db": 57.8,
+   "p75_db": 64.8
+  },
+  "early": {
+   "window": "early",
+   "level_db": 60.0,
+   "quieter_than": 46.3,
+   "verdict": "Typical",
+   "median_db": 59.9,
+   "p25_db": 57.0,
+   "p75_db": 61.6
+  },
+  "day": {
+   "window": "day",
+   "level_db": 62.6,
+   "quieter_than": 61.3,
+   "verdict": "Quiet",
+   "median_db": 63.3,
+   "p25_db": 61.0,
+   "p75_db": 65.3
+  }
+ }
+}

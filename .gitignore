@@ -1,0 +1,13 @@
+.env
+.env.*
+.venv/
+__pycache__/
+*.pyc
+.cache/
+.pytest_cache/
+.vercel/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+.DS_Store
+node_modules/

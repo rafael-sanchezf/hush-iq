@@ -1,0 +1,7077 @@
+{
+ "address": {
+  "query": "2900 Broadway, New York",
+  "label": "2900 B'WAY, New York, NY, USA",
+  "lat": 40.806158,
+  "lng": -73.96469,
+  "bbl": "1018857501",
+  "bin": "1057018",
+  "borough": "Manhattan"
+ },
+ "as_of": "2026-10-21",
+ "lookback_months": 24,
+ "since": "2024-10-31",
+ "pluto": {
+  "address": "2900 BROADWAY",
+  "borough": "MN",
+  "yearbuilt": "2000",
+  "yearalter1": "0",
+  "yearalter2": "0",
+  "numfloors": "14.0000000",
+  "bldgclass": "RC",
+  "unitsres": "0",
+  "unitstotal": "374",
+  "landuse": "5",
+  "lotfront": "100.9200000",
+  "bldgdepth": "125.0000000",
+  "zonedist1": "R8"
+ },
+ "complaints": [
+  {
+   "unique_key": "67051330",
+   "complaint_type": "Noise",
+   "descriptor": "Noise:  lawn care equipment (NCL)",
+   "created_date": "2025-12-04T13:08:00.000",
+   "latitude": "40.8063667197776",
+   "longitude": "-73.96597293143793",
+   "bbl": "1018950052",
+   "incident_address": "605 WEST  113 STREET"
+  },
+  {
+   "unique_key": "65180631",
+   "complaint_type": "Noise - Helicopter",
+   "descriptor": "Other",
+   "created_date": "2025-06-06T14:48:46.000",
+   "latitude": "40.80635822208724",
+   "longitude": "-73.96509155530408",
+   "bbl": "1018857501",
+   "incident_address": "2906 BROADWAY"
+  },
+  {
+   "unique_key": "67325802",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: air condition/ventilation equipment (NV1)",
+   "created_date": "2025-12-29T06:38:00.000",
+   "latitude": "40.80742301620198",
+   "longitude": "-73.96457082955617",
+   "bbl": "1018960065",
+   "incident_address": "601 WEST  115 STREET"
+  },
+  {
+   "unique_key": "68598715",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-08T22:16:26.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68598750",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-08T13:50:14.000",
+   "latitude": "40.807390016059735",
+   "longitude": "-73.96436494766998",
+   "bbl": "1018960065",
+   "incident_address": "2941 BROADWAY"
+  },
+  {
+   "unique_key": "67512641",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: air condition/ventilation equipment (NV1)",
+   "created_date": "2026-01-16T12:44:00.000",
+   "latitude": "40.80746148553895",
+   "longitude": "-73.96471168780268",
+   "bbl": "1018967501",
+   "incident_address": "600 WEST  115 STREET"
+  },
+  {
+   "unique_key": "68164685",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-02-28T22:53:36.000",
+   "latitude": "40.80499397424448",
+   "longitude": "-73.96469854741284",
+   "bbl": "1018830054",
+   "incident_address": "536 WEST 112 STREET"
+  },
+  {
+   "unique_key": "67390951",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-01-05T21:29:10.000",
+   "latitude": "40.806366731498784",
+   "longitude": "-73.96601266580275",
+   "bbl": "1018950025",
+   "incident_address": "606 WEST  113 STREET"
+  },
+  {
+   "unique_key": "67398555",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-01-05T14:15:45.000",
+   "latitude": "40.807390016059735",
+   "longitude": "-73.96436494766998",
+   "bbl": "1018960065",
+   "incident_address": "2941 BROADWAY"
+  },
+  {
+   "unique_key": "67196210",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Manufacturing Noise (NK1)",
+   "created_date": "2025-12-15T00:44:00.000",
+   "latitude": "40.807390016059735",
+   "longitude": "-73.96436494766998",
+   "bbl": "1018960065",
+   "incident_address": "2941 BROADWAY"
+  },
+  {
+   "unique_key": "68160003",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-03-01T00:01:34.000",
+   "latitude": "40.80499397424448",
+   "longitude": "-73.96469854741284",
+   "bbl": "1018830054",
+   "incident_address": "536 WEST 112 STREET"
+  },
+  {
+   "unique_key": "67288449",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-12-24T23:32:24.000",
+   "latitude": "40.80648445200681",
+   "longitude": "-73.96500118355273",
+   "bbl": "1018850061",
+   "incident_address": "2910 BROADWAY"
+  },
+  {
+   "unique_key": "67996179",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-02-14T13:34:18.000",
+   "latitude": "40.807390016059735",
+   "longitude": "-73.96436494766998",
+   "bbl": "1018960065",
+   "incident_address": "2941 BROADWAY"
+  },
+  {
+   "unique_key": "67998460",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-02-14T18:46:41.000",
+   "latitude": "40.807390016059735",
+   "longitude": "-73.96436494766998",
+   "bbl": "1018960065",
+   "incident_address": "2941 BROADWAY"
+  },
+  {
+   "unique_key": "68060556",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-02-20T22:52:47.000",
+   "latitude": "40.806020046174226",
+   "longitude": "-73.96324228793111",
+   "bbl": "1018850047",
+   "incident_address": "526 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67883097",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-02-07T17:28:19.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68821695",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-28T17:55:56.000",
+   "latitude": "40.807390016059735",
+   "longitude": "-73.96436494766998",
+   "bbl": "1018960065",
+   "incident_address": "2941 BROADWAY"
+  },
+  {
+   "unique_key": "68773926",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-24T21:45:27.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68857485",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T21:50:47.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68778102",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-24T21:13:58.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68782295",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-04-24T22:57:01.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68976040",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-13T21:58:34.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67956161",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-02-11T21:59:39.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67959960",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-02-11T23:40:00.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68601348",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-08T23:21:15.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68860078",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T22:26:53.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67788911",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-01-31T18:28:52.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67790806",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-01-31T17:07:58.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67790827",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-01-31T15:54:24.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67429005",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Engine Idling",
+   "created_date": "2026-01-08T21:06:01.000",
+   "latitude": "40.80670672847891",
+   "longitude": "-73.9648493528466",
+   "incident_address": "WEST 114 STREET"
+  },
+  {
+   "unique_key": "67796609",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-01-31T15:08:34.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67800558",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-01-31T17:39:03.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67802588",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-01-31T17:47:06.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67790805",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-01-31T13:40:06.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68775320",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-24T22:41:58.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68314962",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-03-13T13:03:41.000",
+   "latitude": "40.807390016059735",
+   "longitude": "-73.96436494766998",
+   "bbl": "1018960065",
+   "incident_address": "2941 BROADWAY"
+  },
+  {
+   "unique_key": "67320284",
+   "complaint_type": "Noise - Commercial",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2025-12-28T09:35:55.000",
+   "latitude": "40.807390016059735",
+   "longitude": "-73.96436494766998",
+   "bbl": "1018960065",
+   "incident_address": "2941 BROADWAY"
+  },
+  {
+   "unique_key": "68458121",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-03-26T22:18:18.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67788935",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-01-31T23:44:37.000",
+   "latitude": "40.80617112060506",
+   "longitude": "-73.96360342499653",
+   "bbl": "1018850152",
+   "incident_address": "540 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67790824",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-01-31T23:29:05.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67792768",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-01-31T23:30:15.000",
+   "latitude": "40.80625901659339",
+   "longitude": "-73.96380927288733",
+   "bbl": "1018850056",
+   "incident_address": "548 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67802582",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-02-01T00:08:23.000",
+   "latitude": "40.80499397424448",
+   "longitude": "-73.96469854741284",
+   "bbl": "1018830054",
+   "incident_address": "536 WEST 112 STREET"
+  },
+  {
+   "unique_key": "67802605",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-01-31T15:58:23.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "69254001",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-06-05T23:27:37.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68323970",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-03-14T17:17:05.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67561921",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-01-21T23:48:12.000",
+   "latitude": "40.8063667197776",
+   "longitude": "-73.96597293143793",
+   "bbl": "1018950052",
+   "incident_address": "605 WEST 113 STREET"
+  },
+  {
+   "unique_key": "68678989",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-15T21:06:54.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67998454",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-02-15T01:21:03.000",
+   "latitude": "40.80497749261568",
+   "longitude": "-73.9646552104721",
+   "bbl": "1018830054",
+   "incident_address": "534 WEST 112 STREET"
+  },
+  {
+   "unique_key": "67577039",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-01-22T22:03:46.000",
+   "latitude": "40.80499397424448",
+   "longitude": "-73.96469854741284",
+   "bbl": "1018830054",
+   "incident_address": "536 WEST 112 STREET"
+  },
+  {
+   "unique_key": "67866905",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Car/Truck Horn",
+   "created_date": "2026-02-05T12:46:59.000",
+   "latitude": "40.806366731498784",
+   "longitude": "-73.96601266580275",
+   "bbl": "1018950025",
+   "incident_address": "606 WEST 113 STREET"
+  },
+  {
+   "unique_key": "68164676",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-03-01T00:46:55.000",
+   "latitude": "40.80499397424448",
+   "longitude": "-73.96469854741284",
+   "bbl": "1018830054",
+   "incident_address": "536 WEST 112 STREET"
+  },
+  {
+   "unique_key": "68164688",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-02-28T22:23:15.000",
+   "latitude": "40.806020046174226",
+   "longitude": "-73.96324228793111",
+   "bbl": "1018850047",
+   "incident_address": "526 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68175134",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-03-01T04:51:42.000",
+   "latitude": "40.80499397424448",
+   "longitude": "-73.96469854741284",
+   "bbl": "1018830054",
+   "incident_address": "536 WEST 112 STREET"
+  },
+  {
+   "unique_key": "68885411",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-04T23:55:57.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67417708",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: air condition/ventilation equipment (NV1)",
+   "created_date": "2026-01-07T10:29:00.000",
+   "latitude": "40.80742301620198",
+   "longitude": "-73.96457082955617",
+   "bbl": "1018960065",
+   "incident_address": "601 WEST  115 STREET"
+  },
+  {
+   "unique_key": "68629036",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-11T13:17:50.000",
+   "latitude": "40.80563885652438",
+   "longitude": "-73.9642828051459",
+   "bbl": "1018840154",
+   "incident_address": "550 WEST 113 STREET"
+  },
+  {
+   "unique_key": "68637684",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-11T15:02:19.000",
+   "latitude": "40.805655338291416",
+   "longitude": "-73.96432614242505",
+   "bbl": "1018840055",
+   "incident_address": "552 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70003473",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-08-08T23:23:36.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68860122",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T22:45:51.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67345897",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-01-01T00:54:04.000",
+   "latitude": "40.8052962453096",
+   "longitude": "-73.96586511395557",
+   "bbl": "1018830059",
+   "incident_address": "2874 BROADWAY"
+  },
+  {
+   "unique_key": "68680532",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-15T20:54:47.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68866292",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T23:52:41.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68229262",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-03-06T19:19:38.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70042342",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2026-08-12T21:34:29.000",
+   "latitude": "40.805452664607266",
+   "longitude": "-73.9657638930925",
+   "incident_address": "WEST 112 STREET"
+  },
+  {
+   "unique_key": "68232555",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-03-06T21:16:16.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68763938",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-23T18:44:37.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68765395",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-23T22:04:25.000",
+   "latitude": "40.80641067791753",
+   "longitude": "-73.96611739768207",
+   "bbl": "1018950028",
+   "incident_address": "610 WEST 113 STREET"
+  },
+  {
+   "unique_key": "68766912",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-04-23T22:29:55.000",
+   "latitude": "40.805639430595974",
+   "longitude": "-73.96618642162706",
+   "bbl": "1018950008",
+   "incident_address": "611 WEST 112 STREET"
+  },
+  {
+   "unique_key": "68766918",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-04-23T22:11:07.000",
+   "latitude": "40.80561196426394",
+   "longitude": "-73.96612141643801",
+   "bbl": "1018950012",
+   "incident_address": "605 WEST 112 STREET"
+  },
+  {
+   "unique_key": "68980403",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-05-13T23:16:47.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68448012",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-03-25T23:12:28.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "69792181",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Before/After Hours (NM1)",
+   "created_date": "2026-07-21T07:22:00.000",
+   "latitude": "40.80557018794179",
+   "longitude": "-73.96412029423914",
+   "bbl": "1018840151",
+   "incident_address": "542 WEST  113 STREET"
+  },
+  {
+   "unique_key": "68496415",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-03-29T22:00:17.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "69016505",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-16T17:00:06.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68442698",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-03-25T02:03:21.000",
+   "latitude": "40.80561196426394",
+   "longitude": "-73.96612141643801",
+   "bbl": "1018950012",
+   "incident_address": "605 WEST 112 STREET"
+  },
+  {
+   "unique_key": "68446676",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-03-25T18:19:39.000",
+   "latitude": "40.80746148553895",
+   "longitude": "-73.96471168780268",
+   "bbl": "1018967501",
+   "incident_address": "600 WEST 115 STREET"
+  },
+  {
+   "unique_key": "68448032",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-03-25T22:23:33.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68448078",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-03-25T18:31:10.000",
+   "latitude": "40.807337874126645",
+   "longitude": "-73.96439026146395",
+   "incident_address": "BROADWAY"
+  },
+  {
+   "unique_key": "68455260",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-03-25T22:19:45.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68875882",
+   "complaint_type": "Noise",
+   "descriptor": "Noise, Ice Cream Truck (NR4)",
+   "created_date": "2026-05-04T20:41:00.000",
+   "latitude": "40.807337874126645",
+   "longitude": "-73.96439026146395"
+  },
+  {
+   "unique_key": "68676042",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-15T21:42:36.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68606607",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-08T23:13:33.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67798555",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-01-31T12:46:58.000",
+   "latitude": "40.805432836465926",
+   "longitude": "-73.96375192746032",
+   "bbl": "1018850019",
+   "incident_address": "527 WEST 113 STREET"
+  },
+  {
+   "unique_key": "68712192",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-18T22:37:48.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68467341",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-03-26T22:35:06.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68565109",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-04T13:12:49.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "67794665",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-01-31T14:35:09.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68566215",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-04T11:14:25.000",
+   "latitude": "40.80567456364987",
+   "longitude": "-73.96436586607899",
+   "bbl": "1018840056",
+   "incident_address": "554 WEST 113 STREET"
+  },
+  {
+   "unique_key": "68868144",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: air condition/ventilation equipment (NV1)",
+   "created_date": "2026-05-03T20:45:00.000",
+   "latitude": "40.80645187951693",
+   "longitude": "-73.96622213109256",
+   "bbl": "1018950129",
+   "incident_address": "614 WEST  113 STREET"
+  },
+  {
+   "unique_key": "68054974",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-02-20T23:05:03.000",
+   "latitude": "40.806020046174226",
+   "longitude": "-73.96324228793111",
+   "bbl": "1018850047",
+   "incident_address": "526 WEST 114 STREET"
+  },
+  {
+   "unique_key": "64875035",
+   "complaint_type": "Noise - Helicopter",
+   "descriptor": "Other",
+   "created_date": "2025-05-07T20:22:28.000",
+   "latitude": "40.8060810703871",
+   "longitude": "-73.96530843266166",
+   "incident_address": "BROADWAY"
+  },
+  {
+   "unique_key": "68980363",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-13T23:09:04.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68240466",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-03-08T00:24:26.000",
+   "latitude": "40.80563885652438",
+   "longitude": "-73.9642828051459",
+   "bbl": "1018840154",
+   "incident_address": "550 WEST 113 STREET"
+  },
+  {
+   "unique_key": "68787690",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-25T23:22:22.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68790929",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-25T23:28:33.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68857502",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T15:20:10.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68857555",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T16:01:27.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68858795",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T18:15:07.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68860077",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T18:19:57.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68861368",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T14:36:06.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68862562",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T22:08:17.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68863815",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T17:09:52.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68865040",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T21:22:39.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68865042",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T23:21:56.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68865120",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T17:49:27.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68866376",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T16:52:39.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68558607",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-04T23:01:46.000",
+   "latitude": "40.8063029650146",
+   "longitude": "-73.96391400314235",
+   "bbl": "1018850057",
+   "incident_address": "552 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68886925",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-04T21:07:47.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68677514",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-15T22:14:19.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68606608",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-08T22:38:55.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68674505",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-15T22:33:17.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68677480",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-15T22:49:54.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68680502",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-15T22:05:51.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68486529",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-03-28T20:48:44.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68922815",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-05-09T00:05:25.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68927051",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-08T22:48:18.000",
+   "latitude": "40.80610519808548",
+   "longitude": "-73.96344813638505",
+   "bbl": "1018850050",
+   "incident_address": "534 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68928391",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-09T00:12:37.000",
+   "latitude": "40.80641067791753",
+   "longitude": "-73.96611739768207",
+   "bbl": "1018950028",
+   "incident_address": "610 WEST 113 STREET"
+  },
+  {
+   "unique_key": "68932654",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-08T22:42:51.000",
+   "latitude": "40.806242523274584",
+   "longitude": "-73.96372981326107",
+   "bbl": "1018860001",
+   "incident_address": "535 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68860143",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T23:59:53.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68863884",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T23:27:52.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68865085",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T23:05:21.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68866371",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T23:03:55.000",
+   "latitude": "40.806020046174226",
+   "longitude": "-73.96324228793111",
+   "bbl": "1018850047",
+   "incident_address": "526 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68894225",
+   "complaint_type": "Noise",
+   "descriptor": "Noise, Ice Cream Truck (NR4)",
+   "created_date": "2026-05-05T12:34:00.000",
+   "latitude": "40.807337874126645",
+   "longitude": "-73.96439026146395"
+  },
+  {
+   "unique_key": "68851788",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-05-01T21:33:56.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68860129",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-05-02T16:31:46.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68683499",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-04-15T23:57:33.000",
+   "latitude": "40.806020046174226",
+   "longitude": "-73.96324228793111",
+   "bbl": "1018850047",
+   "incident_address": "526 WEST 114 STREET"
+  },
+  {
+   "unique_key": "69820973",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2026-07-23T23:05:24.000",
+   "latitude": "40.8060810703871",
+   "longitude": "-73.96530843266166",
+   "incident_address": "WEST 113 STREET"
+  },
+  {
+   "unique_key": "69183621",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Television",
+   "created_date": "2026-05-30T06:27:26.000",
+   "latitude": "40.8060810703871",
+   "longitude": "-73.96530843266166",
+   "incident_address": "BROADWAY"
+  },
+  {
+   "unique_key": "69778586",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Car/Truck Horn",
+   "created_date": "2026-07-20T23:03:22.000",
+   "latitude": "40.80557901801408",
+   "longitude": "-73.96608892365215",
+   "bbl": "1018940052",
+   "incident_address": "600 WEST 112 STREET"
+  },
+  {
+   "unique_key": "69835059",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Equipment (NC1)",
+   "created_date": "2026-07-24T01:38:00.000",
+   "latitude": "40.805504252554755",
+   "longitude": "-73.96392166049998",
+   "bbl": "1018850015",
+   "incident_address": "535 WEST  113 STREET"
+  },
+  {
+   "unique_key": "69994271",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-08-09T00:43:02.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70243623",
+   "complaint_type": "Noise",
+   "descriptor": "Construction",
+   "created_date": "2026-08-30T10:09:37.000",
+   "latitude": "40.807151685156114",
+   "longitude": "-73.96588583594689",
+   "bbl": "1018960009",
+   "incident_address": "611 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70268681",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-01T21:46:13.000",
+   "latitude": "40.8054685439751",
+   "longitude": "-73.96383498785151",
+   "bbl": "1018850017",
+   "incident_address": "531 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70269964",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-01T22:18:17.000",
+   "latitude": "40.8054685439751",
+   "longitude": "-73.96383498785151",
+   "bbl": "1018850017",
+   "incident_address": "531 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70068009",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-08-14T23:44:43.000",
+   "latitude": "40.8060639951122",
+   "longitude": "-73.96334701743575",
+   "bbl": "1018850148",
+   "incident_address": "530 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70451412",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-17T23:33:07.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70468967",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-09-18T21:11:05.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70414863",
+   "complaint_type": "Noise - Commercial",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2026-09-14T05:02:40.000",
+   "latitude": "40.80562571015258",
+   "longitude": "-73.9661972651231",
+   "bbl": "1018940056",
+   "incident_address": "610 WEST 112 STREET"
+  },
+  {
+   "unique_key": "70306654",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-04T22:23:27.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "68941886",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Before/After Hours (NM1)",
+   "created_date": "2026-05-09T13:29:00.000",
+   "latitude": "40.80645403509532",
+   "longitude": "-73.96426791882801",
+   "bbl": "1018857501",
+   "incident_address": "556 WEST  114 STREET"
+  },
+  {
+   "unique_key": "62940336",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Equipment (NC1)",
+   "created_date": "2024-10-31T09:23:00.000",
+   "latitude": "40.805639430595974",
+   "longitude": "-73.96618642162706",
+   "bbl": "1018950008",
+   "incident_address": "611 WEST  112 STREET"
+  },
+  {
+   "unique_key": "62934911",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2024-10-31T23:37:20.000",
+   "latitude": "40.80599807224612",
+   "longitude": "-73.96319172932812",
+   "bbl": "1018850046",
+   "incident_address": "524 WEST  114 STREET"
+  },
+  {
+   "unique_key": "62939375",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2024-10-31T21:10:46.000",
+   "latitude": "40.80599807224612",
+   "longitude": "-73.96319172932812",
+   "bbl": "1018850046",
+   "incident_address": "524 WEST  114 STREET"
+  },
+  {
+   "unique_key": "62938046",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2024-10-31T22:35:57.000",
+   "latitude": "40.80599807224612",
+   "longitude": "-73.96319172932812",
+   "bbl": "1018850046",
+   "incident_address": "524 WEST  114 STREET"
+  },
+  {
+   "unique_key": "62963184",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2024-11-03T00:16:48.000",
+   "latitude": "40.80604202008008",
+   "longitude": "-73.96329284656748",
+   "bbl": "1018850048",
+   "incident_address": "528 WEST  114 STREET"
+  },
+  {
+   "unique_key": "63009181",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2024-11-07T23:46:12.000",
+   "latitude": "40.80604202008008",
+   "longitude": "-73.96329284656748",
+   "bbl": "1018850048",
+   "incident_address": "528 WEST  114 STREET"
+  },
+  {
+   "unique_key": "63013140",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2024-11-07T23:51:26.000",
+   "latitude": "40.80604202008008",
+   "longitude": "-73.96329284656748",
+   "bbl": "1018850048",
+   "incident_address": "528 WEST  114 STREET"
+  },
+  {
+   "unique_key": "63017900",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2024-11-08T19:04:25.000",
+   "latitude": "40.80562571015258",
+   "longitude": "-73.9661972651231",
+   "bbl": "1018940056",
+   "incident_address": "610 WEST  112 STREET"
+  },
+  {
+   "unique_key": "63052869",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2024-11-11T03:27:51.000",
+   "latitude": "40.807337874126645",
+   "longitude": "-73.96439026146395",
+   "incident_address": "BROADWAY"
+  },
+  {
+   "unique_key": "63080070",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Before/After Hours (NM1)",
+   "created_date": "2024-11-14T18:23:00.000",
+   "latitude": "40.805639430595974",
+   "longitude": "-73.96618642162706",
+   "bbl": "1018950008",
+   "incident_address": "611 WEST  112 STREET"
+  },
+  {
+   "unique_key": "63080508",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2024-11-14T23:14:13.000",
+   "latitude": "40.8057240065829",
+   "longitude": "-73.96448865375208",
+   "bbl": "1018840058",
+   "incident_address": "560 WEST  113 STREET"
+  },
+  {
+   "unique_key": "63118774",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2024-11-18T22:26:26.000",
+   "latitude": "40.805639430595974",
+   "longitude": "-73.96618642162706",
+   "bbl": "1018950008",
+   "incident_address": "611 WEST  112 STREET"
+  },
+  {
+   "unique_key": "63125819",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Before/After Hours (NM1)",
+   "created_date": "2024-11-18T22:23:00.000",
+   "latitude": "40.80561196426394",
+   "longitude": "-73.96612141643801",
+   "bbl": "1018950012",
+   "incident_address": "605 WEST  112 STREET"
+  },
+  {
+   "unique_key": "63145484",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2024-11-21T00:21:12.000",
+   "latitude": "40.806020046174226",
+   "longitude": "-73.96324228793111",
+   "bbl": "1018850047",
+   "incident_address": "526 WEST  114 STREET"
+  },
+  {
+   "unique_key": "63161701",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Before/After Hours (NM1)",
+   "created_date": "2024-11-21T18:29:00.000",
+   "latitude": "40.806201931309026",
+   "longitude": "-73.96561901943551",
+   "bbl": "1018950023",
+   "incident_address": "600 WEST  113 STREET"
+  },
+  {
+   "unique_key": "63186842",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Before/After Hours (NM1)",
+   "created_date": "2024-11-23T17:05:00.000",
+   "latitude": "40.805639430595974",
+   "longitude": "-73.96618642162706",
+   "bbl": "1018950008",
+   "incident_address": "611 WEST  112 STREET"
+  },
+  {
+   "unique_key": "63185711",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Before/After Hours (NM1)",
+   "created_date": "2024-11-23T16:20:00.000",
+   "latitude": "40.805639430595974",
+   "longitude": "-73.96618642162706",
+   "bbl": "1018950008",
+   "incident_address": "611 WEST  112 STREET"
+  },
+  {
+   "unique_key": "63205522",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: air condition/ventilation equipment (NV1)",
+   "created_date": "2024-11-25T12:02:00.000",
+   "latitude": "40.805639430595974",
+   "longitude": "-73.96618642162706",
+   "bbl": "1018950008",
+   "incident_address": "611 WEST  112 STREET"
+  },
+  {
+   "unique_key": "63373785",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Jack Hammering (NC2)",
+   "created_date": "2024-12-12T12:44:00.000",
+   "latitude": "40.805639430595974",
+   "longitude": "-73.96618642162706",
+   "bbl": "1018950008",
+   "incident_address": "611 WEST  112 STREET"
+  },
+  {
+   "unique_key": "63387464",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2024-12-13T01:09:56.000",
+   "latitude": "40.80638870525174",
+   "longitude": "-73.96606683783321",
+   "bbl": "1018950027",
+   "incident_address": "608 WEST  113 STREET"
+  },
+  {
+   "unique_key": "63546173",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Jack Hammering (NC2)",
+   "created_date": "2024-12-28T12:17:00.000",
+   "latitude": "40.80561196426394",
+   "longitude": "-73.96612141643801",
+   "bbl": "1018950012",
+   "incident_address": "605 WEST  112 STREET"
+  },
+  {
+   "unique_key": "63574333",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2024-12-31T23:32:48.000",
+   "latitude": "40.805449330904835",
+   "longitude": "-73.96383499829064",
+   "incident_address": "528 WEST  113 STREET"
+  },
+  {
+   "unique_key": "63582586",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-01-01T00:24:09.000",
+   "latitude": "40.80604202008008",
+   "longitude": "-73.96329284656748",
+   "bbl": "1018850048",
+   "incident_address": "528 WEST  114 STREET"
+  },
+  {
+   "unique_key": "63674687",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-01-07T10:17:20.000",
+   "latitude": "40.807390016059735",
+   "longitude": "-73.96436494766998",
+   "bbl": "1018960065",
+   "incident_address": "2941 BROADWAY"
+  },
+  {
+   "unique_key": "63780321",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Equipment (NC1)",
+   "created_date": "2025-01-15T06:44:00.000",
+   "latitude": "40.80559273844738",
+   "longitude": "-73.96607808014139",
+   "bbl": "1018950016",
+   "incident_address": "601 WEST  112 STREET"
+  },
+  {
+   "unique_key": "63951577",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-02-01T13:43:59.000",
+   "latitude": "40.8060639951122",
+   "longitude": "-73.96334701743575",
+   "bbl": "1018850148",
+   "incident_address": "530 WEST  114 STREET"
+  },
+  {
+   "unique_key": "63950222",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-02-01T01:19:11.000",
+   "latitude": "40.806020046174226",
+   "longitude": "-73.96324228793111",
+   "bbl": "1018850047",
+   "incident_address": "526 WEST  114 STREET"
+  },
+  {
+   "unique_key": "63947786",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-02-01T01:18:50.000",
+   "latitude": "40.80614914683588",
+   "longitude": "-73.96355286615959",
+   "bbl": "1018850052",
+   "incident_address": "538 WEST  114 STREET"
+  },
+  {
+   "unique_key": "63956059",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2025-02-01T17:05:33.000",
+   "latitude": "40.80742301620198",
+   "longitude": "-73.96457082955617",
+   "bbl": "1018960065",
+   "incident_address": "601 WEST  115 STREET"
+  },
+  {
+   "unique_key": "63955363",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-02-01T15:21:23.000",
+   "latitude": "40.8060639951122",
+   "longitude": "-73.96334701743575",
+   "bbl": "1018850148",
+   "incident_address": "530 WEST  114 STREET"
+  },
+  {
+   "unique_key": "63954405",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-02-01T13:06:58.000",
+   "latitude": "40.80604202008008",
+   "longitude": "-73.96329284656748",
+   "bbl": "1018850048",
+   "incident_address": "528 WEST  114 STREET"
+  },
+  {
+   "unique_key": "63956553",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-02-01T14:32:58.000",
+   "latitude": "40.8060639951122",
+   "longitude": "-73.96334701743575",
+   "bbl": "1018850148",
+   "incident_address": "530 WEST  114 STREET"
+  },
+  {
+   "unique_key": "63955619",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-02-01T16:37:51.000",
+   "latitude": "40.8060639951122",
+   "longitude": "-73.96334701743575",
+   "bbl": "1018850148",
+   "incident_address": "530 WEST  114 STREET"
+  },
+  {
+   "unique_key": "63970140",
+   "complaint_type": "Noise - Commercial",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-02-03T21:29:01.000",
+   "latitude": "40.80719518414979",
+   "longitude": "-73.96450593014042",
+   "bbl": "1018967501",
+   "incident_address": "2935 BROADWAY"
+  },
+  {
+   "unique_key": "63974305",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2025-02-03T21:30:25.000",
+   "latitude": "40.80738177630506",
+   "longitude": "-73.96434689072824",
+   "bbl": "1018860001",
+   "incident_address": "2940 BROADWAY"
+  },
+  {
+   "unique_key": "63987248",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Before/After Hours (NM1)",
+   "created_date": "2025-02-04T01:11:00.000",
+   "latitude": "40.805655338291416",
+   "longitude": "-73.96432614242505",
+   "bbl": "1018840055",
+   "incident_address": "552 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64156573",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Before/After Hours (NM1)",
+   "created_date": "2025-02-22T08:50:00.000",
+   "latitude": "40.805639430595974",
+   "longitude": "-73.96618642162706",
+   "bbl": "1018950008",
+   "incident_address": "611 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64216419",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-03-01T00:35:36.000",
+   "latitude": "40.80599807224612",
+   "longitude": "-73.96319172932812",
+   "bbl": "1018850046",
+   "incident_address": "524 WEST  114 STREET"
+  },
+  {
+   "unique_key": "64233505",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Jack Hammering (NC2)",
+   "created_date": "2025-03-02T08:47:00.000",
+   "latitude": "40.80561196426394",
+   "longitude": "-73.96612141643801",
+   "bbl": "1018950012",
+   "incident_address": "605 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64250538",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Equipment (NC1)",
+   "created_date": "2025-03-04T06:05:00.000",
+   "latitude": "40.80503242800545",
+   "longitude": "-73.96478883059706",
+   "bbl": "1018830057",
+   "incident_address": "540 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64287782",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-03-08T22:14:55.000",
+   "latitude": "40.80484563676037",
+   "longitude": "-73.96430129145389",
+   "bbl": "1018840015",
+   "incident_address": "523 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64288465",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-03-09T00:31:15.000",
+   "latitude": "40.80484563676037",
+   "longitude": "-73.96430129145389",
+   "bbl": "1018840015",
+   "incident_address": "523 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64295711",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2025-03-09T00:35:59.000",
+   "latitude": "40.80484563676037",
+   "longitude": "-73.96430129145389",
+   "bbl": "1018840015",
+   "incident_address": "523 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64391596",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Private Carting Noise (NQ1)",
+   "created_date": "2025-03-18T08:59:00.000",
+   "latitude": "40.80555918766381",
+   "longitude": "-73.96405166890585",
+   "bbl": "1018850011",
+   "incident_address": "541 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64418726",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Car/Truck Horn",
+   "created_date": "2025-03-21T22:29:04.000",
+   "latitude": "40.80562571015258",
+   "longitude": "-73.9661972651231",
+   "bbl": "1018940056",
+   "incident_address": "610 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64468765",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: air condition/ventilation equipment (NV1)",
+   "created_date": "2025-03-26T11:11:00.000",
+   "latitude": "40.805639430595974",
+   "longitude": "-73.96618642162706",
+   "bbl": "1018950008",
+   "incident_address": "611 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64467875",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Jack Hammering (NC2)",
+   "created_date": "2025-03-26T08:26:00.000",
+   "latitude": "40.806514449208834",
+   "longitude": "-73.96436541643186",
+   "bbl": "1018860001",
+   "incident_address": "545 WEST  114 STREET"
+  },
+  {
+   "unique_key": "64467538",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-03-26T22:41:40.000",
+   "latitude": "40.807337874126645",
+   "longitude": "-73.96439026146395",
+   "incident_address": "BROADWAY"
+  },
+  {
+   "unique_key": "64495270",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-03-28T16:53:56.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64493865",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-03-28T17:57:24.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64503723",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-03-29T23:31:59.000",
+   "latitude": "40.80610519808548",
+   "longitude": "-73.96344813638505",
+   "bbl": "1018850050",
+   "incident_address": "534 WEST  114 STREET"
+  },
+  {
+   "unique_key": "64537769",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Before/After Hours (NM1)",
+   "created_date": "2025-04-02T00:35:00.000",
+   "latitude": "40.806201931309026",
+   "longitude": "-73.96561901943551",
+   "bbl": "1018950023",
+   "incident_address": "600 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64540520",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Before/After Hours (NM1)",
+   "created_date": "2025-04-02T00:38:00.000",
+   "latitude": "40.80652545152697",
+   "longitude": "-73.96444126724903",
+   "bbl": "1018850061",
+   "incident_address": "566 WEST  114 STREET"
+  },
+  {
+   "unique_key": "64535193",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Before/After Hours (NM1)",
+   "created_date": "2025-04-02T00:38:00.000",
+   "latitude": "40.805842115065",
+   "longitude": "-73.96476672914437",
+   "bbl": "1018840061",
+   "incident_address": "562 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64559074",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-04T23:49:23.000",
+   "latitude": "40.80610519808548",
+   "longitude": "-73.96344813638505",
+   "bbl": "1018850050",
+   "incident_address": "534 WEST  114 STREET"
+  },
+  {
+   "unique_key": "64565740",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-05T08:31:42.000",
+   "latitude": "40.80549877440507",
+   "longitude": "-73.96395778515391",
+   "incident_address": "534 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64562636",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-05T13:25:52.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64564808",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-05T13:03:01.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64567972",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-05T12:44:10.000",
+   "latitude": "40.80563885652438",
+   "longitude": "-73.9642828051459",
+   "bbl": "1018840154",
+   "incident_address": "550 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64565738",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-05T09:01:05.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64564884",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-05T12:17:54.000",
+   "latitude": "40.80569104427037",
+   "longitude": "-73.96440559122367",
+   "bbl": "1018840156",
+   "incident_address": "556 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64570142",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-05T12:32:18.000",
+   "latitude": "40.80569104427037",
+   "longitude": "-73.96440559122367",
+   "bbl": "1018840156",
+   "incident_address": "556 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64567991",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-05T12:18:36.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "64567838",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-05T12:04:10.000",
+   "latitude": "40.80537790101773",
+   "longitude": "-73.96362191954863",
+   "incident_address": "521 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64572617",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Before/After Hours (NM1)",
+   "created_date": "2025-04-06T09:05:00.000",
+   "latitude": "40.805639430595974",
+   "longitude": "-73.96618642162706",
+   "bbl": "1018950008",
+   "incident_address": "611 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64596016",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-09T01:42:13.000",
+   "latitude": "40.80484563676037",
+   "longitude": "-73.96430129145389",
+   "bbl": "1018840015",
+   "incident_address": "523 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64595334",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-09T00:50:16.000",
+   "latitude": "40.80484563676037",
+   "longitude": "-73.96430129145389",
+   "bbl": "1018840015",
+   "incident_address": "523 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64594898",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Alarms (NR3)",
+   "created_date": "2025-04-08T12:35:00.000",
+   "latitude": "40.80561196426394",
+   "longitude": "-73.96612141643801",
+   "bbl": "1018950012",
+   "incident_address": "605 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64594721",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-09T01:38:46.000",
+   "latitude": "40.80484563676037",
+   "longitude": "-73.96430129145389",
+   "bbl": "1018840015",
+   "incident_address": "523 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64677047",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-17T21:47:31.000",
+   "latitude": "40.80746148553895",
+   "longitude": "-73.96471168780268",
+   "bbl": "1018967501",
+   "incident_address": "600 WEST  115 STREET"
+  },
+  {
+   "unique_key": "64693234",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-19T13:16:16.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64693261",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-19T18:07:31.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64688164",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-19T01:20:19.000",
+   "latitude": "40.80599807224612",
+   "longitude": "-73.96319172932812",
+   "bbl": "1018850046",
+   "incident_address": "524 WEST  114 STREET"
+  },
+  {
+   "unique_key": "64695841",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-19T20:17:36.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64698000",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-19T18:20:57.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64700520",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-19T19:07:59.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64700710",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-19T14:08:32.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64693291",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-19T16:56:40.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64695729",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-19T19:46:52.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64695716",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-19T18:44:45.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64698054",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-19T12:16:53.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64711905",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Alarms (NR3)",
+   "created_date": "2025-04-21T09:56:00.000",
+   "latitude": "40.805639430595974",
+   "longitude": "-73.96618642162706",
+   "bbl": "1018950008",
+   "incident_address": "611 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64755690",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2025-04-25T02:54:54.000",
+   "latitude": "40.80599807224612",
+   "longitude": "-73.96319172932812",
+   "incident_address": "524W WEST  114 STREET"
+  },
+  {
+   "unique_key": "64766166",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-26T23:46:50.000",
+   "latitude": "40.80513404332169",
+   "longitude": "-73.96498744501815",
+   "bbl": "1018840006",
+   "incident_address": "539 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64778671",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-27T11:24:40.000",
+   "latitude": "40.80570752599113",
+   "longitude": "-73.96444892856718",
+   "bbl": "1018840057",
+   "incident_address": "558 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64772558",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-27T11:14:32.000",
+   "latitude": "40.80570752599113",
+   "longitude": "-73.96444892856718",
+   "bbl": "1018840057",
+   "incident_address": "558 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64792566",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-29T07:42:14.000",
+   "latitude": "40.807390016059735",
+   "longitude": "-73.96436494766998",
+   "bbl": "1018960065",
+   "incident_address": "2941 BROADWAY"
+  },
+  {
+   "unique_key": "64778582",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-04-27T15:48:18.000",
+   "latitude": "40.80570752599113",
+   "longitude": "-73.96444892856718",
+   "bbl": "1018840057",
+   "incident_address": "558 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64788459",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Engine Idling",
+   "created_date": "2025-04-28T23:48:03.000",
+   "latitude": "40.80557901801408",
+   "longitude": "-73.96608892365215",
+   "bbl": "1018940052",
+   "incident_address": "600 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64815361",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Equipment (NC1)",
+   "created_date": "2025-05-01T09:44:00.000",
+   "latitude": "40.80562571015258",
+   "longitude": "-73.9661972651231",
+   "bbl": "1018940056",
+   "incident_address": "610 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64812775",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Car/Truck Horn",
+   "created_date": "2025-05-01T09:42:21.000",
+   "latitude": "40.80562571015258",
+   "longitude": "-73.9661972651231",
+   "bbl": "1018940056",
+   "incident_address": "610 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64824080",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2025-05-02T13:44:29.000",
+   "latitude": "40.807390016059735",
+   "longitude": "-73.96436494766998",
+   "bbl": "1018960065",
+   "incident_address": "2941 BROADWAY"
+  },
+  {
+   "unique_key": "64820104",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-01T21:54:07.000",
+   "latitude": "40.80570752599113",
+   "longitude": "-73.96444892856718",
+   "bbl": "1018840057",
+   "incident_address": "558 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64835600",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Before/After Hours (NM1)",
+   "created_date": "2025-05-03T10:56:00.000",
+   "latitude": "40.80641067791753",
+   "longitude": "-73.96611739768207",
+   "bbl": "1018950028",
+   "incident_address": "610 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64829452",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Equipment (NC1)",
+   "created_date": "2025-05-02T09:29:00.000",
+   "latitude": "40.805639430595974",
+   "longitude": "-73.96618642162706",
+   "bbl": "1018950008",
+   "incident_address": "611 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64834649",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-03T14:00:44.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64838739",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-04T00:06:13.000",
+   "latitude": "40.805432836465926",
+   "longitude": "-73.96375192746032",
+   "bbl": "1018850019",
+   "incident_address": "527 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64843357",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-04T20:47:33.000",
+   "latitude": "40.806201931309026",
+   "longitude": "-73.96561901943551",
+   "bbl": "1018950023",
+   "incident_address": "600 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64849366",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-04T21:04:46.000",
+   "latitude": "40.80634475878692",
+   "longitude": "-73.96596210602185",
+   "bbl": "1018950025",
+   "incident_address": "604 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64874799",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-08T00:35:21.000",
+   "latitude": "40.805517999890945",
+   "longitude": "-73.96399750860802",
+   "bbl": "1018840048",
+   "incident_address": "536 WEST  113 STREET"
+  },
+  {
+   "unique_key": "64925193",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Engine Idling",
+   "created_date": "2025-05-12T23:53:48.000",
+   "latitude": "40.80557901801408",
+   "longitude": "-73.96608892365215",
+   "bbl": "1018940052",
+   "incident_address": "600 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64952794",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Car/Truck Horn",
+   "created_date": "2025-05-15T23:33:57.000",
+   "latitude": "40.80557901801408",
+   "longitude": "-73.96608892365215",
+   "bbl": "1018940052",
+   "incident_address": "600 WEST  112 STREET"
+  },
+  {
+   "unique_key": "64974883",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-17T17:47:04.000",
+   "latitude": "40.807390016059735",
+   "longitude": "-73.96436494766998",
+   "bbl": "1018960065",
+   "incident_address": "2941 BROADWAY"
+  },
+  {
+   "unique_key": "64986122",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-16T22:15:18.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "64979528",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-17T00:14:09.000",
+   "latitude": "40.80625901659339",
+   "longitude": "-73.96380927288733",
+   "bbl": "1018850056",
+   "incident_address": "548 WEST  114 STREET"
+  },
+  {
+   "unique_key": "64985212",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-16T22:31:16.000",
+   "latitude": "40.806237042914766",
+   "longitude": "-73.96375871391564",
+   "bbl": "1018850055",
+   "incident_address": "546 WEST  114 STREET"
+  },
+  {
+   "unique_key": "64984192",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-17T00:13:09.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "64976163",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-17T00:15:35.000",
+   "latitude": "40.8063029650146",
+   "longitude": "-73.96391400314235",
+   "bbl": "1018850057",
+   "incident_address": "552 WEST  114 STREET"
+  },
+  {
+   "unique_key": "64976103",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-16T22:50:32.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "64986501",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-16T22:20:22.000",
+   "latitude": "40.80625901659339",
+   "longitude": "-73.96380927288733",
+   "bbl": "1018850056",
+   "incident_address": "548 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65001345",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-19T01:38:13.000",
+   "latitude": "40.8062150692139",
+   "longitude": "-73.96370815497735",
+   "bbl": "1018850054",
+   "incident_address": "544 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65016843",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2025-05-20T11:23:18.000",
+   "latitude": "40.807390016059735",
+   "longitude": "-73.96436494766998",
+   "bbl": "1018960065",
+   "incident_address": "2941 BROADWAY"
+  },
+  {
+   "unique_key": "65013985",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-20T13:09:43.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65009907",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-20T03:00:26.000",
+   "latitude": "40.80557018794179",
+   "longitude": "-73.96412029423914",
+   "bbl": "1018840151",
+   "incident_address": "542 WEST  113 STREET"
+  },
+  {
+   "unique_key": "65017809",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-21T22:37:57.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65026166",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-21T23:27:00.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65047720",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-24T16:49:25.000",
+   "latitude": "40.807390016059735",
+   "longitude": "-73.96436494766998",
+   "bbl": "1018960065",
+   "incident_address": "2941 BROADWAY"
+  },
+  {
+   "unique_key": "65048836",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-24T22:48:11.000",
+   "latitude": "40.805586668647166",
+   "longitude": "-73.96416001926069",
+   "bbl": "1018840052",
+   "incident_address": "544 WEST  113 STREET"
+  },
+  {
+   "unique_key": "65076348",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Engine Idling",
+   "created_date": "2025-05-28T00:35:49.000",
+   "latitude": "40.80557901801408",
+   "longitude": "-73.96608892365215",
+   "bbl": "1018940052",
+   "incident_address": "600 WEST  112 STREET"
+  },
+  {
+   "unique_key": "65089321",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Car/Truck Horn",
+   "created_date": "2025-05-28T23:34:23.000",
+   "latitude": "40.80557901801408",
+   "longitude": "-73.96608892365215",
+   "bbl": "1018940052",
+   "incident_address": "600 WEST  112 STREET"
+  },
+  {
+   "unique_key": "65106368",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Car/Truck Horn",
+   "created_date": "2025-05-30T23:51:29.000",
+   "latitude": "40.80562571015258",
+   "longitude": "-73.9661972651231",
+   "bbl": "1018940056",
+   "incident_address": "610 WEST  112 STREET"
+  },
+  {
+   "unique_key": "65112374",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-30T19:43:12.000",
+   "latitude": "40.80562571015258",
+   "longitude": "-73.9661972651231",
+   "bbl": "1018940056",
+   "incident_address": "610 WEST  112 STREET"
+  },
+  {
+   "unique_key": "65125102",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2025-06-01T20:40:38.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65130974",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-06-01T17:42:51.000",
+   "latitude": "40.80572433745497",
+   "longitude": "-73.96557953214142",
+   "bbl": "1018950016",
+   "incident_address": "2887 BROADWAY"
+  },
+  {
+   "unique_key": "65133930",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2025-06-02T02:44:16.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65230533",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-06-11T19:08:57.000",
+   "latitude": "40.80562571015258",
+   "longitude": "-73.9661972651231",
+   "bbl": "1018940056",
+   "incident_address": "610 WEST  112 STREET"
+  },
+  {
+   "unique_key": "65243397",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-06-12T23:04:50.000",
+   "latitude": "40.80704457982286",
+   "longitude": "-73.96567999246",
+   "bbl": "1018950165",
+   "incident_address": "612 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65290479",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Car/Truck Horn",
+   "created_date": "2025-06-18T00:18:34.000",
+   "latitude": "40.80557901801408",
+   "longitude": "-73.96608892365215",
+   "bbl": "1018940052",
+   "incident_address": "600 WEST  112 STREET"
+  },
+  {
+   "unique_key": "65291849",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-06-17T23:50:48.000",
+   "latitude": "40.805586668647166",
+   "longitude": "-73.96416001926069",
+   "bbl": "1018840052",
+   "incident_address": "544 WEST  113 STREET"
+  },
+  {
+   "unique_key": "65319378",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-06-20T18:57:25.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65318100",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-06-20T01:41:53.000",
+   "latitude": "40.80746148553895",
+   "longitude": "-73.96471168780268",
+   "bbl": "1018967501",
+   "incident_address": "600 WEST  115 STREET"
+  },
+  {
+   "unique_key": "65318031",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-06-20T01:38:27.000",
+   "latitude": "40.80746148553895",
+   "longitude": "-73.96471168780268",
+   "bbl": "1018967501",
+   "incident_address": "600 WEST  115 STREET"
+  },
+  {
+   "unique_key": "65318083",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-06-20T01:41:48.000",
+   "latitude": "40.80746148553895",
+   "longitude": "-73.96471168780268",
+   "bbl": "1018967501",
+   "incident_address": "600 WEST  115 STREET"
+  },
+  {
+   "unique_key": "65320663",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-06-20T22:19:09.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65327363",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-06-21T20:07:13.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65333807",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-06-21T19:25:18.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65651960",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-07-24T21:46:18.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65660357",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-07-25T14:56:41.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65661525",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-07-25T15:04:21.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65668872",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-07-26T13:17:41.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65676500",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-07-26T13:24:05.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65675208",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-07-26T16:36:05.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65677719",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-07-27T22:07:55.000",
+   "latitude": "40.80713206217834",
+   "longitude": "-73.96452763734385",
+   "bbl": "1018860001",
+   "incident_address": "2922 BROADWAY"
+  },
+  {
+   "unique_key": "65676613",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-07-26T21:17:11.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65807383",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-08-09T12:57:19.000",
+   "latitude": "40.8051038436701",
+   "longitude": "-73.96496217587463",
+   "bbl": "1018830059",
+   "incident_address": "542 WEST  112 STREET"
+  },
+  {
+   "unique_key": "65807360",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-08-09T11:38:35.000",
+   "latitude": "40.8051038436701",
+   "longitude": "-73.96496217587463",
+   "bbl": "1018830059",
+   "incident_address": "542 WEST  112 STREET"
+  },
+  {
+   "unique_key": "65886824",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-08-18T22:13:56.000",
+   "latitude": "40.80645187951693",
+   "longitude": "-73.96622213109256",
+   "bbl": "1018950129",
+   "incident_address": "614 WEST  113 STREET"
+  },
+  {
+   "unique_key": "65927857",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-08-24T00:49:16.000",
+   "latitude": "40.80647385211438",
+   "longitude": "-73.96627269104069",
+   "bbl": "1018950030",
+   "incident_address": "616 WEST  113 STREET"
+  },
+  {
+   "unique_key": "65951573",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2025-08-25T23:12:57.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "65993316",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-08-30T23:35:12.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66014346",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-01T17:00:23.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66016627",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-01T16:09:00.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66021198",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-01T15:30:41.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66071978",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-06T18:07:44.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66065723",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-06T14:35:51.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66065728",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-06T15:18:08.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66066959",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-06T17:20:00.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66071975",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-06T18:56:15.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66072068",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-06T13:21:58.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66070778",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-06T15:32:30.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66068155",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-06T15:41:11.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66074537",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-06T16:14:27.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66077835",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-07T23:23:26.000",
+   "latitude": "40.80645187951693",
+   "longitude": "-73.96622213109256",
+   "bbl": "1018950129",
+   "incident_address": "614 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66142307",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-13T20:58:16.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66148779",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-13T19:30:10.000",
+   "latitude": "40.8053943830339",
+   "longitude": "-73.96366525649421",
+   "bbl": "1018850020",
+   "incident_address": "523 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66144919",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-13T21:08:27.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66148767",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-13T20:26:15.000",
+   "latitude": "40.8053943830339",
+   "longitude": "-73.96366525649421",
+   "bbl": "1018850020",
+   "incident_address": "523 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66174285",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-16T21:06:32.000",
+   "latitude": "40.807337874126645",
+   "longitude": "-73.96439026146395",
+   "incident_address": "BROADWAY"
+  },
+  {
+   "unique_key": "66184425",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-17T22:24:59.000",
+   "latitude": "40.8057240065829",
+   "longitude": "-73.96448865375208",
+   "bbl": "1018840058",
+   "incident_address": "560 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66211203",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-19T21:37:11.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66212593",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-19T21:39:03.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66212616",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-19T22:34:09.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66214036",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-20T22:53:40.000",
+   "latitude": "40.8057240065829",
+   "longitude": "-73.96448865375208",
+   "bbl": "1018840058",
+   "incident_address": "560 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66219714",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-20T11:45:49.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66248078",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-23T14:42:05.000",
+   "latitude": "40.80704457982286",
+   "longitude": "-73.96567999246",
+   "bbl": "1018950165",
+   "incident_address": "612 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66262619",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-24T22:49:34.000",
+   "latitude": "40.8057240065829",
+   "longitude": "-73.96448865375208",
+   "bbl": "1018840058",
+   "incident_address": "560 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66268806",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-25T22:15:27.000",
+   "latitude": "40.805639430595974",
+   "longitude": "-73.96618642162706",
+   "bbl": "1018950008",
+   "incident_address": "611 WEST  112 STREET"
+  },
+  {
+   "unique_key": "66275205",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-25T22:02:29.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66282270",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-26T23:14:36.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66280855",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-26T23:15:58.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66360101",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-03T23:39:40.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66368648",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-04T22:46:07.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66385823",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-06T23:27:09.000",
+   "latitude": "40.806366731498784",
+   "longitude": "-73.96601266580275",
+   "bbl": "1018950025",
+   "incident_address": "606 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66394886",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-06T23:26:31.000",
+   "latitude": "40.806201931309026",
+   "longitude": "-73.96561901943551",
+   "bbl": "1018950023",
+   "incident_address": "600 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66402447",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-07T15:29:25.000",
+   "latitude": "40.80537791582623",
+   "longitude": "-73.96366887764528",
+   "incident_address": "520 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66397694",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Engine Idling",
+   "created_date": "2025-10-07T21:50:03.000",
+   "latitude": "40.807337874126645",
+   "longitude": "-73.96439026146395",
+   "incident_address": "BROADWAY"
+  },
+  {
+   "unique_key": "66418355",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-08T22:55:18.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66436872",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2025-10-10T02:03:26.000",
+   "latitude": "40.80563885652438",
+   "longitude": "-73.9642828051459",
+   "bbl": "1018840154",
+   "incident_address": "550 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66442323",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-11T23:23:29.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66449036",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-11T22:05:27.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66495571",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-15T08:06:47.000",
+   "latitude": "40.805452664607266",
+   "longitude": "-73.9657638930925",
+   "incident_address": "BROADWAY"
+  },
+  {
+   "unique_key": "66512049",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-18T00:49:47.000",
+   "latitude": "40.80599807224612",
+   "longitude": "-73.96319172932812",
+   "bbl": "1018850046",
+   "incident_address": "524 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66512149",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-17T17:49:56.000",
+   "latitude": "40.8060810703871",
+   "longitude": "-73.96530843266166",
+   "incident_address": "BROADWAY"
+  },
+  {
+   "unique_key": "66513497",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2025-10-17T21:21:16.000",
+   "latitude": "40.8057240065829",
+   "longitude": "-73.96448865375208",
+   "bbl": "1018840058",
+   "incident_address": "560 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66523531",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-18T01:29:46.000",
+   "latitude": "40.804848398250705",
+   "longitude": "-73.96435547197021",
+   "bbl": "1018830050",
+   "incident_address": "526 WEST  112 STREET"
+  },
+  {
+   "unique_key": "66525645",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-18T11:50:47.000",
+   "latitude": "40.80569104427037",
+   "longitude": "-73.96440559122367",
+   "bbl": "1018840156",
+   "incident_address": "556 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66529820",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2025-10-18T12:11:26.000",
+   "latitude": "40.80569104427037",
+   "longitude": "-73.96440559122367",
+   "bbl": "1018840156",
+   "incident_address": "556 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66535309",
+   "complaint_type": "Noise - Commercial",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2025-10-19T06:26:50.000",
+   "latitude": "40.80562571015258",
+   "longitude": "-73.9661972651231",
+   "bbl": "1018940056",
+   "incident_address": "610 WEST  112 STREET"
+  },
+  {
+   "unique_key": "66529878",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-18T10:04:56.000",
+   "latitude": "40.80569104427037",
+   "longitude": "-73.96440559122367",
+   "bbl": "1018840156",
+   "incident_address": "556 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66534116",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-18T11:20:03.000",
+   "latitude": "40.80563885652438",
+   "longitude": "-73.9642828051459",
+   "bbl": "1018840154",
+   "incident_address": "550 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66534096",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-18T09:53:21.000",
+   "latitude": "40.80569104427037",
+   "longitude": "-73.96440559122367",
+   "bbl": "1018840156",
+   "incident_address": "556 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66532803",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-18T18:51:31.000",
+   "latitude": "40.8057240065829",
+   "longitude": "-73.96448865375208",
+   "bbl": "1018840058",
+   "incident_address": "560 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66578297",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-23T23:19:27.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66580954",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Equipment (NC1)",
+   "created_date": "2025-10-23T11:37:00.000",
+   "latitude": "40.80562237586147",
+   "longitude": "-73.9642430800628",
+   "bbl": "1018840054",
+   "incident_address": "548 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66572910",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-22T22:23:38.000",
+   "latitude": "40.805586668647166",
+   "longitude": "-73.96416001926069",
+   "bbl": "1018840052",
+   "incident_address": "544 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66583058",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-23T23:16:12.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66592452",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-24T22:56:24.000",
+   "latitude": "40.80569104427037",
+   "longitude": "-73.96440559122367",
+   "bbl": "1018840156",
+   "incident_address": "556 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66595127",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-24T19:41:55.000",
+   "latitude": "40.80569104427037",
+   "longitude": "-73.96440559122367",
+   "bbl": "1018840156",
+   "incident_address": "556 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66600445",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-24T19:35:49.000",
+   "latitude": "40.80567456364987",
+   "longitude": "-73.96436586607899",
+   "bbl": "1018840056",
+   "incident_address": "554 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66601938",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-25T23:01:15.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66600419",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-24T22:55:26.000",
+   "latitude": "40.80569104427037",
+   "longitude": "-73.96440559122367",
+   "bbl": "1018840156",
+   "incident_address": "556 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66599769",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-24T23:49:24.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66597130",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-24T23:48:22.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66602017",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2025-10-25T23:42:03.000",
+   "latitude": "40.8049527590411",
+   "longitude": "-73.96455408371894",
+   "bbl": "1018840011",
+   "incident_address": "531 WEST  112 STREET"
+  },
+  {
+   "unique_key": "66600446",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-24T18:01:31.000",
+   "latitude": "40.80570752599113",
+   "longitude": "-73.96444892856718",
+   "bbl": "1018840057",
+   "incident_address": "558 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66610750",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-25T18:09:45.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66606375",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-25T22:37:00.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66607647",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-25T18:07:40.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66604758",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-25T15:22:39.000",
+   "latitude": "40.806020046174226",
+   "longitude": "-73.96324228793111",
+   "bbl": "1018850047",
+   "incident_address": "526 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66604803",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-25T15:36:10.000",
+   "latitude": "40.80614914683588",
+   "longitude": "-73.96355286615959",
+   "bbl": "1018850052",
+   "incident_address": "538 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66606206",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-25T17:15:48.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66603435",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-25T22:14:14.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66604017",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2025-10-26T01:18:46.000",
+   "latitude": "40.8049527590411",
+   "longitude": "-73.96455408371894",
+   "bbl": "1018840011",
+   "incident_address": "531 WEST  112 STREET"
+  },
+  {
+   "unique_key": "66607798",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-25T15:29:42.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66612266",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-25T18:36:46.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66612128",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-25T22:15:28.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66612210",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-25T10:19:23.000",
+   "latitude": "40.80569104427037",
+   "longitude": "-73.96440559122367",
+   "bbl": "1018840156",
+   "incident_address": "556 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66635004",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: air condition/ventilation equipment (NV1)",
+   "created_date": "2025-10-27T09:29:00.000",
+   "latitude": "40.805639430595974",
+   "longitude": "-73.96618642162706",
+   "bbl": "1018950008",
+   "incident_address": "611 WEST  112 STREET"
+  },
+  {
+   "unique_key": "66652621",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-29T22:37:09.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66674017",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-11-01T00:26:10.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66675622",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-11-01T00:39:07.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66675625",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-31T23:31:14.000",
+   "latitude": "40.805342192212",
+   "longitude": "-73.9635352472255",
+   "bbl": "1018850021",
+   "incident_address": "517 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66675591",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-31T23:05:21.000",
+   "latitude": "40.806020046174226",
+   "longitude": "-73.96324228793111",
+   "bbl": "1018850047",
+   "incident_address": "526 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66672418",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-30T22:50:25.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66677254",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-31T23:58:27.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66683615",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-31T22:35:07.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66677230",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-31T23:22:12.000",
+   "latitude": "40.80625901659339",
+   "longitude": "-73.96380927288733",
+   "bbl": "1018850056",
+   "incident_address": "548 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66683592",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-31T23:07:49.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66680359",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-31T23:01:54.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66680365",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-31T22:41:00.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66683608",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-31T22:55:39.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66685246",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-31T22:59:14.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66685245",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-31T23:15:05.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66685231",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-10-31T23:55:02.000",
+   "latitude": "40.80617112060506",
+   "longitude": "-73.96360342499653",
+   "bbl": "1018850152",
+   "incident_address": "540 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66744403",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2025-11-06T22:30:54.000",
+   "latitude": "40.80563885652438",
+   "longitude": "-73.9642828051459",
+   "bbl": "1018840154",
+   "incident_address": "550 WEST  113 STREET"
+  },
+  {
+   "unique_key": "66770624",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-11-08T22:29:02.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66842390",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-11-16T00:53:03.000",
+   "latitude": "40.80599807224612",
+   "longitude": "-73.96319172932812",
+   "bbl": "1018850046",
+   "incident_address": "524 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66848198",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-11-16T00:54:03.000",
+   "latitude": "40.80610519808548",
+   "longitude": "-73.96344813638505",
+   "bbl": "1018850050",
+   "incident_address": "534 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66847034",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-11-16T01:33:12.000",
+   "latitude": "40.80610519808548",
+   "longitude": "-73.96344813638505",
+   "bbl": "1018850050",
+   "incident_address": "534 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66857073",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-11-16T07:17:33.000",
+   "latitude": "40.806020046174226",
+   "longitude": "-73.96324228793111",
+   "bbl": "1018850047",
+   "incident_address": "526 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66896547",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-11-20T23:25:37.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66896495",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-11-20T23:23:45.000",
+   "latitude": "40.80599807224612",
+   "longitude": "-73.96319172932812",
+   "bbl": "1018850046",
+   "incident_address": "524 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66896592",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-11-20T23:10:36.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66919111",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-11-23T01:56:57.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66919123",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-11-22T14:04:09.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66917947",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-11-22T23:57:17.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66923638",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-11-23T02:02:11.000",
+   "latitude": "40.80617112060506",
+   "longitude": "-73.96360342499653",
+   "bbl": "1018850152",
+   "incident_address": "540 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66923492",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-11-22T22:10:30.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66956953",
+   "complaint_type": "Noise",
+   "descriptor": "Noise:  lawn care equipment (NCL)",
+   "created_date": "2025-11-26T13:32:00.000",
+   "latitude": "40.8063667197776",
+   "longitude": "-73.96597293143793",
+   "bbl": "1018950052",
+   "incident_address": "605 WEST  113 STREET"
+  },
+  {
+   "unique_key": "67034951",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-12-03T19:32:28.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "67034896",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-12-03T22:56:18.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "67059950",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-12-05T22:47:29.000",
+   "latitude": "40.8061271730444",
+   "longitude": "-73.96350230735601",
+   "bbl": "1018850051",
+   "incident_address": "536 WEST  114 STREET"
+  },
+  {
+   "unique_key": "67067034",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2025-12-05T21:26:24.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "67067197",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-12-05T22:14:54.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST  114 STREET"
+  },
+  {
+   "unique_key": "67081618",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-12-06T21:58:17.000",
+   "latitude": "40.80617112060506",
+   "longitude": "-73.96360342499653",
+   "bbl": "1018850152",
+   "incident_address": "540 WEST  114 STREET"
+  },
+  {
+   "unique_key": "67107973",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2025-12-08T22:44:47.000",
+   "latitude": "40.80702808563961",
+   "longitude": "-73.96559330693063",
+   "bbl": "1018960014",
+   "incident_address": "609 WEST  114 STREET"
+  },
+  {
+   "unique_key": "66057566",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-09-05T16:26:54.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST  114 STREET"
+  },
+  {
+   "unique_key": "70542627",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-26T01:16:24.000",
+   "latitude": "40.805517999890945",
+   "longitude": "-73.96399750860802",
+   "bbl": "1018840048",
+   "incident_address": "536 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70547054",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-09-26T00:22:59.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70298063",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-04T22:14:08.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70459255",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-18T22:27:48.000",
+   "latitude": "40.80680836335823",
+   "longitude": "-73.96511299265704",
+   "bbl": "1018950062",
+   "incident_address": "600 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70460854",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-18T22:20:59.000",
+   "latitude": "40.80680836335823",
+   "longitude": "-73.96511299265704",
+   "bbl": "1018950062",
+   "incident_address": "600 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70464092",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-18T22:28:19.000",
+   "latitude": "40.80680836335823",
+   "longitude": "-73.96511299265704",
+   "bbl": "1018950062",
+   "incident_address": "600 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70471792",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-19T14:22:32.000",
+   "latitude": "40.8060810703871",
+   "longitude": "-73.96530843266166",
+   "incident_address": "WEST 113 STREET"
+  },
+  {
+   "unique_key": "70474623",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-19T22:25:12.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70379591",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-11T22:24:19.000",
+   "latitude": "40.80569104427037",
+   "longitude": "-73.96440559122367",
+   "bbl": "1018840156",
+   "incident_address": "556 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70480305",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-19T13:18:13.000",
+   "latitude": "40.80614914683588",
+   "longitude": "-73.96355286615959",
+   "bbl": "1018850052",
+   "incident_address": "538 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70592719",
+   "complaint_type": "Noise",
+   "descriptor": "Construction",
+   "created_date": "2026-09-30T09:52:47.000",
+   "latitude": "40.80557901801408",
+   "longitude": "-73.96608892365215",
+   "bbl": "1018940052",
+   "incident_address": "600 WEST 112 STREET"
+  },
+  {
+   "unique_key": "70474620",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-19T23:31:41.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70612671",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-10-02T00:08:12.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70705149",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-10-09T22:23:52.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70471793",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-20T00:47:54.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70473187",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-19T23:46:32.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70474621",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-20T00:20:06.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70474622",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-19T23:58:00.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70477477",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-20T00:37:40.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70480304",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-19T22:14:46.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70482451",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-20T03:55:24.000",
+   "latitude": "40.80680836335823",
+   "longitude": "-73.96511299265704",
+   "bbl": "1018950062",
+   "incident_address": "600 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70486606",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Car/Truck Music",
+   "created_date": "2026-09-20T03:53:18.000",
+   "latitude": "40.80702808563961",
+   "longitude": "-73.96559330693063",
+   "bbl": "1018960014",
+   "incident_address": "609 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70310359",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-05T22:16:35.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70311604",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-05T23:16:44.000",
+   "latitude": "40.805449317298596",
+   "longitude": "-73.96379165230871",
+   "bbl": "1018850018",
+   "incident_address": "529 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70316542",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-05T22:17:38.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70317844",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-06T17:15:04.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70323100",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-06T20:17:52.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70326946",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-06T21:45:44.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70548283",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-27T00:02:30.000",
+   "latitude": "40.80610519808548",
+   "longitude": "-73.96344813638505",
+   "bbl": "1018850050",
+   "incident_address": "534 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70549441",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-26T22:39:21.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70549442",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-26T23:07:45.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70350231",
+   "complaint_type": "Noise",
+   "descriptor": "Jackhammer",
+   "created_date": "2026-09-09T09:00:23.000",
+   "latitude": "40.80610519808548",
+   "longitude": "-73.96344813638505",
+   "bbl": "1018850050",
+   "incident_address": "534 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70551711",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-27T00:48:12.000",
+   "latitude": "40.806366731498784",
+   "longitude": "-73.96601266580275",
+   "bbl": "1018950025",
+   "incident_address": "606 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70551712",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-26T23:22:05.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70556301",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-09-27T00:24:29.000",
+   "latitude": "40.806201931309026",
+   "longitude": "-73.96561901943551",
+   "bbl": "1018950023",
+   "incident_address": "600 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70556302",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-26T22:35:09.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70379590",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-09-11T23:25:38.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70387445",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-12T22:00:20.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70388906",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-12T17:11:22.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70393356",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-12T23:46:33.000",
+   "latitude": "40.80680836335823",
+   "longitude": "-73.96511299265704",
+   "bbl": "1018950062",
+   "incident_address": "600 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70397947",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-12T15:13:41.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70397948",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-12T15:35:24.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70387444",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-13T00:18:39.000",
+   "latitude": "40.806020046174226",
+   "longitude": "-73.96324228793111",
+   "bbl": "1018850047",
+   "incident_address": "526 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70388905",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-12T23:08:33.000",
+   "latitude": "40.80680836335823",
+   "longitude": "-73.96511299265704",
+   "bbl": "1018950062",
+   "incident_address": "600 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70390373",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-12T23:36:13.000",
+   "latitude": "40.80680836335823",
+   "longitude": "-73.96511299265704",
+   "bbl": "1018950062",
+   "incident_address": "600 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70390374",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-12T22:58:13.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70396435",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-12T23:09:43.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70397949",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-12T22:54:40.000",
+   "latitude": "40.80680836335823",
+   "longitude": "-73.96511299265704",
+   "bbl": "1018950062",
+   "incident_address": "600 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70638532",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-10-03T23:06:39.000",
+   "latitude": "40.80628099138207",
+   "longitude": "-73.9638634441027",
+   "bbl": "1018850156",
+   "incident_address": "550 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70714806",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-10-10T23:36:35.000",
+   "latitude": "40.806020046174226",
+   "longitude": "-73.96324228793111",
+   "bbl": "1018850047",
+   "incident_address": "526 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70725971",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-10-11T14:56:55.000",
+   "latitude": "40.8049527590411",
+   "longitude": "-73.96455408371894",
+   "bbl": "1018840011",
+   "incident_address": "531 WEST 112 STREET"
+  },
+  {
+   "unique_key": "70443806",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-16T21:44:47.000",
+   "latitude": "40.80569104427037",
+   "longitude": "-73.96440559122367",
+   "bbl": "1018840156",
+   "incident_address": "556 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70328340",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-07T22:59:05.000",
+   "latitude": "40.805517999890945",
+   "longitude": "-73.96399750860802",
+   "bbl": "1018840048",
+   "incident_address": "536 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70329632",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-08T00:09:17.000",
+   "latitude": "40.8053943830339",
+   "longitude": "-73.96366525649421",
+   "bbl": "1018850020",
+   "incident_address": "523 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70330928",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-08T01:21:33.000",
+   "latitude": "40.805517999890945",
+   "longitude": "-73.96399750860802",
+   "bbl": "1018840048",
+   "incident_address": "536 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70645248",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-10-04T22:56:59.000",
+   "latitude": "40.807390016059735",
+   "longitude": "-73.96436494766998",
+   "bbl": "1018960065",
+   "incident_address": "2941 BROADWAY"
+  },
+  {
+   "unique_key": "70412196",
+   "complaint_type": "Noise",
+   "descriptor": "Alarm",
+   "created_date": "2026-09-14T05:48:12.000",
+   "latitude": "40.80562571015258",
+   "longitude": "-73.9661972651231",
+   "bbl": "1018940056",
+   "incident_address": "610 WEST 112 STREET"
+  },
+  {
+   "unique_key": "70528051",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-25T00:33:12.000",
+   "latitude": "40.80567456364987",
+   "longitude": "-73.96436586607899",
+   "bbl": "1018840056",
+   "incident_address": "554 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70528052",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-09-25T00:41:48.000",
+   "latitude": "40.80567456364987",
+   "longitude": "-73.96436586607899",
+   "bbl": "1018840056",
+   "incident_address": "554 WEST 113 STREET"
+  },
+  {
+   "unique_key": "70757874",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-10-14T23:19:53.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70779655",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-10-16T23:10:08.000",
+   "latitude": "40.806020046174226",
+   "longitude": "-73.96324228793111",
+   "bbl": "1018850047",
+   "incident_address": "526 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70786647",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-10-17T23:50:28.000",
+   "latitude": "40.806020046174226",
+   "longitude": "-73.96324228793111",
+   "bbl": "1018850047",
+   "incident_address": "526 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70786648",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-10-17T23:14:45.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70789418",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-10-17T23:08:16.000",
+   "latitude": "40.806020046174226",
+   "longitude": "-73.96324228793111",
+   "bbl": "1018850047",
+   "incident_address": "526 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70790859",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-10-17T23:49:29.000",
+   "latitude": "40.80608322424795",
+   "longitude": "-73.96339757764943",
+   "bbl": "1018850049",
+   "incident_address": "532 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70792264",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-10-18T00:19:28.000",
+   "latitude": "40.806020046174226",
+   "longitude": "-73.96324228793111",
+   "bbl": "1018850047",
+   "incident_address": "526 WEST 114 STREET"
+  },
+  {
+   "unique_key": "70797740",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-10-18T11:44:07.000",
+   "latitude": "40.80562571015258",
+   "longitude": "-73.9661972651231",
+   "bbl": "1018940056",
+   "incident_address": "610 WEST 112 STREET"
+  },
+  {
+   "unique_key": "70803246",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-10-18T11:30:01.000",
+   "latitude": "40.80562571015258",
+   "longitude": "-73.9661972651231",
+   "bbl": "1018940056",
+   "incident_address": "610 WEST 112 STREET"
+  },
+  {
+   "unique_key": "70803247",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-10-18T11:38:52.000",
+   "latitude": "40.80562571015258",
+   "longitude": "-73.9661972651231",
+   "bbl": "1018940056",
+   "incident_address": "610 WEST 112 STREET"
+  },
+  {
+   "unique_key": "70593845",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-09-30T10:02:14.000",
+   "latitude": "40.80562571015258",
+   "longitude": "-73.9661972651231",
+   "bbl": "1018940056",
+   "incident_address": "610 WEST 112 STREET"
+  }
+ ],
+ "liquor": [
+  {
+   "legalname": "BRUTUS 123 INC",
+   "description": "Grocery Store",
+   "type": "1",
+   "class": "0081",
+   "actualaddressofpremises": "2892 BROADWAY",
+   "georeference": {
+    "type": "Point",
+    "coordinates": [
+     -73.96541,
+     40.80577
+    ]
+   }
+  },
+  {
+   "legalname": "BAN BAN SHOP LLC",
+   "description": "Restaurant",
+   "type": "1",
+   "class": "0240",
+   "actualaddressofpremises": "2911 Broadway Ste A",
+   "georeference": {
+    "type": "Point",
+    "coordinates": [
+     -73.96513,
+     40.8065
+    ]
+   }
+  },
+  {
+   "legalname": "EFTIHIA REST INC",
+   "description": "Restaurant",
+   "type": "1",
+   "class": "0240",
+   "actualaddressofpremises": "2880 BROADWAY",
+   "georeference": {
+    "type": "Point",
+    "coordinates": [
+     -73.9656,
+     40.80551
+    ]
+   }
+  },
+  {
+   "legalname": "544 West 113th Str LLC",
+   "description": "Restaurant",
+   "type": "1",
+   "class": "0240",
+   "actualaddressofpremises": "544 W 113th St",
+   "georeference": {
+    "type": "Point",
+    "coordinates": [
+     -73.96419,
+     40.80561
+    ]
+   }
+  },
+  {
+   "legalname": "HEX NYC LLC",
+   "description": "Food & Beverage Business",
+   "type": "1",
+   "class": "0267",
+   "actualaddressofpremises": "2911 BROADWAY",
+   "georeference": {
+    "type": "Point",
+    "coordinates": [
+     -73.96513,
+     40.8065
+    ]
+   }
+  },
+  {
+   "legalname": "SAPPARO UPPER WEST SIDE INC",
+   "description": "Restaurant",
+   "type": "1",
+   "class": "0340",
+   "actualaddressofpremises": "2888 BROADWAY",
+   "georeference": {
+    "type": "Point",
+    "coordinates": [
+     -73.96553,
+     40.8056
+    ]
+   }
+  },
+  {
+   "legalname": "1996 CORPORATION",
+   "description": "Liquor Store",
+   "type": "1",
+   "class": "0100",
+   "actualaddressofpremises": "2903 BROADWAY",
+   "georeference": {
+    "type": "Point",
+    "coordinates": [
+     -73.96523,
+     40.80635
+    ]
+   }
+  },
+  {
+   "legalname": "112 FRENCH INC",
+   "description": "Restaurant",
+   "type": "1",
+   "class": "0340",
+   "actualaddressofpremises": "2883 87 BROADWAY",
+   "georeference": {
+    "type": "Point",
+    "coordinates": [
+     -73.96563,
+     40.80581
+    ]
+   }
+  },
+  {
+   "legalname": "Trustees of Columbia University",
+   "description": "Food & Beverage Business",
+   "type": "1",
+   "class": "0370",
+   "actualaddressofpremises": "2920 BROADWAY  LERNER HALL",
+   "georeference": {
+    "type": "Point",
+    "coordinates": [
+     -73.96457,
+     40.80692
+    ]
+   }
+  },
+  {
+   "legalname": "2896 BROADWAY FOOD SERVICE CORP",
+   "description": "Restaurant",
+   "type": "1",
+   "class": "0340",
+   "actualaddressofpremises": "2893 BROADWAY",
+   "georeference": {
+    "type": "Point",
+    "coordinates": [
+     -73.96559,
+     40.80586
+    ]
+   }
+  }
+ ],
+ "roads": [
+  {
+   "full_street_name": "W  115 ST",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "FT",
+   "number_total_lanes": "2",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "V",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.964284092944,
+       40.807301290734
+      ],
+      [
+       -73.964391370657,
+       40.807345889505
+      ],
+      [
+       -73.964483623477,
+       40.807384414296
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  113 ST",
+   "rw_type": "1",
+   "streetwidth": "42",
+   "trafdir": "FT",
+   "number_total_lanes": "2",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.967349544936,
+       40.806970276234
+      ],
+      [
+       -73.967401888073,
+       40.807000601624
+      ],
+      [
+       -73.967448327866,
+       40.807036274722
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  114 ST",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "TF",
+   "number_total_lanes": "2",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "S",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.964753117764,
+       40.806674994562
+      ],
+      [
+       -73.964849126609,
+       40.806714582488
+      ],
+      [
+       -73.964940135633,
+       40.806752566439
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  113 ST",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "FT",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "1",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.962476227396,
+       40.804893639364
+      ],
+      [
+       -73.963090389027,
+       40.805152662528
+      ],
+      [
+       -73.96334077499,
+       40.805258261062
+      ],
+      [
+       -73.964686325752,
+       40.805825722645
+      ],
+      [
+       -73.965204703386,
+       40.806044332501
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "PEDESTRIAN PATH",
+   "rw_type": "6",
+   "trafdir": "NV",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.96772406268,
+       40.805461092047
+      ],
+      [
+       -73.967726362855,
+       40.805682051784
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  114 ST",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "TF",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "1",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.964940135633,
+       40.806752566439
+      ],
+      [
+       -73.965276983451,
+       40.806893146722
+      ],
+      [
+       -73.965489862071,
+       40.806981988678
+      ],
+      [
+       -73.965710976637,
+       40.807074266945
+      ],
+      [
+       -73.965762161378,
+       40.807095627985
+      ],
+      [
+       -73.966643252003,
+       40.807463328053
+      ],
+      [
+       -73.966898210657,
+       40.807569329235
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "FT",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "3",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.966598797692,
+       40.804131936194
+      ],
+      [
+       -73.966354530656,
+       40.804461687428
+      ],
+      [
+       -73.966110450122,
+       40.804792342147
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  113 ST",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "FT",
+   "number_total_lanes": "2",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.965204703386,
+       40.806044332501
+      ],
+      [
+       -73.965309810393,
+       40.806088659555
+      ],
+      [
+       -73.965404171698,
+       40.806128022043
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  113 ST",
+   "rw_type": "1",
+   "streetwidth": "42",
+   "trafdir": "FT",
+   "number_total_lanes": "2",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.967139232499,
+       40.806851746534
+      ],
+      [
+       -73.967349544936,
+       40.806970276234
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  114 ST",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "TF",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "1",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.962009037431,
+       40.805517712717
+      ],
+      [
+       -73.962455122724,
+       40.805705501299
+      ],
+      [
+       -73.964225466876,
+       40.806452392397
+      ],
+      [
+       -73.964305346043,
+       40.806486091633
+      ],
+      [
+       -73.964753117764,
+       40.806674994562
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TF",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "3",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.964940135633,
+       40.806752566439
+      ],
+      [
+       -73.964728920603,
+       40.807044905826
+      ],
+      [
+       -73.964668483626,
+       40.807128555184
+      ],
+      [
+       -73.964483623477,
+       40.807384414296
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  114 ST",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TW",
+   "number_total_lanes": "2",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.966898210657,
+       40.807569329235
+      ],
+      [
+       -73.966963360147,
+       40.80759443625
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "CATHEDRAL PKWY",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TW",
+   "number_total_lanes": "2",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.968033054195,
+       40.805737491755
+      ],
+      [
+       -73.9680902555,
+       40.805759781187
+      ],
+      [
+       -73.968145797938,
+       40.805776262552
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "FT",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "3",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.965652866836,
+       40.805413847513
+      ],
+      [
+       -73.965428779999,
+       40.805729090231
+      ],
+      [
+       -73.965204703386,
+       40.806044332501
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "PEDESTRIAN PATH",
+   "rw_type": "6",
+   "trafdir": "NV",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "1",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.967374557159,
+       40.806135215032
+      ],
+      [
+       -73.967414985591,
+       40.8061529283
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "RIVERSIDE DR",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "FT",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.967734387097,
+       40.806292868433
+      ],
+      [
+       -73.967666939384,
+       40.806417351391
+      ],
+      [
+       -73.967568052535,
+       40.806589616078
+      ],
+      [
+       -73.967444885346,
+       40.806804179338
+      ],
+      [
+       -73.967349544936,
+       40.806970276234
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "RIVERSIDE DR",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "FT",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.96792821517,
+       40.805935135617
+      ],
+      [
+       -73.967734387097,
+       40.806292868433
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "RIVERSIDE DR",
+   "rw_type": "1",
+   "streetwidth": "16",
+   "trafdir": "FT",
+   "number_total_lanes": "1",
+   "number_travel_lanes": "1",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.967374557159,
+       40.806135215032
+      ],
+      [
+       -73.967139232499,
+       40.806851746534
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "FT",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "3",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.964753117764,
+       40.806674994562
+      ],
+      [
+       -73.964532856035,
+       40.8069691153
+      ],
+      [
+       -73.964458720988,
+       40.807068108445
+      ],
+      [
+       -73.964284092944,
+       40.807301290734
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TF",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "3",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.966804566568,
+       40.804215819661
+      ],
+      [
+       -73.966562929996,
+       40.804548141584
+      ],
+      [
+       -73.966321291236,
+       40.804880454775
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  116 ST",
+   "rw_type": "1",
+   "streetwidth": "60",
+   "trafdir": "TW",
+   "number_total_lanes": "6",
+   "number_travel_lanes": "4",
+   "posted_speed": "25",
+   "snow_priority": "S",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.964884474051,
+       40.808453059366
+      ],
+      [
+       -73.965160607146,
+       40.80857310235
+      ],
+      [
+       -73.965392822089,
+       40.808674051444
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "RIVERSIDE DR",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "FT",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.968033054195,
+       40.805737491755
+      ],
+      [
+       -73.96792821517,
+       40.805935135617
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "RIVERSIDE DR",
+   "rw_type": "1",
+   "streetwidth": "16",
+   "trafdir": "FT",
+   "number_total_lanes": "1",
+   "number_travel_lanes": "1",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.96772406268,
+       40.805461092047
+      ],
+      [
+       -73.967610714018,
+       40.805620925763
+      ],
+      [
+       -73.967514071128,
+       40.805787607624
+      ],
+      [
+       -73.967435142439,
+       40.80595954463
+      ],
+      [
+       -73.967435118593,
+       40.805959616994
+      ],
+      [
+       -73.967374557159,
+       40.806135215032
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TF",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "3",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.966321291236,
+       40.804880454775
+      ],
+      [
+       -73.966297014302,
+       40.804912601041
+      ],
+      [
+       -73.966083333606,
+       40.805195543128
+      ],
+      [
+       -73.965854454408,
+       40.805498608571
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "AMSTERDAM AVE",
+   "rw_type": "1",
+   "streetwidth": "60",
+   "trafdir": "TW",
+   "number_total_lanes": "5",
+   "number_travel_lanes": "3",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.962476227396,
+       40.804893639364
+      ],
+      [
+       -73.962009037431,
+       40.805517712717
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "RIVERSIDE DR",
+   "rw_type": "1",
+   "streetwidth": "16",
+   "trafdir": "FT",
+   "number_total_lanes": "1",
+   "number_travel_lanes": "1",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.967139232499,
+       40.806851746534
+      ],
+      [
+       -73.966974012316,
+       40.807343650496
+      ],
+      [
+       -73.966898210657,
+       40.807569329235
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  112 ST",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "TF",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "1",
+   "posted_speed": "25",
+   "snow_priority": "S",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.962923156917,
+       40.804266338053
+      ],
+      [
+       -73.963794210149,
+       40.804632022431
+      ],
+      [
+       -73.96401707804,
+       40.804725584592
+      ],
+      [
+       -73.964510748911,
+       40.804932829876
+      ],
+      [
+       -73.964832476222,
+       40.805068331349
+      ],
+      [
+       -73.965652866836,
+       40.805413847513
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  111 ST",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "FT",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "1",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.966321291236,
+       40.804880454775
+      ],
+      [
+       -73.966786594908,
+       40.805073057105
+      ],
+      [
+       -73.967256757206,
+       40.805267667384
+      ],
+      [
+       -73.96772406268,
+       40.805461092047
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "PEDESTRIAN PATH",
+   "rw_type": "6",
+   "trafdir": "NV",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.967866994926,
+       40.805819886689
+      ],
+      [
+       -73.967924398506,
+       40.805834673161
+      ],
+      [
+       -73.96792821517,
+       40.805935135617
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "PEDESTRIAN PATH",
+   "rw_type": "6",
+   "trafdir": "NV",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.967734387097,
+       40.806292868433
+      ],
+      [
+       -73.967800999737,
+       40.806318578814
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "AMSTERDAM AVE",
+   "rw_type": "1",
+   "streetwidth": "60",
+   "trafdir": "TW",
+   "number_total_lanes": "5",
+   "number_travel_lanes": "3",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.962009037431,
+       40.805517712717
+      ],
+      [
+       -73.961549873583,
+       40.80614404553
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  115 ST",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "FT",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "1",
+   "posted_speed": "25",
+   "snow_priority": "S",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.964483623477,
+       40.807384414296
+      ],
+      [
+       -73.964669265302,
+       40.807461931398
+      ],
+      [
+       -73.964933906821,
+       40.807572434579
+      ],
+      [
+       -73.965016972394,
+       40.80760711866
+      ],
+      [
+       -73.965184556644,
+       40.807677094524
+      ],
+      [
+       -73.965305606966,
+       40.807727639369
+      ],
+      [
+       -73.965500696981,
+       40.807809098151
+      ],
+      [
+       -73.965688735704,
+       40.807887613273
+      ],
+      [
+       -73.96578441,
+       40.807927561662
+      ],
+      [
+       -73.966459547978,
+       40.80820945763
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "PEDESTRIAN PATH",
+   "rw_type": "6",
+   "trafdir": "NV",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "1",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.967692862542,
+       40.80627467585
+      ],
+      [
+       -73.967734387097,
+       40.806292868433
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "RIVERSIDE DR",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "TF",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.967048340407,
+       40.8076298324
+      ],
+      [
+       -73.966901869557,
+       40.807844928482
+      ],
+      [
+       -73.966745018647,
+       40.80805585219
+      ],
+      [
+       -73.966578106638,
+       40.808262171027
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "FT",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "3",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.964284092944,
+       40.807301290734
+      ],
+      [
+       -73.964055755812,
+       40.807618392417
+      ],
+      [
+       -73.963802663556,
+       40.807969868626
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TF",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "3",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.964483623477,
+       40.807384414296
+      ],
+      [
+       -73.964252361741,
+       40.80770395345
+      ],
+      [
+       -73.963998568633,
+       40.80805462223
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  115 ST",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "FT",
+   "number_total_lanes": "2",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "V",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.966459547978,
+       40.80820945763
+      ],
+      [
+       -73.966532359896,
+       40.808239582301
+      ],
+      [
+       -73.966578106638,
+       40.808262171027
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  114 ST",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TW",
+   "number_total_lanes": "2",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "V",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.966963360147,
+       40.80759443625
+      ],
+      [
+       -73.967012734969,
+       40.807613469129
+      ],
+      [
+       -73.967048340407,
+       40.8076298324
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "RIVERSIDE DR",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "TF",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.967448327866,
+       40.807036274722
+      ],
+      [
+       -73.967048340407,
+       40.8076298324
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "RIVERSIDE DR",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "FT",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.966963360147,
+       40.80759443625
+      ],
+      [
+       -73.966459547978,
+       40.80820945763
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "AMSTERDAM AVE",
+   "rw_type": "1",
+   "streetwidth": "60",
+   "trafdir": "TW",
+   "number_total_lanes": "5",
+   "number_travel_lanes": "3",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.962923156917,
+       40.804266338053
+      ],
+      [
+       -73.962476227396,
+       40.804893639364
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "RIVERSIDE DR",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "FT",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.967349544936,
+       40.806970276234
+      ],
+      [
+       -73.966963360147,
+       40.80759443625
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "CATHEDRAL PKWY",
+   "rw_type": "1",
+   "streetwidth": "60",
+   "trafdir": "TW",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "4",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.966598797692,
+       40.804131936194
+      ],
+      [
+       -73.966702362203,
+       40.804176735472
+      ],
+      [
+       -73.966804566568,
+       40.804215819661
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TF",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "3",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.965398363519,
+       40.806129025951
+      ],
+      [
+       -73.964940135633,
+       40.806752566439
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  111 ST",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "FT",
+   "number_total_lanes": "2",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.966110450122,
+       40.804792342147
+      ],
+      [
+       -73.966217144514,
+       40.80483652461
+      ],
+      [
+       -73.966321291236,
+       40.804880454775
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TF",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "3",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.965854454408,
+       40.805498608571
+      ],
+      [
+       -73.965629313785,
+       40.805813319974
+      ],
+      [
+       -73.965404171698,
+       40.806128022043
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  113 ST",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "FT",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "1",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.965398363519,
+       40.806129025951
+      ],
+      [
+       -73.965828688194,
+       40.806305099479
+      ],
+      [
+       -73.966343744535,
+       40.806519939935
+      ],
+      [
+       -73.966473500288,
+       40.806574063093
+      ],
+      [
+       -73.967139232499,
+       40.806851746534
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  112 ST",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "TF",
+   "number_total_lanes": "2",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.965652866836,
+       40.805413847513
+      ],
+      [
+       -73.965765283416,
+       40.805461265321
+      ],
+      [
+       -73.965854454408,
+       40.805498608571
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  112 ST",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "TF",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "1",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.965854454408,
+       40.805498608571
+      ],
+      [
+       -73.967374557159,
+       40.806135215032
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  116 ST",
+   "rw_type": "1",
+   "streetwidth": "60",
+   "trafdir": "TW",
+   "number_total_lanes": "6",
+   "number_travel_lanes": "4",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.963998568633,
+       40.80805462223
+      ],
+      [
+       -73.964401907805,
+       40.80823602608
+      ],
+      [
+       -73.964884474051,
+       40.808453059366
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "PEDESTRIAN PATH",
+   "rw_type": "7",
+   "trafdir": "NV",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "1",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.967478337516,
+       40.80618068493
+      ],
+      [
+       -73.967477122844,
+       40.806184522503
+      ],
+      [
+       -73.967476359493,
+       40.806188426653
+      ],
+      [
+       -73.967476053444,
+       40.806192366797
+      ],
+      [
+       -73.967476207093,
+       40.806196312069
+      ],
+      [
+       -73.967476819238,
+       40.806200231564
+      ],
+      [
+       -73.967477885082,
+       40.806204094578
+      ],
+      [
+       -73.967479396276,
+       40.806207870851
+      ],
+      [
+       -73.967481340983,
+       40.8062115308
+      ],
+      [
+       -73.967483703968,
+       40.806215045755
+      ],
+      [
+       -73.967486466722,
+       40.806218388183
+      ],
+      [
+       -73.9674896076,
+       40.806221531898
+      ],
+      [
+       -73.967493102001,
+       40.806224452276
+      ],
+      [
+       -73.967496922549,
+       40.80622712644
+      ],
+      [
+       -73.967501039316,
+       40.806229533441
+      ],
+      [
+       -73.967505420054,
+       40.806231654423
+      ]
+     ],
+     [
+      [
+       -73.967505420054,
+       40.806231654423
+      ],
+      [
+       -73.967510030442,
+       40.806233472744
+      ],
+      [
+       -73.967514834365,
+       40.806234974189
+      ],
+      [
+       -73.967519794191,
+       40.806236146995
+      ],
+      [
+       -73.967524871066,
+       40.806236981977
+      ],
+      [
+       -73.967530025222,
+       40.806237472592
+      ],
+      [
+       -73.967535216282,
+       40.806237614998
+      ],
+      [
+       -73.967540403583,
+       40.80623740808
+      ],
+      [
+       -73.967545546489,
+       40.806236853457
+      ],
+      [
+       -73.967550604714,
+       40.806235955475
+      ],
+      [
+       -73.967555538633,
+       40.806234721168
+      ],
+      [
+       -73.967560309596,
+       40.806233160206
+      ],
+      [
+       -73.967564880231,
+       40.806231284815
+      ],
+      [
+       -73.967569214733,
+       40.806229109687
+      ],
+      [
+       -73.967573279147,
+       40.806226651861
+      ],
+      [
+       -73.967577041634,
+       40.80622393059
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "PEDESTRIAN PATH",
+   "rw_type": "7",
+   "trafdir": "NV",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "1",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.967414985591,
+       40.8061529283
+      ],
+      [
+       -73.967478337516,
+       40.80618068493
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "PEDESTRIAN PATH",
+   "rw_type": "7",
+   "trafdir": "NV",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "1",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.967478337516,
+       40.80618068493
+      ],
+      [
+       -73.967482157655,
+       40.806178122899
+      ],
+      [
+       -73.967486253119,
+       40.806175819486
+      ],
+      [
+       -73.967490593675,
+       40.806173791694
+      ],
+      [
+       -73.967495147284,
+       40.806172054493
+      ],
+      [
+       -73.967499880331,
+       40.806170620706
+      ],
+      [
+       -73.967504757879,
+       40.806169500917
+      ],
+      [
+       -73.967509743922,
+       40.806168703392
+      ],
+      [
+       -73.967514801655,
+       40.806168234017
+      ],
+      [
+       -73.967519893743,
+       40.806168096258
+      ],
+      [
+       -73.967524982598,
+       40.806168291132
+      ],
+      [
+       -73.967530030656,
+       40.8061688172
+      ],
+      [
+       -73.967535000652,
+       40.806169670579
+      ],
+      [
+       -73.967539855899,
+       40.806170844969
+      ],
+      [
+       -73.967544560558,
+       40.806172331702
+      ],
+      [
+       -73.9675490799,
+       40.806174119802
+      ]
+     ],
+     [
+      [
+       -73.9675490799,
+       40.806174119802
+      ],
+      [
+       -73.967553380594,
+       40.806176196052
+      ],
+      [
+       -73.967557430865,
+       40.806178545147
+      ],
+      [
+       -73.967561200816,
+       40.806181149745
+      ],
+      [
+       -73.967564662617,
+       40.806183990621
+      ],
+      [
+       -73.967567790714,
+       40.806187046803
+      ],
+      [
+       -73.967570562017,
+       40.806190295732
+      ],
+      [
+       -73.967572956068,
+       40.806193713425
+      ],
+      [
+       -73.967574955196,
+       40.806197274653
+      ],
+      [
+       -73.967576544642,
+       40.806200953127
+      ],
+      [
+       -73.967577712674,
+       40.806204721696
+      ],
+      [
+       -73.96757845067,
+       40.806208552539
+      ],
+      [
+       -73.967578753183,
+       40.806212417378
+      ],
+      [
+       -73.967578617978,
+       40.806216287684
+      ],
+      [
+       -73.967578046055,
+       40.806220134888
+      ],
+      [
+       -73.967577041634,
+       40.80622393059
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "PEDESTRIAN PATH",
+   "rw_type": "7",
+   "trafdir": "NV",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "1",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.967577041634,
+       40.80622393059
+      ],
+      [
+       -73.967692862542,
+       40.80627467585
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  116 ST",
+   "rw_type": "1",
+   "streetwidth": "60",
+   "trafdir": "TW",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "4",
+   "posted_speed": "25",
+   "snow_priority": "V",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.963802663556,
+       40.807969868626
+      ],
+      [
+       -73.963900071573,
+       40.808011006873
+      ],
+      [
+       -73.963998568633,
+       40.80805462223
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "FT",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "3",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.966110450122,
+       40.804792342147
+      ],
+      [
+       -73.966088951843,
+       40.804821541924
+      ],
+      [
+       -73.965876573778,
+       40.805110002113
+      ],
+      [
+       -73.965652866836,
+       40.805413847513
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "RIVERSIDE DR",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "TF",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.968145797938,
+       40.805776262552
+      ],
+      [
+       -73.968098945062,
+       40.805871213836
+      ],
+      [
+       -73.968044023428,
+       40.805971326814
+      ],
+      [
+       -73.967843105784,
+       40.80633073594
+      ],
+      [
+       -73.967677396719,
+       40.806626891548
+      ],
+      [
+       -73.967448327866,
+       40.807036274722
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "FT",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "3",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.965204703386,
+       40.806044332501
+      ],
+      [
+       -73.964753117764,
+       40.806674994562
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "PEDESTRIAN PATH",
+   "rw_type": "7",
+   "trafdir": "NV",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.967726362855,
+       40.805682051784
+      ],
+      [
+       -73.967732884159,
+       40.805699319334
+      ],
+      [
+       -73.96774129902,
+       40.805716107375
+      ],
+      [
+       -73.967751547464,
+       40.805732296254
+      ],
+      [
+       -73.967763556446,
+       40.805747770589
+      ],
+      [
+       -73.967777240375,
+       40.805762420089
+      ]
+     ],
+     [
+      [
+       -73.967777240375,
+       40.805762420089
+      ],
+      [
+       -73.967792501905,
+       40.805776140357
+      ],
+      [
+       -73.967809232083,
+       40.805788833577
+      ],
+      [
+       -73.967827311669,
+       40.805800409283
+      ],
+      [
+       -73.967846611803,
+       40.80581078497
+      ],
+      [
+       -73.967866994926,
+       40.805819886689
+      ]
+     ]
+    ]
+   }
+  }
+ ],
+ "stations": [
+  {
+   "stop_name": "Cathedral Pkwy (110 St)",
+   "daytime_routes": "1",
+   "structure": "Subway",
+   "gtfs_latitude": "40.803967",
+   "gtfs_longitude": "-73.966847"
+  },
+  {
+   "stop_name": "116 St-Columbia University",
+   "daytime_routes": "1",
+   "structure": "Subway",
+   "gtfs_latitude": "40.807722",
+   "gtfs_longitude": "-73.96411"
+  }
+ ],
+ "permits": [
+  {
+   "work_type": "General Construction",
+   "work_permit": "M00512619-I1-GC",
+   "job_description": "door and partition general construction work",
+   "approved_date": "2021-07-24T00:00:00.000",
+   "issued_date": "2026-03-27T00:00:00.000",
+   "expired_date": "2026-07-01T00:00:00.000",
+   "estimated_job_costs": "50000",
+   "house_no": "541",
+   "street_name": "WEST  113 STREET",
+   "bin": "1057022"
+  },
+  {
+   "work_type": "Suspended Scaffold",
+   "work_permit": "M01279502-I1-SC",
+   "job_description": "FACADE INSPECTION Designated Primary Site supervisor: Jesus Decola",
+   "approved_date": "2025-09-16T00:00:00.000",
+   "issued_date": "2025-09-18T00:00:00.000",
+   "expired_date": "2026-07-01T04:00:00.000",
+   "estimated_job_costs": "0",
+   "house_no": "1090",
+   "street_name": "AMSTERDAM AVENUE",
+   "bin": "1057032"
+  }
+ ],
+ "facilities": [
+  {
+   "name": "ENGINE 47",
+   "kind": "fire",
+   "address": "500 WEST 113 STREET",
+   "latitude": 40.80485398684653,
+   "longitude": -73.96299194265809
+  },
+  {
+   "name": "MOUNT SINAI MORNINGSIDE",
+   "kind": "hospital",
+   "address": "1111 AMSTERDAM AVENUE",
+   "latitude": 40.80569262698464,
+   "longitude": -73.96144514545075
+  }
+ ],
+ "sources": [
+  {
+   "name": "NYC GeoSearch (address, BBL, BIN)",
+   "url": "https://geosearch.planninglabs.nyc/v2/search"
+  },
+  {
+   "name": "NYC 311 Service Requests",
+   "url": "https://data.cityofnewyork.us/resource/erm2-nwe9.json"
+  },
+  {
+   "name": "NYC PLUTO (year built, floors, units, class)",
+   "url": "https://data.cityofnewyork.us/resource/64uk-42ks.json"
+  },
+  {
+   "name": "NYC Street Centerline (road class, lanes, speed)",
+   "url": "https://data.cityofnewyork.us/resource/inkn-q76z.json"
+  },
+  {
+   "name": "DOB NOW approved permits (same tax block)",
+   "url": "https://data.cityofnewyork.us/resource/rbx6-tga4.json"
+  },
+  {
+   "name": "NYS Liquor Authority active licenses",
+   "url": "https://data.ny.gov/resource/9s3h-dpkz.json"
+  },
+  {
+   "name": "MTA subway stations (elevated structures)",
+   "url": "https://data.ny.gov/resource/39hk-dx4f.json"
+  },
+  {
+   "name": "NYC Facilities Database (hospitals, firehouses, police)",
+   "url": "https://data.cityofnewyork.us/resource/67g2-p84d.json"
+  }
+ ]
+}

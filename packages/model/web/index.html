@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Personal Noise Score</title>
+<style>
+  :root { --bg:#fff; --fg:#111; --muted:#666; --line:#e5e5e5; --quiet:#2e7d32; --mid:#f9a825; --loud:#c62828; --accent:#5b3fd1; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#111; --fg:#eee; --muted:#aaa; --line:#333; } }
+  body { margin:0; padding:24px 16px; font:16px/1.45 -apple-system, system-ui, sans-serif; background:var(--bg); color:var(--fg); max-width:720px; margin-inline:auto; }
+  h1 { font-size:22px; margin:0 0 4px; }
+  .sub { color:var(--muted); margin:0 0 20px; }
+  form { display:grid; gap:12px; grid-template-columns:1fr 1fr; }
+  form .full { grid-column:1 / -1; }
+  label { display:block; font-size:13px; color:var(--muted); margin-bottom:4px; }
+  input, select, button { width:100%; box-sizing:border-box; font:inherit; padding:10px; border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--fg); }
+  fieldset { border:1px solid var(--line); border-radius:8px; padding:8px 12px; }
+  fieldset label { display:inline-block; margin-right:12px; color:var(--fg); }
+  fieldset input { width:auto; }
+  button { background:var(--accent); color:#fff; border:none; cursor:pointer; font-weight:600; }
+  #out { margin-top:28px; }
+  .big { display:flex; align-items:baseline; gap:16px; }
+  .big .n { font-size:64px; font-weight:700; line-height:1; }
+  .big .t { color:var(--muted); }
+  .row { display:flex; gap:8px; margin:12px 0 4px; }
+  .pill { flex:1; border:1px solid var(--line); border-radius:8px; padding:8px; text-align:center; }
+  .pill b { display:block; font-size:22px; }
+  .pill span { font-size:12px; color:var(--muted); }
+  .ing { border-top:1px solid var(--line); padding:14px 0; }
+  .ing h3 { margin:0 0 6px; font-size:15px; display:flex; justify-content:space-between; }
+  .ing h3 small { font-weight:400; color:var(--muted); }
+  .bars { display:grid; grid-template-columns:50px 1fr 36px; gap:4px 8px; align-items:center; font-size:12px; color:var(--muted); }
+  .bar { height:8px; border-radius:4px; background:var(--line); overflow:hidden; }
+  .bar i { display:block; height:100%; }
+  ul { margin:8px 0 0; padding-left:18px; font-size:13px; color:var(--muted); }
+  .err { color:var(--loud); }
+  .cmp { margin-top:8px; font-size:14px; }
+  .foot { margin-top:20px; font-size:12px; color:var(--muted); }
+</style>
+</head>
+<body>
+<h1>Personal Noise Score</h1>
+<p class="sub">One apartment, your hours, your sensitivities. Built from NYC open data.</p>
+<form id="f">
+  <div class="full"><label>Address</label><input name="address" placeholder="158 Bedford Ave, Brooklyn" required></div>
+  <div><label>Floor (1 = ground)</label><input name="floor" type="number" min="1" max="120"></div>
+  <div><label>Faces</label><select name="position"><option value="unknown">don't know</option><option value="front">the street</option><option value="rear">the back</option></select></div>
+  <div><label>How do you sleep?</label><select name="sleep"><option value="normal">normal</option><option value="light">light sleeper</option><option value="heavy">heavy sleeper</option></select></div>
+  <div><label>Home by day?</label><select name="wfh"><option value="0">out most days</option><option value="1">work from home</option></select></div>
+  <fieldset class="full"><label style="display:block;color:var(--muted)">What bothers you most?</label>
+    <label><input type="checkbox" name="bothers" value="traffic"> traffic</label>
+    <label><input type="checkbox" name="bothers" value="people"> people and bars</label>
+    <label><input type="checkbox" name="bothers" value="neighbors"> neighbors</label>
+    <label><input type="checkbox" name="bothers" value="sirens"> sirens</label>
+    <label><input type="checkbox" name="bothers" value="construction"> construction</label>
+  </fieldset>
+  <div class="full"><button type="submit">Score it</button></div>
+</form>
+<div id="out"></div>
+<p class="foot">0 is loud, 100 is quiet. Prototype for the Columbia HCD team project; 311 counts measure who complains, not decibels.</p>
+<script>
+const f = document.getElementById('f'), out = document.getElementById('out');
+const color = s => s >= 70 ? 'var(--quiet)' : s >= 45 ? 'var(--mid)' : 'var(--loud)';
+f.addEventListener('submit', async e => {
+  e.preventDefault();
+  const fd = new FormData(f);
+  const p = new URLSearchParams();
+  p.set('address', fd.get('address'));
+  if (fd.get('floor')) p.set('floor', fd.get('floor'));
+  p.set('position', fd.get('position'));
+  p.set('sleep', fd.get('sleep'));
+  p.set('wfh', fd.get('wfh') === '1' ? 'true' : 'false');
+  const b = fd.getAll('bothers'); if (b.length) p.set('bothers', b.join(','));
+  out.innerHTML = '<p class="sub">Pulling 311, PLUTO, liquor licenses, street centerlines, permits…</p>';
+  try {
+    const r = await fetch('/v1/score?' + p.toString());
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || r.statusText);
+    render(d);
+  } catch (err) { out.innerHTML = '<p class="err">' + err.message + '</p>'; }
+});
+function render(d) {
+  const u = d.unit;
+  let h = `<div class="big"><div class="n" style="color:${color(d.score)}">${d.score}</div><div class="t">${d.address.label}<br>${u.floor ? 'floor ' + u.floor + (u.top_floor ? ' (top)' : '') : 'floor unknown'}, ${u.position === 'unknown' ? 'facing unknown' : 'facing ' + u.position}</div></div>`;
+  h += `<div class="row">` + ['night','early','day'].map(w => `<div class="pill"><b style="color:${color(d.by_time[w])}">${d.by_time[w]}</b><span>${w === 'night' ? '10 pm to 5 am' : w === 'early' ? '5 to 8 am' : '8 am to 10 pm'}</span></div>`).join('') + `</div>`;
+  h += `<p class="cmp">A street-only score like HowLoud's would say <b>${d.street_only_score}</b> for this address, same number on every floor.</p>`;
+  for (const ing of d.ingredients) {
+    h += `<div class="ing"><h3>${ing.label}${ing.weighted_up ? ' <small>weighted up for you</small>' : ''}${ing.temporary ? ' <small>temporary</small>' : ''}<small>${ing.position_db ? (ing.position_db > 0 ? '+' : '') + ing.position_db + ' dB for your unit' : ''}</small></h3><div class="bars">`;
+    for (const w of ['night','early','day']) {
+      const s = ing.scores[w];
+      h += `<span>${w}</span><div class="bar"><i style="width:${100 - s}%;background:${color(s)}"></i></div><span>${s}</span>`;
+    }
+    h += `</div><ul>` + ing.evidence.map(e => `<li>${e}</li>`).join('') + `</ul></div>`;
+  }
+  h += `<p class="foot">As of ${d.as_of}, ${d.lookback_months} months of 311. Bars show loudness (longer = louder); numbers are the 0 to 100 score for that hour band.</p>`;
+  out.innerHTML = h;
+}
+</script>
+</body>
+</html>

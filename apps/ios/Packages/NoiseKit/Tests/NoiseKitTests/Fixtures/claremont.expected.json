@@ -1,0 +1,249 @@
+{
+ "unit": {
+  "floor": 5,
+  "position": "rear"
+ },
+ "profile": null,
+ "result": {
+  "score": 81,
+  "scale": "0 to 100, higher is quieter",
+  "street_only_score": 51,
+  "by_time": {
+   "night": 83,
+   "early": 83,
+   "day": 75
+  },
+  "address": {
+   "query": "140 Claremont Ave, Manhattan",
+   "label": "140 CLAREMONT AVENUE, New York, NY, USA",
+   "lat": 40.813047,
+   "lng": -73.961038,
+   "bbl": "1019930057",
+   "bin": "1059848",
+   "borough": "Manhattan"
+  },
+  "unit": {
+   "floor": 5,
+   "position": "rear",
+   "top_floor": false,
+   "building_floors": 6,
+   "ground_floor_commercial": false
+  },
+  "building_facts": {
+   "address": "140 CLAREMONT AVENUE",
+   "yearbuilt": "1905",
+   "numfloors": "6.0000000",
+   "bldgclass": "D4",
+   "unitsres": "61",
+   "unitstotal": "61"
+  },
+  "ingredients": [
+   {
+    "name": "street",
+    "label": "Street",
+    "levels": {
+     "night": 43.8,
+     "early": 45.4,
+     "day": 48.8
+    },
+    "raw_level": 59.4,
+    "evidence": [
+     "CLAREMONT AVE: two lane, 2 travel lanes, 25 mph, bus or truck route, 36 m away",
+     "BROADWAY: two lane, 2 travel lanes, 25 mph, bus or truck route, 48 m away",
+     "6 vehicle noise complaints to 311 within 100 m in 24 months (engine idling 3, car/truck horn 2)"
+    ],
+    "position_db": -12.0,
+    "temporary": false,
+    "scores": {
+     "night": 90,
+     "early": 86,
+     "day": 78
+    },
+    "weighted_up": false
+   },
+   {
+    "name": "nightlife",
+    "label": "Nightlife",
+    "levels": {
+     "night": 35.4,
+     "early": 22.2,
+     "day": 26.8
+    },
+    "raw_level": 41.6,
+    "evidence": [
+     "2 licensed venues within 150 m: 1 restaurant, 1 venue",
+     "nearest loud: AVI FOODSYSTEMS INC (venue), 500 RIVERSIDE DR, 125 m",
+     "nearest loud: PISTICCI RESTAURANT CORP (restaurant), 125 LASALLE ST, 125 m",
+     "32 party, music or loud-talking complaints within 150 m in 24 months; 17 of them 10 pm to 5 am"
+    ],
+    "position_db": -12.0,
+    "temporary": false,
+    "scores": {
+     "night": 100,
+     "early": 100,
+     "day": 100
+    },
+    "weighted_up": false
+   },
+   {
+    "name": "building",
+    "label": "Building",
+    "levels": {
+     "night": 42.7,
+     "early": 37.9,
+     "day": 40.4
+    },
+    "raw_level": 41.0,
+    "evidence": [
+     "4 residential noise complaints to 311 at this building in 24 months, 61 units: 0.03 per unit-year vs 0.07 for Manhattan (0.5x after shrinkage) (banging/pounding 2, loud music/party 2)",
+     "built 1905: pre-war elevator building, masonry and plaster",
+     "class D4: elevator building"
+    ],
+    "position_db": 0.0,
+    "temporary": false,
+    "complaints": 4,
+    "units": 61,
+    "rate_vs_borough": 0.53,
+    "scores": {
+     "night": 93,
+     "early": 100,
+     "day": 99
+    },
+    "weighted_up": false
+   },
+   {
+    "name": "sirens",
+    "label": "Sirens",
+    "levels": {
+     "night": 34.5,
+     "early": 35.5,
+     "day": 37.5
+    },
+    "raw_level": 49.5,
+    "evidence": [
+     "2 emergency facilities within 600 m: 1 firehouse, 1 police station",
+     "NYPD 26TH PRECINCT (police station), 520 WEST 126 STREET, 417 m",
+     "ENGINE 37/LADDER 40 (firehouse), 415 WEST 125 STREET, 554 m"
+    ],
+    "position_db": -12.0,
+    "temporary": false,
+    "scores": {
+     "night": 100,
+     "early": 100,
+     "day": 100
+    },
+    "weighted_up": false
+   },
+   {
+    "name": "construction",
+    "label": "Construction",
+    "levels": {
+     "night": 21.8,
+     "early": 33.8,
+     "day": 36.8
+    },
+    "raw_level": 48.8,
+    "evidence": [
+     "2 construction noise complaints within 100 m in 24 months (noise: construction before/after hours (nm1) 1, noise: construction equipment (nc1) 1)",
+     "2 unexpired loud-work permits on this tax block: Structural 1, General Construction 1",
+     "120 Claremont Avenue: Structural to 2026-12-31",
+     "120 Claremont Avenue: General Construction to 2026-12-31"
+    ],
+    "position_db": -12.0,
+    "temporary": true,
+    "scores": {
+     "night": 100,
+     "early": 100,
+     "day": 100
+    },
+    "weighted_up": false
+   }
+  ],
+  "profile": null,
+  "window_weights": {
+   "night": 1.0,
+   "early": 0.6,
+   "day": 0.6
+  },
+  "internal_level": 47.7,
+  "as_of": "2026-10-21",
+  "lookback_months": 24,
+  "sources": [
+   {
+    "name": "NYC GeoSearch (address, BBL, BIN)",
+    "url": "https://geosearch.planninglabs.nyc/v2/search"
+   },
+   {
+    "name": "NYC 311 Service Requests",
+    "url": "https://data.cityofnewyork.us/resource/erm2-nwe9.json"
+   },
+   {
+    "name": "NYC PLUTO (year built, floors, units, class)",
+    "url": "https://data.cityofnewyork.us/resource/64uk-42ks.json"
+   },
+   {
+    "name": "NYC Street Centerline (road class, lanes, speed)",
+    "url": "https://data.cityofnewyork.us/resource/inkn-q76z.json"
+   },
+   {
+    "name": "DOB NOW approved permits (same tax block)",
+    "url": "https://data.cityofnewyork.us/resource/rbx6-tga4.json"
+   },
+   {
+    "name": "NYS Liquor Authority active licenses",
+    "url": "https://data.ny.gov/resource/9s3h-dpkz.json"
+   },
+   {
+    "name": "MTA subway stations (elevated structures)",
+    "url": "https://data.ny.gov/resource/39hk-dx4f.json"
+   },
+   {
+    "name": "NYC Facilities Database (hospitals, firehouses, police)",
+    "url": "https://data.cityofnewyork.us/resource/67g2-p84d.json"
+   }
+  ],
+  "caveats": [
+   "311 counts measure who complains, not decibels; the count is shown so you can judge it.",
+   "Street loudness is modelled from road class, lanes and speed, not measured.",
+   "Elevated subway proximity uses the nearest station's structure as a proxy for the track.",
+   "Construction is temporary; permits expire and the bar may close."
+  ]
+ },
+ "baseline": {
+  "quieter_than": 92.7,
+  "median_score": 67,
+  "p25_score": 61,
+  "p75_score": 74,
+  "n": 300,
+  "verdict": "Very quiet"
+ },
+ "windows": {
+  "night": {
+   "window": "night",
+   "level_db": 46.9,
+   "quieter_than": 92.0,
+   "verdict": "Very quiet",
+   "median_db": 52.5,
+   "p25_db": 50.1,
+   "p75_db": 57.2
+  },
+  "early": {
+   "window": "early",
+   "level_db": 46.7,
+   "quieter_than": 89.0,
+   "verdict": "Very quiet",
+   "median_db": 51.3,
+   "p25_db": 49.0,
+   "p75_db": 53.1
+  },
+  "day": {
+   "window": "day",
+   "level_db": 49.9,
+   "quieter_than": 89.0,
+   "verdict": "Very quiet",
+   "median_db": 54.8,
+   "p25_db": 52.5,
+   "p75_db": 56.8
+  }
+ }
+}

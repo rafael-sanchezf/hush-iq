@@ -1,0 +1,263 @@
+{
+ "unit": {
+  "floor": 6,
+  "position": "front"
+ },
+ "profile": {
+  "sleep": "light",
+  "wfh": true,
+  "bothers": [
+   "traffic"
+  ]
+ },
+ "result": {
+  "score": 42,
+  "scale": "0 to 100, higher is quieter",
+  "street_only_score": 35,
+  "by_time": {
+   "night": 47,
+   "early": 42,
+   "day": 35
+  },
+  "address": {
+   "query": "1500 2nd Ave, Manhattan",
+   "label": "1500 2 AVENUE, New York, NY, USA",
+   "lat": 40.772766,
+   "lng": -73.955096,
+   "bbl": "1014530001",
+   "bin": "1045234",
+   "borough": "Manhattan"
+  },
+  "unit": {
+   "floor": 6,
+   "position": "front",
+   "top_floor": false,
+   "building_floors": 17,
+   "ground_floor_commercial": true
+  },
+  "building_facts": {
+   "address": "1498 2 AVENUE",
+   "yearbuilt": "1963",
+   "numfloors": "17.0000000",
+   "bldgclass": "D4",
+   "unitsres": "124",
+   "unitstotal": "130"
+  },
+  "ingredients": [
+   {
+    "name": "street",
+    "label": "Street",
+    "levels": {
+     "night": 56.3,
+     "early": 58.8,
+     "day": 61.7
+    },
+    "raw_level": 65.8,
+    "evidence": [
+     "2 AVE: arterial, 3 travel lanes, 25 mph, bus or truck route, 28 m away",
+     "E  79 ST: arterial, 4 travel lanes, 25 mph, bus or truck route, 57 m away",
+     "E  78 ST: one lane, 1 travel lane, 25 mph, bus or truck route, 40 m away",
+     "3 vehicle noise complaints to 311 within 100 m in 24 months (engine idling 1, car/truck music 1)"
+    ],
+    "position_db": -5.0,
+    "temporary": false,
+    "scores": {
+     "night": 59,
+     "early": 53,
+     "day": 46
+    },
+    "weighted_up": true
+   },
+   {
+    "name": "nightlife",
+    "label": "Nightlife",
+    "levels": {
+     "night": 53.7,
+     "early": 40.9,
+     "day": 47.4
+    },
+    "raw_level": 53.9,
+    "evidence": [
+     "14 licensed venues within 150 m: 11 restaurants, 3 venues",
+     "nearest loud: HEIDI'S HOUSE LLC (venue), 308 E 78TH STREET, 47 m",
+     "nearest loud: BE BACK SOON LLC (venue), 1488 2ND AVE, 76 m",
+     "nearest loud: Corner Joint LLC (restaurant), 1496 2nd Ave, 49 m",
+     "33 party, music or loud-talking complaints within 150 m in 24 months; 12 of them 10 pm to 5 am"
+    ],
+    "position_db": -5.0,
+    "temporary": false,
+    "scores": {
+     "night": 66,
+     "early": 98,
+     "day": 81
+    },
+    "weighted_up": false
+   },
+   {
+    "name": "building",
+    "label": "Building",
+    "levels": {
+     "night": 42.7,
+     "early": 37.9,
+     "day": 40.4
+    },
+    "raw_level": 41.0,
+    "evidence": [
+     "0 residential noise complaints to 311 at this building in 24 months, 124 units: 0.00 per unit-year vs 0.07 for Manhattan (0.1x after shrinkage)",
+     "built 1963",
+     "class D4: elevator building"
+    ],
+    "position_db": 0.0,
+    "temporary": false,
+    "complaints": 0,
+    "units": 124,
+    "rate_vs_borough": 0.07,
+    "scores": {
+     "night": 93,
+     "early": 100,
+     "day": 99
+    },
+    "weighted_up": false
+   },
+   {
+    "name": "sirens",
+    "label": "Sirens",
+    "levels": {
+     "night": 46.2,
+     "early": 47.2,
+     "day": 49.2
+    },
+    "raw_level": 54.2,
+    "evidence": [
+     "2 emergency facilities within 600 m: 1 hospital, 1 firehouse",
+     "ENGINE 44 (firehouse), 221 EAST 75 STREET, 290 m",
+     "LENOX HILL HOSPITAL (hospital), 100 EAST 77 STREET, 523 m"
+    ],
+    "position_db": -5.0,
+    "temporary": false,
+    "scores": {
+     "night": 84,
+     "early": 82,
+     "day": 77
+    },
+    "weighted_up": false
+   },
+   {
+    "name": "construction",
+    "label": "Construction",
+    "levels": {
+     "night": 38.6,
+     "early": 50.6,
+     "day": 53.6
+    },
+    "raw_level": 58.6,
+    "evidence": [
+     "20 construction noise complaints within 100 m in 24 months (noise: construction before/after hours (nm1) 8, noise: construction equipment (nc1) 7)",
+     "2 unexpired loud-work permits on this tax block: Sidewalk Shed 1, General Construction 1",
+     "353 East 78 Street: Sidewalk Shed to 2027-01-22",
+     "308 East 79 Street: General Construction to 2026-12-25"
+    ],
+    "position_db": -5.0,
+    "temporary": true,
+    "scores": {
+     "night": 100,
+     "early": 74,
+     "day": 66
+    },
+    "weighted_up": false
+   }
+  ],
+  "profile": {
+   "sleep": "light",
+   "wfh": true,
+   "bothers": [
+    "traffic"
+   ]
+  },
+  "window_weights": {
+   "night": 1.5,
+   "early": 1.2,
+   "day": 1.2
+  },
+  "internal_level": 63.4,
+  "as_of": "2026-10-21",
+  "lookback_months": 24,
+  "sources": [
+   {
+    "name": "NYC GeoSearch (address, BBL, BIN)",
+    "url": "https://geosearch.planninglabs.nyc/v2/search"
+   },
+   {
+    "name": "NYC 311 Service Requests",
+    "url": "https://data.cityofnewyork.us/resource/erm2-nwe9.json"
+   },
+   {
+    "name": "NYC PLUTO (year built, floors, units, class)",
+    "url": "https://data.cityofnewyork.us/resource/64uk-42ks.json"
+   },
+   {
+    "name": "NYC Street Centerline (road class, lanes, speed)",
+    "url": "https://data.cityofnewyork.us/resource/inkn-q76z.json"
+   },
+   {
+    "name": "DOB NOW approved permits (same tax block)",
+    "url": "https://data.cityofnewyork.us/resource/rbx6-tga4.json"
+   },
+   {
+    "name": "NYS Liquor Authority active licenses",
+    "url": "https://data.ny.gov/resource/9s3h-dpkz.json"
+   },
+   {
+    "name": "MTA subway stations (elevated structures)",
+    "url": "https://data.ny.gov/resource/39hk-dx4f.json"
+   },
+   {
+    "name": "NYC Facilities Database (hospitals, firehouses, police)",
+    "url": "https://data.cityofnewyork.us/resource/67g2-p84d.json"
+   }
+  ],
+  "caveats": [
+   "311 counts measure who complains, not decibels; the count is shown so you can judge it.",
+   "Street loudness is modelled from road class, lanes and speed, not measured.",
+   "Elevated subway proximity uses the nearest station's structure as a proxy for the track.",
+   "Construction is temporary; permits expire and the bar may close."
+  ]
+ },
+ "baseline": {
+  "quieter_than": 35.0,
+  "median_score": 45,
+  "p25_score": 39,
+  "p75_score": 52,
+  "n": 300,
+  "verdict": "Loud"
+ },
+ "windows": {
+  "night": {
+   "window": "night",
+   "level_db": 58.6,
+   "quieter_than": 53.3,
+   "verdict": "Typical",
+   "median_db": 59.0,
+   "p25_db": 56.1,
+   "p75_db": 63.3
+  },
+  "early": {
+   "window": "early",
+   "level_db": 59.8,
+   "quieter_than": 26.0,
+   "verdict": "Loud",
+   "median_db": 58.2,
+   "p25_db": 55.5,
+   "p75_db": 59.8
+  },
+  "day": {
+   "window": "day",
+   "level_db": 62.7,
+   "quieter_than": 37.7,
+   "verdict": "Loud",
+   "median_db": 61.6,
+   "p25_db": 59.3,
+   "p75_db": 63.6
+  }
+ }
+}

@@ -1,0 +1,8 @@
+# Xcode per-user state, not part of the submission
+xcuserdata/
+*.xcuserstate
+build/
+DerivedData/
+.DS_Store
+Packages/NoiseKit/.build/
+.swiftpm/

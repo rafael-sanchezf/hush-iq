@@ -1,0 +1,2555 @@
+{
+ "address": {
+  "query": "140 Claremont Ave, Manhattan",
+  "label": "140 CLAREMONT AVENUE, New York, NY, USA",
+  "lat": 40.813047,
+  "lng": -73.961038,
+  "bbl": "1019930057",
+  "bin": "1059848",
+  "borough": "Manhattan"
+ },
+ "as_of": "2026-10-21",
+ "lookback_months": 24,
+ "since": "2024-10-31",
+ "pluto": {
+  "address": "140 CLAREMONT AVENUE",
+  "borough": "MN",
+  "yearbuilt": "1905",
+  "yearalter1": "1988",
+  "yearalter2": "0",
+  "numfloors": "6.0000000",
+  "bldgclass": "D4",
+  "unitsres": "61",
+  "unitstotal": "61",
+  "landuse": "3",
+  "lotfront": "75.0000000",
+  "bldgdepth": "104.0000000",
+  "zonedist1": "R8"
+ },
+ "complaints": [
+  {
+   "unique_key": "68378670",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2026-03-19T15:37:35.000",
+   "latitude": "40.812963651138986",
+   "longitude": "-73.96157305651984",
+   "bbl": "1019930057",
+   "incident_address": "140 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "69667730",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-07-11T01:31:53.000",
+   "latitude": "40.81363869497512",
+   "longitude": "-73.96110302741818",
+   "bbl": "1019940057",
+   "incident_address": "155 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "68028635",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2026-02-18T13:23:16.000",
+   "latitude": "40.812963651138986",
+   "longitude": "-73.96157305651984",
+   "bbl": "1019930057",
+   "incident_address": "140 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "68175108",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-03-02T00:38:46.000",
+   "latitude": "40.81363869497512",
+   "longitude": "-73.96110302741818",
+   "bbl": "1019940057",
+   "incident_address": "155 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "68953488",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Before/After Hours (NM1)",
+   "created_date": "2026-05-11T22:03:00.000",
+   "latitude": "40.81245556702937",
+   "longitude": "-73.96065215062568"
+  },
+  {
+   "unique_key": "69994272",
+   "complaint_type": "Noise - Park",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-08-08T16:58:16.000",
+   "latitude": "40.813007762615996",
+   "longitude": "-73.96216549352147",
+   "bbl": "1019940001",
+   "incident_address": "SAKURA PARK"
+  },
+  {
+   "unique_key": "69439387",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2026-06-22T00:03:21.000",
+   "latitude": "40.81363550416033",
+   "longitude": "-73.9598024896318",
+   "bbl": "1019930035",
+   "incident_address": "3135 BROADWAY"
+  },
+  {
+   "unique_key": "69439585",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-06-21T23:59:22.000",
+   "latitude": "40.81384679464595",
+   "longitude": "-73.95965063190523",
+   "bbl": "1019930073",
+   "incident_address": "3139 BROADWAY"
+  },
+  {
+   "unique_key": "69441010",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-06-21T23:59:19.000",
+   "latitude": "40.814187499405",
+   "longitude": "-73.96069086569493",
+   "incident_address": "CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "68137113",
+   "complaint_type": "Noise - Helicopter",
+   "descriptor": "Other",
+   "created_date": "2026-02-26T12:21:16.000",
+   "latitude": "40.8141381104399",
+   "longitude": "-73.96073785915294",
+   "bbl": "1019940043",
+   "incident_address": "175 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "69098021",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-05-23T09:03:03.000",
+   "latitude": "40.81303181591648",
+   "longitude": "-73.96023636353753",
+   "bbl": "1019930021",
+   "incident_address": "3115 BROADWAY"
+  },
+  {
+   "unique_key": "69402701",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2026-06-19T00:16:46.000",
+   "latitude": "40.81363550416033",
+   "longitude": "-73.9598024896318",
+   "bbl": "1019930035",
+   "incident_address": "3135 BROADWAY"
+  },
+  {
+   "unique_key": "69405833",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-06-19T00:03:33.000",
+   "latitude": "40.8141381104399",
+   "longitude": "-73.96073785915294",
+   "bbl": "1019940043",
+   "incident_address": "175 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "69417282",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-06-19T03:28:01.000",
+   "latitude": "40.81245556702937",
+   "longitude": "-73.96065215062568",
+   "incident_address": "BROADWAY"
+  },
+  {
+   "unique_key": "68521686",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Car/Truck Music",
+   "created_date": "2026-04-01T00:12:53.000",
+   "latitude": "40.81402542970419",
+   "longitude": "-73.96030802250245",
+   "bbl": "1019930040",
+   "incident_address": "126 LASALLE STREET"
+  },
+  {
+   "unique_key": "68252147",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-03-08T04:12:15.000",
+   "latitude": "40.81363869497512",
+   "longitude": "-73.96110302741818",
+   "bbl": "1019940057",
+   "incident_address": "155 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "64872425",
+   "complaint_type": "Noise - Helicopter",
+   "descriptor": "Other",
+   "created_date": "2025-05-07T16:58:09.000",
+   "latitude": "40.812963651138986",
+   "longitude": "-73.96157305651984",
+   "bbl": "1019930057",
+   "incident_address": "140 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "68167102",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-03-02T00:20:48.000",
+   "latitude": "40.81361124654964",
+   "longitude": "-73.96109943085162",
+   "bbl": "1019930047",
+   "incident_address": "160 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "68065105",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Alarms (NR3)",
+   "created_date": "2026-02-21T11:35:00.000",
+   "latitude": "40.81377818926912",
+   "longitude": "-73.95968679967802"
+  },
+  {
+   "unique_key": "68085706",
+   "complaint_type": "Noise",
+   "descriptor": "Noise, Other Animals (NR6)",
+   "created_date": "2026-02-23T20:17:00.000",
+   "latitude": "40.81388565140015",
+   "longitude": "-73.96090057615585",
+   "bbl": "1019930043",
+   "incident_address": "170 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "68160033",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-02-28T02:21:04.000",
+   "latitude": "40.81363869497512",
+   "longitude": "-73.96110302741818",
+   "bbl": "1019940057",
+   "incident_address": "155 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "68465871",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-03-26T05:57:08.000",
+   "latitude": "40.8141381104399",
+   "longitude": "-73.96073785915294",
+   "bbl": "1019940043",
+   "incident_address": "175 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "69483308",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-06-25T18:55:20.000",
+   "latitude": "40.81406387443325",
+   "longitude": "-73.96036218907494",
+   "bbl": "1019930112",
+   "incident_address": "125 LA SALLE STREET"
+  },
+  {
+   "unique_key": "64878847",
+   "complaint_type": "Noise - Helicopter",
+   "descriptor": "Other",
+   "created_date": "2025-05-07T20:19:52.000",
+   "latitude": "40.81245556702937",
+   "longitude": "-73.96065215062568",
+   "incident_address": "BROADWAY"
+  },
+  {
+   "unique_key": "69149466",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-05-29T00:26:20.000",
+   "latitude": "40.81271942983045",
+   "longitude": "-73.96175021298785",
+   "bbl": "1019930001",
+   "incident_address": "130 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "69327658",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-06-11T23:00:09.000",
+   "latitude": "40.81363869497512",
+   "longitude": "-73.96110302741818",
+   "bbl": "1019940057",
+   "incident_address": "155 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "70129582",
+   "complaint_type": "Noise",
+   "descriptor": "Construction",
+   "created_date": "2026-08-20T22:43:35.000",
+   "latitude": "40.81402542970419",
+   "longitude": "-73.96030802250245",
+   "bbl": "1019930040",
+   "incident_address": "126 LASALLE STREET"
+  },
+  {
+   "unique_key": "70026124",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-08-10T22:53:51.000",
+   "latitude": "40.81402542970419",
+   "longitude": "-73.96030802250245",
+   "bbl": "1019930040",
+   "incident_address": "126 LA SALLE STREET"
+  },
+  {
+   "unique_key": "70137919",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2026-08-20T22:41:06.000",
+   "latitude": "40.81402542970419",
+   "longitude": "-73.96030802250245",
+   "bbl": "1019930040",
+   "incident_address": "126 LA SALLE STREET"
+  },
+  {
+   "unique_key": "70757876",
+   "complaint_type": "Noise - Park",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-10-15T00:50:58.000",
+   "latitude": "40.813007762615996",
+   "longitude": "-73.96216549352147",
+   "bbl": "1019940001",
+   "incident_address": "SAKURA PARK"
+  },
+  {
+   "unique_key": "70280840",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-09-03T00:00:22.000",
+   "latitude": "40.81363869497512",
+   "longitude": "-73.96110302741818",
+   "bbl": "1019940057",
+   "incident_address": "155 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "63005641",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2024-11-06T15:20:08.000",
+   "latitude": "40.81303181591648",
+   "longitude": "-73.96023636353753",
+   "bbl": "1019930021",
+   "incident_address": "3115 BROADWAY"
+  },
+  {
+   "unique_key": "63065423",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2024-11-13T22:42:36.000",
+   "latitude": "40.81384679464595",
+   "longitude": "-73.95965063190523",
+   "bbl": "1019930073",
+   "incident_address": "3139 BROADWAY"
+  },
+  {
+   "unique_key": "63087867",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2024-11-14T23:26:51.000",
+   "latitude": "40.81303181591648",
+   "longitude": "-73.96023636353753",
+   "bbl": "1019930021",
+   "incident_address": "3115 BROADWAY"
+  },
+  {
+   "unique_key": "63081567",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Equipment (NC1)",
+   "created_date": "2024-11-14T13:45:00.000",
+   "latitude": "40.81361124654964",
+   "longitude": "-73.96109943085162",
+   "bbl": "1019930047",
+   "incident_address": "160 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "63243081",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2024-11-29T23:32:42.000",
+   "latitude": "40.81432470583054",
+   "longitude": "-73.96060408111268",
+   "bbl": "1019940059",
+   "incident_address": "179 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "63451420",
+   "complaint_type": "Noise - Park",
+   "descriptor": "Loud Talking",
+   "created_date": "2024-12-18T03:26:43.000",
+   "latitude": "40.813007762615996",
+   "longitude": "-73.96216549352147",
+   "bbl": "1019940001",
+   "incident_address": "SAKURA PARK"
+  },
+  {
+   "unique_key": "63492200",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2024-12-23T00:35:44.000",
+   "latitude": "40.81363869497512",
+   "longitude": "-73.96110302741818",
+   "bbl": "1019940057",
+   "incident_address": "155 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "63483665",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2024-12-23T01:29:35.000",
+   "latitude": "40.81363869497512",
+   "longitude": "-73.96110302741818",
+   "bbl": "1019940057",
+   "incident_address": "155 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "63490889",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2024-12-23T00:05:11.000",
+   "latitude": "40.81363869497512",
+   "longitude": "-73.96110302741818",
+   "bbl": "1019940057",
+   "incident_address": "155 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "63528684",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2024-12-26T10:59:37.000",
+   "latitude": "40.81361124654964",
+   "longitude": "-73.96109943085162",
+   "bbl": "1019930047",
+   "incident_address": "160 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "63600037",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2025-01-02T17:36:36.000",
+   "latitude": "40.81361124654964",
+   "longitude": "-73.96109943085162",
+   "bbl": "1019930047",
+   "incident_address": "160 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "63701172",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-01-09T00:00:24.000",
+   "latitude": "40.812963651138986",
+   "longitude": "-73.96157305651984",
+   "bbl": "1019930057",
+   "incident_address": "140 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "63699471",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-01-09T12:26:19.000",
+   "latitude": "40.812963651138986",
+   "longitude": "-73.96157305651984",
+   "bbl": "1019930057",
+   "incident_address": "140 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "63894027",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-01-26T22:08:33.000",
+   "latitude": "40.81361124654964",
+   "longitude": "-73.96109943085162",
+   "bbl": "1019930047",
+   "incident_address": "160 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "63955604",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-02-01T12:38:35.000",
+   "latitude": "40.81271942983045",
+   "longitude": "-73.96175021298785",
+   "bbl": "1019930001",
+   "incident_address": "130 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "63952614",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2025-02-01T08:31:59.000",
+   "latitude": "40.81271942983045",
+   "longitude": "-73.96175021298785",
+   "bbl": "1019930001",
+   "incident_address": "130 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "63958806",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2025-02-01T08:42:33.000",
+   "latitude": "40.81271942983045",
+   "longitude": "-73.96175021298785",
+   "bbl": "1019930001",
+   "incident_address": "130 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "64011803",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-02-07T06:21:01.000",
+   "latitude": "40.81361124654964",
+   "longitude": "-73.96109943085162",
+   "bbl": "1019930047",
+   "incident_address": "160 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "64020255",
+   "complaint_type": "Noise - Commercial",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2025-02-08T23:47:22.000",
+   "latitude": "40.81406387443325",
+   "longitude": "-73.96036218907494",
+   "bbl": "1019930112",
+   "incident_address": "125 LA SALLE STREET"
+  },
+  {
+   "unique_key": "64031936",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Alarms (NR3)",
+   "created_date": "2025-02-09T21:35:00.000",
+   "latitude": "40.81182992623307",
+   "longitude": "-73.9611113095508"
+  },
+  {
+   "unique_key": "64103477",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-02-17T21:36:01.000",
+   "latitude": "40.81361124654964",
+   "longitude": "-73.96109943085162",
+   "bbl": "1019930047",
+   "incident_address": "160 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "64117619",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-02-18T20:39:48.000",
+   "latitude": "40.81361124654964",
+   "longitude": "-73.96109943085162",
+   "bbl": "1019930047",
+   "incident_address": "160 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "64195905",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-02-26T22:50:29.000",
+   "latitude": "40.81401442592594",
+   "longitude": "-73.96023577645082",
+   "bbl": "1019930073",
+   "incident_address": "121 LA SALLE STREET"
+  },
+  {
+   "unique_key": "64245085",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Television",
+   "created_date": "2025-03-03T19:02:49.000",
+   "latitude": "40.81401442592594",
+   "longitude": "-73.96023577645082",
+   "bbl": "1019930073",
+   "incident_address": "121 LA SALLE STREET"
+  },
+  {
+   "unique_key": "64276297",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-03-06T19:29:29.000",
+   "latitude": "40.8128232705935",
+   "longitude": "-73.9603918284767",
+   "bbl": "1019930015",
+   "incident_address": "3111 BROADWAY"
+  },
+  {
+   "unique_key": "64292162",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-03-08T15:49:59.000",
+   "latitude": "40.81231886248797",
+   "longitude": "-73.96224174845597",
+   "bbl": "1019940001",
+   "incident_address": "621 WEST  122 STREET"
+  },
+  {
+   "unique_key": "64315550",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Television",
+   "created_date": "2025-03-10T21:51:15.000",
+   "latitude": "40.81401442592594",
+   "longitude": "-73.96023577645082",
+   "bbl": "1019930073",
+   "incident_address": "121 LA SALLE STREET"
+  },
+  {
+   "unique_key": "64495181",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2025-03-28T17:41:14.000",
+   "latitude": "40.81361124654964",
+   "longitude": "-73.96109943085162",
+   "bbl": "1019930047",
+   "incident_address": "160 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "64519769",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Engine Idling",
+   "created_date": "2025-03-31T14:09:11.000",
+   "latitude": "40.81363869497512",
+   "longitude": "-73.96110302741818",
+   "bbl": "1019940057",
+   "incident_address": "155 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "64802738",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Construction Equipment (NC1)",
+   "created_date": "2025-04-30T11:32:00.000",
+   "latitude": "40.81182992623307",
+   "longitude": "-73.9611113095508"
+  },
+  {
+   "unique_key": "64955771",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-15T22:08:25.000",
+   "latitude": "40.81361124654964",
+   "longitude": "-73.96109943085162",
+   "bbl": "1019930047",
+   "incident_address": "160 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "64941614",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-13T21:22:04.000",
+   "latitude": "40.813007762615996",
+   "longitude": "-73.96216549352147",
+   "bbl": "1019940001",
+   "incident_address": "SAKURA PARK"
+  },
+  {
+   "unique_key": "64985378",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-16T22:29:33.000",
+   "latitude": "40.81361124654964",
+   "longitude": "-73.96109943085162",
+   "bbl": "1019930047",
+   "incident_address": "160 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "64982885",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-05-16T22:50:18.000",
+   "latitude": "40.81384679464595",
+   "longitude": "-73.95965063190523",
+   "bbl": "1019930073",
+   "incident_address": "3139 BROADWAY"
+  },
+  {
+   "unique_key": "65206890",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-06-08T18:28:27.000",
+   "latitude": "40.813007762615996",
+   "longitude": "-73.96216549352147",
+   "bbl": "1019940001",
+   "incident_address": "SAKURA PARK"
+  },
+  {
+   "unique_key": "65548716",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Car/Truck Music",
+   "created_date": "2025-07-13T05:57:07.000",
+   "latitude": "40.81377818926912",
+   "longitude": "-73.95968679967802",
+   "incident_address": "BROADWAY"
+  },
+  {
+   "unique_key": "65544422",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Car/Truck Music",
+   "created_date": "2025-07-13T01:25:34.000",
+   "latitude": "40.81363869497512",
+   "longitude": "-73.96110302741818",
+   "bbl": "1019940057",
+   "incident_address": "155 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "65675395",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-07-26T21:23:21.000",
+   "latitude": "40.813007762615996",
+   "longitude": "-73.96216549352147",
+   "bbl": "1019940001",
+   "incident_address": "SAKURA PARK"
+  },
+  {
+   "unique_key": "65797015",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-08-08T22:07:54.000",
+   "latitude": "40.81210433485727",
+   "longitude": "-73.96092329780521",
+   "bbl": "1019930001",
+   "incident_address": "3087 BROADWAY"
+  },
+  {
+   "unique_key": "65815037",
+   "complaint_type": "Noise - Park",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-08-10T17:56:01.000",
+   "latitude": "40.813007762615996",
+   "longitude": "-73.96216549352147",
+   "bbl": "1019940001",
+   "incident_address": "SAKURA PARK"
+  },
+  {
+   "unique_key": "65887915",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2025-08-18T07:24:57.000",
+   "latitude": "40.81260373998707",
+   "longitude": "-73.96052923618277",
+   "bbl": "1019780001",
+   "incident_address": "3100 BROADWAY"
+  },
+  {
+   "unique_key": "65945659",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Car/Truck Horn",
+   "created_date": "2025-08-25T15:00:09.000",
+   "latitude": "40.81260373998707",
+   "longitude": "-73.96052923618277",
+   "bbl": "1019780001",
+   "incident_address": "3100 BROADWAY"
+  },
+  {
+   "unique_key": "65964350",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2025-08-28T00:19:33.000",
+   "latitude": "40.81363550416033",
+   "longitude": "-73.9598024896318",
+   "bbl": "1019930035",
+   "incident_address": "3135 BROADWAY"
+  },
+  {
+   "unique_key": "65988713",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-08-30T01:23:46.000",
+   "latitude": "40.81363869497512",
+   "longitude": "-73.96110302741818",
+   "bbl": "1019940057",
+   "incident_address": "155 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "66151446",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2025-09-14T23:17:34.000",
+   "latitude": "40.812963651138986",
+   "longitude": "-73.96157305651984",
+   "bbl": "1019930057",
+   "incident_address": "140 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "66156926",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Car/Truck Horn",
+   "created_date": "2025-09-14T23:17:21.000",
+   "latitude": "40.812963651138986",
+   "longitude": "-73.96157305651984",
+   "bbl": "1019930057",
+   "incident_address": "140 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "66153113",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Alarms (NR3)",
+   "created_date": "2025-09-14T23:38:00.000",
+   "latitude": "40.81320787216561",
+   "longitude": "-73.96139589875163",
+   "bbl": "1019930053",
+   "incident_address": "150 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "66224711",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Alarms (NR3)",
+   "created_date": "2025-09-21T21:41:00.000",
+   "latitude": "40.81303181591648",
+   "longitude": "-73.96023636353753",
+   "bbl": "1019930021",
+   "incident_address": "3115 BROADWAY"
+  },
+  {
+   "unique_key": "66620756",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Car/Truck Horn",
+   "created_date": "2025-10-26T19:25:19.000",
+   "latitude": "40.81397323766429",
+   "longitude": "-73.96018522426148",
+   "bbl": "1019930037",
+   "incident_address": "122 LA SALLE STREET"
+  },
+  {
+   "unique_key": "66656695",
+   "complaint_type": "Noise",
+   "descriptor": "Noise: Alarms (NR3)",
+   "created_date": "2025-10-29T20:53:00.000",
+   "latitude": "40.81388565140015",
+   "longitude": "-73.96090057615585",
+   "bbl": "1019930043",
+   "incident_address": "170 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "66832627",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Engine Idling",
+   "created_date": "2025-11-15T00:21:38.000",
+   "latitude": "40.81388565140015",
+   "longitude": "-73.96090057615585",
+   "bbl": "1019930043",
+   "incident_address": "170 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "66848162",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-11-15T22:33:35.000",
+   "latitude": "40.81358885524042",
+   "longitude": "-73.95983503127599",
+   "bbl": "1019930033",
+   "incident_address": "3133 BROADWAY"
+  },
+  {
+   "unique_key": "66928061",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2025-11-23T02:38:32.000",
+   "latitude": "40.81363869497512",
+   "longitude": "-73.96110302741818",
+   "bbl": "1019940057",
+   "incident_address": "155 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "70467388",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-09-18T20:36:31.000",
+   "latitude": "40.81363869497512",
+   "longitude": "-73.96110302741818",
+   "bbl": "1019940057",
+   "incident_address": "155 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "67223568",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Banging/Pounding",
+   "created_date": "2025-12-17T19:12:42.000",
+   "latitude": "40.81321017784646",
+   "longitude": "-73.96010620383754",
+   "bbl": "1019930023",
+   "incident_address": "3117 BROADWAY"
+  },
+  {
+   "unique_key": "70649940",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Car/Truck Music",
+   "created_date": "2026-10-05T10:16:40.000",
+   "latitude": "40.8141381104399",
+   "longitude": "-73.96073785915294",
+   "bbl": "1019940043",
+   "incident_address": "175 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "70710980",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Car/Truck Music",
+   "created_date": "2026-10-11T01:30:06.000",
+   "latitude": "40.81182992623307",
+   "longitude": "-73.9611113095508",
+   "incident_address": "BROADWAY"
+  },
+  {
+   "unique_key": "70314063",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-05T20:39:20.000",
+   "latitude": "40.81363869497512",
+   "longitude": "-73.96110302741818",
+   "bbl": "1019940057",
+   "incident_address": "155 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "70312833",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-09-05T20:25:38.000",
+   "latitude": "40.813007762615996",
+   "longitude": "-73.96216549352147",
+   "bbl": "1019940001",
+   "incident_address": "SAKURA PARK"
+  },
+  {
+   "unique_key": "70497138",
+   "complaint_type": "Noise - Vehicle",
+   "descriptor": "Engine Idling",
+   "created_date": "2026-09-21T11:14:04.000",
+   "latitude": "40.81361124654964",
+   "longitude": "-73.96109943085162",
+   "bbl": "1019930047",
+   "incident_address": "160 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "70391834",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-09-13T01:16:28.000",
+   "latitude": "40.81363869497512",
+   "longitude": "-73.96110302741818",
+   "bbl": "1019940057",
+   "incident_address": "155 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "70523687",
+   "complaint_type": "Noise - Park",
+   "descriptor": "Loud Talking",
+   "created_date": "2026-09-24T01:25:47.000",
+   "latitude": "40.813007762615996",
+   "longitude": "-73.96216549352147",
+   "bbl": "1019940001",
+   "incident_address": "SAKURA PARK"
+  },
+  {
+   "unique_key": "70611001",
+   "complaint_type": "Noise - Park",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-10-02T00:22:36.000",
+   "latitude": "40.813007762615996",
+   "longitude": "-73.96216549352147",
+   "bbl": "1019940001",
+   "incident_address": "SAKURA PARK"
+  },
+  {
+   "unique_key": "70806038",
+   "complaint_type": "Noise - Residential",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-10-18T04:58:53.000",
+   "latitude": "40.81388565140015",
+   "longitude": "-73.96090057615585",
+   "bbl": "1019930043",
+   "incident_address": "170 CLAREMONT AVENUE"
+  },
+  {
+   "unique_key": "70657764",
+   "complaint_type": "Noise - Street/Sidewalk",
+   "descriptor": "Loud Music/Party",
+   "created_date": "2026-10-05T10:46:59.000",
+   "latitude": "40.8141381104399",
+   "longitude": "-73.96073785915294",
+   "bbl": "1019940043",
+   "incident_address": "175 CLAREMONT AVENUE"
+  }
+ ],
+ "liquor": [
+  {
+   "legalname": "3139 BWY LIQUOR INC",
+   "description": "Liquor Store",
+   "type": "1",
+   "class": "0100",
+   "actualaddressofpremises": "3139 BROADWAY",
+   "georeference": {
+    "type": "Point",
+    "coordinates": [
+     -73.95974,
+     40.81392
+    ]
+   }
+  },
+  {
+   "legalname": "AVI FOODSYSTEMS INC",
+   "description": "Catering Establishment",
+   "type": "1",
+   "class": "0346",
+   "actualaddressofpremises": "500 RIVERSIDE DR",
+   "georeference": {
+    "type": "Point",
+    "coordinates": [
+     -73.96191,
+     40.81396
+    ]
+   }
+  },
+  {
+   "legalname": "PISTICCI RESTAURANT CORP",
+   "description": "Restaurant",
+   "type": "1",
+   "class": "0340",
+   "actualaddressofpremises": "125 LASALLE ST",
+   "georeference": {
+    "type": "Point",
+    "coordinates": [
+     -73.96042,
+     40.81407
+    ]
+   }
+  }
+ ],
+ "roads": [
+  {
+   "full_street_name": "CONNECTOR",
+   "rw_type": "13",
+   "streetwidth": "20",
+   "trafdir": "FT",
+   "number_total_lanes": "1",
+   "number_travel_lanes": "1",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.963896573106,
+       40.812395288363
+      ],
+      [
+       -73.963883239865,
+       40.812370876006
+      ],
+      [
+       -73.963867064607,
+       40.812347476176
+      ],
+      [
+       -73.963848179029,
+       40.812325279391
+      ],
+      [
+       -73.963826736894,
+       40.812304466377
+      ],
+      [
+       -73.963802912781,
+       40.81228520659
+      ]
+     ],
+     [
+      [
+       -73.963802912781,
+       40.81228520659
+      ],
+      [
+       -73.963776900741,
+       40.812267656782
+      ],
+      [
+       -73.963748912473,
+       40.812251959896
+      ],
+      [
+       -73.963719175854,
+       40.812238243735
+      ],
+      [
+       -73.963687932996,
+       40.812226619976
+      ],
+      [
+       -73.963655438271,
+       40.812217183257
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TF",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "3",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.96215427738,
+       40.810581657377
+      ],
+      [
+       -73.96166733707,
+       40.811254249652
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  122 ST",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TW",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.962106910105,
+       40.812259818628
+      ],
+      [
+       -73.962548029093,
+       40.812440518207
+      ],
+      [
+       -73.963017017965,
+       40.812632631614
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "RIVERSIDE DR",
+   "rw_type": "1",
+   "streetwidth": "20",
+   "trafdir": "FT",
+   "number_total_lanes": "1",
+   "number_travel_lanes": "1",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.962236045835,
+       40.813672207603
+      ],
+      [
+       -73.96219068589,
+       40.813692827039
+      ],
+      [
+       -73.962147701963,
+       40.813716200695
+      ],
+      [
+       -73.962107383074,
+       40.813742171404
+      ],
+      [
+       -73.962070000322,
+       40.81377056454
+      ]
+     ],
+     [
+      [
+       -73.962070000322,
+       40.81377056454
+      ],
+      [
+       -73.962035805377,
+       40.813801189048
+      ],
+      [
+       -73.962005027813,
+       40.813833839116
+      ],
+      [
+       -73.961977874573,
+       40.813868295208
+      ],
+      [
+       -73.96195452823,
+       40.813904325646
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  120 ST",
+   "rw_type": "1",
+   "streetwidth": "60",
+   "trafdir": "TW",
+   "number_total_lanes": "6",
+   "number_travel_lanes": "4",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.96215427738,
+       40.810581657377
+      ],
+      [
+       -73.963059739716,
+       40.810955450304
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  122 ST",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TW",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.961214804078,
+       40.811888417894
+      ],
+      [
+       -73.962106910105,
+       40.812259818628
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "RIVERSIDE DR",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "FT",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.96318666765,
+       40.812405818129
+      ],
+      [
+       -73.963017017965,
+       40.812632631614
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "TF",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.96166733707,
+       40.811254249652
+      ],
+      [
+       -73.961214804078,
+       40.811888417894
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  121 ST",
+   "rw_type": "1",
+   "streetwidth": "34",
+   "trafdir": "FT",
+   "number_total_lanes": "2",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "S",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.961457735257,
+       40.811166757072
+      ],
+      [
+       -73.961570672625,
+       40.811213622917
+      ],
+      [
+       -73.96166733707,
+       40.811254249652
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "CONNECTOR",
+   "rw_type": "1",
+   "streetwidth": "28",
+   "trafdir": "FT",
+   "number_total_lanes": "2",
+   "number_travel_lanes": "1",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.96195452823,
+       40.813904325646
+      ],
+      [
+       -73.961966787677,
+       40.813899939937
+      ],
+      [
+       -73.961979485604,
+       40.813896345836
+      ],
+      [
+       -73.961992533639,
+       40.813893568357
+      ],
+      [
+       -73.962005840977,
+       40.813891626828
+      ],
+      [
+       -73.962019315003,
+       40.813890534763
+      ],
+      [
+       -73.962032861947,
+       40.813890299761
+      ],
+      [
+       -73.962046387529,
+       40.813890923458
+      ],
+      [
+       -73.962059797618,
+       40.813892401513
+      ],
+      [
+       -73.962072998886,
+       40.81389472364
+      ]
+     ],
+     [
+      [
+       -73.962072998886,
+       40.81389472364
+      ],
+      [
+       -73.962085899566,
+       40.813897873654
+      ],
+      [
+       -73.962098409771,
+       40.813901829664
+      ],
+      [
+       -73.962110442438,
+       40.813906564139
+      ],
+      [
+       -73.962121913825,
+       40.813912044129
+      ],
+      [
+       -73.962132744097,
+       40.813918231495
+      ],
+      [
+       -73.962142857881,
+       40.813925083177
+      ],
+      [
+       -73.962152184789,
+       40.81393255149
+      ],
+      [
+       -73.962160659911,
+       40.813940584459
+      ],
+      [
+       -73.962168224265,
+       40.813949126176
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "CLAREMONT AVE",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TW",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.963059739716,
+       40.810955450304
+      ],
+      [
+       -73.962106910105,
+       40.812259818628
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  120 ST",
+   "rw_type": "1",
+   "streetwidth": "60",
+   "trafdir": "TW",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "4",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.961951920412,
+       40.810497313002
+      ],
+      [
+       -73.962056878447,
+       40.810541534885
+      ],
+      [
+       -73.96215427738,
+       40.810581657377
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "FT",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "3",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.961951920412,
+       40.810497313002
+      ],
+      [
+       -73.961457735257,
+       40.811166757072
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "RIVERSIDE DR W",
+   "rw_type": "1",
+   "streetwidth": "50",
+   "trafdir": "TF",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.963896573106,
+       40.812395288363
+      ],
+      [
+       -73.963911293663,
+       40.812539948074
+      ],
+      [
+       -73.963910030526,
+       40.812685811469
+      ],
+      [
+       -73.96389262788,
+       40.81283133057
+      ],
+      [
+       -73.963859272328,
+       40.812974973416
+      ],
+      [
+       -73.963848553021,
+       40.813005802109
+      ],
+      [
+       -73.963810484723,
+       40.813115253042
+      ],
+      [
+       -73.963346536584,
+       40.813998627966
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "RIVERSIDE DR",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "FT",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.963017017965,
+       40.812632631614
+      ],
+      [
+       -73.962236045835,
+       40.813672207603
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  122 ST",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TW",
+   "number_total_lanes": "2",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.960994188456,
+       40.811788550425
+      ],
+      [
+       -73.961112359817,
+       40.811838558565
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "RIVERSIDE DR E",
+   "rw_type": "1",
+   "streetwidth": "34",
+   "trafdir": "FT",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.962236045835,
+       40.813672207603
+      ],
+      [
+       -73.962192684814,
+       40.813879040603
+      ],
+      [
+       -73.962168224265,
+       40.813949126176
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "CONNECTOR",
+   "rw_type": "13",
+   "streetwidth": "20",
+   "trafdir": "FT",
+   "number_total_lanes": "1",
+   "number_travel_lanes": "1",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.963655438271,
+       40.812217183257
+      ],
+      [
+       -73.963601376863,
+       40.81222235354
+      ],
+      [
+       -73.963548036753,
+       40.812230806505
+      ],
+      [
+       -73.963495762666,
+       40.812242487521
+      ],
+      [
+       -73.963444892437,
+       40.812257321094
+      ],
+      [
+       -73.963395754829,
+       40.812275211356
+      ]
+     ],
+     [
+      [
+       -73.963395754829,
+       40.812275211356
+      ],
+      [
+       -73.963348667754,
+       40.812296042387
+      ],
+      [
+       -73.963303935124,
+       40.812319679808
+      ],
+      [
+       -73.963261846032,
+       40.812345970856
+      ],
+      [
+       -73.963222672486,
+       40.812374745618
+      ],
+      [
+       -73.96318666765,
+       40.812405818129
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "RIVERSIDE PARK PATH",
+   "rw_type": "6",
+   "trafdir": "NV",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.963346536584,
+       40.813998627966
+      ],
+      [
+       -73.962882024784,
+       40.813862090294
+      ],
+      [
+       -73.962236045835,
+       40.813672207603
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "LA SALLE ST",
+   "rw_type": "1",
+   "streetwidth": "44",
+   "trafdir": "TW",
+   "number_total_lanes": "2",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "S",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.959552021143,
+       40.8137342185
+      ],
+      [
+       -73.959688850218,
+       40.813787151731
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "FT",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.960994188456,
+       40.811788550425
+      ],
+      [
+       -73.960536654575,
+       40.812414904936
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "TF",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.961214804078,
+       40.811888417894
+      ],
+      [
+       -73.960768951648,
+       40.812513806273
+      ],
+      [
+       -73.960397821405,
+       40.813015272512
+      ],
+      [
+       -73.96028852648,
+       40.813162948676
+      ],
+      [
+       -73.959793551534,
+       40.81383173557
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "FT",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.961457735257,
+       40.811166757072
+      ],
+      [
+       -73.960994188456,
+       40.811788550425
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "LA SALLE ST",
+   "rw_type": "1",
+   "streetwidth": "44",
+   "trafdir": "TW",
+   "number_total_lanes": "2",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "S",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.959688850218,
+       40.813787151731
+      ],
+      [
+       -73.959793551534,
+       40.81383173557
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "38",
+   "trafdir": "FT",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.959552021143,
+       40.8137342185
+      ],
+      [
+       -73.959255552455,
+       40.814150935714
+      ],
+      [
+       -73.959194023325,
+       40.814234817432
+      ],
+      [
+       -73.959036508547,
+       40.814449554127
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "CLAREMONT AVE",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TW",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.962106910105,
+       40.812259818628
+      ],
+      [
+       -73.961240656688,
+       40.813444433777
+      ],
+      [
+       -73.960948112004,
+       40.813844482628
+      ],
+      [
+       -73.960691690533,
+       40.814195129167
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "LA SALLE ST",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TW",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "S",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.959793551534,
+       40.81383173557
+      ],
+      [
+       -73.960691690533,
+       40.814195129167
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  122 ST",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TW",
+   "number_total_lanes": "2",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.961112359817,
+       40.811838558565
+      ],
+      [
+       -73.961214804078,
+       40.811888417894
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "CLAREMONT AVE",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TW",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.960691690533,
+       40.814195129167
+      ],
+      [
+       -73.960495748815,
+       40.814465256943
+      ],
+      [
+       -73.960322645576,
+       40.814703900479
+      ],
+      [
+       -73.96004294888,
+       40.815089492002
+      ],
+      [
+       -73.959720090822,
+       40.815534595397
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "W  123 ST",
+   "rw_type": "1",
+   "streetwidth": "34",
+   "trafdir": "FT",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "1",
+   "posted_speed": "25",
+   "snow_priority": "S",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.958297692863,
+       40.811477196529
+      ],
+      [
+       -73.95859933557,
+       40.811603518588
+      ],
+      [
+       -73.959385408304,
+       40.811932747741
+      ],
+      [
+       -73.960536654575,
+       40.812414904936
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "BROADWAY",
+   "rw_type": "1",
+   "streetwidth": "30",
+   "trafdir": "FT",
+   "number_total_lanes": "3",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.960536654575,
+       40.812414904936
+      ],
+      [
+       -73.960167401452,
+       40.812914276358
+      ],
+      [
+       -73.960054312945,
+       40.813067214278
+      ],
+      [
+       -73.959552021143,
+       40.8137342185
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "LA SALLE ST",
+   "rw_type": "1",
+   "streetwidth": "40",
+   "trafdir": "TW",
+   "number_total_lanes": "4",
+   "number_travel_lanes": "2",
+   "posted_speed": "25",
+   "snow_priority": "C",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.958642552399,
+       40.813360727792
+      ],
+      [
+       -73.958707857113,
+       40.813386766249
+      ],
+      [
+       -73.959191062408,
+       40.81358437716
+      ],
+      [
+       -73.959552021143,
+       40.8137342185
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "PEDESTRIAN PATH",
+   "rw_type": "6",
+   "trafdir": "NV",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.958736376166,
+       40.814109533691
+      ],
+      [
+       -73.958395130775,
+       40.814180186987
+      ]
+     ],
+     [
+      [
+       -73.958395130775,
+       40.814180186987
+      ],
+      [
+       -73.958369124356,
+       40.814154377539
+      ],
+      [
+       -73.958340782455,
+       40.814130028818
+      ],
+      [
+       -73.958310246769,
+       40.81410726256
+      ]
+     ],
+     [
+      [
+       -73.958310246769,
+       40.81410726256
+      ],
+      [
+       -73.958277670336,
+       40.814086192503
+      ],
+      [
+       -73.958243215647,
+       40.814066924054
+      ],
+      [
+       -73.958207054961,
+       40.81404955355
+      ]
+     ],
+     [
+      [
+       -73.958207054961,
+       40.81404955355
+      ],
+      [
+       -73.958190836872,
+       40.814080469386
+      ],
+      [
+       -73.9581720798,
+       40.81411054478
+      ],
+      [
+       -73.958150858723,
+       40.814139659512
+      ]
+     ],
+     [
+      [
+       -73.958150858723,
+       40.814139659512
+      ],
+      [
+       -73.958127258185,
+       40.814167696976
+      ],
+      [
+       -73.958101372824,
+       40.814194545316
+      ],
+      [
+       -73.958073306112,
+       40.814220097212
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "PEDESTRIAN PATH",
+   "rw_type": "6",
+   "trafdir": "NV",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.958642552399,
+       40.813360727792
+      ],
+      [
+       -73.958585076329,
+       40.813439016335
+      ],
+      [
+       -73.958541948915,
+       40.813506652098
+      ],
+      [
+       -73.958541906775,
+       40.813574304015
+      ],
+      [
+       -73.958564836196,
+       40.81365287506
+      ],
+      [
+       -73.95861644971,
+       40.813796926153
+      ],
+      [
+       -73.958736376166,
+       40.814109533691
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "full_street_name": "PEDESTRIAN PATH",
+   "rw_type": "6",
+   "trafdir": "NV",
+   "status": "2",
+   "the_geom": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -73.958736376166,
+       40.814109533691
+      ],
+      [
+       -73.958783744928,
+       40.814246111921
+      ],
+      [
+       -73.958808501994,
+       40.814335604317
+      ],
+      [
+       -73.958907267696,
+       40.814392431537
+      ],
+      [
+       -73.95898300758,
+       40.814424475285
+      ],
+      [
+       -73.959036508547,
+       40.814449554127
+      ]
+     ]
+    ]
+   }
+  }
+ ],
+ "stations": [],
+ "permits": [
+  {
+   "work_type": "Mechanical Systems",
+   "work_permit": "M01221651-I1-MS",
+   "job_description": "Replacement of rooftop air conditioning unit as shown on submitted plans. No change in occupancy, use or egress.",
+   "approved_date": "2025-05-13T00:00:00.000",
+   "issued_date": "2025-05-14T00:00:00.000",
+   "expired_date": "2025-12-13T05:00:00.000",
+   "estimated_job_costs": "287500",
+   "house_no": "120",
+   "street_name": "CLAREMONT AVENUE",
+   "bin": "1076684"
+  },
+  {
+   "work_type": "General Construction",
+   "work_permit": "M01255339-I1-GC",
+   "job_description": "Interior renovations to the existing Class A apartment 6A in the existing multiple dwelling building. Plumbing scope to be filed under subsequent application. No change in use, egress, or occupancy.",
+   "approved_date": "2025-09-05T00:00:00.000",
+   "issued_date": "2025-09-18T00:00:00.000",
+   "expired_date": "2026-09-18T04:00:00.000",
+   "estimated_job_costs": "33000",
+   "house_no": "140",
+   "street_name": "CLAREMONT AVENUE",
+   "bin": "1059848"
+  },
+  {
+   "work_type": "Plumbing",
+   "work_permit": "M01131596-S1-PL",
+   "job_description": "PROPOSE TO REPLACE PL FIXTURES, INSTALL A WASHING MACHINE AND DISHWASHER AT APT 4B ON THE 4TH FLOOR AS PER PLANS SUBMITTED HERWITH.",
+   "approved_date": "2024-12-11T00:00:00.000",
+   "issued_date": "2025-05-20T00:00:00.000",
+   "expired_date": "2025-11-19T00:00:00.000",
+   "estimated_job_costs": "25000",
+   "house_no": "3161",
+   "street_name": "BROADWAY",
+   "bin": "1082765"
+  },
+  {
+   "work_type": "General Construction",
+   "work_permit": "M01208534-I1-GC",
+   "job_description": "MAIN AND BULKHEAD ROOF REPLACEMENT AS PER PLANS.  NO CHANGE IN USE, EGRESS OR OCCUPANCY.",
+   "approved_date": "2025-07-15T00:00:00.000",
+   "issued_date": "2025-09-25T00:00:00.000",
+   "expired_date": "2026-09-25T04:00:00.000",
+   "estimated_job_costs": "356898",
+   "house_no": "170",
+   "street_name": "CLAREMONT AVENUE",
+   "bin": "1059845"
+  },
+  {
+   "work_type": "General Construction",
+   "work_permit": "M01220515-I1-GC",
+   "job_description": "Renovate unit #4N on 4FL, including removing and installing new interior non-load bearing partitions, lighting and finish work. No change to use, egress or occupancy.",
+   "approved_date": "2025-05-06T00:00:00.000",
+   "issued_date": "2025-05-07T00:00:00.000",
+   "expired_date": "2026-05-07T04:00:00.000",
+   "estimated_job_costs": "72505",
+   "house_no": "184",
+   "street_name": "CLAREMONT AVENUE",
+   "bin": "1059864"
+  },
+  {
+   "work_type": "Structural",
+   "work_permit": "M01210228-I1-ST",
+   "job_description": "Repair section of ceiling in the cellar. No change the use, egress or occupancy.",
+   "approved_date": "2025-04-17T00:00:00.000",
+   "issued_date": "2025-05-07T00:00:00.000",
+   "expired_date": "2026-05-07T00:00:00.000",
+   "estimated_job_costs": "17500",
+   "house_no": "3151",
+   "street_name": "BROADWAY",
+   "bin": "1059853"
+  },
+  {
+   "work_type": "Supported Scaffold",
+   "work_permit": "M01240480-I1-SF",
+   "job_description": "Installation of a pipe scaffold",
+   "approved_date": "2025-06-12T00:00:00.000",
+   "issued_date": "2025-06-12T00:00:00.000",
+   "expired_date": "2026-06-12T04:00:00.000",
+   "estimated_job_costs": "5000",
+   "house_no": "170",
+   "street_name": "CLAREMONT AVENUE",
+   "bin": "1059845"
+  },
+  {
+   "work_type": "Plumbing",
+   "work_permit": "M01220515-S1-PL",
+   "job_description": "PLUMBING WORK TO RENOVATE UNIT #4N ON 4TH FL.NO CHANGE TO USE, EGRESS OR OCCUPANCY.",
+   "approved_date": "2025-05-13T00:00:00.000",
+   "issued_date": "2025-06-05T00:00:00.000",
+   "expired_date": "2025-08-21T04:00:00.000",
+   "estimated_job_costs": "21000",
+   "house_no": "184",
+   "street_name": "CLAREMONT AVENUE",
+   "bin": "1059864"
+  },
+  {
+   "work_type": "Mechanical Systems",
+   "work_permit": "M01171144-S1-MS",
+   "job_description": "Installation of non-emergency gas fired generator.  Platform filed separately.  All work in compliance with TPPN 5/98.  No change to occupancy, use, or egress.",
+   "approved_date": "2025-04-28T00:00:00.000",
+   "issued_date": "2025-06-11T00:00:00.000",
+   "expired_date": "2026-06-11T04:00:00.000",
+   "estimated_job_costs": "35000",
+   "house_no": "130",
+   "street_name": "CLAREMONT AVENUE",
+   "bin": "1076684"
+  },
+  {
+   "work_type": "Plumbing",
+   "work_permit": "M01220515-S1-PL",
+   "job_description": "PLUMBING WORK TO RENOVATE UNIT #4N ON 4TH FL.NO CHANGE TO USE, EGRESS OR OCCUPANCY.",
+   "approved_date": "2025-05-13T00:00:00.000",
+   "issued_date": "2025-05-20T00:00:00.000",
+   "expired_date": "2025-06-01T04:00:00.000",
+   "estimated_job_costs": "21000",
+   "house_no": "184",
+   "street_name": "CLAREMONT AVENUE",
+   "bin": "1059864"
+  },
+  {
+   "work_type": "Antenna",
+   "work_permit": "M01171144-I1-AN",
+   "job_description": "AT&T - Installation of new equipment platform and related cabinets on roof.  Installation of new antenna sectors with RRH units and GPS on roof.  Related service connection.  All work in compliance with TPPN 5/98.  No change to occupancy, use, or egress.",
+   "approved_date": "2025-06-10T00:00:00.000",
+   "issued_date": "2025-06-11T00:00:00.000",
+   "expired_date": "2026-06-11T04:00:00.000",
+   "estimated_job_costs": "100000",
+   "house_no": "130",
+   "street_name": "CLAREMONT AVENUE",
+   "bin": "1076684"
+  },
+  {
+   "work_type": "Structural",
+   "work_permit": "M01108475-I1-GC-CX",
+   "job_description": "osp at sunkenwell",
+   "approved_date": "2024-10-15T00:00:00.000",
+   "issued_date": "2026-03-20T00:00:00.000",
+   "expired_date": "2026-12-31T05:00:00.000",
+   "estimated_job_costs": "395000",
+   "house_no": "120",
+   "street_name": "CLAREMONT AVENUE",
+   "bin": "1076684"
+  },
+  {
+   "work_type": "General Construction",
+   "work_permit": "M01108475-I1-GC-CX",
+   "job_description": "osp at sunkenwell",
+   "approved_date": "2024-10-15T00:00:00.000",
+   "issued_date": "2026-03-20T00:00:00.000",
+   "expired_date": "2026-12-31T05:00:00.000",
+   "estimated_job_costs": "395000",
+   "house_no": "120",
+   "street_name": "CLAREMONT AVENUE",
+   "bin": "1076684"
+  },
+  {
+   "work_type": "General Construction",
+   "work_permit": "M01292839-I1-GC",
+   "job_description": "MINOR INTERIOR RENOVATION OF AN EXISTING APARTMENT ON THE 1ST FLOOR. NO CHANGE OF USE, EGRESS OR OCCUPANCY UNDER THIS APPLICATION.",
+   "approved_date": "2025-10-28T00:00:00.000",
+   "issued_date": "2025-12-04T00:00:00.000",
+   "expired_date": "2026-04-18T04:00:00.000",
+   "estimated_job_costs": "92070",
+   "house_no": "200",
+   "street_name": "CLAREMONT AVENUE",
+   "bin": "1059859"
+  },
+  {
+   "work_type": "Sidewalk Shed",
+   "work_permit": "M01241324-I1-SH",
+   "job_description": "Installation of a heavy duty sidewalk shed to include storage",
+   "approved_date": "2025-06-16T00:00:00.000",
+   "issued_date": "2025-06-16T00:00:00.000",
+   "expired_date": "2026-06-16T04:00:00.000",
+   "estimated_job_costs": "5000",
+   "house_no": "170",
+   "street_name": "CLAREMONT AVENUE",
+   "bin": "1059845"
+  }
+ ],
+ "facilities": [
+  {
+   "name": "ENGINE 37/LADDER 40",
+   "kind": "fire",
+   "address": "415 WEST 125 STREET",
+   "latitude": 40.81196889997767,
+   "longitude": -73.95460273918621
+  },
+  {
+   "name": "NYPD 26TH PRECINCT",
+   "kind": "police",
+   "address": "520 WEST 126 STREET",
+   "latitude": 40.81484199999984,
+   "longitude": -73.95668
+  }
+ ],
+ "sources": [
+  {
+   "name": "NYC GeoSearch (address, BBL, BIN)",
+   "url": "https://geosearch.planninglabs.nyc/v2/search"
+  },
+  {
+   "name": "NYC 311 Service Requests",
+   "url": "https://data.cityofnewyork.us/resource/erm2-nwe9.json"
+  },
+  {
+   "name": "NYC PLUTO (year built, floors, units, class)",
+   "url": "https://data.cityofnewyork.us/resource/64uk-42ks.json"
+  },
+  {
+   "name": "NYC Street Centerline (road class, lanes, speed)",
+   "url": "https://data.cityofnewyork.us/resource/inkn-q76z.json"
+  },
+  {
+   "name": "DOB NOW approved permits (same tax block)",
+   "url": "https://data.cityofnewyork.us/resource/rbx6-tga4.json"
+  },
+  {
+   "name": "NYS Liquor Authority active licenses",
+   "url": "https://data.ny.gov/resource/9s3h-dpkz.json"
+  },
+  {
+   "name": "MTA subway stations (elevated structures)",
+   "url": "https://data.ny.gov/resource/39hk-dx4f.json"
+  },
+  {
+   "name": "NYC Facilities Database (hospitals, firehouses, police)",
+   "url": "https://data.cityofnewyork.us/resource/67g2-p84d.json"
+  }
+ ]
+}

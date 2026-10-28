@@ -1,0 +1,263 @@
+{
+ "unit": {
+  "floor": 2,
+  "position": "front"
+ },
+ "profile": {
+  "sleep": "light",
+  "wfh": false,
+  "bothers": [
+   "neighbors",
+   "people"
+  ]
+ },
+ "result": {
+  "score": 31,
+  "scale": "0 to 100, higher is quieter",
+  "street_only_score": 54,
+  "by_time": {
+   "night": 16,
+   "early": 49,
+   "day": 32
+  },
+  "address": {
+   "query": "158 Bedford Ave, Brooklyn",
+   "label": "158 BEDFORD AVENUE, Brooklyn, NY, USA",
+   "lat": 40.718692,
+   "lng": -73.95707,
+   "bbl": "3023110027",
+   "bin": "3061791",
+   "borough": "Brooklyn"
+  },
+  "unit": {
+   "floor": 2,
+   "position": "front",
+   "top_floor": false,
+   "building_floors": 3,
+   "ground_floor_commercial": true
+  },
+  "building_facts": {
+   "address": "158 BEDFORD AVENUE",
+   "yearbuilt": "1910",
+   "numfloors": "3.0000000",
+   "bldgclass": "C4",
+   "unitsres": "4",
+   "unitstotal": "6"
+  },
+  "ingredients": [
+   {
+    "name": "street",
+    "label": "Street",
+    "levels": {
+     "night": 55.5,
+     "early": 55.3,
+     "day": 59.8
+    },
+    "raw_level": 57.8,
+    "evidence": [
+     "BEDFORD AVE: one lane, 1 travel lane, 25 mph, bus or truck route, 16 m away",
+     "N  8 ST: one lane, 1 travel lane, 25 mph, 28 m away",
+     "N  9 ST: one lane, 1 travel lane, 25 mph, 50 m away",
+     "20 vehicle noise complaints to 311 within 100 m in 24 months (engine idling 12, car/truck music 7)"
+    ],
+    "position_db": -1.0,
+    "temporary": false,
+    "scores": {
+     "night": 61,
+     "early": 62,
+     "day": 51
+    },
+    "weighted_up": false
+   },
+   {
+    "name": "nightlife",
+    "label": "Nightlife",
+    "levels": {
+     "night": 69.6,
+     "early": 52.9,
+     "day": 61.6
+    },
+    "raw_level": 53.6,
+    "evidence": [
+     "21 licensed venues within 150 m: 2 bars, 15 restaurants, 4 venues",
+     "nearest loud: PEBBLE CORP (restaurant), 164 BEDFORD AVE, 46 m",
+     "nearest loud: 174 Bedford Tavern LLC (venue), 174 Bedford Ave, 79 m",
+     "nearest loud: RUBY'S WILLIAMSBURG LLC (bar), 98 Berry St, 128 m",
+     "250 party, music or loud-talking complaints within 150 m in 24 months; 127 of them 10 pm to 5 am",
+     "commercial space on the ground floor of this building"
+    ],
+    "position_db": 4.0,
+    "temporary": false,
+    "scores": {
+     "night": 26,
+     "early": 68,
+     "day": 46
+    },
+    "weighted_up": true
+   },
+   {
+    "name": "building",
+    "label": "Building",
+    "levels": {
+     "night": 49.8,
+     "early": 45.0,
+     "day": 47.5
+    },
+    "raw_level": 46.1,
+    "evidence": [
+     "0 residential noise complaints to 311 at this building in 24 months, 4 units: 0.00 per unit-year vs 0.11 for Brooklyn (0.7x after shrinkage)",
+     "built 1910: pre-war walk-up, wood joists and plaster carry footsteps",
+     "class C4: walk-up, stairs pass every door",
+     "second floor above a commercial space"
+    ],
+    "position_db": 2.0,
+    "temporary": false,
+    "complaints": 0,
+    "units": 4,
+    "rate_vs_borough": 0.71,
+    "scores": {
+     "night": 75,
+     "early": 87,
+     "day": 81
+    },
+    "weighted_up": true
+   },
+   {
+    "name": "sirens",
+    "label": "Sirens",
+    "levels": {
+     "night": 44.7,
+     "early": 45.7,
+     "day": 47.7
+    },
+    "raw_level": 48.7,
+    "evidence": [
+     "1 emergency facilities within 600 m: 1 firehouse",
+     "EMS STATION 35 (firehouse), 332 METROPOLITAN AVENUE, 504 m"
+    ],
+    "position_db": -1.0,
+    "temporary": false,
+    "scores": {
+     "night": 88,
+     "early": 86,
+     "day": 81
+    },
+    "weighted_up": false
+   },
+   {
+    "name": "construction",
+    "label": "Construction",
+    "levels": {
+     "night": 39.4,
+     "early": 51.4,
+     "day": 54.4
+    },
+    "raw_level": 55.4,
+    "evidence": [
+     "27 construction noise complaints within 100 m in 24 months (noise: construction equipment (nc1) 12, noise: construction before/after hours (nm1) 9)"
+    ],
+    "position_db": -1.0,
+    "temporary": true,
+    "scores": {
+     "night": 100,
+     "early": 71,
+     "day": 64
+    },
+    "weighted_up": false
+   }
+  ],
+  "profile": {
+   "sleep": "light",
+   "wfh": false,
+   "bothers": [
+    "neighbors",
+    "people"
+   ]
+  },
+  "window_weights": {
+   "night": 1.5,
+   "early": 1.2,
+   "day": 0.6
+  },
+  "internal_level": 67.6,
+  "as_of": "2026-10-21",
+  "lookback_months": 24,
+  "sources": [
+   {
+    "name": "NYC GeoSearch (address, BBL, BIN)",
+    "url": "https://geosearch.planninglabs.nyc/v2/search"
+   },
+   {
+    "name": "NYC 311 Service Requests",
+    "url": "https://data.cityofnewyork.us/resource/erm2-nwe9.json"
+   },
+   {
+    "name": "NYC PLUTO (year built, floors, units, class)",
+    "url": "https://data.cityofnewyork.us/resource/64uk-42ks.json"
+   },
+   {
+    "name": "NYC Street Centerline (road class, lanes, speed)",
+    "url": "https://data.cityofnewyork.us/resource/inkn-q76z.json"
+   },
+   {
+    "name": "DOB NOW approved permits (same tax block)",
+    "url": "https://data.cityofnewyork.us/resource/rbx6-tga4.json"
+   },
+   {
+    "name": "NYS Liquor Authority active licenses",
+    "url": "https://data.ny.gov/resource/9s3h-dpkz.json"
+   },
+   {
+    "name": "MTA subway stations (elevated structures)",
+    "url": "https://data.ny.gov/resource/39hk-dx4f.json"
+   },
+   {
+    "name": "NYC Facilities Database (hospitals, firehouses, police)",
+    "url": "https://data.cityofnewyork.us/resource/67g2-p84d.json"
+   }
+  ],
+  "caveats": [
+   "311 counts measure who complains, not decibels; the count is shown so you can judge it.",
+   "Street loudness is modelled from road class, lanes and speed, not measured.",
+   "Elevated subway proximity uses the nearest station's structure as a proxy for the track.",
+   "Construction is temporary; permits expire and the bar may close."
+  ]
+ },
+ "baseline": {
+  "quieter_than": 34.7,
+  "median_score": 37,
+  "p25_score": 26,
+  "p75_score": 46,
+  "n": 300,
+  "verdict": "Loud"
+ },
+ "windows": {
+  "night": {
+   "window": "night",
+   "level_db": 69.8,
+   "quieter_than": 24.0,
+   "verdict": "Loud",
+   "median_db": 64.2,
+   "p25_db": 60.0,
+   "p75_db": 69.4
+  },
+  "early": {
+   "window": "early",
+   "level_db": 58.7,
+   "quieter_than": 77.3,
+   "verdict": "Quiet",
+   "median_db": 61.9,
+   "p25_db": 59.2,
+   "p75_db": 63.9
+  },
+  "day": {
+   "window": "day",
+   "level_db": 64.5,
+   "quieter_than": 64.3,
+   "verdict": "Quiet",
+   "median_db": 65.6,
+   "p25_db": 63.1,
+   "p75_db": 68.1
+  }
+ }
+}
