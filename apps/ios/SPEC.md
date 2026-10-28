@@ -58,7 +58,7 @@ Port `~/code/noise-score/noise_score/{config,geo,model,sources,cache}.py` to Swi
   Python's `today` for permit expiry is `inputs.as_of`; use that, never `Date()`, so fixtures replay.
 - **Sources.swift**: `public struct LiveDataSource: NoiseDataSource` with the exact endpoints and `$select` /
   `$where` strings of sources.py (datasets erm2-nwe9, 64uk-42ks, inkn-q76z, rbx6-tga4, 9s3h-dpkz on
-  data.ny.gov, 39hk-dx4f on data.ny.gov, GeoSearch v2). User-Agent `noise-score-ios/0.1 (Columbia ENGI E4502 and IEME E4201; ras2369@columbia.edu)`.
+  data.ny.gov, 39hk-dx4f on data.ny.gov, GeoSearch v2). User-Agent `hush-iq-ios/0.1`.
   Timeout 30 s, two retries on transient failure. `URLError.notConnectedToInternet`, `.networkConnectionLost`,
   `.cannotFindHost`, `.cannotConnectToHost`, `.timedOut` map to `NoiseError.offline`.
   `suggest(_:)`: GeoSearch `/v2/autocomplete?text=&size=5` if it answers, else `/v2/search?text=&size=5`.

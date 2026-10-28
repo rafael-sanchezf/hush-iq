@@ -1,11 +1,11 @@
 # Assignment 4, Live API Data: Noise Score
 
-Rafael Sanchez, ras2369. ENGI E4502, Fall 2026.
+Rafael Sanchez. The iOS client of Hush IQ; built as a course project in fall 2026, prior to the hackathon.
 
 A SwiftUI app that answers one question for someone renting in New York: how loud will this apartment
 be for me? It asks three things (how you sleep, what gets to you, which floor and side you live on),
 pulls live public data for the address, and says in words how loud it is for you compared with the
-rest of Manhattan, by time of day, with the decibels and the evidence behind it. The Nearby tab is the live-data view the assignment asks for: every noise
+rest of Manhattan, by time of day, with the decibels and the evidence behind it. The Nearby tab is the live-data view: every noise
 complaint made to 311 within 500 m in the last 30 days, on a map or in a list, each opening a detail
 page with what 311 did about it.
 
