@@ -5,11 +5,14 @@
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
 from . import __version__, baseline, model, sources
 
-app = FastAPI(title="Personal Noise Score", version=__version__)
+app = FastAPI(title="Hush IQ", version=__version__)
+# Read-only public API; any site may call it from the browser. [hackathon]
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET"], allow_headers=["*"])
 WEB = Path(__file__).resolve().parent.parent / "web" / "index.html"
 
 
