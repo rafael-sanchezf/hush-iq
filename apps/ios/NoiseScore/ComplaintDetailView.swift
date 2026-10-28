@@ -2,7 +2,7 @@ import SwiftUI
 import MapKit
 import NoiseKit
 
-/// One 311 complaint, the separate detail view the assignment asks for. The accent is spent on the
+/// One 311 complaint, its own detail view. The accent is spent on the
 /// status pill.
 struct ComplaintDetailView: View {
     let row: ComplaintRow

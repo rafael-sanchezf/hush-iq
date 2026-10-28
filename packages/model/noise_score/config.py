@@ -159,4 +159,4 @@ BOTHER_TO_INGREDIENT = {"traffic": "street", "people": "nightlife", "neighbors":
 SOCRATA_APP_TOKEN = None          # [T3] set NOISE_SCORE_SOCRATA_TOKEN in the environment instead
 CACHE_TTL_DAYS = 7                # [T4]
 HTTP_TIMEOUT_S = 30.0
-USER_AGENT = "noise-score-prototype/0.1 (Columbia HCD team project; ras2369@columbia.edu)"
+USER_AGENT = "hush-iq/0.1 (https://github.com/rafael-sanchezf/hush-iq)"

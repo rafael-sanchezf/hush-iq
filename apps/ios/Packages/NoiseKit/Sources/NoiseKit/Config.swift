@@ -160,5 +160,5 @@ public enum Config {
     public static let cacheTtlFacilitiesDays = 30      // [T4] the citywide facilities pull
     public static let httpTimeoutS = 30.0              // [T2]
     public static let httpRetries = 2                  // [T2] retries on a transient failure
-    public static let userAgent = "noise-score-ios/0.1 (Columbia ENGI E4502 and IEME E4201; ras2369@columbia.edu)"  // [T2]
+    public static let userAgent = "hush-iq-ios/0.1 (https://github.com/rafael-sanchezf/hush-iq)"  // [T2]
 }
