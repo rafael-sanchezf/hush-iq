@@ -1,0 +1,480 @@
+{
+ "note": "engine v2 /v2/score (HIQ-43-engine-v2, 406f553) for 315 W 57th St with traffic ticked, two units: ranks and labels; the first unit's evidence, input numbers and siren routes, with every source upgrade",
+ "units": [
+  {
+   "unit": {
+    "floor": 2,
+    "side": "front"
+   },
+   "verdict": "Very loud",
+   "quieter_than": 0,
+   "ingredients": [
+    {
+     "name": "street",
+     "label": "Street",
+     "quieter_than": 1.7,
+     "block_quieter_than": 10,
+     "weight": 58.5,
+     "ticked": true
+    },
+    {
+     "name": "nightlife",
+     "label": "Local businesses",
+     "quieter_than": 2.7,
+     "block_quieter_than": 31.3,
+     "weight": 9.1,
+     "ticked": false
+    },
+    {
+     "name": "building",
+     "label": "Building",
+     "quieter_than": 52.7,
+     "block_quieter_than": 52,
+     "weight": 12.2,
+     "ticked": false
+    },
+    {
+     "name": "sirens",
+     "label": "Sirens",
+     "quieter_than": 1,
+     "block_quieter_than": 11,
+     "weight": 12.2,
+     "ticked": false
+    },
+    {
+     "name": "construction",
+     "label": "Construction",
+     "quieter_than": 3,
+     "block_quieter_than": 46,
+     "weight": 7.9,
+     "ticked": false
+    }
+   ]
+  },
+  {
+   "unit": {
+    "floor": 20,
+    "side": "rear"
+   },
+   "verdict": "Very quiet",
+   "quieter_than": 90.7,
+   "ingredients": [
+    {
+     "name": "street",
+     "label": "Street",
+     "quieter_than": 83.3,
+     "block_quieter_than": 10,
+     "weight": 58.5,
+     "ticked": true
+    },
+    {
+     "name": "nightlife",
+     "label": "Local businesses",
+     "quieter_than": 53.7,
+     "block_quieter_than": 31.3,
+     "weight": 9.1,
+     "ticked": false
+    },
+    {
+     "name": "building",
+     "label": "Building",
+     "quieter_than": 64.3,
+     "block_quieter_than": 52,
+     "weight": 12.2,
+     "ticked": false
+    },
+    {
+     "name": "sirens",
+     "label": "Sirens",
+     "quieter_than": 72.7,
+     "block_quieter_than": 11,
+     "weight": 12.2,
+     "ticked": false
+    },
+    {
+     "name": "construction",
+     "label": "Construction",
+     "quieter_than": 78,
+     "block_quieter_than": 46,
+     "weight": 7.9,
+     "ticked": false
+    }
+   ]
+  }
+ ],
+ "ground_floor_commercial": true,
+ "evidence": {
+  "street": [
+   "W  57 ST: arterial, 4 travel lanes, 25 mph, bus or truck route, 31 m away",
+   "W  58 ST: arterial, 3 travel lanes, 25 mph, bus or truck route, 54 m away",
+   "25 vehicle noise complaints to 311 within 100 m in 24 months (car/truck horn 13, engine idling 11)",
+   "West 57th St has no traffic count; streets like it carry about 920 vehicles an hour by day and 330 at night.",
+   "About 25 buses an hour pass on West 57th St in the day and 5 at night.",
+   "West 57th St is a local truck route; about 6 in 100 daytime vehicles are trucks."
+  ],
+  "nightlife": [
+   "24 licensed venues within 150 m: 4 bars, 14 restaurants, 6 venues",
+   "nearest loud: PMACS 12 LLC (bar), 327 W 57th St, 43 m",
+   "nearest loud: DM 58 LLC (bar), 312 W 58TH ST, 59 m",
+   "nearest loud: BB 57 LLC (restaurant), 313 W 57TH ST, 38 m",
+   "42 party, music or loud-talking complaints within 150 m in 24 months; 19 of them 10 pm to 5 am",
+   "Neighbors reported a party, music or loud talking within 150 m on 26 of the last 730 nights between 10 pm and 5 am.",
+   "4 licensed sidewalk or roadway dining spots within 150 m (nearest 32 m); outdoor tables close at 11 pm.",
+   "4 of the 24 licensed venues within 150 m hold a bar-style liquor licence."
+  ],
+  "building": [
+   "9 residential noise complaints to 311 at this building in 24 months, 284 units: 0.02 per unit-year vs 0.07 for Manhattan (0.2x after shrinkage) (loud music/party 5, banging/pounding 4)",
+   "built 1965",
+   "class D6: elevator building",
+   "complaint hours at this building: night 4, early 0, day 5",
+   "About 7 apartments share each floor.",
+   "Buildings of this type (elevator apartment buildings) average 3 noise complaints per 100 apartments a year; the Manhattan average is 6.",
+   "2 whole-apartment short-term rentals (under 30 nights) listed within about 150 m."
+  ],
+  "sirens": [
+   "3 emergency facilities within 600 m: 1 hospital, 1 firehouse, 1 police station",
+   "ENGINE 23 (firehouse), 215 WEST 58 STREET, 292 m",
+   "MIDTWN NORTH POLICE STATION (police station), 306 WEST 54 STREET, 313 m",
+   "MOUNT SINAI WEST (hospital), 1000 10 AVENUE, 364 m",
+   "About 45 ambulance trips a day pass on this block.",
+   "Nearby: a hospital about 360 m away and a fire or ambulance station about 290 m away."
+  ],
+  "construction": [
+   "22 construction noise complaints within 100 m in 24 months (noise: construction equipment (nc1) 10, noise: construction before/after hours (nm1) 7)",
+   "4 unexpired loud-work permits on this tax block: General Construction 4",
+   "301 West 57 Street: General Construction to 2026-12-03",
+   "4 Columbus Circle: General Construction to 2026-11-01",
+   "A Con Ed street opening permit is active on a block 30 m away.",
+   "15 street-work sites within 100 m in the past year.",
+   "An after-hours variance 100 m away allowed night work on 12 nights in the past year."
+  ]
+ },
+ "numbers": {
+  "street": {
+   "distance": {
+    "label": "Distance to that street",
+    "value": 32,
+    "unit": "m",
+    "kind": "today_input"
+   },
+   "vehicles_per_hour": {
+    "label": "Vehicles per hour, all types",
+    "value": {
+     "night": 327,
+     "early": 578,
+     "day": 922
+    },
+    "unit": "veh/h",
+    "kind": "new_input"
+   },
+   "truck_share": {
+    "label": "Trucks, share of vehicles other than buses",
+    "value": {
+     "night": 5.5,
+     "early": 9.6,
+     "day": 5.7
+    },
+    "unit": "%",
+    "kind": "new_input"
+   },
+   "buses_per_hour": {
+    "label": "Scheduled buses per hour",
+    "value": {
+     "night": 4.9,
+     "early": 19,
+     "day": 24.7
+    },
+    "unit": "buses/h",
+    "kind": "new_input"
+   },
+   "heavy_equivalent": {
+    "label": "Cars one truck or bus equals",
+    "value": 15,
+    "unit": "cars",
+    "kind": "new_input"
+   }
+  },
+  "nightlife": {
+   "venues": {
+    "label": "Licensed venues within 150 m",
+    "value": 24,
+    "unit": "count",
+    "kind": "today_input"
+   },
+   "complaints": {
+    "label": "Party, music and loud-talking complaints within 150 m, 24 months",
+    "value": {
+     "night": 29,
+     "early": 2,
+     "day": 47
+    },
+    "unit": "count",
+    "kind": "today_input"
+   },
+   "complaint_nights": {
+    "label": "Nights with a complaint within 150 m, per year",
+    "value": {
+     "night": 13,
+     "early": 1,
+     "day": 21
+    },
+    "unit": "nights/yr",
+    "kind": "new_input"
+   },
+   "cafes": {
+    "label": "Licensed outdoor dining within 150 m",
+    "value": {
+     "sidewalk": 2,
+     "roadway": 2
+    },
+    "unit": "count",
+    "kind": "new_input"
+   },
+   "outdoor_hours": {
+    "label": "Share of the slot with tables busy",
+    "value": {
+     "night": 0.143,
+     "early": 0,
+     "day": 0.214
+    },
+    "unit": "",
+    "kind": "new_input"
+   }
+  },
+  "building": {
+   "units": {
+    "label": "Neighbors: apartments in the building",
+    "value": 284,
+    "unit": "apartments",
+    "kind": "today_input"
+   },
+   "floors": {
+    "label": "Neighbors: floors in the building",
+    "value": 20,
+    "unit": "floors",
+    "kind": "today_input"
+   },
+   "class_ratio": {
+    "label": "Neighbors: complaints vs expected, this type of building",
+    "value": 0.78,
+    "unit": "x",
+    "kind": "new_input"
+   },
+   "class_typical": {
+    "label": "Neighbors: the same ratio for a typical Manhattan apartment",
+    "value": 0.69,
+    "unit": "x",
+    "kind": "new_input"
+   },
+   "j_type_share": {
+    "label": "Neighbors: share of the type gap we add",
+    "value": 0.5,
+    "unit": "",
+    "kind": "new_input"
+   },
+   "upf": {
+    "label": "Neighbors: apartments per floor",
+    "value": 7.1,
+    "unit": "apartments",
+    "kind": "new_input"
+   },
+   "upf_typical": {
+    "label": "Neighbors: typical apartments per floor in Manhattan",
+    "value": 6.8,
+    "unit": "apartments",
+    "kind": "new_input"
+   },
+   "str_n": {
+    "label": "Neighbors: short-stay whole-apartment listings within 150 m",
+    "value": 2,
+    "unit": "listings",
+    "kind": "new_input"
+   },
+   "u150": {
+    "label": "Neighbors: apartments within 150 m",
+    "value": 2596,
+    "unit": "apartments",
+    "kind": "new_input"
+   }
+  },
+  "sirens": {
+   "hospital_m": {
+    "label": "Nearest hospital",
+    "value": 365,
+    "unit": "m",
+    "kind": "today_input"
+   },
+   "firehouse_m": {
+    "label": "Nearest firehouse or ambulance station",
+    "value": 292,
+    "unit": "m",
+    "kind": "today_input"
+   },
+   "police_m": {
+    "label": "Nearest police station",
+    "value": 313,
+    "unit": "m",
+    "kind": "today_input"
+   },
+   "street_fire": {
+    "label": "Fire responses on the nearest street",
+    "value": 0,
+    "unit": "trips/day",
+    "kind": "new_input"
+   },
+   "street_ambulance": {
+    "label": "Ambulance responses on the nearest street",
+    "value": 24,
+    "unit": "trips/day",
+    "kind": "new_input"
+   },
+   "street_transport": {
+    "label": "Hospital transports on the nearest street",
+    "value": 22.9,
+    "unit": "trips/day",
+    "kind": "new_input"
+   },
+   "busiest_street": {
+    "label": "Busiest street within 300 m",
+    "value": 82.5,
+    "unit": "trips/day",
+    "kind": "new_input"
+   },
+   "near_fire": {
+    "label": "Fire responses within 300 m, distance-weighted",
+    "value": {
+     "night": 0.059,
+     "early": 0.039,
+     "day": 0.071
+    },
+    "unit": "trips/h",
+    "kind": "new_input"
+   },
+   "near_ambulance": {
+    "label": "Ambulance responses within 300 m, distance-weighted",
+    "value": {
+     "night": 5.795,
+     "early": 3.723,
+     "day": 7.941
+    },
+    "unit": "trips/h",
+    "kind": "new_input"
+   },
+   "near_transport": {
+    "label": "Hospital transports within 300 m, distance-weighted",
+    "value": {
+     "night": 3.405,
+     "early": 2.363,
+     "day": 4.442
+    },
+    "unit": "trips/h",
+    "kind": "new_input"
+   }
+  },
+  "construction": {
+   "street_sites": {
+    "label": "Street-work sites within 100 m",
+    "value": 15,
+    "unit": "count",
+    "kind": "new_input"
+   },
+   "street_active": {
+    "label": "Of those, active now",
+    "value": 4,
+    "unit": "count",
+    "kind": "new_input"
+   },
+   "street_night_sites": {
+    "label": "Of those, with night hours in the permit text",
+    "value": 0,
+    "unit": "count",
+    "kind": "new_input"
+   },
+   "ahv_sites": {
+    "label": "After-hours variance sites within 100 m",
+    "value": 1,
+    "unit": "count",
+    "kind": "new_input"
+   },
+   "ahv_nights": {
+    "label": "Variance nights in the past year",
+    "value": 12,
+    "unit": "count",
+    "kind": "new_input"
+   },
+   "class_weights": {
+    "label": "Weight by kind of street work",
+    "value": {
+     "heavy": 1,
+     "repair": 0.6,
+     "light": 0.2
+    },
+    "unit": "",
+    "kind": "new_input"
+   },
+   "active_bonus": {
+    "label": "Bonus for work running now",
+    "value": 0.25,
+    "unit": "site-years",
+    "kind": "new_input"
+   },
+   "overlap_discount": {
+    "label": "Overlap with 311 complaints",
+    "value": 0.6,
+    "unit": "share",
+    "kind": "new_input"
+   },
+   "reason_weights": {
+    "label": "Weight by reason for the variance",
+    "value": {
+     "City Construction Project": 1,
+     "Emergency Work": 1,
+     "Undue Hardship": 0.8,
+     "Public Safety": 0.8,
+     "Construction activities with minimal noise impact": 0.3
+    },
+    "unit": "",
+    "kind": "new_input"
+   },
+   "p_max": {
+    "label": "Most nights that can count as work nights",
+    "value": 0.8,
+    "unit": "share",
+    "kind": "new_input"
+   }
+  }
+ },
+ "routes": {
+  "covered": true,
+  "nearest_street": {
+   "name": "West 57th Street",
+   "m": 32,
+   "fire_per_day": 0,
+   "ambulance_per_day": 24,
+   "transport_per_day": 22.9
+  },
+  "busiest_street": {
+   "name": "Columbus Avenue",
+   "trips_per_day": 82.5
+  },
+  "nearest": {
+   "hospital": {
+    "m": 365,
+    "name": "MOUNT SINAI WEST"
+   },
+   "firehouse": {
+    "m": 292,
+    "name": "ENGINE 23"
+   },
+   "police_station": {
+    "m": 313,
+    "name": "MIDTWN NORTH POLICE STATION"
+   }
+  },
+  "radius_m": 300,
+  "window": [
+   "2025-10-01",
+   "2026-10-01"
+  ]
+ }
+}

@@ -1,0 +1,151 @@
+/**
+ * The listing reader's replay, used until `POST /read` is live. Adapted from the website
+ * (apps/web/src/lib/mock/reader.ts). It reads the listing text with fixed rules instead of a model, and keeps the
+ * reader's one rule: every field it reads carries the exact line of the listing it came from, and anything it
+ * cannot find is "can't tell". It does not see photos; it says so. Then it scores the building with the real
+ * engine (lib/score.ts) and streams each step as a turn.
+ *
+ * Two steps the website's replay does not have: a listing that says it is outside the five boroughs stops before
+ * the geocoder, and a geocoder match that is not the listing's building stops before the score (lib/nyc.ts).
+ */
+import { checkPlace, sameBuilding } from '../nyc.ts';
+import { getScore } from '../score.ts';
+import type { Answers, EvidenceRef, Field, Observed, ReadInput, ReaderResult, ReaderTurn } from '../types.ts';
+import { DEFAULT_ANSWERS, addressLine, listWords, observedLabel, pct, sideLabel } from '../words.ts';
+import { extract } from './extract.ts';
+
+class Aborted extends Error {
+  name = 'AbortError';
+}
+
+/**
+ * The replay once paced its steps (360 ms each) so the panel could show them one by one. The panel now shows one
+ * line of progress, not the steps (Rafa, 2026-10-29), so the pause is gone: it cost three to four seconds a listing.
+ */
+const PACE = 0;
+
+function wait(ms: number, signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) return reject(new Aborted());
+    const t = setTimeout(resolve, ms * PACE);
+    signal?.addEventListener('abort', () => {
+      clearTimeout(t);
+      reject(new Aborted());
+    }, { once: true });
+  });
+}
+
+const q = (s: string) => `“${s}”`;
+const ev = (f: Field<unknown>): EvidenceRef[] => f.evidence;
+
+export async function mockRead(input: ReadInput, onTurn: (t: ReaderTurn) => void, signal?: AbortSignal): Promise<ReaderResult> {
+  const answers: Answers = input.answers ?? DEFAULT_ANSWERS;
+  const x = extract(input.text);
+  const turns: ReaderTurn[] = [];
+  const emit = async (t: Omit<ReaderTurn, 'i'>, delay = 360) => {
+    await wait(delay, signal);
+    const turn = { ...t, i: turns.length } as ReaderTurn;
+    turns.push(turn);
+    onTurn(turn);
+  };
+
+  const words = input.text.trim().split(/\s+/).filter(Boolean).length;
+  const photos = input.photos.length + (input.photo_urls?.length ?? 0);
+  await emit({
+    kind: 'read', title: 'Read the listing',
+    detail: `${words} words${photos ? `, ${photos} photo${photos > 1 ? 's' : ''}` : ''}. Facts only, each tied to its line.`,
+  }, 250);
+  if (photos) {
+    await emit({
+      kind: 'look', status: 'cant_tell', title: `${photos === 1 ? 'The photo is' : `${photos} photos are`} not read in the replay`,
+      detail: 'The live reader looks for windows, AC units, the view and the walls in each photo.',
+    }, 300);
+  }
+
+  const { address, unit, floor, side } = x.fields;
+  await emit(address.status === 'read'
+    ? { kind: 'read', title: 'Address', detail: q(address.value!), evidence: ev(address) }
+    : { kind: 'read', status: 'cant_tell', title: 'Address: not in the listing' });
+  if (unit.status === 'read') await emit({ kind: 'read', title: `Unit ${unit.value}`, detail: q(unit.evidence[0].source === 'text' ? unit.evidence[0].quote : ''), evidence: ev(unit) }, 300);
+  await emit(floor.status === 'read'
+    ? { kind: 'read', title: `Floor ${floor.value}`, detail: q((floor.evidence[0] as { quote: string }).quote), evidence: ev(floor) }
+    : { kind: 'read', status: 'cant_tell', title: 'Floor: can’t tell', detail: 'The listing does not say. The score uses the building’s middle floor and shows the range.' });
+  if (x.sideConflict) {
+    await emit({ kind: 'read', status: 'cant_tell', title: 'Side: the listing says both', detail: `${q(x.sideConflict[0])} and ${q(x.sideConflict[1])}. Scored as unknown, with the range.` });
+  } else {
+    await emit(side.status === 'read'
+      ? { kind: 'read', title: `Side: ${sideLabel(side.value).toLowerCase()}`, detail: q((side.evidence[0] as { quote: string }).quote), evidence: ev(side) }
+      : { kind: 'read', status: 'cant_tell', title: 'Side: can’t tell', detail: 'Nothing says street or rear. The score shows both ends.' });
+  }
+
+  if (x.ignored.length) {
+    await emit({
+      kind: 'note', title: `Ignored ${x.ignored.length} adjective${x.ignored.length > 1 ? 's' : ''}`,
+      detail: `${listWords(x.ignored.slice(0, 6).map(q))}${x.ignored.length > 6 ? ' and more' : ''}: a listing’s adjectives are not evidence.`,
+    });
+  }
+
+  const OBS_LABEL: Record<keyof Observed, string> = { view: 'View', windows: 'Windows', ac_units: 'AC units', wall_material: 'Walls' };
+  const seen = (Object.keys(OBS_LABEL) as (keyof Observed)[]).filter((k) => x.observed[k].status === 'read');
+  for (const k of seen) {
+    const f = x.observed[k];
+    await emit({ kind: 'read', title: `${OBS_LABEL[k]}: ${observedLabel(k, f.value).toLowerCase()}`, detail: q((f.evidence[0] as { quote: string }).quote), evidence: ev(f) }, 280);
+  }
+  const unseen = (Object.keys(OBS_LABEL) as (keyof Observed)[]).filter((k) => x.observed[k].status !== 'read');
+  if (unseen.length) {
+    await emit({ kind: 'read', status: 'cant_tell', title: `Can’t tell: ${listWords(unseen.map((k) => (k === 'ac_units' ? 'AC units' : OBS_LABEL[k].toLowerCase())))}`, detail: 'Shown, never guessed. These do not feed the score yet.' }, 280);
+  }
+
+  const readCount = [address, unit, floor, side].filter((f) => f.status === 'read').length;
+  await emit({
+    kind: 'check', title: 'submit_listing accepted',
+    detail: `${readCount} of 4 fields read, each with its quoted line; ${4 - readCount} can’t tell.`,
+  }, 450);
+
+  const result: ReaderResult = { fields: x.fields, position: x.position, observed: x.observed, score: null, trace: turns, mode: 'mock', needs: [], notes: [] };
+  if (!x.geocode) {
+    await emit({ kind: 'ask', status: 'cant_tell', title: 'Which building is it?', detail: 'The listing has no street address. Add it to score it.' }, 300);
+    return { ...result, status: 'partial', needs: ['address'] };
+  }
+  const place = checkPlace(input.text);
+  if (place.inNyc === false) {
+    await emit({ kind: 'geocode', status: 'cant_tell', title: 'Outside New York City', detail: `${place.why} Hush IQ scores the five boroughs only.` }, 300);
+    return { ...result, status: 'partial', needs: ['nyc'], notes: [place.why] };
+  }
+
+  let score;
+  try {
+    [score] = await Promise.all([
+      getScore(x.geocode, { floor: floor.value, position: x.position }, answers, signal),
+      wait(400, signal),
+    ]);
+  } catch (e) {
+    if ((e as Error).name === 'AbortError') throw e;
+    await emit({ kind: 'geocode', status: 'error', title: 'Could not find that building', detail: (e as Error).message }, 0);
+    throw e;
+  }
+  const found = addressLine(score.address.label, score.address.query);
+  if (!sameBuilding(address.value ?? x.geocode, score.address.label ?? '')) {
+    await emit({
+      kind: 'geocode', status: 'refused', title: 'The city’s geocoder found a different building',
+      detail: `${found}, not ${q(address.value ?? x.geocode)}. Not scored.`,
+    }, 0);
+    return { ...result, status: 'partial', needs: ['nyc'], notes: [`The closest New York City match was ${found}.`] };
+  }
+  const facts = score.building_facts;
+  const built = facts?.yearbuilt ? `, built ${facts.yearbuilt}` : '';
+  const floors = score.unit.building_floors ? `${score.unit.building_floors} floors` : 'height unknown';
+  await emit({
+    kind: 'geocode', title: 'Found the building',
+    detail: `${found} · ${floors}${built}${score.address.bbl ? ` · BBL ${score.address.bbl}` : ''}`,
+  }, 0);
+  await emit({
+    kind: 'tool', title: `Pulled ${score.sources.length || 8} city datasets`,
+    detail: '311 complaints, PLUTO, street centerline, DOB permits, liquor licenses, subway, facilities.',
+  }, 320);
+  await emit({
+    kind: 'score', title: `Ranked against ${score.manhattan.buildings} Manhattan buildings`,
+    detail: `${score.verdict}: quieter than ${pct(score.quieter_than)} of Manhattan apartments.`,
+  }, 380);
+  return { ...result, status: 'complete', score, score_engine: 'v2', location: score.address };
+}
