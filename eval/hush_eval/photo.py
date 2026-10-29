@@ -7,12 +7,15 @@
     eval/photo_test/<nn>/model.photos.json         the reader on the photos alone, no text (`photo run --photos-only`)
     eval/photo_test/<nn>/model.photos-clean.json   the same without the photos Rafa tagged as leaking the answer
 
-Only template/ and the synthetic 00/ are tracked; the real listings stay on Rafa's disk (photo_test/.gitignore).
+Only template/ and the synthetic 00/ are tracked. Rafa's listings live outside git, in the folder HIQ_PHOTO_TEST
+names, else ~/Documents/hush-iq/photo_test when it exists (the extension's Save writes there), else eval/photo_test,
+whose .gitignore keeps them out of the public repo.
 
 The text key (textkey.py, HIQ-80) scores the photos-only run against what the listing's own text states, so the
 fields the text states need no photo labeling: a confirm click is the label.
 """
 import json
+import os
 import re
 import shutil
 from datetime import datetime, timezone
@@ -23,9 +26,13 @@ from . import checks as C
 from . import shapes as S
 from . import textkey as T
 
-ROOT = Path(__file__).resolve().parents[1] / "photo_test"
+REPO_ROOT = Path(__file__).resolve().parents[1] / "photo_test"          # template/ and the synthetic 00/
+HOME_ROOT = Path.home() / "Documents" / "hush-iq" / "photo_test"
+ROOT = Path(os.environ.get("HIQ_PHOTO_TEST") or (HOME_ROOT if HOME_ROOT.is_dir() else REPO_ROOT)).expanduser()
 SCHEMA = "hush-iq/photo-labels/1"
 PHOTO_EXT = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".heic", ".avif"}
+READER_EXT = {".jpg", ".jpeg", ".png", ".webp", ".gif"}   # what the reader accepts (services/agent listing.py)
+READER_MAX_PHOTOS = 12                                     # and how many per listing
 
 # The threshold rule (README): a field reaches the score when, on the labeled set,
 MIN_ACCURACY = 0.85     # it is right on at least 85% of the listings where Rafa could tell,
@@ -45,7 +52,19 @@ def listing_dirs(root=ROOT, include_example=False):
     for d in sorted(Path(root).iterdir() if Path(root).is_dir() else []):
         if d.is_dir() and re.fullmatch(r"\d{2}", d.name) and (include_example or d.name != "00"):
             out.append(d)
+    if include_example and not (Path(root) / "00").is_dir() and (REPO_ROOT / "00").is_dir():
+        out.insert(0, REPO_ROOT / "00")                    # Rafa's folder is outside git: the example stays in it
     return out
+
+
+def reader_photos(paths):
+    """The photos the reader can take, in order, and why any others are left out."""
+    sent = [p for p in paths if p.suffix.lower() in READER_EXT]
+    why = [f"{p.name} is a format the reader refuses" for p in paths if p.suffix.lower() not in READER_EXT]
+    if len(sent) > READER_MAX_PHOTOS:
+        why.append(f"{len(sent)} photos: the reader takes the first {READER_MAX_PHOTOS}")
+        sent = sent[:READER_MAX_PHOTOS]
+    return sent, why
 
 
 def photos_of(d):
@@ -123,7 +142,9 @@ def check(root=ROOT, include_example=False):
         else:
             problems += 1
         model = "model.json" if (d / "model.json").exists() else "not run"
-        lines.append(f"{d.name}  {n:2d} photos  {len(text):5d} chars  {state}  ({model})")
+        _, left_out = reader_photos(photos_of(d))
+        lines.append(f"{d.name}  {n:2d} photos  {len(text):5d} chars  {state}  ({model})"
+                     + "".join(f"; {w}" for w in left_out))
     return lines, ready, problems
 
 
@@ -303,6 +324,7 @@ def run(root=ROOT, mode="live", transport="auto", include_example=False, force=F
 def _read(svc, d, out_name, text, photo_paths, force):
     if (d / out_name).exists() and not force:
         return f"{d.name} skipped, {out_name} exists (use --force)"
+    photo_paths, left_out = reader_photos(photo_paths)
     photos = [A._photo_payload(p) for p in photo_paths]
     case = {"listing": {"text": text, "photos": photos},
             "fixtures": {"reader": load_json(d / out_name.replace(".json", ".fixture.json"))}}
@@ -314,7 +336,8 @@ def _read(svc, d, out_name, text, photo_paths, force):
         return f"{d.name} no output ({svc.why})"
     (d / out_name).write_text(json.dumps(out, indent=2, ensure_ascii=False) + "\n")
     probs = C.reader_grounding(out or {}, {"text": text, "photos": photos})
-    return f"{d.name} {out_name}: {len(photos)} photos, {meta['latency_s']:.1f} s, {len([p for p in probs if p.hard])} grounding problems"
+    return (f"{d.name} {out_name}: {len(photos)} photos, {meta['latency_s']:.1f} s, {len([p for p in probs if p.hard])} grounding problems"
+            + "".join(f"; {w}" for w in left_out))
 
 
 # ---------------------------------------------------------------- the browser fallback

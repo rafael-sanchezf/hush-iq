@@ -178,13 +178,19 @@ photo_test/
     model.photos-clean.json   the same without the photos Rafa tagged
 ```
 
-`photo_test/.gitignore` keeps everything but `template/` and `00/` out of git. The listings and photos belong
-to their owners, and the repo is public.
+Rafa's listings live outside git, in `~/Documents/hush-iq/photo_test`. The extension's Save creates it and writes there,
+and every `photo` command reads it. `HIQ_PHOTO_TEST` names another folder, and without either the commands use
+`eval/photo_test`. There, `photo_test/.gitignore` keeps everything but `template/` and `00/` out of git. The
+listings and photos belong to their owners, and the repo is public. `--example` adds the synthetic 00 from the
+repo wherever the listings are.
+
+The reader takes at most 12 photos, as JPEG, PNG, WebP or GIF. `photo check` names any folder with more or with
+another format, and `photo run` sends the first 12 it can read.
 
 ### Rafa's 45 minutes (HIQ-47)
 
 1. Open `eval/labeler.html` in Chrome by double-clicking it. Click **Open photo_test folder** and pick
-   `eval/photo_test`. One minute.
+   `~/Documents/hush-iq/photo_test`. One minute.
 2. For each listing, about 1.5 minutes:
    1. Click **New listing**, then paste the link and the description.
    2. For each photo, right-click it on the listing, choose **Copy Image**, and press ⌘V in the labeler.

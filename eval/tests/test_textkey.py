@@ -11,7 +11,7 @@ from hush_eval import textkey as T
 from hush_eval import runner
 
 CASE_TEXTS = [c["listing"]["text"] for c in runner.load_cases()]
-EXAMPLE_TEXT = (photo.ROOT / "00" / "listing.txt").read_text()
+EXAMPLE_TEXT = (photo.REPO_ROOT / "00" / "listing.txt").read_text()
 
 
 def values(text):
