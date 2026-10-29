@@ -86,7 +86,7 @@ export async function mockRead(input: ReadInput, onTurn: (t: ReaderTurn) => void
   }
   const unseen = (Object.keys(OBS_LABEL) as (keyof Observed)[]).filter((k) => x.observed[k].status !== 'read');
   if (unseen.length) {
-    await emit({ kind: 'read', status: 'cant_tell', title: `Can’t tell: ${listWords(unseen.map((k) => OBS_LABEL[k].toLowerCase()))}`, detail: 'Shown, never guessed. These do not feed the score yet.' }, 320);
+    await emit({ kind: 'read', status: 'cant_tell', title: `Can’t tell: ${listWords(unseen.map((k) => (k === 'ac_units' ? 'AC units' : OBS_LABEL[k].toLowerCase())))}`, detail: 'Shown, never guessed. These do not feed the score yet.' }, 320);
   }
 
   if (sample?.id === 'claremont') {
