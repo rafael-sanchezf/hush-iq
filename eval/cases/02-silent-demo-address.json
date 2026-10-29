@@ -1,0 +1,256 @@
+{
+  "id": "02-silent-demo-address",
+  "about": "The demo address with a silent listing: no floor, no side. Expected values and a range, never a guess.",
+  "tags": [
+    "silent",
+    "demo"
+  ],
+  "listing": {
+    "text": "Spacious two-bedroom at 140 Claremont Avenue. Hardwood floors throughout, an eat-in kitchen and generous closets. Elevator, live-in super and a bike room. Close to the 1 train and Riverside Park. Heat and hot water included. Guarantors welcome. Contact us to schedule a viewing this week.",
+    "photos": []
+  },
+  "gold": {
+    "address": "140 Claremont Avenue",
+    "unit": null,
+    "floor": null,
+    "side": null,
+    "building_floors": 6
+  },
+  "answers": {
+    "sleep_from": 0,
+    "sleep_until": 8,
+    "day_bothers": true,
+    "bothers": [
+      "neighbors",
+      "sirens"
+    ]
+  },
+  "fixtures": {
+    "reader": {
+      "status": "complete",
+      "stopped": "submitted",
+      "fields": {
+        "address": {
+          "value": "140 Claremont Avenue",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "140 Claremont Avenue",
+              "start": 24,
+              "end": 44
+            }
+          ]
+        },
+        "unit": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "floor": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "side": {
+          "value": "unknown",
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "position": "unknown",
+      "observed": {
+        "view": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "windows": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "ac_units": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "wall_material": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "score": {
+        "engine": "v2",
+        "verdict": "Typical",
+        "quieter_than": 41.5,
+        "uncapped_verdict": "Typical",
+        "caps": [],
+        "range": {
+          "loudest_case": {
+            "verdict": "Loud",
+            "quieter_than": 28.3,
+            "floor": 1,
+            "side": "front"
+          },
+          "quietest_case": {
+            "verdict": "Typical",
+            "quieter_than": 49.2,
+            "floor": 6,
+            "side": "rear"
+          }
+        },
+        "ingredients": [
+          {
+            "name": "street",
+            "label": "Street",
+            "quieter_than": 76.7,
+            "verdict": "Quiet",
+            "weight": 17.8,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "CLAREMONT AVENUE: local street, 2 travel lanes, 25 mph, 14 m away"
+            ]
+          },
+          {
+            "name": "nightlife",
+            "label": "Nightlife",
+            "quieter_than": 22.4,
+            "verdict": "Loud",
+            "weight": 8.3,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "4 licensed venues within 150 m: 1 bars, 3 restaurants"
+            ]
+          },
+          {
+            "name": "building",
+            "label": "Building",
+            "quieter_than": 39.5,
+            "verdict": "Loud",
+            "weight": 33.3,
+            "ticked": true,
+            "temporary": false,
+            "evidence": [
+              "28 residential noise complaints to 311 at this building in 24 months"
+            ]
+          },
+          {
+            "name": "sirens",
+            "label": "Sirens",
+            "quieter_than": 31.4,
+            "verdict": "Loud",
+            "weight": 33.3,
+            "ticked": true,
+            "temporary": false,
+            "evidence": [
+              "1 emergency facilities within 600 m"
+            ]
+          },
+          {
+            "name": "construction",
+            "label": "Construction",
+            "quieter_than": 33.1,
+            "verdict": "Loud",
+            "weight": 7.2,
+            "ticked": false,
+            "temporary": true,
+            "evidence": [
+              "no active DOB permits on this block"
+            ]
+          }
+        ],
+        "answers": {
+          "sleep": {
+            "from": 0,
+            "until": 8
+          },
+          "day_bothers": true,
+          "ticks": [
+            "neighbors",
+            "sirens"
+          ]
+        },
+        "unit": {
+          "floor": 4,
+          "floor_from": "expected",
+          "side": "unknown",
+          "side_from": "unknown",
+          "building_floors": 6
+        },
+        "address": {
+          "label": "140 CLAREMONT AVENUE, New York, NY, USA",
+          "bbl": "1019930057",
+          "borough": "Manhattan"
+        }
+      },
+      "score_engine": "v2",
+      "needs": [],
+      "trace": [
+        {
+          "n": 1,
+          "by": "model",
+          "tool": "submit_listing",
+          "ok": true
+        }
+      ],
+      "mode": "fixture"
+    },
+    "verdict": {
+      "evidence": [
+        {
+          "id": "E1",
+          "text": "Overall for these sleep hours: Typical, quieter than 41.5% of Manhattan apartments"
+        },
+        {
+          "id": "E2",
+          "text": "Street: quieter than 76.7% of Manhattan apartments; CLAREMONT AVENUE: local street, 2 travel lanes, 25 mph, 14 m away"
+        },
+        {
+          "id": "E3",
+          "text": "Nightlife: quieter than 22.4% of Manhattan apartments; 4 licensed venues within 150 m: 1 bars, 3 restaurants"
+        },
+        {
+          "id": "E4",
+          "text": "Building: quieter than 39.5% of Manhattan apartments; 28 residential noise complaints to 311 at this building in 24 months"
+        },
+        {
+          "id": "E5",
+          "text": "Sirens: quieter than 31.4% of Manhattan apartments; 1 emergency facilities within 600 m"
+        },
+        {
+          "id": "E6",
+          "text": "Construction: quieter than 33.1% of Manhattan apartments; no active DOB permits on this block"
+        },
+        {
+          "id": "E7",
+          "text": "The listing leaves floor or side open: from Loud on the loudest floor and side to Typical on the quietest"
+        }
+      ],
+      "sentences": [
+        {
+          "text": "For the hours you sleep, this apartment is Typical for Manhattan: quieter than 41.5% of apartments.",
+          "cites": [
+            "E1"
+          ]
+        },
+        {
+          "text": "What you will hear most is nightlife, quieter than only 22.4% of Manhattan.",
+          "cites": [
+            "E3"
+          ]
+        },
+        {
+          "text": "The listing does not settle the floor and side, so expect anything from Loud to Typical.",
+          "cites": [
+            "E7"
+          ]
+        }
+      ],
+      "writer": "template"
+    }
+  }
+}

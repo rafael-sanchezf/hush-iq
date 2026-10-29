@@ -1,0 +1,16 @@
+{
+  "schema": "hush-iq/photo-labels/1",
+  "listing": "",
+  "link": "",
+  "labels": {
+    "floor": null,
+    "side": null,
+    "view": null,
+    "windows": null,
+    "ac_units": null,
+    "wall_material": null
+  },
+  "prefilled": [],
+  "notes": "",
+  "labeled_at": null
+}

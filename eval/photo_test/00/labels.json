@@ -1,0 +1,22 @@
+{
+  "schema": "hush-iq/photo-labels/1",
+  "listing": "00",
+  "link": "",
+  "labels": {
+    "floor": 3,
+    "side": "front",
+    "view": "street",
+    "windows": "standard",
+    "ac_units": "yes",
+    "wall_material": "brick"
+  },
+  "prefilled": [],
+  "photo_tags": {
+    "04.png": [
+      "floor_plan",
+      "printed_text"
+    ]
+  },
+  "notes": "Synthetic example: four drawn photos (living room window with an AC unit onto the street, a brick bedroom wall, a kitchen window onto a shaft, and a floor plan that prints the unit and the street, tagged).",
+  "labeled_at": "2026-10-28T23:00:00+00:00"
+}

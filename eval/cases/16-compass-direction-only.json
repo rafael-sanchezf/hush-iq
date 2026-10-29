@@ -1,0 +1,278 @@
+{
+  "id": "16-compass-direction-only",
+  "about": "'South-facing' is a compass direction, not street or rear: side cannot be told from the text.",
+  "tags": [
+    "silent-side"
+  ],
+  "listing": {
+    "text": "Eleventh-floor one-bedroom at 1 Fifth Avenue. South-facing, with open views over the rooftops toward downtown. Art deco building with a full-time doorman. Through-wall air conditioner in the living room.",
+    "photos": []
+  },
+  "gold": {
+    "address": "1 Fifth Avenue",
+    "unit": null,
+    "floor": 11,
+    "side": null,
+    "observed": {
+      "view": "open",
+      "ac_units": "yes"
+    },
+    "building_floors": 27
+  },
+  "answers": {
+    "sleep_from": 23,
+    "sleep_until": 7,
+    "day_bothers": true,
+    "bothers": [
+      "sirens"
+    ]
+  },
+  "fixtures": {
+    "reader": {
+      "status": "complete",
+      "stopped": "submitted",
+      "fields": {
+        "address": {
+          "value": "1 Fifth Avenue",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "1 Fifth Avenue",
+              "start": 30,
+              "end": 44
+            }
+          ]
+        },
+        "unit": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "floor": {
+          "value": 11,
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "Eleventh-floor",
+              "start": 0,
+              "end": 14
+            }
+          ]
+        },
+        "side": {
+          "value": "unknown",
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "position": "unknown",
+      "observed": {
+        "view": {
+          "value": "skyline",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "open views over the rooftops",
+              "start": 65,
+              "end": 93
+            }
+          ]
+        },
+        "windows": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "ac_units": {
+          "value": "through_wall",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "Through-wall air conditioner",
+              "start": 155,
+              "end": 183
+            }
+          ]
+        },
+        "wall_material": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "score": {
+        "engine": "v2",
+        "verdict": "Typical",
+        "quieter_than": 58.8,
+        "uncapped_verdict": "Typical",
+        "caps": [],
+        "range": {
+          "loudest_case": {
+            "verdict": "Typical",
+            "quieter_than": 43.5,
+            "floor": 11,
+            "side": "front"
+          },
+          "quietest_case": {
+            "verdict": "Quiet",
+            "quieter_than": 70.5,
+            "floor": 11,
+            "side": "rear"
+          }
+        },
+        "ingredients": [
+          {
+            "name": "street",
+            "label": "Street",
+            "quieter_than": 32.5,
+            "verdict": "Loud",
+            "weight": 22.9,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "5 AVENUE: major street, 2 travel lanes, 25 mph, 17 m away"
+            ]
+          },
+          {
+            "name": "nightlife",
+            "label": "Nightlife",
+            "quieter_than": 9.4,
+            "verdict": "Very loud",
+            "weight": 10.7,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "18 licensed venues within 150 m: 5 bars, 13 restaurants"
+            ]
+          },
+          {
+            "name": "building",
+            "label": "Building",
+            "quieter_than": 63.9,
+            "verdict": "Quiet",
+            "weight": 14.3,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "34 residential noise complaints to 311 at this building in 24 months"
+            ]
+          },
+          {
+            "name": "sirens",
+            "label": "Sirens",
+            "quieter_than": 91.6,
+            "verdict": "Very quiet",
+            "weight": 42.9,
+            "ticked": true,
+            "temporary": false,
+            "evidence": [
+              "no hospital, firehouse or police station within 600 m"
+            ]
+          },
+          {
+            "name": "construction",
+            "label": "Construction",
+            "quieter_than": 20.5,
+            "verdict": "Loud",
+            "weight": 9.3,
+            "ticked": false,
+            "temporary": true,
+            "evidence": [
+              "no active DOB permits on this block"
+            ]
+          }
+        ],
+        "answers": {
+          "sleep": {
+            "from": 23,
+            "until": 7
+          },
+          "day_bothers": true,
+          "ticks": [
+            "sirens"
+          ]
+        },
+        "unit": {
+          "floor": 11,
+          "floor_from": "listing",
+          "side": "unknown",
+          "side_from": "unknown",
+          "building_floors": 27
+        },
+        "address": {
+          "label": "1 FIFTH AVENUE, New York, NY, USA",
+          "bbl": "1005500022",
+          "borough": "Manhattan"
+        }
+      },
+      "score_engine": "v2",
+      "needs": [],
+      "trace": [
+        {
+          "n": 1,
+          "by": "model",
+          "tool": "submit_listing",
+          "ok": true
+        }
+      ],
+      "mode": "fixture"
+    },
+    "verdict": {
+      "evidence": [
+        {
+          "id": "E1",
+          "text": "Overall for these sleep hours: Typical, quieter than 58.8% of Manhattan apartments"
+        },
+        {
+          "id": "E2",
+          "text": "Street: quieter than 32.5% of Manhattan apartments; 5 AVENUE: major street, 2 travel lanes, 25 mph, 17 m away"
+        },
+        {
+          "id": "E3",
+          "text": "Nightlife: quieter than 9.4% of Manhattan apartments; 18 licensed venues within 150 m: 5 bars, 13 restaurants"
+        },
+        {
+          "id": "E4",
+          "text": "Building: quieter than 63.9% of Manhattan apartments; 34 residential noise complaints to 311 at this building in 24 months"
+        },
+        {
+          "id": "E5",
+          "text": "Sirens: quieter than 91.6% of Manhattan apartments; no hospital, firehouse or police station within 600 m"
+        },
+        {
+          "id": "E6",
+          "text": "Construction: quieter than 20.5% of Manhattan apartments; no active DOB permits on this block"
+        },
+        {
+          "id": "E7",
+          "text": "The listing leaves floor or side open: from Typical on the loudest floor and side to Quiet on the quietest"
+        }
+      ],
+      "sentences": [
+        {
+          "text": "For the hours you sleep, this apartment is Typical for Manhattan: quieter than 58.8% of apartments.",
+          "cites": [
+            "E1"
+          ]
+        },
+        {
+          "text": "What you will hear most is nightlife, quieter than only 9.4% of Manhattan.",
+          "cites": [
+            "E3"
+          ]
+        },
+        {
+          "text": "The listing does not settle the floor and side, so expect anything from Typical to Quiet.",
+          "cites": [
+            "E7"
+          ]
+        }
+      ],
+      "writer": "template"
+    }
+  }
+}

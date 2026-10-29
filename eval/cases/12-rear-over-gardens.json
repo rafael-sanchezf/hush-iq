@@ -1,0 +1,264 @@
+{
+  "id": "12-rear-over-gardens",
+  "about": "A rear unit over the back gardens, floor in words with a hyphen.",
+  "tags": [
+    "rear"
+  ],
+  "listing": {
+    "text": "Second-floor rear unit at 225 West 10th Street. The bedroom looks out over the back gardens of the block. One-bedroom with a renovated kitchen and a claw-foot tub. Elevator and a live-in super.",
+    "photos": []
+  },
+  "gold": {
+    "address": "225 West 10th Street",
+    "unit": null,
+    "floor": 2,
+    "side": "rear",
+    "observed": {
+      "view": "courtyard"
+    },
+    "building_floors": 5
+  },
+  "answers": {
+    "sleep_from": 22,
+    "sleep_until": 6,
+    "day_bothers": false,
+    "bothers": [
+      "neighbors"
+    ]
+  },
+  "fixtures": {
+    "reader": {
+      "status": "complete",
+      "stopped": "submitted",
+      "fields": {
+        "address": {
+          "value": "225 West 10th Street",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "225 West 10th Street",
+              "start": 26,
+              "end": 46
+            }
+          ]
+        },
+        "unit": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "floor": {
+          "value": 2,
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "Second-floor",
+              "start": 0,
+              "end": 12
+            }
+          ]
+        },
+        "side": {
+          "value": "rear",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "rear unit",
+              "start": 13,
+              "end": 22
+            }
+          ]
+        }
+      },
+      "position": "rear",
+      "observed": {
+        "view": {
+          "value": "rear_yards",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "looks out over the back gardens",
+              "start": 60,
+              "end": 91
+            }
+          ]
+        },
+        "windows": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "ac_units": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "wall_material": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "score": {
+        "engine": "v2",
+        "verdict": "Loud",
+        "quieter_than": 37.5,
+        "uncapped_verdict": "Loud",
+        "caps": [],
+        "range": null,
+        "ingredients": [
+          {
+            "name": "street",
+            "label": "Street",
+            "quieter_than": 27.8,
+            "verdict": "Loud",
+            "weight": 22.9,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "WEST 10 STREET: local street, 1 travel lane, 25 mph, 10 m away"
+            ]
+          },
+          {
+            "name": "nightlife",
+            "label": "Nightlife",
+            "quieter_than": 74.8,
+            "verdict": "Quiet",
+            "weight": 10.7,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "4 licensed venues within 150 m: 0 bars, 4 restaurants"
+            ]
+          },
+          {
+            "name": "building",
+            "label": "Building",
+            "quieter_than": 19.4,
+            "verdict": "Very loud",
+            "weight": 42.9,
+            "ticked": true,
+            "temporary": false,
+            "evidence": [
+              "6 residential noise complaints to 311 at this building in 24 months"
+            ]
+          },
+          {
+            "name": "sirens",
+            "label": "Sirens",
+            "quieter_than": 72.3,
+            "verdict": "Quiet",
+            "weight": 14.3,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "1 emergency facilities within 600 m"
+            ]
+          },
+          {
+            "name": "construction",
+            "label": "Construction",
+            "quieter_than": 47.6,
+            "verdict": "Typical",
+            "weight": 9.3,
+            "ticked": false,
+            "temporary": true,
+            "evidence": [
+              "no active DOB permits on this block"
+            ]
+          }
+        ],
+        "answers": {
+          "sleep": {
+            "from": 22,
+            "until": 6
+          },
+          "day_bothers": false,
+          "ticks": [
+            "neighbors"
+          ]
+        },
+        "unit": {
+          "floor": 2,
+          "floor_from": "listing",
+          "side": "rear",
+          "side_from": "listing",
+          "building_floors": 5
+        },
+        "address": {
+          "label": "225 WEST 10 STREET, New York, NY, USA",
+          "bbl": "1006207502",
+          "borough": "Manhattan"
+        }
+      },
+      "score_engine": "v2",
+      "needs": [],
+      "trace": [
+        {
+          "n": 1,
+          "by": "model",
+          "tool": "submit_listing",
+          "ok": true
+        }
+      ],
+      "mode": "fixture"
+    },
+    "verdict": {
+      "evidence": [
+        {
+          "id": "E1",
+          "text": "Overall for these sleep hours: Loud, quieter than 37.5% of Manhattan apartments"
+        },
+        {
+          "id": "E2",
+          "text": "Street: quieter than 27.8% of Manhattan apartments; WEST 10 STREET: local street, 1 travel lane, 25 mph, 10 m away"
+        },
+        {
+          "id": "E3",
+          "text": "Nightlife: quieter than 74.8% of Manhattan apartments; 4 licensed venues within 150 m: 0 bars, 4 restaurants"
+        },
+        {
+          "id": "E4",
+          "text": "Building: quieter than 19.4% of Manhattan apartments; 6 residential noise complaints to 311 at this building in 24 months"
+        },
+        {
+          "id": "E5",
+          "text": "Sirens: quieter than 72.3% of Manhattan apartments; 1 emergency facilities within 600 m"
+        },
+        {
+          "id": "E6",
+          "text": "Construction: quieter than 47.6% of Manhattan apartments; no active DOB permits on this block"
+        },
+        {
+          "id": "E7",
+          "text": "Floor 2 on the rear side, both from the listing"
+        }
+      ],
+      "sentences": [
+        {
+          "text": "For the hours you sleep, this apartment is Loud for Manhattan: quieter than 37.5% of apartments.",
+          "cites": [
+            "E1"
+          ]
+        },
+        {
+          "text": "What you will hear most is building, quieter than only 19.4% of Manhattan.",
+          "cites": [
+            "E4"
+          ]
+        },
+        {
+          "text": "Floor 2 on the rear side is what the listing says, so the verdict has no range.",
+          "cites": [
+            "E7"
+          ]
+        }
+      ],
+      "writer": "template"
+    }
+  }
+}
