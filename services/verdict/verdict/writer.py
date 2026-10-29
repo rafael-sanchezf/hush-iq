@@ -45,7 +45,7 @@ each with one concrete record (the nearest bar, road or hospital, or a 311 count
 when the evidence gives a loudest and a quietest case because the listing was silent, give that range.
 
 Write as a person would say it, not as the lines are written: verdict words in lowercase inside a sentence ("very
-loud", "quiet"); a rank of 0% as "among the loudest in Manhattan"; no "for nightlife" or "of 6" tails copied over;
+loud", "quiet"); a rank of 0% as "among the loudest in Manhattan"; no "for local businesses" or "of 6" tails copied over;
 no first person ("I", "we"): the paragraph speaks for the evidence.
 
 Code checks every reply and rejects one that breaks any of these rules:

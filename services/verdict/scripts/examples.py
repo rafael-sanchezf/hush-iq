@@ -37,7 +37,7 @@ EXAMPLES = [
         ]}],
     },
     {
-        "title": "151 Ludlow St, a silent listing (no floor, no side); asleep 1 am to 9 am, people and nightlife bother this renter",
+        "title": "151 Ludlow St, a silent listing (no floor, no side); asleep 1 am to 9 am, people and local businesses bother this renter",
         "score": "v2_ludlow_silent.json",
         "fields": {"floor": {"value": None, "status": "cant_tell", "evidence": []},
                    "side": {"value": None, "status": "cant_tell", "evidence": []}},
@@ -51,7 +51,7 @@ EXAMPLES = [
             {"sentences": [
                 s("For a renter asleep from 1 am to 9 am, this apartment is very loud: quieter than 5% of Manhattan "
                   "apartments.", "E1", "E29"),
-                s("Nightlife is the reason, and you said it bothers you: there are 86 licensed venues within 150 m, the "
+                s("Local businesses are the reason, and you said they bother you: there are 86 licensed venues within 150 m, the "
                   "nearest a bar at 152 Ludlow Street, 15 m away.", "E3", "E4", "E5", "E6"),
                 s("311 logged 1,670 party, music or loud-talking complaints within 150 m in 24 months, 916 of them "
                   "between 10 pm and 5 am.", "E8"),

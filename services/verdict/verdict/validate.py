@@ -161,7 +161,8 @@ _TERMS = [
      ("construction", "permit", "demolition", "excavation", "shed")),
     (r"sirens?", ("siren", "hospital", "firehouse", "police", "emergency")),
     (r"neighbou?rs?|upstairs|downstairs|footsteps?", ("neighbor", "residential", "footsteps")),
-    (r"nightlife|part(?:y|ies)|music|crowds?|revel(?:ers|lers)", ("nightlife", "party", "music", "venue", "bar")),
+    (r"nightlife|local business(?:es)?|part(?:y|ies)|music|crowds?|revel(?:ers|lers)",
+     ("nightlife", "local business", "party", "music", "venue", "bar")),
     (r"traffic|cars?|horns?|honking|vehicles?|engines? idling", ("street", "vehicle", "road", "traffic", "lane")),
     (r"schools?|playgrounds?|parks?|church(?:es)?|stadiums?|airports?|helicopters?|heliports?|garbage|sanitation|"
      r"deliver(?:y|ies)|ferr(?:y|ies)|train yards?|bells?|dogs?|barking|generators?|hvac|air condition(?:er|ers|ing)", None),

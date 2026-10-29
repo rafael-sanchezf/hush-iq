@@ -8,7 +8,7 @@ from verdict import mock, writer
 GOOD = {"sentences": [
     {"text": "For the way you sleep, this apartment is very loud: quieter than 5% of Manhattan apartments.",
      "cites": ["E1", "E29"]},
-    {"text": "Nightlife is the reason: 311 logged 1,670 party, music or loud-talking complaints within 150 m in "
+    {"text": "Local businesses are the reason: 311 logged 1,670 party, music or loud-talking complaints within 150 m in "
              "24 months, 916 of them between 10 pm and 5 am.", "cites": ["E3", "E8"]},
     {"text": "The listing gives no floor or side, so this assumes floor 4.", "cites": ["E32", "E33"]},
 ]}
@@ -29,7 +29,7 @@ def test_a_valid_reply_is_used_as_is(lines, backend):
     assert call["tool_choice"] == {"type": "function", "function": {"name": "submit_verdict"}}
     enum = call["tools"][0]["function"]["parameters"]["properties"]["sentences"]["items"]["properties"]["cites"]["items"]["enum"]
     assert enum == [l.id for l in ls]
-    assert "E8: Nightlife: 1670 party" in call["messages"][1]["content"]
+    assert "E8: Local businesses: 1670 party" in call["messages"][1]["content"]
 
 
 def test_an_invented_citation_is_retried_with_the_error_then_accepted(lines, backend):

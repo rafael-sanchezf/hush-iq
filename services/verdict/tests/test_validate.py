@@ -9,7 +9,7 @@ def test_a_grounded_reply_passes(lines):
     reply = {"sentences": [
         {"text": "For the way you sleep, this apartment is very loud: quieter than 5% of Manhattan apartments.",
          "cites": ["E1", "E29"]},
-        {"text": "Nightlife counts for 35% of the verdict because you said it bothers you, and 311 logged 1,670 "
+        {"text": "Local businesses count for 35% of the verdict because you said they bother you, and 311 logged 1,670 "
                  "party, music or loud-talking complaints within 150 m in 24 months, 916 of them between 10 pm and 5 am.",
          "cites": ["E4", "E8"]},
         {"text": "The nearest bar is at 152 Ludlow Street, 15 m away.", "cites": ["E6"]},
@@ -65,6 +65,10 @@ def test_kinds_of_source_must_be_in_the_cited_lines(lines):
     assert errs == ['sentence 1: mentions "school", but no line it cites does (E1)']
     assert validate.check({"sentences": [{"text": "Bars are the loudest thing here.", "cites": ["E5"]}]}, ls) == []
     assert validate.check({"sentences": [{"text": "Bar crowds fill the block.", "cites": ["E5"]}]}, ls) == []
+    # the renter-facing name of the nightlife source is held to the same rule
+    errs = validate.check({"sentences": [{"text": "Local businesses keep the block loud.", "cites": ["E1"]}]}, ls)
+    assert errs == ['sentence 1: mentions "Local businesses", but no line it cites does (E1)']
+    assert validate.check({"sentences": [{"text": "Local businesses keep the block loud.", "cites": ["E3"]}]}, ls) == []
 
 
 def test_ids_stay_out_of_the_text(lines):

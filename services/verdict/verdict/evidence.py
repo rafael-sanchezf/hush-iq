@@ -14,15 +14,16 @@ from dataclasses import dataclass, field
 
 SOURCES = ("street", "nightlife", "building", "sirens", "construction")
 VERDICTS = ("Very loud", "Loud", "Typical", "Quiet", "Very quiet")
-LABEL = {"street": "Street", "nightlife": "Nightlife", "building": "Neighbors", "sirens": "Sirens",
+LABEL = {"street": "Street", "nightlife": "Local businesses", "building": "Neighbors", "sirens": "Sirens",
          "construction": "Construction"}
-NOUN = {"street": "street noise", "nightlife": "nightlife", "building": "neighbor noise", "sirens": "sirens",
+NOUN = {"street": "street noise", "nightlife": "local businesses", "building": "neighbor noise", "sirens": "sirens",
         "construction": "construction"}
-PLURAL = {"sirens"}
+PLURAL = {"sirens", "nightlife"}
+# The renter reads the nightlife source as "Local businesses" (Rafa, Oct 29); the API key stays `nightlife`.
 TICK_TO_SOURCE = {"traffic": "street", "people": "nightlife", "neighbors": "building", "sirens": "sirens",
                   "construction": "construction"}
 SOURCE_TO_TICK = {v: k for k, v in TICK_TO_SOURCE.items()}
-TICK_PHRASE = {"traffic": "traffic bothers you", "people": "people and nightlife bother you",
+TICK_PHRASE = {"traffic": "traffic bothers you", "people": "people and local businesses bother you",
                "neighbors": "neighbors bother you", "sirens": "sirens bother you",
                "construction": "construction bothers you"}
 # The engine's time slots, from WINDOWS in packages/model/noise_score/config.py.
@@ -343,7 +344,7 @@ def _v2(score, fields):
             reason = (f"{NOUN[src]} {verb} in Manhattan's loudest {m.group(1)}%" if m
                       else f"{NOUN[src]} {verb} among Manhattan's loudest")
             if "bothers you" in (c.get("why") or ""):
-                reason += " and you said it bothers you"
+                reason += f" and you said {'they bother' if src in PLURAL else 'it bothers'} you"
             if c.get("applied"):
                 text = f"Cap: {reason}, which holds the verdict at {c['cap']}; without the cap it would be {uncapped}."
             else:
@@ -445,7 +446,7 @@ def _v1(score, answers, fields):
 def _renter(out, sleep_from, sleep_until, day_bothers, ticks):
     if ticks:
         out.add("bothers", "You said these bother you: " + ", ".join(
-            {"people": "people and nightlife"}.get(t, t) for t in ticks) + ".", ticks=list(ticks))
+            {"people": "people and local businesses"}.get(t, t) for t in ticks) + ".", ticks=list(ticks))
     else:
         out.add("bothers", "You did not tick any source as bothering you, so each keeps its default weight.", ticks=[])
     if int(sleep_from) % 24 != int(sleep_until) % 24:

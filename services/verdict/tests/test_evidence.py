@@ -1,7 +1,7 @@
 import pytest
 
 from conftest import SCORES, load
-from verdict import evidence
+from verdict import evidence, template
 from verdict.evidence import DECIBEL
 
 
@@ -55,11 +55,11 @@ def test_caps_name_the_source_and_whether_they_bit(lines):
     score = load("ludlow")
     caps = [l for l in lines("ludlow") if l.kind == "cap"]
     assert [c.source for c in caps] == ["nightlife"]   # the 5% cap, not both: it is the stricter one
-    assert caps[0].text.startswith("Cap not needed: nightlife is in Manhattan's loudest 5%")
+    assert caps[0].text.startswith("Cap not needed: local businesses are in Manhattan's loudest 5%")
     score["verdict"], score["uncapped_verdict"] = "Loud", "Typical"
     score["caps"][0]["applied"] = True
     bit = [l for l in evidence.build(score) if l.kind == "cap"]
-    assert bit[0].text == ("Cap: nightlife is in Manhattan's loudest 5%, which holds the verdict at Loud; "
+    assert bit[0].text == ("Cap: local businesses are in Manhattan's loudest 5%, which holds the verdict at Loud; "
                            "without the cap it would be Typical.")
 
 
@@ -88,7 +88,7 @@ def test_listing_quotes_lose_any_sound_level(lines):
      "Street: Claremont Ave, 36 m away, 2 travel lanes, 25 mph, a bus or truck route."),
     ("FDR DR: highway, 3 travel lanes, 40 mph, 55 m away", "Street: FDR Dr, 55 m away, a highway, 3 travel lanes, 40 mph."),
     ("Elevated subway (1) at 125 St, 120 m away", "Street: elevated subway (1) at the 125 St station, 120 m away."),
-    ("nearest loud: SOMEONE'S NAME (bar), 152 LUDLOW STREET, 15 m", "Nightlife: a bar at 152 Ludlow Street, 15 m away."),
+    ("nearest loud: SOMEONE'S NAME (bar), 152 LUDLOW STREET, 15 m", "Local businesses: a bar at 152 Ludlow Street, 15 m away."),
     ("ENGINE 37/LADDER 40 (firehouse), 415 WEST 125 STREET, 554 m",
      "Sirens: Engine 37/Ladder 40, a firehouse at 415 West 125 Street, 554 m away."),
     ("120 Claremont Avenue: Structural to 2026-12-31",
@@ -99,7 +99,7 @@ def test_listing_quotes_lose_any_sound_level(lines):
      "Neighbors: built 1900, a pre-war walk-up, where wood joists and plaster carry footsteps."),
 ])
 def test_engine_evidence_reads_as_plain_lines(raw, expected):
-    source = {"Street": "street", "Nightlife": "nightlife", "Sirens": "sirens", "Construction": "construction",
+    source = {"Street": "street", "Local businesses": "nightlife", "Sirens": "sirens", "Construction": "construction",
               "Neighbors": "building"}[expected.split(":")[0]]
     assert evidence.detail(source, raw)[0] == expected
 
@@ -109,3 +109,12 @@ def test_a_score_that_is_neither_engine_is_refused():
         evidence.build({"verdict": "Quiet"})
     with pytest.raises(evidence.EvidenceError):
         evidence.build("not a score")
+
+
+@pytest.mark.parametrize("name", list(SCORES))
+def test_the_renter_reads_local_businesses_never_nightlife(lines, name):
+    # Rafa, Oct 29: the source is "Local businesses" wherever a renter reads it; the API key stays `nightlife`.
+    ls = lines(name, {"sleep_from": 23, "sleep_until": 7, "day_bothers": True, "bothers": ["people"]})
+    said = [l.text for l in ls] + [s["text"] for s in template.write(ls)["sentences"]]
+    assert not [t for t in said if "nightlife" in t.lower()]
+    assert any(l.source == "nightlife" and l.text.startswith("Local businesses") for l in ls)
