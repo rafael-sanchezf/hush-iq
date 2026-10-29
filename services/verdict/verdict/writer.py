@@ -15,11 +15,16 @@ Two backends behind one interface, both through the OpenAI SDK:
 
 In both, `cites` is an enum of the ids actually sent. Neither schema is trusted: the checks run on every reply.
 With no key the template writes (the mock-mode default); tests pass a scripted client instead of a real one.
+
+A caller's own key (AI_SWITCH contract, HIQ-76) gets a backend built for that one request by `from_request`: meta and
+openai through the OpenAI SDK with a strict json_schema, anthropic through the Anthropic SDK with a strict
+`output_config.format`. Same prompt, same checks, same retry-then-template for every provider.
 """
+import importlib
 import json
 import os
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from . import template, validate
@@ -55,7 +60,8 @@ Code checks every reply and rejects one that breaks any of these rules:
 7. Give a reason only where a cited line gives that reason. No advice, no sales talk, no adjectives the lines do not
    support."""
 
-FINISH = {"tool": f"Answer by calling {TOOL_NAME} once.", "json_schema": "Answer with the JSON object only."}
+FINISH = {"tool": f"Answer by calling {TOOL_NAME} once.", "json_schema": "Answer with the JSON object only.",
+          "anthropic": "Answer with the JSON object only."}
 
 
 def reply_schema(ids):
@@ -96,14 +102,17 @@ class Backend:
     max_tokens: int = 6000          # reasoning tokens count against it (up to 3,500 seen at effort low); too few
                                     # comes back as empty content with no error
     reasoning_effort: str | None = None
+    temperature: float | None = 0.2  # None for OpenAI's reasoning models, which take only their default
 
     def complete(self, lines, rejected=None, max_tokens=None):
         """One call -> (the raw reply text, JSON and unchecked; what the host said about it: finish reason, tokens)."""
         budget = max_tokens or self.max_tokens
         ids = [l.id for l in lines]
         msgs = [{"role": "system", "content": f"{SYSTEM}\n\n{FINISH[self.mode]}"}] + messages(lines, rejected)
-        kw = {"model": self.model, "messages": msgs, "temperature": 0.2}
-        if self.mode == "json_schema":   # the Meta Model API: max_tokens is a deprecated alias there
+        kw = {"model": self.model, "messages": msgs}
+        if self.temperature is not None:
+            kw["temperature"] = self.temperature
+        if self.mode == "json_schema":   # the Meta Model API and OpenAI: max_tokens is a deprecated alias there
             kw["max_completion_tokens"] = budget
         else:
             kw["max_tokens"] = budget
@@ -124,6 +133,35 @@ class Backend:
             if call.function.name == TOOL_NAME:
                 return call.function.arguments, meta
         return choice.message.content or "", meta   # a host may answer in the content anyway; the checks decide
+
+
+@dataclass
+class AnthropicBackend:
+    """Claude through the Anthropic SDK's Messages API. The reply schema goes in `output_config.format`: forcing a
+    tool call (`tool_choice` tool) is refused with a 400 by Claude Opus 5.5 and Sonnet 5.5. No temperature: API
+    version 2026-10-21 refuses every sampling parameter."""
+    name: str
+    model: str
+    client: object   # an anthropic.Anthropic, or anything with .messages.create
+    max_tokens: int = 6000   # thinking is on by default and counts against it
+    reasoning_effort: str | None = "low"
+    mode: str = field(default="anthropic", init=False)
+
+    def complete(self, lines, rejected=None, max_tokens=None):
+        budget = max_tokens or self.max_tokens
+        output_config = {"format": {"type": "json_schema", "schema": reply_schema([l.id for l in lines])}}
+        if self.reasoning_effort:
+            output_config["effort"] = self.reasoning_effort
+        # one user turn: the evidence, and on the retry the rejected reply and its errors
+        content = [{"type": "text", "text": m["content"]} for m in messages(lines, rejected)]
+        resp = self.client.messages.create(model=self.model, max_tokens=budget, system=f"{SYSTEM}\n\n{FINISH[self.mode]}",
+                                           messages=[{"role": "user", "content": content}], output_config=output_config)
+        stop = getattr(resp, "stop_reason", None)
+        u = getattr(resp, "usage", None)
+        meta = {"finish_reason": {"max_tokens": "length", "end_turn": "stop"}.get(stop, stop),
+                **{k: v for k, v in (("prompt_tokens", getattr(u, "input_tokens", None)),
+                                     ("completion_tokens", getattr(u, "output_tokens", None))) if v is not None}}
+        return next((b.text for b in resp.content if getattr(b, "type", None) == "text"), ""), meta
 
 
 def _usage(u):
@@ -185,6 +223,61 @@ def from_env(env=None, client=None):
     return None
 
 
+# The providers a caller's own key may name (X-HushIQ-Provider). The base URL is fixed here, never read from the env or
+# the request, so a key can only go to its own provider. `models` is the allowed list, the default first: the cheapest
+# of each line-up until the eval picks (ids from each provider's model pages, 2026-10-29).
+PROVIDERS = {
+    "meta": {"name": "Meta", "base_url": "https://api.meta.ai/v1", "models": ("muse-spark-1.3",), "temperature": 0.2},
+    "openai": {"name": "OpenAI", "base_url": "https://api.openai.com/v1",
+               "models": ("gpt-6-luna", "gpt-6.1-terra", "gpt-6.1-sol", "gpt-6-astra"), "temperature": None},
+    "anthropic": {"name": "Anthropic", "base_url": "https://api.anthropic.com",
+                  "models": ("claude-haiku-5-5", "claude-sonnet-5-5", "claude-opus-5-5")},
+}
+
+
+def from_request(provider, key, model=None, env=None, client=None, http_client=None):
+    """A backend on the caller's own key, for one request: built here, used once, dropped, never cached. `client`
+    replaces the SDK client (the tests' scripted one); `http_client` is handed to the SDK client (the tests' mock
+    transport). The caller's headers were checked before this; a model off the list is a ValueError."""
+    p = PROVIDERS[provider]
+    model = model or p["models"][0]
+    if model not in p["models"]:
+        raise ValueError(f"{model} is not an allowed {provider} model")
+    env = os.environ if env is None else env
+    timeout, budget = float(env.get("VERDICT_TIMEOUT_S", 25)), int(env.get("VERDICT_MAX_TOKENS", 6000))
+    if provider == "anthropic":
+        if client is None:
+            import anthropic   # an explicit api_key: the SDK reads no ANTHROPIC_* credential or profile from the server
+            client = anthropic.Anthropic(api_key=key, base_url=p["base_url"], timeout=timeout, max_retries=0,
+                                         http_client=http_client)
+        return AnthropicBackend(name=model, model=model, client=client, max_tokens=budget)
+    if client is None:
+        from openai import OpenAI
+        client = OpenAI(api_key=key, base_url=p["base_url"], timeout=timeout, max_retries=0, http_client=http_client)
+        client.organization = client.project = None   # not the server's OPENAI_ORG_ID or OPENAI_PROJECT_ID
+    return Backend(name=model, model=model, mode="json_schema", client=client, max_tokens=budget,
+                   reasoning_effort="low", temperature=p["temperature"])
+
+
+def failure_reason(e):
+    """What a failed call means for the panel, in the AI_SWITCH reasons. The OpenAI and Anthropic SDKs both put the
+    HTTP status on `status_code` and both raise an APITimeoutError."""
+    status = getattr(e, "status_code", None)
+    if status in (401, 402, 403):
+        return "key_rejected"
+    timeouts = [TimeoutError] + [getattr(m, "APITimeoutError") for m in map(_sdk, ("openai", "anthropic")) if m]
+    if status in (429, 503, 529) or isinstance(e, tuple(timeouts)):
+        return "provider_busy"
+    return "provider_error"
+
+
+def _sdk(name):
+    try:
+        return importlib.import_module(name)
+    except ImportError:
+        return None
+
+
 def write(lines, backend=None):
     """[Line] -> {"sentences", "writer", "trace"}. The trace says what each attempt drew, so a fallback is never silent."""
     trace = []
@@ -195,8 +288,11 @@ def write(lines, backend=None):
             try:
                 raw, meta = backend.complete(lines, rejected, budget)
             except Exception as e:   # timeout, connection, 4xx/5xx: no second call, the renter gets the template now
+                # The class and status only: a provider's message can quote the key it was sent.
+                status = getattr(e, "status_code", None)
                 trace.append({"writer": backend.name, "attempt": attempt, "ok": False,
-                              "errors": [f"{type(e).__name__}: {str(e)[:200]}"], "ms": _ms(t0)})
+                              "errors": [type(e).__name__ + (f" (HTTP {status})" if status else "")],
+                              "reason": failure_reason(e), "ms": _ms(t0)})
                 break
             reply, errors = validate.parse(raw)
             if reply is None and not (raw or "").strip():   # empty: usually the token budget spent on reasoning

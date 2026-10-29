@@ -59,7 +59,9 @@ Response:
     {"text": "You said traffic bothers you, so street noise counts for 47% of the verdict; here it is loud, quieter than 24% of Manhattan apartments.", "cites": ["E4", "E3"]}
   ],
   "writer": "template",
-  "trace": [{"writer": "template", "ok": true, "why": "no model configured"}]
+  "trace": [{"writer": "template", "ok": true, "why": "no model configured"}],
+  "ai": {"mode": "basic", "provider": null, "model": null, "key": null, "reason": "no_key",
+         "message": "No AI key is set up, so this is the basic paragraph."}
 }
 ```
 
@@ -70,11 +72,85 @@ sentences.)
 |---|---|
 | `evidence` | Every line sent to the writer, in order, ids `E1..En` with no gaps. `kind` and `source` let the page group them. |
 | `sentences` | 1 to 6 sentences. Every `cites` is non-empty and every id is in `evidence`. Render each sentence with its cites as chips that open the line. |
-| `writer` | `"muse-spark-open"` (Baseten), `"muse-spark-1.3"` (Meta Model API, the second backend) or `"template"`. |
-| `trace` | What each attempt drew, so a fallback is never silent: `{writer, attempt, ok, errors: [...], ms}` per model call, then `{writer: "template", ok: true, why}` if the template wrote. The website can show "the checks refused the first draft: it cited E41". |
+| `writer` | `"muse-spark-open"` (Baseten), `"muse-spark-1.3"` (Meta Model API, the second backend), the model id of a caller's key (`"gpt-6-luna"`, `"claude-haiku-5-5"`, ...) or `"template"`. |
+| `trace` | What each attempt drew, so a fallback is never silent: `{writer, attempt, ok, errors: [...], ms}` per model call, then `{writer: "template", ok: true, why}` if the template wrote. The website can show "the checks refused the first draft: it cited E41". A call that raised carries only the error class and status (`["RateLimitError (HTTP 429)"]`) and its `reason`, never the provider's message, which can quote the key. |
+| `ai` | Who wrote, and why not when the model did not: below, [AI switch and caller keys](#ai-switch-and-caller-keys). |
 
-Errors: 422 for a body that is not a score this service can read, or answers outside the shape above. A model that
-fails, times out or errors never fails the request: the template answers.
+Errors: 400 for an `X-HushIQ-*` header the server cannot use; 422 for a body that is not a score this service can
+read, or answers outside the shape above. A model that fails, times out or errors never fails the request: the
+template answers.
+
+## AI switch and caller keys
+
+The verdict writer's part of the shared AI_SWITCH contract (HIQ-74; this piece HIQ-76). The Meta-model layer may go
+when the credits end, so it sits behind a switch; off still works; a caller can bring their own Claude or OpenAI key
+and get the same prompt and the same checks. Code: `verdict/switch.py`, `writer.from_request`.
+
+Four optional request headers on `POST /verdict`. Headers, never query parameters, so a key never lands in a URL:
+
+| Header | Values | Absent means |
+|---|---|---|
+| `X-HushIQ-AI` | `on`, `off` | `on` |
+| `X-HushIQ-Provider` | `meta`, `openai`, `anthropic` | `meta` with the house key |
+| `X-HushIQ-Key` | the caller's API key for that provider | the house key (Meta only) |
+| `X-HushIQ-Model` | an id from that provider's list below | the provider's default |
+
+- **Off** makes no model call: the template writes, cost zero. `?writer=template` is the same as off.
+- **House key:** the server's backend (`VERDICT_BACKEND`, Muse Spark 1.3 on `MODEL_API_KEY` today). `HOUSE_AI=off`
+  (default `on`) turns it off when the credits end; an `on` request with no caller key then gets the template, with
+  `reason: "house_off"`. Not an error.
+- **Caller key:** used for that one request, with the provider it names; the SDK client is built for the request
+  and closed after it. A rejected, rate-limited, slow or failing caller key gets the template with a reason. It never
+  falls back to the house key, so a stranger's failure never spends the house credits. A provider named with no key
+  gets the template with `reason: "no_key"`.
+- **Base URLs are fixed in code** (`writer.PROVIDERS`): `https://api.meta.ai/v1`, `https://api.openai.com/v1`,
+  `https://api.anthropic.com`. The caller cannot set one and the server's `OPENAI_BASE_URL` / `ANTHROPIC_BASE_URL`
+  do not apply, so a key only ever goes to its own provider. The server's `OPENAI_ORG_ID`, `OPENAI_PROJECT_ID` and
+  `ANTHROPIC_*` credentials never ride along with a caller's key.
+- **Models:** an id outside the provider's list is a 400 that names the list, and never quotes the header.
+
+| Provider | Allowed models, default first | How the shape is held |
+|---|---|---|
+| `meta` | `muse-spark-1.3` | as the house backend: strict `json_schema`, `reasoning_effort: "low"`, temperature 0.2 |
+| `openai` | `gpt-6-luna`, `gpt-6.1-terra`, `gpt-6.1-sol`, `gpt-6-astra` | chat completions with a strict `json_schema`, `reasoning_effort: "low"`, `max_completion_tokens`, no temperature (the GPT-6 models reason) |
+| `anthropic` | `claude-haiku-5-5`, `claude-sonnet-5-5`, `claude-opus-5-5` | the Anthropic SDK's Messages API with `output_config: {format: {type: "json_schema"}, effort: "low"}`, no temperature (API version 2026-10-21 refuses it) |
+
+Every provider's reply goes through the same checks (C1 to C6) and the same one retry, then the template. The
+defaults are the cheapest model of each line-up ($0.10 / $0.50 per million tokens for both `gpt-6-luna` and
+`claude-haiku-5-5`, from each provider's page on Oct 29) until the eval picks; ids checked against each provider's
+model pages that day.
+
+Every reply carries `ai`, next to `writer`:
+
+```json
+"ai": {"mode": "model" | "basic", "provider": "meta" | "openai" | "anthropic" | null,
+       "model": "<id>" | null, "key": "house" | "caller" | null,
+       "reason": null | "switched_off" | "house_off" | "no_key" | "key_rejected" | "provider_busy" | "provider_error" | "checks_failed",
+       "message": "<one plain sentence for the panel>" | null}
+```
+
+| `reason` | When | `message` |
+|---|---|---|
+| `switched_off` | `X-HushIQ-AI: off` or `?writer=template` | AI reading is off, so this is the basic paragraph. |
+| `house_off` | `HOUSE_AI=off` and no caller key | AI reading is off on this server; add your own key in settings to turn it on. |
+| `no_key` | no house backend and no caller key, or a provider named with no key | No AI key is set up, so this is the basic paragraph. / Add your OpenAI key in settings to use OpenAI; this is the basic paragraph. |
+| `key_rejected` | HTTP 401, 402 or 403 | OpenAI did not accept your key, so this is the basic paragraph; check the key in settings. |
+| `provider_busy` | HTTP 429, 503, 529, or a timeout | OpenAI is busy or slow right now, so this is the basic paragraph; try again in a minute. |
+| `provider_error` | any other error: a model the provider does not serve to that key (404), a 400, a 5xx | OpenAI did not answer, so this is the basic paragraph. |
+| `checks_failed` | the model answered twice and the checks refused both drafts | The AI draft did not pass the evidence checks, so this is the basic paragraph. |
+
+`reason` is set whenever `mode` is `basic`, and `provider`, `model` and `key` stay set when a model was tried.
+`checks_failed` is this service's addition to the shared list: a draft refused twice is neither the key's nor the
+provider's fault.
+
+The key on the server: never logged, never in the trace, the body or an error message. Errors in the trace are the
+class and status only, and the whole reply passes through `switch.redact` before it leaves. The key-leak test
+(`tests/test_switch.py`) sends a fake key through the real OpenAI and Anthropic SDKs, with a mock transport whose
+error bodies quote the key back, for success, 401, 429, a timeout and a 404 bad model, and checks the body, the trace,
+the captured logs and stdout and stderr.
+
+In process, for the eval: `verdict.write(score, answers, fields, ai="off" | "on", provider=..., key=..., model=...)`
+takes the same four values and returns the same body.
 
 ### Evidence kinds
 
@@ -139,7 +215,9 @@ sirens to those hours.
 
 ## GET /health
 
-`{"ok": true, "version": "0.1.0", "writer": "template", "model": null}`: which writer this process would use.
+`{"ok": true, "version": "0.1.0", "writer": "template", "model": null, "house_ai": "on", "providers": {"openai":
+{"models": [...], "default": "gpt-6-luna"}, ...}}`: which house writer this process would use, whether `HOUSE_AI` is
+on, and each provider's allowed models for a settings page.
 
 ## Defaults taken
 
@@ -150,3 +228,10 @@ Small calls made while building, for Rafa to override:
 2. `writer` has a third value, `"muse-spark-1.3"`, for the second backend.
 3. Each evidence line carries `kind` and `source` beside `id` and `text`, and the response carries `trace`.
 4. The paragraph is capped at six sentences; the prompt asks for three to five.
+5. The caller-key defaults are `gpt-6-luna` and `claude-haiku-5-5`, the cheapest of each line-up, until the eval
+   picks and Rafa confirms.
+6. Claude's reply schema goes in `output_config.format`, not a forced tool call as AI_SWITCH says: Claude Opus 5.5
+   and Sonnet 5.5 refuse a forced `tool_choice` with a 400. Structured outputs hold the same schema on all three.
+7. No server-side model fallback on a Claude refusal: the caller picked the model, so a refusal is a refused draft,
+   retried once and then the template.
+8. `ai.reason` gains `checks_failed` for a draft refused twice.
