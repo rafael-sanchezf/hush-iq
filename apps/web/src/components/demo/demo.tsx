@@ -73,7 +73,8 @@ export function Demo() {
       await finish(r, answersRef.current, null, ctl.signal);
       if (!ctl.signal.aborted) {
         setPhase('done');
-        requestAnimationFrame(() => document.getElementById('verdict')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+        const motion = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+        requestAnimationFrame(() => document.getElementById('verdict')?.scrollIntoView({ behavior: motion, block: 'start' }));
       }
     } catch (e) {
       if ((e as Error).name === 'AbortError') return;

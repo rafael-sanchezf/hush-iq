@@ -164,7 +164,7 @@ p {
   position: sticky;
   top: 0;
   z-index: 20;
-  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
   backdrop-filter: saturate(1.6) blur(18px);
   -webkit-backdrop-filter: saturate(1.6) blur(18px);
   border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
@@ -216,14 +216,19 @@ p {
   background: var(--card);
 }
 
-.nav-links .nav-cta {
+.nav-cta {
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 650;
   color: var(--bg);
   background: var(--ink);
+  padding: 8px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+  margin-left: -16px;
 }
 
-.nav-links .nav-cta:hover {
-  color: var(--bg);
-  background: var(--ink);
+.nav-cta:hover {
   opacity: 0.88;
 }
 
@@ -235,7 +240,13 @@ p {
     flex-wrap: wrap;
     gap: 8px;
   }
+  .nav-cta {
+    margin-left: auto;
+    font-size: 14px;
+    padding: 7px 12px;
+  }
   .nav-links {
+    order: 3;
     margin-left: 0;
     width: 100%;
     overflow-x: auto;

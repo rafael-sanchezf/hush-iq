@@ -35,10 +35,10 @@ export function SiteNav() {
           <a href={REPO_URL} target="_blank" rel="noreferrer">
             GitHub
           </a>
-          <Link href="/#demo" className="nav-cta">
-            Try a listing
-          </Link>
         </nav>
+        <Link href="/#demo" className="nav-cta">
+          Try a listing
+        </Link>
       </div>
     </header>
   );
