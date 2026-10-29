@@ -15,10 +15,10 @@ MAX_REASON_CHARS = 300
 # hours (nightlife) get theirs when they are built.
 CAPS = {"construction": 2}
 
-# Inside the engine only [A5]: one step moves the source's level by this much before it becomes a rank. Construction
-# levels in the Manhattan sample run 35 to 65 with the middle half 49 to 62, so one step is about a tenth of
-# Manhattan around the middle, and the cap about a fifth.
-STEP_LEVEL = {"construction": 3.0}
+# Inside the engine only [A5]: one step moves the source's level by this much before it becomes a rank. Measured on
+# engine v2's construction ranks between the 20th and 80th percentile of Manhattan, one step moves the rank about 10
+# points and the cap about 20 (a step of 3 moved it 15 to 20, too far for one reading).
+STEP_LEVEL = {"construction": 2.0}
 # A quieter adjustment never takes a source below the level of a block with nothing on it.
 LEVEL_FLOOR = {"construction": {w: model_config.CONSTRUCTION_NONE_DB + o
                                 for w, o in model_config.CONSTRUCTION_WINDOW_OFFSET.items()}}
