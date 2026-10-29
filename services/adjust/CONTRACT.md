@@ -17,10 +17,12 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/uvicorn adjust.api:app --port 8030       # POST /adjust/permits
 ```
 
-`adjust` finds `packages/model` by itself when run from the monorepo. Live mode turns on when
-`MODEL_API_KEY` is in the environment or in `services/adjust/.env` (gitignored). Optional: `MODEL_NAME`
-(default `muse-spark-1.3`) and `MODEL_BASE_URL` (default `https://api.meta.ai/v1`). With no key, the
-reader uses keyword rules through the same checks, and the response says `"reader": "rules"`.
+`adjust` finds `packages/model` by itself when run from the monorepo. The house key is `MODEL_API_KEY`, in the
+environment or in `services/adjust/.env` (gitignored). Optional: `MODEL_NAME` (default `muse-spark-1.3`),
+`MODEL_BASE_URL` (default `https://api.meta.ai/v1`) and `HOUSE_AI=off`, which turns the house key off. A request
+can turn AI reading off, or bring its own Meta, OpenAI or Anthropic key, with four headers: see
+[The AI switch and caller keys](#the-ai-switch-and-caller-keys). In process, `read_permits(rows, as_of)` with no
+client reads with keyword rules through the same checks, and the response says `"reader": "rules"`.
 
 ## The adjustment object
 
@@ -104,11 +106,12 @@ Request, one of `address` or `permits`:
 {"permits": [ ...rows from /v1/raw... ], "as_of": "2026-10-28", "reader": "auto"}
 ```
 
-`reader` is `auto` (the model when a key is set, else the rules), `model` (503 with no key) or `rules`.
-`as_of` is the date a permit must not have expired by, default today. With `address`, the service geocodes
-and pulls the tax block's permits through the frozen fetch, and a failed pull is a 502.
+`reader` is `auto` (the model the headers pick, else no adjustment), `model` (503 when no model can run for the
+request) or `rules` (the keyword rules, for tests and the eval; `X-HushIQ-AI: off` still wins). `as_of` is the date
+a permit must not have expired by, default today. With `address`, the service geocodes and pulls the tax block's
+permits through the frozen fetch, and a failed pull is a 502. A header outside its list is a 400.
 
-Response (55 Bethune Street, rules reader, `permits` and `readings` cut to their first entries):
+Response (55 Bethune Street, `reader: rules`, `permits` and `readings` cut to their first entries):
 
 ```json
 {
@@ -135,6 +138,7 @@ Response (55 Bethune Street, rules reader, `permits` and `readings` cut to their
   "why_none": null,
   "refusals": [],
   "trace": [{"turn": 0, "tool": "rules", "accepted": ["M01113570-I1-GC", "M01265075-I1-PMM", "M01255421-S1-SH", "M01181311-I1-SC"]}],
+  "ai": {"mode": "rules", "provider": null, "model": null, "key": null, "reason": null, "message": null},
   "address": {"query": "55 Bethune Street, Manhattan", "label": "55 BETHUNE STREET, New York, NY, USA", "bbl": "1006397501", "bin": "1012047", "borough": "Manhattan"}
 }
 ```
@@ -145,9 +149,92 @@ Response (55 Bethune Street, rules reader, `permits` and `readings` cut to their
 - `refusals`: every refused call, `{tool, id?, why}`, so the page can show the model being corrected.
 - `trace`: one entry per tool call with the turn, what was accepted and what was refused.
 - `usage`: model reader only. `{calls, prompt_tokens, completion_tokens, reasoning_tokens}` for the pull.
+  Claude reports no separate reasoning count; its thinking is inside `completion_tokens`.
+- `ai`: on every reply; see below. `reader` is `null` when no model ran.
 - `address`: only when the request sent an address.
 
 `router` in `adjust/api.py` is what the main API mounts; `app` serves it alone.
+
+## The AI switch and caller keys
+
+Hackathon work, Oct 29 (HIQ-77, epic HIQ-74). The Meta-model reading may be removed when the credits end, so it sits
+behind a switch, and off still works. A caller can also bring a Claude or OpenAI key and run the same prompt and the
+same checks. This is the permit reader's part of the shared AI switch contract.
+
+Four optional headers on `POST /adjust/permits`. They are headers, never query parameters, so a key never lands in
+a URL, a log line or browser history:
+
+| Header | Values | Absent means |
+|---|---|---|
+| `X-HushIQ-AI` | `on`, `off` | `on` |
+| `X-HushIQ-Provider` | `meta`, `openai`, `anthropic` | `meta` with the house key |
+| `X-HushIQ-Key` | the caller's API key for that provider | the house key (Meta only) |
+| `X-HushIQ-Model` | a model id from that provider's list | the provider's default |
+
+- **S1 Lists.** Every value is checked in `switch.choose`, and a value outside its list is a 400 whose message
+  never repeats the value. The lists and the fixed base URLs are in `config.PROVIDERS`:
+
+  | Provider | Base URL | API | Models (default first) |
+  |---|---|---|---|
+  | `meta` | `https://api.meta.ai/v1` | Chat Completions, OpenAI SDK | `muse-spark-1.3` |
+  | `openai` | `https://api.openai.com/v1` | Responses, OpenAI SDK | `gpt-6.1-sol`, `gpt-6-luna`, `gpt-6.1-terra`, `gpt-6-astra` |
+  | `anthropic` | `https://api.anthropic.com` | Messages, Anthropic SDK | `claude-opus-5-5`, `claude-sonnet-5-5`, `claude-haiku-5-5` |
+
+  The defaults are a first pick, not a measured one: the eval decides and Rafa confirms.
+- **S2 Off, and the house key.** `X-HushIQ-AI: off` makes no model call and no adjustment. The reply lists the
+  permits with none read, `adjustment: null`, and the permit count stands. Cost zero. The house key is Meta's only
+  (`MODEL_API_KEY`). `HOUSE_AI=off` on the server turns it off. With the house key off or missing and no caller key,
+  an `on` request gets the same reply, with the reason. That is not an error.
+- **S3 Caller keys.** A caller's key is used for that one request with the provider named. The client is built for
+  the request with a 50 s timeout and no retries, and dropped after it. A key that is refused, rate-limited or
+  times out gives no adjustment and says why. The server never falls back from a caller's key to the house key, so
+  a stranger's failure never spends the house credits.
+- **S4 One set of checks.** The same prompt, the same three tools and the same checks (P2, A1 to A4, the cap of 2)
+  run for every provider. Only the wire format differs (`adjust/backends.py`):
+  - **openai:** the Responses API, because function tools on OpenAI's current models need it; Chat Completions
+    takes them only at reasoning effort `none`. `store` is off, and reasoning items go back encrypted.
+  - **anthropic:** the Messages API, with `tool_choice: auto`. The current Claude models refuse a forced tool call
+    with a 400. The prompt names the tools, and the loop nudges a reply without a tool call, as it does for Muse
+    Spark. Thinking is adaptive, at effort `medium`, and its blocks go back unchanged on each turn. Opus and Sonnet
+    requests carry the server-side refusal fallback (`fallbacks: "default"`); a request Claude still declines gives
+    no adjustment.
+- **S5 The key, on the server.**
+  - The key is never logged, traced, returned or put in an error message.
+  - A failed call keeps only its kind and status code (`{"error": "key_rejected", "status": 401}`). The provider's
+    own error text is dropped, because a 401 can quote the key.
+  - Before the reply leaves, `switch.redact` cuts the key out of every string as a last gate.
+  - Tests send a fake key through success, 401, 429, a timeout and a bad model id for all three providers. They
+    check that the key is not in the body, the trace or the captured logs. They also check `read_permits` before
+    redaction, so a leak the last gate would hide still fails a test.
+
+Every reply carries one `ai` object:
+
+```json
+"ai": {"mode": "model" | "basic" | "rules", "provider": "meta" | "openai" | "anthropic" | null,
+       "model": "<id>" | null, "key": "house" | "caller" | null,
+       "reason": null | "switched_off" | "house_off" | "no_key" | "key_rejected" | "provider_busy" | "provider_error",
+       "message": "<one plain sentence for the panel>" | null}
+```
+
+- `mode` is `basic` whenever no adjustment could come from a model. `reason` says why, and `message` is the sentence
+  to show, for example "AI reading is off, so the permit count stands as the city's data has it."
+- `mode: rules` appears only for `reader: rules`.
+- `key_rejected` is a 401 or 403. `provider_busy` is a 429, a 529 or a timeout. `provider_error` is anything else,
+  including a model id the provider does not serve, and a model that sends only empty replies.
+- A model that runs but leaves the count alone (`no_adjustment`, stopping, declining) is still `mode: model`, with
+  `why_none` saying why.
+
+In process, for the eval:
+
+```python
+from adjust import llm, switch
+from adjust.permits import read_permits
+
+off = switch.run(rows, as_of, switch.choose(ai="off"))                       # --ai off: no call, no cost
+key = os.environ["ANTHROPIC_API_KEY"]
+on = switch.run(rows, as_of, switch.choose(provider="anthropic", key=key))    # the reply with `ai`
+bare = read_permits(rows, as_of, client=llm.client_for("anthropic", key))    # the reader alone, with `failure`
+```
 
 ## How the engine applies it
 
@@ -184,9 +271,12 @@ evidence. `submit_adjustment` and `apply` stay as they are.
 | `adjust/config.py` | every cap and table |
 | `adjust/adjustment.py` | the object, `submit_adjustment`, `apply` |
 | `adjust/permits.py` | the pull, P1 to P5, the prompt and tools |
-| `adjust/llm.py` | the Meta Model API client, when a key is set |
+| `adjust/llm.py` | the house client (`client_from_env`) and a caller-key backend per request (`client_for`) |
+| `adjust/backends.py` | the three wire formats: Chat Completions, Responses, Messages |
+| `adjust/switch.py` | the four headers, the house key, the `ai` object, redaction |
 | `adjust/api.py` | `POST /adjust/permits` |
 | `adjust/pull_fixtures.py` | re-pulls the fixtures through the frozen fetch |
 | `adjust/demo_v2.py` | the before and after through engine v2 |
 | `tests/fixtures/` | real DOB NOW rows for three Manhattan blocks, pulled 2026-10-28, nine fields each |
 | `tests/fixtures/live/` | Muse Spark's tool calls on those blocks, recorded 2026-10-28, replayed in mock mode |
+| `tests/wire.py` | the three providers on a mock transport, through the real SDKs, for the switch and key tests |
