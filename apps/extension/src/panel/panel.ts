@@ -349,6 +349,12 @@ async function showResult(result: ReaderResult, first: Score, reader: client.Liv
   home();
 }
 
+function skippedWords(s: { format: number; size: number; fetch: number }): string {
+  const parts = [s.format ? `${s.format} HEIC or AVIF (the reader refuses them)` : '', s.size ? `${s.size} over 8 MB` : '',
+    s.fetch ? `${s.fetch} that would not load` : ''].filter(Boolean);
+  return parts.length ? `; left out ${parts.join(', ')}` : '';
+}
+
 /** Testing only (lib/photo-test.ts): files this listing for the photo test. */
 function saveButton(c: Capture): HTMLElement {
   const slot = h('div');
@@ -362,7 +368,7 @@ function saveButton(c: Capture): HTMLElement {
         slot.replaceChildren(h('div', { class: 'note' }, glyph('ok'), h('span', null, ...(s.already
           ? [h('b', null, `Already saved as photo test listing ${s.folder}.`)]
           : [h('b', null, `Saved as photo test listing ${s.folder}. `),
-            `${s.photos} photo${s.photos === 1 ? '' : 's'}${s.missed ? `; ${s.missed} left out (not a format the reader takes, or not reachable)` : ''}. Label it in eval/labeler.html.`]))));
+            `${s.photos} photo${s.photos === 1 ? '' : 's'}${skippedWords(s.skipped)}. Label it in eval/labeler.html.`]))));
       } catch (e) {
         button.disabled = false;
         button.textContent = 'Save for the photo test';
