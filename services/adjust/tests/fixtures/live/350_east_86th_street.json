@@ -1,0 +1,91 @@
+{
+ "model": "muse-spark-1.3",
+ "recorded": "2026-10-28",
+ "fixture": "permits_350_east_86th_street.json",
+ "turns": [
+  [
+   [
+    "read_permits",
+    {
+     "readings": [
+      {
+       "id": "M01159724-I1-GC",
+       "kind": "facade",
+       "kind_quote": "Facade Repairs",
+       "duration": "months",
+       "duration_quote": "Facade Repairs"
+      },
+      {
+       "id": "M01159724-S1-PMM",
+       "kind": "other",
+       "kind_quote": "ENGINEERED ENCLOSURE SYSTEM",
+       "duration": "months",
+       "duration_quote": "ENGINEERED ENCLOSURE SYSTEM"
+      },
+      {
+       "id": "M00625489-S2-SE",
+       "kind": "new_building",
+       "kind_quote": "NB #M00625489",
+       "duration": "months",
+       "duration_quote": "SUPPORT OF EXCAVATION WORK"
+      },
+      {
+       "id": "M01208286-I1-SF",
+       "kind": "scaffold_shed",
+       "kind_quote": "SUPPORTED SCAFFOLD",
+       "duration": "months",
+       "duration_quote": "SUPPORTED SCAFFOLD"
+      },
+      {
+       "id": "M01190858-I1-SC",
+       "kind": "scaffold_shed",
+       "kind_quote": "suspended scaffold",
+       "duration": "months",
+       "duration_quote": "suspended scaffold"
+      },
+      {
+       "id": "M01347269-I1-SC",
+       "kind": "scaffold_shed",
+       "kind_quote": "SUSPENDED SCAFFOLDS",
+       "duration": "months",
+       "duration_quote": "SUSPENDED SCAFFOLDS"
+      }
+     ]
+    }
+   ]
+  ],
+  [
+   [
+    "submit_adjustment",
+    {
+     "cites": [
+      "M00625489-S2-SE",
+      "M01159724-I1-GC"
+     ],
+     "direction": "louder",
+     "reason": "Excavation for a new building and months-long facade repairs will mean heavy, sustained construction noise nearby.",
+     "size": 2
+    }
+   ]
+  ]
+ ],
+ "adjustment": {
+  "source": "construction",
+  "direction": "louder",
+  "size": 2,
+  "cap": 2,
+  "cites": [
+   "M00625489-S2-SE",
+   "M01159724-I1-GC"
+  ],
+  "reason": "Excavation for a new building and months-long facade repairs will mean heavy, sustained construction noise nearby."
+ },
+ "why_none": null,
+ "usage": {
+  "calls": 2,
+  "prompt_tokens": 4980,
+  "completion_tokens": 5266,
+  "reasoning_tokens": 4738
+ },
+ "seconds": 19.0
+}

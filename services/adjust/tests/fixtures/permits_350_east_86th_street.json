@@ -1,0 +1,79 @@
+{
+ "address": {
+  "query": "350 East 86th Street, Manhattan",
+  "label": "350 EAST 86 STREET, New York, NY, USA",
+  "bbl": "1015480023",
+  "borough": "Manhattan"
+ },
+ "as_of": "2026-10-28",
+ "source": "https://data.cityofnewyork.us/resource/rbx6-tga4.json",
+ "rows_on_block": 18,
+ "permits": [
+  {
+   "work_permit": "M01159724-I1-GC",
+   "work_type": "General Construction",
+   "job_description": "Facade Repairs, no change in use, egress or occupancy.",
+   "house_no": "305",
+   "street_name": "EAST   85 STREET",
+   "bin": "1088093",
+   "issued_date": "2026-05-15T00:00:00.000",
+   "expired_date": "2026-12-31T05:00:00.000",
+   "estimated_job_costs": "321390"
+  },
+  {
+   "work_permit": "M01159724-S1-PMM",
+   "work_type": "Protection and Mechanical Methods",
+   "job_description": "INSTALLATION AND USE OF ENGINEERED ENCLOSURE SYSTEM AS PER PLANS. ALL EQUIPMENT SHALL COMPLY WITH CHAPTER # 33 OF THE 2022 CODE. THIS WORK IS ASSOCIATED WITH FACADE REPAIR APPLICATION # M01159724. NO CHANGE IN USE, EGRESS OR OCCUPANCY.",
+   "house_no": "305",
+   "street_name": "EAST   85 STREET",
+   "bin": "1088093",
+   "issued_date": "2026-04-17T00:00:00.000",
+   "expired_date": "2027-04-17T00:00:00.000",
+   "estimated_job_costs": "3000"
+  },
+  {
+   "work_permit": "M00625489-S2-SE",
+   "work_type": "Support of Excavation",
+   "job_description": "PROVIDE SUPPORT OF EXCAVATION WORK AS PER PLANS FILED. SUBSEQUENT FILING TO NB #M00625489.",
+   "house_no": "1647",
+   "street_name": "1 AVENUE",
+   "bin": "1050022",
+   "issued_date": "2026-03-31T00:00:00.000",
+   "expired_date": "2026-12-30T05:00:00.000",
+   "estimated_job_costs": "1000"
+  },
+  {
+   "work_permit": "M01208286-I1-SF",
+   "work_type": "Supported Scaffold",
+   "job_description": "INSTALLATION AND USE OF TEMPORARY SUPPORTED SCAFFOLD AS PER PLANS FILED HEREWITH. NO CHANGE IN USE, EGRESS, OR OCCUPANCY.",
+   "house_no": "305",
+   "street_name": "EAST   85 STREET",
+   "bin": "1088093",
+   "issued_date": "2026-05-26T00:00:00.000",
+   "expired_date": "2027-04-19T00:00:00.000",
+   "estimated_job_costs": "1000"
+  },
+  {
+   "work_permit": "M01190858-I1-SC",
+   "work_type": "Suspended Scaffold",
+   "job_description": "Application for installation and use of suspended scaffold as per plans filed herein. No changes in egress, use or occupancy.",
+   "house_no": "305",
+   "street_name": "EAST   85 STREET",
+   "bin": "1088093",
+   "issued_date": "2026-05-01T00:00:00.000",
+   "expired_date": "2027-04-19T00:00:00.000",
+   "estimated_job_costs": "0"
+  },
+  {
+   "work_permit": "M01347269-I1-SC",
+   "work_type": "Suspended Scaffold",
+   "job_description": "INSTALLATION OF TEMPORARY SUSPENDED SCAFFOLDS PER PLAN SUBMITTED. WORK SHALL COMPLY WITH 2022 BUILDING CODE CHAPTER 33. NO CHANGE IN USE, EGRESS AND/OR OCCUPANCY WITH THIS APPLICATION.",
+   "house_no": "310",
+   "street_name": "EAST   86 STREET",
+   "bin": "1050016",
+   "issued_date": "2026-01-21T00:00:00.000",
+   "expired_date": "2026-12-31T05:00:00.000",
+   "estimated_job_costs": "0"
+  }
+ ]
+}
