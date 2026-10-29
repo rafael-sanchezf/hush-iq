@@ -1168,3 +1168,65 @@ details.trace .evidence {
   margin-top: 16px;
 }
 
+/* Sleep hours by dragging across the strip; evening and night first, the full day behind the arrow. */
+.sleep {
+  margin-top: 10px;
+}
+
+.clock.drag {
+  margin-top: 0;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  border-radius: 6px;
+}
+
+.clock.drag:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.clock.drag i {
+  height: 30px;
+}
+
+.clock-labels.drag {
+  position: relative;
+  display: block;
+  height: 15px;
+}
+
+.clock-labels.drag span {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.clock-labels.drag span:first-child {
+  transform: none;
+}
+
+.clock-labels.drag span:last-child {
+  transform: translateX(-100%);
+}
+
+.sleep-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.icon-btn.more {
+  font-size: 22px;
+  line-height: 1;
+  transform: rotate(90deg);
+}
+
+.icon-btn.more.open {
+  transform: rotate(-90deg);
+}
+

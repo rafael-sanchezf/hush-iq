@@ -10,13 +10,94 @@ import { clear, glyph, h } from './dom.ts';
 
 // ---------------------------------------------------------------- the three questions
 
-const HOURS = Array.from({ length: 24 }, (_, x) => x);
-// The strip runs noon to noon so a night's sleep reads as one block.
-const STRIP = Array.from({ length: 24 }, (_, i) => (i + 12) % 24);
-
 function asleep(x: number, from: number, until: number): boolean {
   if (from === until) return false;
   return from > until ? x >= from || x < until : from <= x && x < until;
+}
+
+/** The hours the strip shows: evening to late morning first, which holds nearly every night's sleep, and the full
+ * day, noon to noon, on request (Rafa, 2026-10-29). `labels` are hour marks, as offsets from `from`. */
+interface StripView { from: number; hours: number; labels: number[] }
+const NIGHT_VIEW: StripView = { from: 19, hours: 16, labels: [0, 4, 8, 12, 16] };
+const DAY_VIEW: StripView = { from: 12, hours: 24, labels: [0, 6, 12, 18, 24] };
+
+/** Does every hour asleep fall inside this view? */
+function fits(v: StripView, from: number, until: number): boolean {
+  for (let x = 0; x < 24; x++) {
+    if (asleep(x, from, until) && (x - v.from + 24) % 24 >= v.hours) return false;
+  }
+  return true;
+}
+
+/** Sleep hours by dragging: press at bedtime, drag to wake-up. Hours snap to the marks between cells. Arrow keys
+ * move the wake-up hour, and with Shift the bedtime. Calls `onChange` on every move, without redrawing the card. */
+function sleepStrip(start: Answers, onChange: (from: number, until: number) => void): HTMLElement {
+  let from = start.sleep_from;
+  let until = start.sleep_until;
+  let full = !fits(NIGHT_VIEW, from, until);
+  const wrap = h('div', { class: 'sleep' });
+  const render = () => {
+    const view = full ? DAY_VIEW : NIGHT_VIEW;
+    const hourAt = (b: number) => (view.from + b) % 24;
+    const cells = Array.from({ length: view.hours }, () => h('i'));
+    const paint = () => cells.forEach((c, i) => c.classList.toggle('asleep', asleep(hourAt(i), from, until)));
+    const bar = h('div', {
+      class: 'clock drag', role: 'group', tabindex: 0, 'aria-label': 'Hours asleep: drag from bedtime to wake-up',
+      style: `grid-template-columns: repeat(${view.hours}, 1fr)`,
+    }, cells);
+    const commit = (f: number, u: number) => {
+      from = f;
+      until = u;
+      paint();
+      onChange(from, until);
+    };
+    const mark = (e: PointerEvent) => {
+      const r = bar.getBoundingClientRect();
+      return Math.max(0, Math.min(view.hours, Math.round(((e.clientX - r.left) / r.width) * view.hours)));
+    };
+    let anchor: number | null = null;
+    bar.addEventListener('pointerdown', (e: PointerEvent) => {
+      anchor = mark(e);
+      bar.setPointerCapture(e.pointerId);
+    });
+    bar.addEventListener('pointermove', (e: PointerEvent) => {
+      if (anchor === null) return;
+      const b = mark(e);
+      if (b === anchor) return;
+      const lo = Math.min(anchor, b);
+      const hi = Math.min(Math.max(anchor, b), lo + 23);   // a full turn would read as no sleep at all
+      commit(hourAt(lo), hourAt(hi));
+    });
+    const end = () => (anchor = null);
+    bar.addEventListener('pointerup', end);
+    bar.addEventListener('pointercancel', end);
+    bar.addEventListener('keydown', (e: KeyboardEvent) => {
+      const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!step) return;
+      e.preventDefault();
+      const f = e.shiftKey ? (from + step + 24) % 24 : from;
+      const u = e.shiftKey ? until : (until + step + 24) % 24;
+      if (f !== u) commit(f, u);
+    });
+    paint();
+    wrap.replaceChildren(
+      bar,
+      h('div', { class: 'clock-labels drag', 'aria-hidden': 'true' },
+        view.labels.map((b) => h('span', { style: `left: ${(100 * b) / view.hours}%` }, hourLabel(hourAt(b))))),
+      h('div', { class: 'sleep-foot' },
+        h('span', { class: 'small' }, 'Press at bedtime, drag to when you wake.'),
+        h('button', {
+          type: 'button', class: `icon-btn more${full ? ' open' : ''}`,
+          title: full ? 'Show evening and night' : 'Show full day', 'aria-label': full ? 'Show evening and night' : 'Show full day',
+          onclick: () => {
+            full = !full;
+            render();
+          },
+        }, '›')),
+    );
+  };
+  render();
+  return wrap;
 }
 
 const STEPS = 3;
@@ -41,16 +122,18 @@ export function questionsCard(start: Answers, onDone: (a: Answers) => void, done
       set({ bothers: a.bothers.includes(b) ? a.bothers.filter((x) => x !== b) : BOTHERS.filter((x) => x === b || a.bothers.includes(x)) });
     let q: HTMLElement;
     if (step === 0) {
-      const n = hoursAsleep(a);
-      const picker = (label: string, value: number, key: 'sleep_from' | 'sleep_until') =>
-        h('label', { class: 'select' }, h('span', null, label),
-          h('select', { onchange: (e: Event) => set({ [key]: Number((e.target as HTMLSelectElement).value) }) },
-            HOURS.map((x) => h('option', { value: x, selected: x === value }, hourLabel(x)))));
+      const readout = h('small');
+      const say = () => {
+        const n = hoursAsleep(a);
+        readout.textContent = `${hourLabel(a.sleep_from)} to ${hourLabel(a.sleep_until)}, ${n} hour${n === 1 ? '' : 's'}`;
+      };
+      say();
       q = h('div', { class: 'q' },
-        h('div', { class: 'q-title' }, h('span', null, 'When do you sleep?'), h('small', null, `${n} hour${n === 1 ? '' : 's'} asleep`)),
-        h('div', { class: 'sleep-pickers' }, picker('Asleep from', a.sleep_from, 'sleep_from'), picker('Until', a.sleep_until, 'sleep_until')),
-        h('div', { class: 'clock', 'aria-hidden': 'true' }, STRIP.map((x) => h('i', { class: asleep(x, a.sleep_from, a.sleep_until) ? 'asleep' : null }))),
-        h('div', { class: 'clock-labels', 'aria-hidden': 'true' }, ['noon', '6 pm', 'midnight', '6 am', 'noon'].map((t) => h('span', null, t))),
+        h('div', { class: 'q-title' }, h('span', null, 'When do you typically sleep?'), readout),
+        sleepStrip(a, (from, until) => {
+          a = { ...a, sleep_from: from, sleep_until: until };
+          say();
+        }),
         h('button', { type: 'button', class: 'btn block', onclick: () => go(1) }, 'Next'));
     } else if (step === 1) {
       // One tap answers it and moves on.
