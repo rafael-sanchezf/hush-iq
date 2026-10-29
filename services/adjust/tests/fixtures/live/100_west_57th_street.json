@@ -1,0 +1,155 @@
+{
+ "model": "muse-spark-1.3",
+ "recorded": "2026-10-28",
+ "fixture": "permits_100_west_57th_street.json",
+ "turns": [
+  "Reading this block's permits to weigh how loud and long the work will feel.",
+  [
+   [
+    "read_permits",
+    {
+     "readings": [
+      {
+       "id": "M00461800-I1-GC",
+       "kind": "cant_tell",
+       "duration": "cant_tell"
+      },
+      {
+       "id": "M01143725-I1-GC",
+       "kind": "interior_renovation",
+       "kind_quote": "INTERIOR RENOVATION OF NON-LOAD WALLS, FLOORS, AND CIELING",
+       "duration": "months",
+       "duration_quote": "INTERIOR RENOVATION OF NON-LOAD WALLS, FLOORS, AND CIELING"
+      },
+      {
+       "id": "M00426213-I1-ST",
+       "kind": "cant_tell",
+       "duration": "cant_tell"
+      },
+      {
+       "id": "M01236656-I1-GC",
+       "kind": "other",
+       "kind_quote": "RENOVATION OF THE EXISTING PLAZA",
+       "duration": "months",
+       "duration_quote": "RENOVATION OF THE EXISTING PLAZA"
+      },
+      {
+       "id": "M01192019-I1-GC",
+       "kind": "interior_renovation",
+       "kind_quote": "OFFICE RENOVATION",
+       "duration": "months",
+       "duration_quote": "PARTITION, CEILING AND DOOR MODIFICATIONS"
+      },
+      {
+       "id": "M01143715-I1-ST",
+       "kind": "interior_renovation",
+       "kind_quote": "PARTIAL DEMOLITION OF FLOOR SLAB WITH BRACING FOR CONVENIENCE STAIR BUILD-OUT",
+       "duration": "weeks",
+       "duration_quote": "PARTIAL DEMOLITION OF FLOOR SLAB WITH BRACING FOR CONVENIENCE STAIR BUILD-OUT"
+      },
+      {
+       "id": "M01298489-I1-GC",
+       "kind": "interior_renovation",
+       "kind_quote": "OFFICE RENOVATION",
+       "duration": "weeks",
+       "duration_quote": "PARTITION, CEILING AND DOOR MODIFICATIONS"
+      },
+      {
+       "id": "M01109932-I1-GC",
+       "kind": "interior_renovation",
+       "kind_quote": "INTERIOR DEMO OF NON-LOAD BEARING PARTITIONS, FLOORS AND CEILING",
+       "duration": "weeks",
+       "duration_quote": "INTERIOR DEMO OF NON-LOAD BEARING PARTITIONS, FLOORS AND CEILING"
+      },
+      {
+       "id": "M01192019-S4-ST",
+       "kind": "cant_tell",
+       "duration": "cant_tell"
+      },
+      {
+       "id": "M01194458-I1-GC",
+       "kind": "cant_tell",
+       "duration": "cant_tell"
+      },
+      {
+       "id": "M01192032-I1-GC",
+       "kind": "interior_renovation",
+       "kind_quote": "OFFICE RENOVATION",
+       "duration": "weeks",
+       "duration_quote": "PARTITION, CEILING AND DOOR MODIFICATIONS"
+      },
+      {
+       "id": "M01298489-S4-ST",
+       "kind": "interior_renovation",
+       "kind_quote": "OFFICE RENOVATION",
+       "duration": "weeks",
+       "duration_quote": "STRUCTURAL MODIFICATIONS"
+      }
+     ]
+    }
+   ]
+  ],
+  [
+   [
+    "submit_adjustment",
+    {
+     "cites": [
+      "M01143725-I1-GC",
+      "M01192019-I1-GC",
+      "M01143715-I1-ST",
+      "M01298489-I1-GC",
+      "M01109932-I1-GC",
+      "M01192032-I1-GC",
+      "M01298489-S4-ST"
+     ],
+     "direction": "quieter",
+     "reason": "Most permits are interior office renovations and indoor demo that will be muffled inside the buildings.",
+     "size": 2
+    }
+   ]
+  ],
+  [
+   [
+    "submit_adjustment",
+    {
+     "cites": [
+      "M01143725-I1-GC",
+      "M01192019-I1-GC",
+      "M01143715-I1-ST",
+      "M01298489-I1-GC",
+      "M01109932-I1-GC",
+      "M01192032-I1-GC",
+      "M01298489-S4-ST"
+     ],
+     "direction": "quieter",
+     "reason": "Most permits are interior office renovations and indoor demo that will be muffled inside the buildings.",
+     "size": 1
+    }
+   ]
+  ]
+ ],
+ "adjustment": {
+  "source": "construction",
+  "direction": "quieter",
+  "size": 1,
+  "cap": 2,
+  "cites": [
+   "M01143725-I1-GC",
+   "M01192019-I1-GC",
+   "M01143715-I1-ST",
+   "M01298489-I1-GC",
+   "M01109932-I1-GC",
+   "M01192032-I1-GC",
+   "M01298489-S4-ST"
+  ],
+  "reason": "Most permits are interior office renovations and indoor demo that will be muffled inside the buildings."
+ },
+ "why_none": null,
+ "usage": {
+  "calls": 4,
+  "prompt_tokens": 13982,
+  "completion_tokens": 13428,
+  "reasoning_tokens": 12083
+ },
+ "seconds": 43.9
+}

@@ -1,4 +1,5 @@
 """The permit reader in mock mode: a scripted model, real permit rows."""
+import json
 import re
 
 import pytest
@@ -6,7 +7,7 @@ import pytest
 from adjust import config as A
 from adjust.adjustment import Refused
 from adjust.permits import check_quote, check_reading, permits_to_read, read_permits, scrub
-from conftest import ScriptedClient, load
+from conftest import FIXTURES, ScriptedClient, load
 
 BETHUNE = load("55_bethune_street")
 EAST_86 = load("350_east_86th_street")
@@ -179,6 +180,40 @@ def test_model_that_stops_gives_no_adjustment():
     client = ScriptedClient(["I think the facade job is loud.", "Still thinking."])
     out = read_permits(BETHUNE["permits"], BETHUNE["as_of"], client=client)
     assert out["adjustment"] is None and out["why_none"] == "the model stopped without submitting an adjustment"
+
+
+def test_empty_reply_is_sent_again_with_room_to_reason():
+    client = ScriptedClient(["", [("read_permits", {"readings": bethune_readings()})], [SUBMIT_FACADE]])
+    out = read_permits(BETHUNE["permits"], BETHUNE["as_of"], client=client)
+    assert out["adjustment"]["cites"] == [FACADE]
+    assert out["trace"][0]["empty"] is True and out["usage"]["calls"] == 3
+    assert client.requests[0] == client.requests[1]   # the empty reply is not added to the conversation
+    assert all(kw["max_tokens"] >= 2000 for kw in client.kwargs)
+
+    only_empty = ScriptedClient([""] * (A.MODEL_EMPTY_RETRIES + 1))
+    out = read_permits(BETHUNE["permits"], BETHUNE["as_of"], client=only_empty)
+    assert out["adjustment"] is None and out["why_none"] == "the model sent only empty replies"
+
+
+def test_api_error_gives_no_adjustment():
+    import httpx
+    import openai
+    err = openai.APIConnectionError(request=httpx.Request("POST", "https://api.meta.ai/v1/chat/completions"))
+    out = read_permits(BETHUNE["permits"], BETHUNE["as_of"], client=ScriptedClient([err]))
+    assert out["adjustment"] is None and out["why_none"] == "the model call failed"
+    assert out["trace"][0]["error"].startswith("APIConnectionError")
+
+
+# ---------------------------------------------------------------- live Muse Spark runs, replayed
+@pytest.mark.parametrize("name", ["55_bethune_street", "350_east_86th_street", "100_west_57th_street"])
+def test_recorded_muse_spark_run_replays(name):
+    """Muse Spark's own tool calls from the live run of 2026-10-28, sent back through today's checks."""
+    rec = json.loads((FIXTURES / "live" / f"{name}.json").read_text())
+    doc = load(name)
+    out = read_permits(doc["permits"], doc["as_of"], client=ScriptedClient(rec["turns"]))
+    assert out["adjustment"] == rec["adjustment"]
+    assert out["not_read"] == []
+    assert all(e["quote"] for r in out["readings"] for f in ("kind", "duration") for e in r[f]["evidence"])
 
 
 # ---------------------------------------------------------------- the rules reader, on the same rows

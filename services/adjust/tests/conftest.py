@@ -23,17 +23,22 @@ def no_key(monkeypatch):
 class ScriptedClient:
     """Stands in for openai.OpenAI. Each create() returns the next scripted turn and keeps the messages it was sent.
 
-    A turn is a list of (tool name, arguments) calls, or a string for a reply with no tool call."""
+    A turn is a list of (tool name, arguments) calls, a string for a reply with no tool call ("" for an empty one),
+    or an exception to raise."""
 
     def __init__(self, turns):
         self.turns = list(turns)
         self.requests = []
+        self.kwargs = []
         self.chat = SimpleNamespace(completions=SimpleNamespace(create=self._create))
 
     def _create(self, **kw):
         self.requests.append(copy.deepcopy(kw["messages"]))
+        self.kwargs.append({k: v for k, v in kw.items() if k != "messages"})
         assert self.turns, "the model was called more times than scripted"
         turn = self.turns.pop(0)
+        if isinstance(turn, Exception):
+            raise turn
         if isinstance(turn, str):
             msg = SimpleNamespace(content=turn, tool_calls=None)
         else:

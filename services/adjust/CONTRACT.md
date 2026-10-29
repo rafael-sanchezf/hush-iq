@@ -83,7 +83,14 @@ for the Meta Model API, or a scripted stand-in in tests; `None` reads with the r
 - **P5 Model reader.** Muse Spark gets the permits and three tools: `read_permits` (a list of readings, each
   accepted or refused on its own), `submit_adjustment`, and `no_adjustment`. Each call is checked by P2 and
   A1 to A4, a refusal goes back as the tool result, and the model corrects it, for at most 8 turns. A model
-  that stops or runs out of turns gives no adjustment, so the frozen count stands.
+  that stops, runs out of turns, or returns an API error gives no adjustment, so the frozen count stands.
+  Reasoning tokens count against `max_tokens`, and a reply cut short comes back empty with no error, so each
+  call gets 6,000 and an empty reply is sent again, at most twice per pull.
+
+Live, 2026-10-28, `muse-spark-1.3` on the three fixtures: 8 calls, 2 to 4 per block, 14 to 44 seconds each,
+about 90% of completion tokens spent on reasoning. All 22 readings were accepted on the first try. One
+adjustment was refused (2 steps quieter where the cited permits support 1) and corrected on the next turn.
+The recorded tool calls are in `tests/fixtures/live/`, and a test replays them through the checks.
 
 Readings use the same field shape as the listing reader (`services/agent`):
 `{value, status: "read" | "cant_tell", evidence: [{source: "permit:<id>", quote}]}`.
@@ -137,6 +144,7 @@ Response (55 Bethune Street, rules reader, `permits` and `readings` cut to their
 - `why_none`: when `adjustment` is null, why.
 - `refusals`: every refused call, `{tool, id?, why}`, so the page can show the model being corrected.
 - `trace`: one entry per tool call with the turn, what was accepted and what was refused.
+- `usage`: model reader only. `{calls, prompt_tokens, completion_tokens, reasoning_tokens}` for the pull.
 - `address`: only when the request sent an address.
 
 `router` in `adjust/api.py` is what the main API mounts; `app` serves it alone.
@@ -181,3 +189,4 @@ evidence. `submit_adjustment` and `apply` stay as they are.
 | `adjust/pull_fixtures.py` | re-pulls the fixtures through the frozen fetch |
 | `adjust/demo_v2.py` | the before and after through engine v2 |
 | `tests/fixtures/` | real DOB NOW rows for three Manhattan blocks, pulled 2026-10-28, nine fields each |
+| `tests/fixtures/live/` | Muse Spark's tool calls on those blocks, recorded 2026-10-28, replayed in mock mode |

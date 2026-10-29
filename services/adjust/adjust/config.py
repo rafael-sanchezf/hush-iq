@@ -65,3 +65,7 @@ MODEL_BASE_URL = "https://api.meta.ai/v1"
 MODEL_DEFAULT = "muse-spark-1.3"
 MODEL_MAX_TURNS = 8        # model turns per pull, each with any number of tool calls
 MODEL_TEMPERATURE = 0.0
+# Reasoning tokens count against max_tokens, and a reply cut short comes back with no content and no error, so
+# every call gets room: twelve readings with quotes are about 1,500 tokens before any reasoning.
+MODEL_MAX_TOKENS = 6000
+MODEL_EMPTY_RETRIES = 2    # an empty reply (no text, no tool call) is sent again, at most this many times per pull
