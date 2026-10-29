@@ -47,7 +47,7 @@ test('no renter reads "Nightlife": the source is "Local businesses"', () => {
 
 test('both builds have the AI reading switch', () => {
   for (const files of [judged, classmates]) {
-    assert.match(files.get('options.html')!, /id="ai"/);
+    assert.match(files.get('options.html')!, /name="ai" value="ask"/);
     assert.ok(files.get('panel.js')!.includes('X-HushIQ-AI'));
   }
 });

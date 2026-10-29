@@ -9,10 +9,11 @@ import type { AiInfo } from './types.ts';
 
 export type AiPath = '/read' | '/verdict';
 
-/** A request to a service that may call a model. The URL is always the API base's own. */
-export function aiFetch(path: AiPath, init: Omit<RequestInit, 'headers'> & { headers: Record<string, string> }): Promise<Response> {
+/** A request to a service that may call a model. The URL is always the API base's own. `ai` says whether this one
+ * reads with a model: the settings' default, or on for a renter's "Power up with AI". */
+export function aiFetch(path: AiPath, init: Omit<RequestInit, 'headers'> & { headers: Record<string, string> }, ai = CONFIG.ai): Promise<Response> {
   const url = `${CONFIG.apiBase}${path}`;
-  const headers: Record<string, string> = { ...init.headers, 'X-HushIQ-AI': CONFIG.ai ? 'on' : 'off' };
+  const headers: Record<string, string> = { ...init.headers, 'X-HushIQ-AI': ai ? 'on' : 'off' };
   if (__BYOK__) Object.assign(headers, keyHeaders(url));
   return fetch(url, { ...init, headers });
 }

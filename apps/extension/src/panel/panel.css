@@ -1480,3 +1480,27 @@ details.trace .evidence {
 .shaped-links .link {
   font-size: 12px;
 }
+
+/* AI on request: what read the listing, and the button that reads it with a model. */
+.powerup {
+  display: grid;
+  gap: 10px;
+}
+
+.powerup-text {
+  font-size: 13px;
+  color: var(--ink-2);
+  line-height: 1.45;
+}
+
+.powerup-text b {
+  color: var(--ink);
+}
+
+.powerup .btn {
+  justify-self: start;
+}
+
+.powerup .link {
+  justify-self: start;
+}

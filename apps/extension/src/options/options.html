@@ -62,10 +62,10 @@
         </p>
       </section>
       <section class="card" id="ai-card">
-        <label class="radio">
-          <input type="checkbox" id="ai" />
-          <span>AI reading<small>On: a model reads the listing and writes the verdict, through the Hush IQ API, and the code checks every line it cites. Off: fixed rules read the listing and a template writes the verdict, and no model is called. The score is the same either way.</small></span>
-        </label>
+        <div class="q-title"><span>AI reading</span></div>
+        <label class="radio"><input type="radio" name="ai" value="ask" /><span>On request<small>Fixed rules score every listing in about a second, so you can go through many. Press Power up with AI on any result to have a model read it, photos included: about 10 to 20 seconds. The default.</small></span></label>
+        <label class="radio"><input type="radio" name="ai" value="always" /><span>Every listing<small>A model reads each listing and its photos, and the code checks every line it cites. About 10 to 20 seconds a listing.</small></span></label>
+        <label class="radio"><input type="radio" name="ai" value="off" /><span>Off<small>Fixed rules only; no model is ever called.</small></span></label>
       </section>
       <section class="card">
         <div class="q-title"><span>The reader and the verdict writer</span></div>

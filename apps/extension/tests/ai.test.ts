@@ -23,7 +23,7 @@ async function bundle(byok: boolean) {
       contents: [
         "export * as client from './src/lib/client.ts';",
         "export * as byok from './src/lib/byok.ts';",
-        "export { CONFIG } from './src/lib/config.ts';",
+        "export { CONFIG, load } from './src/lib/config.ts';",
         "export { warm } from './src/lib/score.ts';",
       ].join('\n'),
       resolveDir: root,
@@ -181,6 +181,28 @@ test('warming the score sends the address alone, once, with no AI or key header'
   assert.equal(u.pathname, '/v2/score');
   assert.deepEqual([...u.searchParams.keys()], ['address']);
   assert.deepEqual(hushHeaders(sent[0]), []);
+});
+
+test('AI on request: a run reads without a model unless asked; a power-up reads with one', async () => {
+  judged.CONFIG.ai = false; // aiMode 'ask', the default
+  await judged.client.read({ text: TEXT, photos: [], answers: ANSWERS }, () => {});
+  await judged.client.read({ text: TEXT, photos: [], answers: ANSWERS }, () => {}, undefined, true);
+  const reads = calls.filter(to('/read'));
+  assert.deepEqual(reads.map((c) => c.headers['x-hushiq-ai']), ['off', 'on']);
+});
+
+test('settings: the old switch maps onto the three modes, on request by default', async () => {
+  const modes = async (stored: Record<string, unknown>) => {
+    store.clear();
+    for (const [k, v] of Object.entries(stored)) store.set(k, v);
+    const s = await judged.load();
+    return [s.aiMode, s.ai];
+  };
+  assert.deepEqual(await modes({}), ['ask', false]);
+  assert.deepEqual(await modes({ ai: true }), ['ask', false]);
+  assert.deepEqual(await modes({ ai: false }), ['off', false]);
+  assert.deepEqual(await modes({ aiMode: 'always' }), ['always', true]);
+  judged.CONFIG.apiBase = API;
 });
 
 // ---------------------------------------------------------------- the renter's own key, classmates' build only

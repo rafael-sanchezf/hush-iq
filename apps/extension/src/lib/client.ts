@@ -76,13 +76,13 @@ async function* sse(body: ReadableStream<Uint8Array>): AsyncGenerator<{ event: s
   }
 }
 
-async function liveRead(input: ReadInput, onTurn: (t: ReaderTurn) => void, signal?: AbortSignal): Promise<ReaderResult> {
+async function liveRead(input: ReadInput, onTurn: (t: ReaderTurn) => void, signal: AbortSignal | undefined, ai: boolean): Promise<ReaderResult> {
   const r = await aiFetch('/read', {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'text/event-stream' },
     body: JSON.stringify(input),
     signal,
-  });
+  }, ai);
   if (!r.ok || !r.body) {
     const body = await r.json().catch(() => null);
     throw new Error(safe(String(body?.error ?? `The reader answered ${r.status}.`)));
@@ -101,16 +101,17 @@ async function liveRead(input: ReadInput, onTurn: (t: ReaderTurn) => void, signa
   throw new Error('The reader closed the stream without a result.');
 }
 
-export async function read(input: ReadInput, onTurn: (t: ReaderTurn) => void, signal?: AbortSignal): Promise<{ result: ReaderResult; via: Live }> {
+/** Reads a listing: with a model when `ai` is on (the settings' default, or a renter's power-up), with rules if not. */
+export async function read(input: ReadInput, onTurn: (t: ReaderTurn) => void, signal?: AbortSignal, ai = CONFIG.ai): Promise<{ result: ReaderResult; via: Live }> {
   if (await useLive('/read')) {
     try {
-      return { result: await liveRead(input, onTurn, signal), via: 'live' };
+      return { result: await liveRead(input, onTurn, signal, ai), via: 'live' };
     } catch (e) {
-      if (CONFIG.ai || signal?.aborted) throw e;
+      if (ai || signal?.aborted) throw e;
     }
   }
   const result = await mockRead(input, onTurn, signal);
-  if (!CONFIG.ai) result.ai = AI_OFF;
+  if (!ai) result.ai = AI_OFF;
   return { result, via: 'replay' };
 }
 

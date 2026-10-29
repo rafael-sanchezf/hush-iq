@@ -6,8 +6,11 @@
  *   The build's default is the hosted API; the manifest's one host permission is that origin.
  * - `mode`: `auto` uses the live reader and verdict writer when the API has them and replays them otherwise;
  *   `replay` always replays; `live` never does, so a missing service is an error you can see.
- * - `ai`: the AI reading switch, sent as `X-HushIQ-AI` on `/read` and `/verdict` (lib/ai.ts). Off, the services
- *   run their rules reader and template writer and no model is called. On by default.
+ * - `aiMode`: when a model reads a listing (Rafa, 2026-10-29: browsing means scoring many listings fast, so AI reading
+ *   is a power-up, not the default). `ask`: fixed rules score every listing in about a second and a button reads one
+ *   with AI on request; `always`: every listing is read with AI; `off`: no model is ever called.
+ * - `ai`: whether a run reads with AI unless told otherwise, `aiMode === 'always'`; sent as `X-HushIQ-AI` on `/read`
+ *   and `/verdict` (lib/ai.ts). Off, the services run their rules reader and template writer.
  *
  * No model key is here. The judged build has none at all; the classmates' build keeps the renter's own key apart,
  * in lib/byok.ts, which the judged build never bundles.
@@ -19,14 +22,17 @@ export const DEFAULT_API_BASE: string = typeof __API_BASE__ === 'string' ? __API
 export const REPO_URL = 'https://github.com/rafael-sanchezf/hush-iq';
 
 export type Mode = 'auto' | 'replay' | 'live';
+export type AiMode = 'ask' | 'always' | 'off';
+export const AI_MODES: AiMode[] = ['ask', 'always', 'off'];
 
 export interface Settings {
   apiBase: string;
   mode: Mode;
+  aiMode: AiMode;
   ai: boolean;
 }
 
-export const DEFAULT_SETTINGS: Settings = { apiBase: DEFAULT_API_BASE, mode: 'auto', ai: true };
+export const DEFAULT_SETTINGS: Settings = { apiBase: DEFAULT_API_BASE, mode: 'auto', aiMode: 'ask', ai: false };
 
 export const trimUrl = (s: string | undefined) => (s ?? '').trim().replace(/\/+$/, '');
 
@@ -34,15 +40,18 @@ export const trimUrl = (s: string | undefined) => (s ?? '').trim().replace(/\/+$
 export const CONFIG: Settings = { ...DEFAULT_SETTINGS };
 
 export async function load(): Promise<Settings> {
-  const got = await chrome.storage.local.get(['apiBase', 'mode', 'ai']);
+  const got = await chrome.storage.local.get(['apiBase', 'mode', 'aiMode', 'ai']);
   CONFIG.apiBase = trimUrl(got.apiBase as string | undefined) || DEFAULT_API_BASE;
   CONFIG.mode = (['auto', 'replay', 'live'] as Mode[]).includes(got.mode as Mode) ? (got.mode as Mode) : 'auto';
-  CONFIG.ai = got.ai !== false;
+  // Before the three modes there was one switch, `ai`: off stays off; on becomes the new default, AI on request.
+  CONFIG.aiMode = AI_MODES.includes(got.aiMode as AiMode) ? (got.aiMode as AiMode) : got.ai === false ? 'off' : 'ask';
+  CONFIG.ai = CONFIG.aiMode === 'always';
   return { ...CONFIG };
 }
 
 export async function save(s: Partial<Settings>): Promise<void> {
   const next: Partial<Settings> = { ...s };
+  if (next.aiMode !== undefined) next.ai = next.aiMode === 'always';
   if (next.apiBase !== undefined) next.apiBase = trimUrl(next.apiBase) || DEFAULT_API_BASE;
   await chrome.storage.local.set(next);
   Object.assign(CONFIG, next);

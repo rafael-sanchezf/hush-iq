@@ -590,6 +590,8 @@ export interface TileContext {
   aiOff: boolean;
   /** How many photos the reader was sent. */
   photos: number;
+  /** AI reading is a press away (AI on request): the photo tiles say so instead of "off". */
+  canPowerUp?: boolean;
 }
 
 /** Where a reader field came from: the listing's words, or "Photo N: what it saw". */
@@ -641,7 +643,9 @@ export function tiles(score: Score, fields: ReaderFields, observed: Observed, ct
   // Windows and walls come from the reader's photo observations, which reach the score only after the photo test.
   const photoTile = (key: 'windows' | 'walls', label: string, f: Field<unknown>, labelKey: string): Tile => {
     if (f.status === 'read') return { key, label, known: true, lines: [observedLabel(labelKey, f.value), source(f) ?? '', 'Not scored yet.'].filter(Boolean) };
-    const why = ctx.aiOff ? 'Not read: AI reading is off.' : ctx.photos ? 'Not in the photos or the text.' : 'No photos read.';
+    const why = ctx.aiOff
+      ? ctx.canPowerUp ? 'Not read yet: Power up with AI reads the photos.' : 'Not read: AI reading is off.'
+      : ctx.photos ? 'Not in the photos or the text.' : 'No photos read.';
     return { key, label, known: false, lines: [why, 'Not scored yet.'] };
   };
 

@@ -216,6 +216,8 @@ export interface ResultView {
   photos: string[];
   /** The reader's `ai` label: `basic` when rules read it, with the message the panel shows. */
   readerAi: AiInfo | null;
+  /** AI reading is one press away for this result (AI on request, a live reader, not read with AI yet). */
+  canPowerUp?: boolean;
 }
 
 // ---------------------------------------------------------------- icons
@@ -358,7 +360,7 @@ export function shapedCard(v: ResultView, on: { answers: () => void; fix: () => 
   const caps = new Map(capLines(score.caps).map((c) => [c.source, c]));
   const sources = [...score.ingredients].sort((a, b) => objectiveRank(a).rank - objectiveRank(b).rank);
   const aiOff = v.readerAi?.mode === 'basic';
-  const grid = tiles(score, v.fields, v.observed, { aiOff, photos: aiOff ? 0 : v.photos.length });
+  const grid = tiles(score, v.fields, v.observed, { aiOff, photos: aiOff ? 0 : v.photos.length, canPowerUp: v.canPowerUp });
   return h('section', { class: 'card shaped', 'aria-label': 'What informed your Hush score' },
     h('h3', null, 'What informed your Hush score'),
     h('div', { class: 'shaped-group' },

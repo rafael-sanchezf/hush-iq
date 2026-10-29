@@ -38,6 +38,8 @@ let capture: Capture | null = null;
 let text = '';
 let photoOn: boolean[] = [];
 let run: AbortController | null = null;
+/** A power-up in progress: its own run, so the fast result stays usable if it fails. */
+let powering: AbortController | null = null;
 let lastCaptureId = '';
 /** Where the Hush IQ name in the header and every "Back" lead: the score once there is one, else the start. */
 let goHome: () => void = () => welcome();
@@ -51,6 +53,8 @@ function show(...nodes: (Node | null)[]): void {
 function stop(): void {
   run?.abort();
   run = null;
+  powering?.abort();
+  powering = null;
 }
 
 // ---------------------------------------------------------------- the header's one status
@@ -59,10 +63,16 @@ function stop(): void {
 const modelName = () => (__BYOK__ && readerName()) || 'Muse Spark';
 
 async function refreshMode(): Promise<void> {
-  if (!CONFIG.ai) {
+  if (CONFIG.aiMode === 'off') {
     modePill.textContent = 'AI off';
     modePill.className = 'pill';
-    modePill.title = 'AI reading is off in settings: fixed rules read the listing. The scores are the same.';
+    modePill.title = 'AI reading is off in settings: fixed rules read every listing. The scores come from the same engine.';
+    return;
+  }
+  if (CONFIG.aiMode === 'ask') {
+    modePill.textContent = 'Fast';
+    modePill.className = 'pill';
+    modePill.title = 'Fixed rules score each listing in about a second. Power up with AI on a result to have a model read it, photos included.';
     return;
   }
   const s = await client.services();
@@ -245,36 +255,55 @@ function progressLine(t: ReaderTurn): string | null {
   return null;
 }
 
-async function score(): Promise<void> {
-  stop();
-  const ctl = new AbortController();
-  run = ctl;
+interface RunOptions {
+  /** Read with a model: the settings' default, or true for a renter's power-up. */
+  ai?: boolean;
+  /** A power-up: progress goes to this line, the fast result stays on screen, and a failure is said here. */
+  inPlace?: { status: HTMLElement; fail: (message: string) => void };
+}
+
+async function score(opts: RunOptions = {}): Promise<void> {
+  const ai = opts.ai ?? CONFIG.ai;
+  const inPlace = opts.inPlace;
+  let ctl: AbortController;
+  if (inPlace) {
+    powering?.abort();
+    ctl = powering = new AbortController();
+  } else {
+    stop();
+    ctl = run = new AbortController();
+  }
   const signal = ctl.signal;
   const a = answers ?? DEFAULT_ANSWERS;
-  turns = [];
+  const steps: ReaderTurn[] = [];
 
   const place = checkPlace(text, capture?.postal ?? null);
   if (place.inNyc === false) return outside(place.why);
 
   // One line of progress; the reader's own steps stay out of sight (they show only if it stops).
-  const status = h('span', null, 'Reading the listing…');
-  show(
-    h('section', { class: 'card' }, h('div', { class: 'spinner' }, glyph('working'), status)),
-    h('button', { type: 'button', class: 'btn ghost block', onclick: () => { stop(); welcome(); } }, 'Stop'),
-  );
+  const status = inPlace?.status ?? h('span', null, 'Reading the listing…');
+  status.textContent = ai ? 'Reading the listing with AI…' : 'Reading the listing…';
+  if (!inPlace) {
+    turns = steps;
+    show(
+      h('section', { class: 'card' }, h('div', { class: 'spinner' }, glyph('working'), status)),
+      h('button', { type: 'button', class: 'btn ghost block', onclick: () => { stop(); welcome(); } }, 'Stop'),
+    );
+  }
+  const stopWith = (title: string, message: string) => (inPlace ? inPlace.fail(message) : stopCard(title, [message]));
 
   const kept = (capture?.photos ?? []).filter((_, i) => photoOn[i]);
   const svc = await client.services();
   // The model reads for several seconds before it scores; start the building's city data now, alongside it. With AI
   // reading off the service scores at once, so there is nothing to win.
-  if (CONFIG.ai && svc.reader === 'live') {
+  if (ai && svc.reader === 'live') {
     const where = extract(text).geocode;
     if (where) warm(where);
   }
   const input: ReadInput = { text, photos: [], answers: a };
   let sent: string[] = kept;
   // The rules reader reads text only, so with AI reading off the photos stay in the browser.
-  if (!CONFIG.ai) {
+  if (!ai) {
     sent = [];
   } else if (svc.reader === 'live' && kept.length) {
     status.textContent = 'Getting the photos…';
@@ -290,7 +319,7 @@ async function score(): Promise<void> {
   // The steps stay out of sight, but the one line follows them, so a long read shows it is moving.
   const onTurn = (t: ReaderTurn) => {
     if (signal.aborted) return;
-    turns.push(t);
+    steps.push(t);
     const next = progressLine(t);
     if (next) status.textContent = next;
   };
@@ -298,19 +327,23 @@ async function score(): Promise<void> {
   let result: ReaderResult;
   let via: client.Live;
   try {
-    ({ result, via } = await client.read(input, onTurn, signal));
+    ({ result, via } = await client.read(input, onTurn, signal, ai));
   } catch (e) {
     if (signal.aborted) return;
-    return stopCard('The reader stopped', [(e as Error).message]);
+    return stopWith('The reader stopped', (e as Error).message);
   }
   if (signal.aborted) return;
   status.textContent = 'Scoring the building…';
 
-  if (result.needs?.includes('address') || (!result.score && result.fields.address.status !== 'read')) return noAddress();
-  if (result.needs?.includes('nyc')) return outside(result.notes?.[0] ?? '');
+  // A power-up that cannot place the building says so on its card; the fast result, which could, stays.
+  if (result.needs?.includes('address') || (!result.score && result.fields.address.status !== 'read')) {
+    return inPlace ? inPlace.fail('it found no street address in the listing.') : noAddress();
+  }
+  if (result.needs?.includes('nyc')) return inPlace ? inPlace.fail(result.notes?.[0] ?? 'it placed the building outside New York City.') : outside(result.notes?.[0] ?? '');
   const found = (result.score as Score | null)?.address?.label ?? result.location?.label ?? '';
   if (via === 'live' && result.fields.address.value && found && !sameBuilding(result.fields.address.value, found)) {
-    return outside(`The closest New York City match was ${addressLine(found)}, not “${result.fields.address.value}”.`);
+    const why = `The closest New York City match was ${addressLine(found)}, not “${result.fields.address.value}”.`;
+    return inPlace ? inPlace.fail(why) : outside(why);
   }
 
   let s: Score;
@@ -318,18 +351,58 @@ async function score(): Promise<void> {
     s = await client.score(result, a, signal);
   } catch (e) {
     if (signal.aborted) return;
-    return stopCard('Could not score this building', [(e as Error).message]);
+    return stopWith('Could not score this building', (e as Error).message);
   }
   if (signal.aborted) return;
-  await showResult(result, s, via, sent, signal);
+  if (inPlace) {
+    // The powered-up result becomes the one on screen, with its own run.
+    run?.abort();
+    run = ctl;
+    powering = null;
+    turns = steps;
+  }
+  await showResult(result, s, via, sent, signal, ai);
 }
 
 // ---------------------------------------------------------------- the verdict
 
-async function showResult(result: ReaderResult, first: Score, reader: client.Live, photos: string[], signal: AbortSignal): Promise<void> {
+/**
+ * The card under the score in AI-on-request mode: what read this listing, and the button that has a model read it,
+ * photos included. While it reads, the card is the progress line and the fast result stays usable.
+ */
+function powerUpCard(): HTMLElement {
+  const card = h('section', { class: 'card powerup', 'aria-live': 'polite' });
+  const idle = () => card.replaceChildren(
+    h('div', { class: 'powerup-text' },
+      h('b', null, 'Fast score. '),
+      'Fixed rules read the listing’s text. AI reading also reads the photos, for the floor, side, windows and walls, and can change the score. About 10 to 20 seconds.'),
+    h('button', { type: 'button', class: 'btn small', onclick: go }, 'Power up with AI'));
+  const go = () => {
+    const status = h('span', null, 'Reading the listing with AI…');
+    card.replaceChildren(
+      h('div', { class: 'spinner' }, glyph('working'), status),
+      h('button', { type: 'button', class: 'link small', onclick: () => { powering?.abort(); powering = null; idle(); } }, 'Cancel'));
+    void score({
+      ai: true,
+      inPlace: {
+        status,
+        fail: (message) => {
+          idle();
+          card.prepend(h('div', { class: 'note warn' }, glyph('refused'), h('span', null, `AI reading did not finish: ${message}`)));
+        },
+      },
+    });
+  };
+  idle();
+  return card;
+}
+
+async function showResult(result: ReaderResult, first: Score, reader: client.Live, photos: string[], signal: AbortSignal, ai: boolean): Promise<void> {
+  // Only a live reader can power up, only when the settings allow AI, and only a result read without it.
+  const canPowerUp = !ai && reader === 'live' && CONFIG.aiMode !== 'off';
   const v: ResultView = {
     score: first, fields: result.fields, observed: result.observed,
-    answers: answers ?? DEFAULT_ANSWERS, reader, photos, readerAi: result.ai ?? null,
+    answers: answers ?? DEFAULT_ANSWERS, reader, photos, readerAi: result.ai ?? null, canPowerUp,
   };
   const slot = { score: h('div'), shaped: h('div'), fine: h('div') };
   const tapsSlot = h('div');
@@ -360,10 +433,17 @@ async function showResult(result: ReaderResult, first: Score, reader: client.Liv
     slot.shaped.replaceChildren(shapedCard(v, { answers: change, fix: () => fixCard(null, home) }));
     slot.fine.replaceChildren(fineprint(v.score));
   };
-  const basic = result.ai?.mode === 'basic' && result.ai.message;
+  // The service's message when it read without a model, unless the renter simply has not asked for AI yet: then the
+  // power-up card says it. A model that was asked for and did not answer (credits out, key refused) always says why.
+  const basic = result.ai?.mode === 'basic' && result.ai.message && !(canPowerUp && result.ai.reason === 'switched_off');
   const note = basic ? h('div', { class: 'note' }, glyph('cant_tell'), h('span', null, result.ai!.message!)) : null;
+  const powered = ai && CONFIG.aiMode === 'ask' && result.ai?.mode !== 'basic'
+    ? h('div', { class: 'note' }, glyph('ok'), h('span', null, h('b', null, 'Powered up. '),
+      `${modelName()} read this listing${photos.length ? ` and ${photos.length} photo${photos.length > 1 ? 's' : ''}` : ''}; the code checked every line it cites.`))
+    : null;
+  const power = canPowerUp ? powerUpCard() : powered;
   const save = canSave() && capture ? saveButton(capture) : null;
-  const home = () => show(note, tapsSlot, slot.score, slot.shaped, save, slot.fine);
+  const home = () => show(note, tapsSlot, slot.score, power, slot.shaped, save, slot.fine);
   draw();
   goHome = home;
   home();
@@ -431,7 +511,7 @@ async function init(): Promise<void> {
     if (changes[KEY]?.newValue) handle(changes[KEY].newValue as CaptureMessage);
   });
   chrome.storage.local.onChanged.addListener(async (changes) => {
-    if (changes.apiBase || changes.mode || changes.ai || (__BYOK__ && keyChanged(changes))) {
+    if (changes.apiBase || changes.mode || changes.aiMode || changes.ai || (__BYOK__ && keyChanged(changes))) {
       await load();
       if (__BYOK__) await loadKey();
       client.forget();
