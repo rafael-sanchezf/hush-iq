@@ -5,10 +5,10 @@
 import type { Live } from '../lib/client.ts';
 import type { AiInfo, Answers, Bother, Cap, EvidenceRef, Field, Observed, RangeCase, ReaderFields, ReaderTurn, Score, Source, Verdict } from '../lib/types.ts';
 import { BOTHERS, VERDICTS } from '../lib/types.ts';
-import { BOTHER_WORDS, SOURCE_WORDS, addressLine, cleanEvidence, forWhom, hourLabel, hoursAsleep, observedLabel, pct, sideLabel, sideWords } from '../lib/words.ts';
+import { BOTHER_WORDS, SOURCE_WORDS, addressLine, cleanEvidence, forWhom, hourLabel, hoursAsleep, pct, sideLabel, sideWords } from '../lib/words.ts';
 import { clear, glyph, h } from './dom.ts';
 
-// ---------------------------------------------------------------- the three taps
+// ---------------------------------------------------------------- the three questions
 
 const HOURS = Array.from({ length: 24 }, (_, x) => x);
 // The strip runs noon to noon so a night's sleep reads as one block.
@@ -19,41 +19,60 @@ function asleep(x: number, from: number, until: number): boolean {
   return from > until ? x >= from || x < until : from <= x && x < until;
 }
 
-/** The three taps: sleep hours, daytime noise, what gets to you. They set the weights, never the facts. */
-export function tapsCard(start: Answers, onChange: (a: Answers) => void, title = 'You, in three taps'): HTMLElement {
+const STEPS = 3;
+
+/** The three questions, one screen each: sleep hours, daytime noise, what gets to you. They set the weights, never
+ * the facts. One at a time, since all three at once was too much on first open (Rafa, 2026-10-29). */
+export function questionsCard(start: Answers, onDone: (a: Answers) => void, done = 'Score this apartment'): HTMLElement {
   let a = { ...start, bothers: [...start.bothers] };
-  const card = h('section', { class: 'card', 'aria-label': title });
+  let step = 0;
+  const card = h('section', { class: 'card', 'aria-label': 'Three questions' });
   const draw = () => {
     clear(card);
     const set = (patch: Partial<Answers>) => {
       a = { ...a, ...patch };
-      onChange(a);
+      draw();
+    };
+    const go = (to: number) => {
+      step = to;
       draw();
     };
     const toggle = (b: Bother) =>
       set({ bothers: a.bothers.includes(b) ? a.bothers.filter((x) => x !== b) : BOTHERS.filter((x) => x === b || a.bothers.includes(x)) });
-    const n = hoursAsleep(a);
-    const picker = (label: string, value: number, key: 'sleep_from' | 'sleep_until') =>
-      h('label', { class: 'select' }, h('span', null, label),
-        h('select', { onchange: (e: Event) => set({ [key]: Number((e.target as HTMLSelectElement).value) }) },
-          HOURS.map((x) => h('option', { value: x, selected: x === value }, hourLabel(x)))));
-    card.append(
-      h('div', { class: 'block-head' }, h('h3', null, title), h('span', { class: 'small' }, 'Asked once, kept on this computer')),
-      h('div', { class: 'q' },
+    let q: HTMLElement;
+    if (step === 0) {
+      const n = hoursAsleep(a);
+      const picker = (label: string, value: number, key: 'sleep_from' | 'sleep_until') =>
+        h('label', { class: 'select' }, h('span', null, label),
+          h('select', { onchange: (e: Event) => set({ [key]: Number((e.target as HTMLSelectElement).value) }) },
+            HOURS.map((x) => h('option', { value: x, selected: x === value }, hourLabel(x)))));
+      q = h('div', { class: 'q' },
         h('div', { class: 'q-title' }, h('span', null, 'When do you sleep?'), h('small', null, `${n} hour${n === 1 ? '' : 's'} asleep`)),
         h('div', { class: 'sleep-pickers' }, picker('Asleep from', a.sleep_from, 'sleep_from'), picker('Until', a.sleep_until, 'sleep_until')),
         h('div', { class: 'clock', 'aria-hidden': 'true' }, STRIP.map((x) => h('i', { class: asleep(x, a.sleep_from, a.sleep_until) ? 'asleep' : null }))),
-        h('div', { class: 'clock-labels', 'aria-hidden': 'true' }, ['noon', '6 pm', 'midnight', '6 am', 'noon'].map((t) => h('span', null, t)))),
-      h('div', { class: 'q' },
+        h('div', { class: 'clock-labels', 'aria-hidden': 'true' }, ['noon', '6 pm', 'midnight', '6 am', 'noon'].map((t) => h('span', null, t))),
+        h('button', { type: 'button', class: 'btn block', onclick: () => go(1) }, 'Next'));
+    } else if (step === 1) {
+      // One tap answers it and moves on.
+      q = h('div', { class: 'q' },
         h('div', { class: 'q-title' }, h('span', { id: 'q-day' }, 'Does noise during the day bother you?')),
         h('div', { class: 'seg', role: 'group', 'aria-labelledby': 'q-day' },
-          h('button', { type: 'button', 'aria-pressed': String(a.day_bothers), onclick: () => set({ day_bothers: true }) }, 'Yes, I’m home'),
-          h('button', { type: 'button', 'aria-pressed': String(!a.day_bothers), onclick: () => set({ day_bothers: false }) }, 'Not really'))),
-      h('div', { class: 'q' },
-        h('div', { class: 'q-title' }, h('span', { id: 'q-bothers' }, 'What gets to you?'), h('small', null, a.bothers.length ? `${a.bothers.length} ticked` : 'Tick any')),
+          h('button', { type: 'button', 'aria-pressed': String(a.day_bothers), onclick: () => { a = { ...a, day_bothers: true }; go(2); } }, 'Yes, I’m home'),
+          h('button', { type: 'button', 'aria-pressed': String(!a.day_bothers), onclick: () => { a = { ...a, day_bothers: false }; go(2); } }, 'Not really')));
+    } else {
+      q = h('div', { class: 'q' },
+        h('div', { class: 'q-title' }, h('span', { id: 'q-bothers' }, 'What gets to you?'), h('small', null, a.bothers.length ? `${a.bothers.length} ticked` : 'Tick any, or none')),
         h('div', { class: 'chips', role: 'group', 'aria-labelledby': 'q-bothers' },
           BOTHERS.map((b) => h('button', { type: 'button', class: 'chip', 'aria-pressed': String(a.bothers.includes(b)), title: BOTHER_WORDS[b].hint, onclick: () => toggle(b) }, BOTHER_WORDS[b].label))),
-        h('p', { class: 'chip-hint' }, 'Each one you tick counts three times as much. Nightlife covers bars, crowds and late talk.')),
+        h('p', { class: 'chip-hint' }, 'Each one you tick counts three times as much. Nightlife covers bars, crowds and late talk.'),
+        h('button', { type: 'button', class: 'btn block', onclick: () => onDone(a) }, done));
+    }
+    card.append(
+      h('div', { class: 'block-head' },
+        h('span', { class: 'eyebrow' }, `Question ${step + 1} of ${STEPS}`),
+        step > 0 ? h('button', { type: 'button', class: 'link small', onclick: () => go(step - 1) }, 'Back') : null),
+      h('div', { class: 'steps', 'aria-hidden': 'true' }, Array.from({ length: STEPS }, (_, i) => h('i', { class: i <= step ? 'on' : null }))),
+      q,
     );
   };
   draw();
@@ -68,10 +87,6 @@ export function turnItem(t: ReaderTurn): HTMLLIElement {
     h('div', { class: 'turn-body' },
       h('div', { class: 'turn-title' }, t.title),
       t.detail ? h('div', { class: 'turn-detail' }, t.detail) : null));
-}
-
-export function workingItem(title: string): HTMLLIElement {
-  return h('li', { class: 'turn working' }, glyph('working'), h('div', { class: 'turn-body' }, h('div', { class: 'turn-title muted' }, title)));
 }
 
 // ---------------------------------------------------------------- the verdict
@@ -253,37 +268,6 @@ export function sourcesCard(score: Score): HTMLElement {
       i.evidence.length ? h('details', null,
         h('summary', null, `The city data (${i.evidence.length} line${i.evidence.length > 1 ? 's' : ''})`),
         h('ul', null, i.evidence.map((e) => h('li', null, cleanEvidence(e))))) : null))));
-}
-
-export function sawCard(v: ResultView): HTMLElement {
-  const { fields, observed } = v;
-  const rows: [string, string, Field<unknown>][] = [
-    ['Address', 'address', fields.address],
-    ['Unit', 'unit', fields.unit],
-    ['Floor', 'floor', fields.floor],
-    ['Side', 'side', fields.side],
-    ['View', 'view', observed.view],
-    ['Windows', 'windows', observed.windows],
-    ['AC units', 'ac_units', observed.ac_units],
-    ['Walls', 'wall_material', observed.wall_material],
-  ];
-  const value = (key: string, f: Field<unknown>) =>
-    f.status !== 'read' ? 'Can’t tell' : key === 'side' ? sideLabel(f.value as string) : ['address', 'unit', 'floor'].includes(key) ? String(f.value) : observedLabel(key, f.value);
-  return h('section', { class: 'card', 'aria-label': 'What the model saw' },
-    h('div', { class: 'block-head' },
-      h('h3', null, v.readerAi?.mode === 'basic' ? 'What the rules read' : v.reader === 'live' ? 'What the model saw' : 'What the replay read'),
-      h('span', { class: 'small' }, 'Facts only, each with its line')),
-    v.readerAi?.mode === 'basic'
-      ? h('p', { class: 'small' }, 'No model read this: fixed rules did, from the text only, never the photos.')
-      : v.reader === 'replay'
-        ? h('p', { class: 'small' }, 'Fixed rules stand in for Muse Spark until the live reader is hosted. They read the text only, never the photos.')
-        : null,
-    h('div', { class: 'facts' }, rows.map(([k, key, f]) => h('div', { class: 'fact' },
-      h('span', { class: 'k' }, k),
-      h('span', { class: `v${f.status === 'read' ? '' : ' cant'}` }, value(key, f)),
-      h('span', { class: 'q' }, ...(quoteOf(f, v.photos) ?? ['Nothing in the listing says it.']))))),
-    h('p', { class: 'small' }, 'Floor and side feed the score. The rest join it once the photo test shows the reader gets them right; until then they are here so you can check them at a viewing.'),
-  );
 }
 
 export function fineprint(score: Score): HTMLElement {

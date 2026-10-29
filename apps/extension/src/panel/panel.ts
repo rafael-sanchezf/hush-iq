@@ -1,9 +1,11 @@
 /**
- * The side panel: what was read, the three taps, the reader's turns live, then the verdict.
+ * The side panel: the three questions, one at a time, the first time only; then the verdict.
  *
- * Nothing leaves the browser until the renter presses "Score this apartment". Then the text they kept and the
- * photos they kept go to the Hush IQ API (lib/client.ts), never to a model directly; the API holds the keys. In the
- * classmates' build a renter may add their own key, which goes to the same API in a header (lib/byok.ts).
+ * What the page gave stays out of sight. The renter sees it only when it falls short (no address, outside the city,
+ * very little text), with a way to fix it (Rafa, 2026-10-29). Nothing leaves the browser until the renter clicks
+ * Hush IQ on a listing, or pastes one, and has answered the questions once. Then the text and the photos go to the
+ * Hush IQ API (lib/client.ts), never to a model directly; the API holds the keys. In the classmates' build a renter
+ * may add their own key, which goes to the same API in a header (lib/byok.ts).
  */
 import { keyChanged, loadKey, readerName } from '../lib/byok.ts';
 import type { Capture, CaptureMessage } from '../lib/capture-types.ts';
@@ -18,7 +20,7 @@ import type { Answers, ReadInput, ReaderResult, ReaderTurn, Score } from '../lib
 import { DEFAULT_ANSWERS, addressLine, forWhom } from '../lib/words.ts';
 import { clear, glyph, h } from './dom.ts';
 import type { ResultView } from './views.ts';
-import { fineprint, hearCard, sawCard, sourcesCard, tapsCard, turnItem, verdictCard, workingItem } from './views.ts';
+import { fineprint, hearCard, questionsCard, sourcesCard, turnItem, verdictCard } from './views.ts';
 
 const app = document.getElementById('app')!;
 const modePill = document.getElementById('mode')!;
@@ -76,7 +78,7 @@ function welcome(error?: string): void {
       h('ol', { class: 'how' },
         h('li', null, 'Open a listing on StreetEasy, Zillow, Apartments.com or Craigslist.'),
         h('li', null, 'Click ', h('img', { class: 'toolbar-icon', src: 'icons/icon-32.png', alt: '' }), ' Hush IQ in the toolbar. It reads that page, and only when you click.'),
-        h('li', null, 'Check what it read, answer three taps once, and get the verdict.'))),
+        h('li', null, 'Answer three quick questions the first time, and get the verdict.'))),
     h('section', { class: 'card' },
       h('details', { class: 'paste' },
         h('summary', null, 'Paste a listing instead'),
@@ -85,7 +87,7 @@ function welcome(error?: string): void {
           type: 'button', class: 'btn block',
           onclick: () => {
             const t = paste.value.trim();
-            if (t) review({ url: '', host: '', site: 'paste', title: 'Your paste', text: t, photos: [], postal: null, selection: false, captured_at: new Date().toISOString() });
+            if (t) start({ url: '', host: '', site: 'paste', title: 'Your paste', text: t, photos: [], postal: null, selection: false, captured_at: new Date().toISOString() });
           },
         }, 'Read this')),
       h('p', { class: 'small' }, 'Or select a listing’s text on any page, right-click, and choose “Score this with Hush IQ”.')),
@@ -97,104 +99,80 @@ function readingPage(): void {
   show(h('section', { class: 'card' }, h('div', { class: 'spinner' }, glyph('working'), h('span', null, 'Reading the page…'))));
 }
 
-// ---------------------------------------------------------------- review: what was read, trimmed by the renter
+// ---------------------------------------------------------------- a capture: check it, ask once, score
 
-function placeNotes(t: string, c: Capture | null): HTMLElement[] {
-  const out: HTMLElement[] = [];
-  const place = checkPlace(t, c?.postal ?? null);
+/** Under this much text a page capture likely missed the listing (a paste is the renter's own choice). */
+const MIN_TEXT = 150;
+
+interface Gap { title: string; body: string; address?: boolean; blocks?: boolean }
+
+/** What keeps this capture from scoring well, or null when it is enough. Null means the renter never sees it. */
+function gap(t: string, c: Capture): Gap | null {
+  const place = checkPlace(t, c.postal ?? null);
   if (place.inNyc === false) {
-    out.push(h('div', { class: 'note warn' }, glyph('refused'), h('span', null, h('b', null, 'Outside New York City. '), `${place.why} Hush IQ scores apartments in the five boroughs only.`)));
-  } else if (!extract(t).geocode) {
-    out.push(h('div', { class: 'note' }, glyph('cant_tell'), h('span', null, h('b', null, 'No street address found yet. '),
-      c?.site === 'other' ? 'This may not be a listing. ' : '', 'If you know the building, add it to the top of the text.')));
+    return { title: 'Outside New York City', body: `${place.why} Hush IQ scores apartments in the five boroughs only.`, blocks: true };
   }
-  return out;
+  if (!extract(t).geocode) {
+    return { title: 'No address found', address: true,
+      body: `${c.site === 'other' ? 'This may not be a listing page. ' : ''}Hush IQ could not find the building’s street address here. Add it if you know it.` };
+  }
+  if (c.site !== 'paste' && t.trim().length < MIN_TEXT) {
+    return { title: 'Only a little of this page was read', body: 'The floor or the side may be missing. Check the text below, or paste the listing instead.' };
+  }
+  return null;
 }
 
-function review(c: Capture): void {
+function start(c: Capture): void {
   stop();
-  const blanked = redactContacts(c.text);
-  capture = { ...c, text: blanked.text };
-  c = capture;
-  text = c.text;
-  photoOn = c.photos.map(() => true);
-  let draft: Answers = answers ?? { ...DEFAULT_ANSWERS };
-  let editing = !answers;
+  capture = { ...c, text: redactContacts(c.text).text };
+  text = capture.text;
+  photoOn = capture.photos.map(() => true);
+  const g = gap(text, capture);
+  if (g) return fixCard(g);
+  proceed();
+}
 
-  const notes = h('div', { style: 'display: grid; gap: 8px' }, placeNotes(text, c));
-  const count = h('span', null);
-  const setCount = () => (count.textContent = `${text.length.toLocaleString('en-US')} characters`);
-  setCount();
-  let t: number | undefined;
-  const area = h('textarea', {
-    rows: 12, 'aria-label': 'The listing text',
-    oninput: (e: Event) => {
-      text = (e.target as HTMLTextAreaElement).value;
-      setCount();
-      clearTimeout(t);
-      t = window.setTimeout(() => notes.replaceChildren(...placeNotes(text, c)), 400);
-      go.disabled = !text.trim();
-    },
-  });
-  area.value = text;
+function proceed(): void {
+  if (!answers) return ask();
+  void score();
+}
 
-  const photos = c.photos.length
-    ? h('div', null,
-      h('div', { class: 'photos' }, c.photos.map((src, i) => {
-        const b: HTMLButtonElement = h('button', {
-          type: 'button', class: 'photo', 'aria-pressed': 'true', title: 'Click to leave this photo out',
-          onclick: () => {
-            photoOn[i] = !photoOn[i];
-            b.setAttribute('aria-pressed', String(photoOn[i]));
-            photoNote.textContent = photoLine();
-          },
-        }, h('img', { src, alt: `Listing photo ${i + 1}`, loading: 'lazy', referrerpolicy: 'no-referrer' }), h('span', { class: 'n' }, String(i + 1)));
-        return b;
-      })),
-      h('p', { class: 'small', style: 'margin-top: 6px' }))
-    : null;
-  const photoLine = () => {
-    const n = photoOn.filter(Boolean).length;
-    return `${n} of ${c.photos.length} photo${c.photos.length > 1 ? 's' : ''} kept. Click one to leave it out.`;
-  };
-  const photoNote = photos?.lastElementChild as HTMLElement | undefined ?? h('p');
-  photoNote.textContent = photoLine();
-
-  const you = h('div');
-  const drawYou = () => {
-    you.replaceChildren(editing
-      ? tapsCard(draft, (a) => (draft = a))
-      : h('div', { class: 'card you' }, h('span', null, forWhom(answers!)), h('button', { type: 'button', class: 'link', onclick: () => { editing = true; drawYou(); } }, 'Change')));
-  };
-  drawYou();
-
-  const go = h('button', {
-    type: 'button', class: 'btn block', disabled: !text.trim(),
-    onclick: async () => {
-      if (editing || !answers) {
-        answers = draft;
-        await saveAnswers(draft);
-      }
+function ask(): void {
+  stop();
+  show(
+    questionsCard(answers ?? { ...DEFAULT_ANSWERS }, async (a) => {
+      answers = a;
+      await saveAnswers(a);
       void score();
-    },
-  }, 'Score this apartment');
+    }),
+    h('p', { class: 'small' }, `Asked once and kept on this computer. Scoring sends the listing${capture?.photos.length && CONFIG.ai ? ' and its photos' : ''} to the Hush IQ API; nothing is stored.`),
+  );
+}
 
+/** The failsafe: what was read, shown only when it falls short or the renter asks to check it. */
+function fixCard(g: Gap | null): void {
+  stop();
+  const c = capture;
+  if (!c) return welcome();
+  const area = h('textarea', { rows: 10, 'aria-label': 'What was read', oninput: (e: Event) => (text = (e.target as HTMLTextAreaElement).value) });
+  area.value = text;
+  const input = g?.address ? h('input', { type: 'text', placeholder: '310 West 47th Street, Manhattan', 'aria-label': 'The building’s address' }) : null;
+  const go = () => {
+    const a = input?.value.trim();
+    if (a) text = `Address: ${a}\n\n${text}`;
+    const again = a ? null : gap(text, c);
+    if (again?.blocks) return fixCard(again);
+    proceed();
+  };
   const source = c.site === 'paste' ? 'Your paste' : c.selection ? 'Your selection' : `Read from ${SITE_NAMES[c.site] === 'this page' ? c.host || 'this page' : SITE_NAMES[c.site]}`;
   show(
     h('section', { class: 'card' },
       h('div', { class: 'block-head' }, h('span', { class: 'eyebrow' }, source), h('button', { type: 'button', class: 'link small', onclick: () => welcome() }, 'Start over')),
-      c.site !== 'paste' ? h('div', { class: 'src' }, h('span', { class: 'title' }, c.title), c.host ? h('span', { class: 'host' }, c.host) : null) : null,
-      notes,
-      h('div', null,
-        h('label', { class: 'q-title', for: 'listing-text' }, h('span', null, 'What it read'), h('small', null, 'Trim anything not about this apartment')),
-        area,
-        h('div', { class: 'count' }, count, h('span', null, blanked.count ? `${blanked.count} phone or email blanked` : 'Facts only: adjectives are ignored'))),
-      photos),
-    you,
-    go,
-    h('p', { class: 'small' }, `Pressing it sends this text${c.photos.length && CONFIG.ai ? ' and the photos you kept' : ''} to the Hush IQ API to score. Nothing is stored.`),
+      g ? h('div', { class: `note${g.blocks ? ' warn' : ''}` }, glyph(g.blocks ? 'refused' : 'cant_tell'), h('span', null, h('b', null, `${g.title}. `), g.body)) : null,
+      input,
+      h('details', { class: 'paste', open: !g?.address }, h('summary', null, 'What was read'), area, h('p', { class: 'small' }, 'Trim anything not about this apartment.')),
+      g?.blocks ? null : h('button', { type: 'button', class: 'btn block', onclick: go }, g ? 'Continue' : 'Score this apartment')),
   );
-  area.id = 'listing-text';
 }
 
 // ---------------------------------------------------------------- the run: read, score, write
@@ -206,7 +184,7 @@ function stopCard(title: string, body: (Node | string)[], extra?: HTMLElement | 
       h('p', { class: 'muted' }, ...body),
       extra ?? null,
       h('div', { class: 'actions' },
-        h('button', { type: 'button', class: 'btn ghost small', onclick: () => capture && review({ ...capture, text }) }, 'Back to the text'),
+        h('button', { type: 'button', class: 'btn ghost small', onclick: () => fixCard(null) }, 'Check what was read'),
         h('button', { type: 'button', class: 'btn ghost small', onclick: () => welcome() }, 'Start over'))),
     traceDetails(),
   );
@@ -253,44 +231,33 @@ async function score(): Promise<void> {
   const place = checkPlace(text, capture?.postal ?? null);
   if (place.inNyc === false) return outside(place.why);
 
-  const list = h('ol', { class: 'turns', 'aria-live': 'polite' });
-  const working = workingItem('Reading the listing…');
-  list.append(working);
-  const head = h('div', { class: 'block-head' }, h('h3', null, 'The reader'), h('span', { class: 'pill' }, h('span', { class: 'dot' }), 'Working'));
-  const sub = h('p', { class: 'small' });
+  // One line of progress; the reader's own steps stay out of sight (they show only if it stops).
+  const status = h('span', null, 'Reading the listing…');
   show(
-    h('section', { class: 'card' }, head, sub, list),
-    h('button', { type: 'button', class: 'btn ghost block', onclick: () => { stop(); capture ? review({ ...capture, text }) : welcome(); } }, 'Stop'),
+    h('section', { class: 'card' }, h('div', { class: 'spinner' }, glyph('working'), status)),
+    h('button', { type: 'button', class: 'btn ghost block', onclick: () => { stop(); welcome(); } }, 'Stop'),
   );
 
   const kept = (capture?.photos ?? []).filter((_, i) => photoOn[i]);
   const svc = await client.services();
-  sub.textContent = !CONFIG.ai
-    ? 'AI reading is off: fixed rules read the listing, without the photos. The score is the same.'
-    : svc.reader === 'live'
-      ? `${modelName()} reads the listing through the Hush IQ API. Each step shows as it happens.`
-      : 'Replay: fixed rules stand in for Muse Spark until the live reader is hosted. The score is real.';
   const input: ReadInput = { text, photos: [], answers: a };
   let sent: string[] = kept;
   // The rules reader reads text only, so with AI reading off the photos stay in the browser.
   if (!CONFIG.ai) {
     sent = [];
   } else if (svc.reader === 'live' && kept.length) {
-    working.querySelector('.turn-title')!.textContent = 'Getting the photos…';
+    status.textContent = 'Getting the photos…';
     const got = await inlinePhotos(kept, signal);
     input.photos = got.photos;
     if (got.photo_urls.length) input.photo_urls = got.photo_urls;
     sent = kept.filter((u) => !got.photo_urls.includes(u)).concat(got.photo_urls);
-    working.querySelector('.turn-title')!.textContent = 'Reading the listing…';
+    status.textContent = 'Reading the listing…';
   } else if (kept.length) {
     input.photo_urls = kept;
   }
 
   const onTurn = (t: ReaderTurn) => {
-    if (signal.aborted) return;
-    turns.push(t);
-    list.insertBefore(turnItem(t), working);
-    working.scrollIntoView({ block: 'nearest' });
+    if (!signal.aborted) turns.push(t);
   };
 
   let result: ReaderResult;
@@ -302,7 +269,7 @@ async function score(): Promise<void> {
     return stopCard('The reader stopped', [(e as Error).message]);
   }
   if (signal.aborted) return;
-  working.remove();
+  status.textContent = 'Scoring the building…';
 
   if (result.needs?.includes('address') || (!result.score && result.fields.address.status !== 'read')) return noAddress();
   if (result.needs?.includes('nyc')) return outside(result.notes?.[0] ?? '');
@@ -356,7 +323,8 @@ async function showResult(result: ReaderResult, first: Score, reader: client.Liv
   const tapsSlot = h('div');
   let rescoring = 0;
   const change = () => {
-    tapsSlot.replaceChildren(tapsCard(v.answers, async (a) => {
+    tapsSlot.replaceChildren(questionsCard(v.answers, async (a) => {
+      tapsSlot.replaceChildren();
       const mine = ++rescoring;
       answers = a;
       v.answers = a;
@@ -373,7 +341,7 @@ async function showResult(result: ReaderResult, first: Score, reader: client.Liv
       } finally {
         if (mine === rescoring) app.classList.remove('updating');
       }
-    }, 'Your answers'));
+    }, 'Update the score'));
     tapsSlot.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
@@ -385,11 +353,9 @@ async function showResult(result: ReaderResult, first: Score, reader: client.Liv
     slot.verdict,
     slot.hear,
     slot.sources,
-    sawCard(v),
-    traceDetails(),
     h('div', { class: 'actions' },
       h('button', { type: 'button', class: 'btn ghost small', onclick: change }, 'Change my answers'),
-      h('button', { type: 'button', class: 'btn ghost small', onclick: () => capture && review({ ...capture, text }) }, 'Back to the text')),
+      h('button', { type: 'button', class: 'btn ghost small', onclick: () => fixCard(null) }, 'Check what was read')),
     slot.fine,
   );
   await write();
@@ -402,7 +368,7 @@ function handle(msg: CaptureMessage | undefined): void {
   if (!msg.ok && msg.error === 'reading') return readingPage();
   lastCaptureId = msg.id;
   if (!msg.ok) return welcome(msg.error);
-  review(msg.capture);
+  start(msg.capture);
 }
 
 async function init(): Promise<void> {

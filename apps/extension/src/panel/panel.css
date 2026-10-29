@@ -1141,3 +1141,25 @@ details.trace .evidence {
     animation-duration: 2s;
   }
 }
+
+/* The three questions, one at a time: a progress strip under the counter, the action under the question. */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+.steps i {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--track);
+}
+
+.steps i.on {
+  background: var(--ink);
+}
+
+.q > .btn.block {
+  margin-top: 16px;
+}
+
