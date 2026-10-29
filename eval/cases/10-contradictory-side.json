@@ -1,0 +1,272 @@
+{
+  "id": "10-contradictory-side",
+  "about": "The bedroom 'faces the rear', yet 'all windows overlook 14th Street': side cannot be told; floor can.",
+  "tags": [
+    "contradiction"
+  ],
+  "listing": {
+    "text": "Apt 15K at 1 Irving Place, floor 15. Large one-bedroom with a home-office nook. The bedroom faces the quiet rear of the building. All windows overlook 14th Street and Union Square. Full-service building with a gym and a playroom.",
+    "photos": []
+  },
+  "gold": {
+    "address": "1 Irving Place",
+    "unit": "15K",
+    "floor": 15,
+    "side": null,
+    "conflict": {
+      "side": [
+        "rear",
+        "front"
+      ]
+    },
+    "building_floors": 27
+  },
+  "answers": {
+    "sleep_from": 23,
+    "sleep_until": 7,
+    "day_bothers": false,
+    "bothers": [
+      "traffic",
+      "sirens"
+    ]
+  },
+  "fixtures": {
+    "reader": {
+      "fields": {
+        "address": {
+          "value": "1 Irving Place",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "1 Irving Place"
+            }
+          ]
+        },
+        "unit": {
+          "value": "15K",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "Apt 15K"
+            }
+          ]
+        },
+        "floor": {
+          "value": 15,
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "floor 15"
+            }
+          ]
+        },
+        "side": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "The bedroom faces the quiet rear of the building"
+            },
+            {
+              "source": "text",
+              "quote": "All windows overlook 14th Street"
+            }
+          ]
+        }
+      },
+      "position": "unknown",
+      "observed": {
+        "view": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "windows": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "ac_units": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "wall_material": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "score": {
+        "engine": "v2",
+        "verdict": "Loud",
+        "quieter_than": 37.0,
+        "uncapped_verdict": "Loud",
+        "caps": [],
+        "range": {
+          "loudest_case": {
+            "verdict": "Loud",
+            "quieter_than": 25.9,
+            "floor": 15,
+            "side": "front"
+          },
+          "quietest_case": {
+            "verdict": "Typical",
+            "quieter_than": 54.7,
+            "floor": 15,
+            "side": "rear"
+          }
+        },
+        "ingredients": [
+          {
+            "name": "street",
+            "label": "Street",
+            "quieter_than": 22.5,
+            "verdict": "Loud",
+            "weight": 47.1,
+            "ticked": true,
+            "temporary": false,
+            "evidence": [
+              "EAST 14 STREET: major street, 4 travel lanes, 25 mph, 20 m away"
+            ]
+          },
+          {
+            "name": "nightlife",
+            "label": "Nightlife",
+            "quieter_than": 79.4,
+            "verdict": "Quiet",
+            "weight": 7.4,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "10 licensed venues within 150 m: 5 bars, 5 restaurants"
+            ]
+          },
+          {
+            "name": "building",
+            "label": "Building",
+            "quieter_than": 40.8,
+            "verdict": "Typical",
+            "weight": 9.8,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "19 residential noise complaints to 311 at this building in 24 months"
+            ]
+          },
+          {
+            "name": "sirens",
+            "label": "Sirens",
+            "quieter_than": 36.5,
+            "verdict": "Loud",
+            "weight": 29.4,
+            "ticked": true,
+            "temporary": false,
+            "evidence": [
+              "no hospital, firehouse or police station within 600 m"
+            ]
+          },
+          {
+            "name": "construction",
+            "label": "Construction",
+            "quieter_than": 91.3,
+            "verdict": "Very quiet",
+            "weight": 6.4,
+            "ticked": false,
+            "temporary": true,
+            "evidence": [
+              "no active DOB permits on this block"
+            ]
+          }
+        ],
+        "answers": {
+          "sleep": {
+            "from": 23,
+            "until": 7
+          },
+          "day_bothers": false,
+          "ticks": [
+            "traffic",
+            "sirens"
+          ]
+        },
+        "unit": {
+          "floor": 15,
+          "floor_from": "listing",
+          "side": "unknown",
+          "side_from": "unknown",
+          "building_floors": 27
+        },
+        "address": {
+          "label": "1 IRVING PLACE, New York, NY, USA",
+          "bbl": "1008707501",
+          "borough": "Manhattan"
+        }
+      },
+      "trace": [
+        {
+          "turn": 1,
+          "tool": "submit_listing",
+          "ok": true
+        }
+      ]
+    },
+    "verdict": {
+      "evidence": [
+        {
+          "id": "E1",
+          "text": "Overall for these sleep hours: Loud, quieter than 37.0% of Manhattan apartments"
+        },
+        {
+          "id": "E2",
+          "text": "Street: quieter than 22.5% of Manhattan apartments; EAST 14 STREET: major street, 4 travel lanes, 25 mph, 20 m away"
+        },
+        {
+          "id": "E3",
+          "text": "Nightlife: quieter than 79.4% of Manhattan apartments; 10 licensed venues within 150 m: 5 bars, 5 restaurants"
+        },
+        {
+          "id": "E4",
+          "text": "Building: quieter than 40.8% of Manhattan apartments; 19 residential noise complaints to 311 at this building in 24 months"
+        },
+        {
+          "id": "E5",
+          "text": "Sirens: quieter than 36.5% of Manhattan apartments; no hospital, firehouse or police station within 600 m"
+        },
+        {
+          "id": "E6",
+          "text": "Construction: quieter than 91.3% of Manhattan apartments; no active DOB permits on this block"
+        },
+        {
+          "id": "E7",
+          "text": "The listing leaves floor or side open: from Loud on the loudest floor and side to Typical on the quietest"
+        }
+      ],
+      "sentences": [
+        {
+          "text": "For the hours you sleep, this apartment is Loud for Manhattan: quieter than 37.0% of apartments.",
+          "cites": [
+            "E1"
+          ]
+        },
+        {
+          "text": "What you will hear most is street, quieter than only 22.5% of Manhattan.",
+          "cites": [
+            "E2"
+          ]
+        },
+        {
+          "text": "The listing does not settle the floor and side, so expect anything from Loud to Typical.",
+          "cites": [
+            "E7"
+          ]
+        }
+      ],
+      "writer": "template"
+    }
+  }
+}

@@ -1,0 +1,288 @@
+{
+  "id": "17-high-floor-river-view",
+  "about": "38th floor with river views: a view is not a side. Permits on the block call for no adjustment.",
+  "tags": [
+    "high-floor",
+    "permits"
+  ],
+  "listing": {
+    "text": "38th-floor two-bedroom at 220 Riverside Boulevard with Hudson River views. Floor-to-ceiling windows, central air, a chef's kitchen and a washer and dryer. The building has a pool, a gym and a playroom.",
+    "photos": []
+  },
+  "gold": {
+    "address": "220 Riverside Boulevard",
+    "unit": null,
+    "floor": 38,
+    "side": null,
+    "observed": {
+      "view": "open",
+      "windows": "floor_to_ceiling",
+      "ac_units": "no"
+    },
+    "building_floors": 48
+  },
+  "answers": {
+    "sleep_from": 23,
+    "sleep_until": 7,
+    "day_bothers": true,
+    "bothers": [
+      "construction"
+    ]
+  },
+  "pull": {
+    "permits": [
+      {
+        "work_permit": "M00001701-I1",
+        "work_type": "Sign",
+        "job_description": "Install illuminated sign on ground floor storefront",
+        "issued_date": "2026-06-15",
+        "expired_date": "2026-12-15",
+        "estimated_job_costs": "12000",
+        "house_no": "240",
+        "street_name": "RIVERSIDE BOULEVARD"
+      }
+    ]
+  },
+  "fixtures": {
+    "reader": {
+      "fields": {
+        "address": {
+          "value": "220 Riverside Boulevard",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "220 Riverside Boulevard"
+            }
+          ]
+        },
+        "unit": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "floor": {
+          "value": 38,
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "38th-floor"
+            }
+          ]
+        },
+        "side": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "position": "unknown",
+      "observed": {
+        "view": {
+          "value": "open",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "Hudson River views"
+            }
+          ]
+        },
+        "windows": {
+          "value": "floor_to_ceiling",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "Floor-to-ceiling windows"
+            }
+          ]
+        },
+        "ac_units": {
+          "value": "no",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "central air"
+            }
+          ]
+        },
+        "wall_material": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "score": {
+        "engine": "v2",
+        "verdict": "Loud",
+        "quieter_than": 34.5,
+        "uncapped_verdict": "Loud",
+        "caps": [],
+        "range": {
+          "loudest_case": {
+            "verdict": "Loud",
+            "quieter_than": 23.8,
+            "floor": 38,
+            "side": "front"
+          },
+          "quietest_case": {
+            "verdict": "Typical",
+            "quieter_than": 50.1,
+            "floor": 38,
+            "side": "rear"
+          }
+        },
+        "ingredients": [
+          {
+            "name": "street",
+            "label": "Street",
+            "quieter_than": 38.9,
+            "verdict": "Loud",
+            "weight": 25.4,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "RIVERSIDE BOULEVARD: local street, 2 travel lanes, 25 mph, 30 m away"
+            ]
+          },
+          {
+            "name": "nightlife",
+            "label": "Nightlife",
+            "quieter_than": 24.2,
+            "verdict": "Loud",
+            "weight": 11.9,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "8 licensed venues within 150 m: 3 bars, 5 restaurants"
+            ]
+          },
+          {
+            "name": "building",
+            "label": "Building",
+            "quieter_than": 37.7,
+            "verdict": "Loud",
+            "weight": 15.9,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "20 residential noise complaints to 311 at this building in 24 months"
+            ]
+          },
+          {
+            "name": "sirens",
+            "label": "Sirens",
+            "quieter_than": 80.1,
+            "verdict": "Very quiet",
+            "weight": 15.9,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "4 emergency facilities within 600 m"
+            ]
+          },
+          {
+            "name": "construction",
+            "label": "Construction",
+            "quieter_than": 9.7,
+            "verdict": "Very loud",
+            "weight": 31.0,
+            "ticked": true,
+            "temporary": true,
+            "evidence": [
+              "1 active DOB permit on this block"
+            ]
+          }
+        ],
+        "answers": {
+          "sleep": {
+            "from": 23,
+            "until": 7
+          },
+          "day_bothers": true,
+          "ticks": [
+            "construction"
+          ]
+        },
+        "unit": {
+          "floor": 38,
+          "floor_from": "listing",
+          "side": "unknown",
+          "side_from": "unknown",
+          "building_floors": 48
+        },
+        "address": {
+          "label": "220 RIVERSIDE BOULEVARD, New York, NY, USA",
+          "bbl": "1011717502",
+          "borough": "Manhattan"
+        }
+      },
+      "trace": [
+        {
+          "turn": 1,
+          "tool": "submit_listing",
+          "ok": true
+        }
+      ]
+    },
+    "verdict": {
+      "evidence": [
+        {
+          "id": "E1",
+          "text": "Overall for these sleep hours: Loud, quieter than 34.5% of Manhattan apartments"
+        },
+        {
+          "id": "E2",
+          "text": "Street: quieter than 38.9% of Manhattan apartments; RIVERSIDE BOULEVARD: local street, 2 travel lanes, 25 mph, 30 m away"
+        },
+        {
+          "id": "E3",
+          "text": "Nightlife: quieter than 24.2% of Manhattan apartments; 8 licensed venues within 150 m: 3 bars, 5 restaurants"
+        },
+        {
+          "id": "E4",
+          "text": "Building: quieter than 37.7% of Manhattan apartments; 20 residential noise complaints to 311 at this building in 24 months"
+        },
+        {
+          "id": "E5",
+          "text": "Sirens: quieter than 80.1% of Manhattan apartments; 4 emergency facilities within 600 m"
+        },
+        {
+          "id": "E6",
+          "text": "Construction: quieter than 9.7% of Manhattan apartments; 1 active DOB permit on this block"
+        },
+        {
+          "id": "E7",
+          "text": "The listing leaves floor or side open: from Loud on the loudest floor and side to Typical on the quietest"
+        }
+      ],
+      "sentences": [
+        {
+          "text": "For the hours you sleep, this apartment is Loud for Manhattan: quieter than 34.5% of apartments.",
+          "cites": [
+            "E1"
+          ]
+        },
+        {
+          "text": "What you will hear most is construction, quieter than only 9.7% of Manhattan.",
+          "cites": [
+            "E6"
+          ]
+        },
+        {
+          "text": "The listing does not settle the floor and side, so expect anything from Loud to Typical.",
+          "cites": [
+            "E7"
+          ]
+        }
+      ],
+      "writer": "template"
+    },
+    "adjust": {
+      "adjustments": []
+    }
+  }
+}

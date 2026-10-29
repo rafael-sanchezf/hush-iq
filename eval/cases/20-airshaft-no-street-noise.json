@@ -1,0 +1,251 @@
+{
+  "id": "20-airshaft-no-street-noise",
+  "about": "'No street noise at all!' is a claim; 'faces the interior air shaft' is the fact: rear, view a wall.",
+  "tags": [
+    "misleading-adjective",
+    "rear"
+  ],
+  "listing": {
+    "text": "No street noise at all! The bedroom window faces the interior air shaft. 4th floor walk-up at 520 East 5th Street, one-bedroom, renovated bath, heat included.",
+    "photos": []
+  },
+  "gold": {
+    "address": "520 East 5th Street",
+    "unit": null,
+    "floor": 4,
+    "side": "rear",
+    "observed": {
+      "view": "wall"
+    },
+    "building_floors": 5
+  },
+  "answers": {
+    "sleep_from": 23,
+    "sleep_until": 7,
+    "day_bothers": true,
+    "bothers": [
+      "neighbors"
+    ]
+  },
+  "fixtures": {
+    "reader": {
+      "fields": {
+        "address": {
+          "value": "520 East 5th Street",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "520 East 5th Street"
+            }
+          ]
+        },
+        "unit": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "floor": {
+          "value": 4,
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "4th floor walk-up"
+            }
+          ]
+        },
+        "side": {
+          "value": "rear",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "The bedroom window faces the interior air shaft"
+            }
+          ]
+        }
+      },
+      "position": "rear",
+      "observed": {
+        "view": {
+          "value": "wall",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "faces the interior air shaft"
+            }
+          ]
+        },
+        "windows": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "ac_units": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "wall_material": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "score": {
+        "engine": "v2",
+        "verdict": "Loud",
+        "quieter_than": 28.8,
+        "uncapped_verdict": "Loud",
+        "caps": [],
+        "range": null,
+        "ingredients": [
+          {
+            "name": "street",
+            "label": "Street",
+            "quieter_than": 47.7,
+            "verdict": "Typical",
+            "weight": 22.9,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "EAST 5 STREET: local street, 1 travel lane, 25 mph, 9 m away"
+            ]
+          },
+          {
+            "name": "nightlife",
+            "label": "Nightlife",
+            "quieter_than": 14.2,
+            "verdict": "Very loud",
+            "weight": 10.7,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "15 licensed venues within 150 m: 2 bars, 13 restaurants"
+            ]
+          },
+          {
+            "name": "building",
+            "label": "Building",
+            "quieter_than": 16.3,
+            "verdict": "Very loud",
+            "weight": 42.9,
+            "ticked": true,
+            "temporary": false,
+            "evidence": [
+              "20 residential noise complaints to 311 at this building in 24 months"
+            ]
+          },
+          {
+            "name": "sirens",
+            "label": "Sirens",
+            "quieter_than": 29.2,
+            "verdict": "Loud",
+            "weight": 14.3,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "2 emergency facilities within 600 m"
+            ]
+          },
+          {
+            "name": "construction",
+            "label": "Construction",
+            "quieter_than": 56.3,
+            "verdict": "Typical",
+            "weight": 9.3,
+            "ticked": false,
+            "temporary": true,
+            "evidence": [
+              "no active DOB permits on this block"
+            ]
+          }
+        ],
+        "answers": {
+          "sleep": {
+            "from": 23,
+            "until": 7
+          },
+          "day_bothers": true,
+          "ticks": [
+            "neighbors"
+          ]
+        },
+        "unit": {
+          "floor": 4,
+          "floor_from": "listing",
+          "side": "rear",
+          "side_from": "listing",
+          "building_floors": 5
+        },
+        "address": {
+          "label": "520 EAST 5 STREET, New York, NY, USA",
+          "bbl": "1004000016",
+          "borough": "Manhattan"
+        }
+      },
+      "trace": [
+        {
+          "turn": 1,
+          "tool": "submit_listing",
+          "ok": true
+        }
+      ]
+    },
+    "verdict": {
+      "evidence": [
+        {
+          "id": "E1",
+          "text": "Overall for these sleep hours: Loud, quieter than 28.8% of Manhattan apartments"
+        },
+        {
+          "id": "E2",
+          "text": "Street: quieter than 47.7% of Manhattan apartments; EAST 5 STREET: local street, 1 travel lane, 25 mph, 9 m away"
+        },
+        {
+          "id": "E3",
+          "text": "Nightlife: quieter than 14.2% of Manhattan apartments; 15 licensed venues within 150 m: 2 bars, 13 restaurants"
+        },
+        {
+          "id": "E4",
+          "text": "Building: quieter than 16.3% of Manhattan apartments; 20 residential noise complaints to 311 at this building in 24 months"
+        },
+        {
+          "id": "E5",
+          "text": "Sirens: quieter than 29.2% of Manhattan apartments; 2 emergency facilities within 600 m"
+        },
+        {
+          "id": "E6",
+          "text": "Construction: quieter than 56.3% of Manhattan apartments; no active DOB permits on this block"
+        },
+        {
+          "id": "E7",
+          "text": "Floor 4 on the rear side, both from the listing"
+        }
+      ],
+      "sentences": [
+        {
+          "text": "For the hours you sleep, this apartment is Loud for Manhattan: quieter than 28.8% of apartments.",
+          "cites": [
+            "E1"
+          ]
+        },
+        {
+          "text": "What you will hear most is building, quieter than only 16.3% of Manhattan.",
+          "cites": [
+            "E4"
+          ]
+        },
+        {
+          "text": "Floor 4 on the rear side is what the listing says, so the verdict has no range.",
+          "cites": [
+            "E7"
+          ]
+        }
+      ],
+      "writer": "template"
+    }
+  }
+}

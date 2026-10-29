@@ -1,0 +1,284 @@
+{
+  "id": "04-quiet-block-faces-street",
+  "about": "'Quiet block', 'peaceful', 'tranquil' say nothing; the living room overlooks the street.",
+  "tags": [
+    "misleading-adjective",
+    "permits"
+  ],
+  "listing": {
+    "text": "Charming one-bedroom on a quiet block in the heart of the West Village. 45 Christopher Street, unit 3C, third floor. The living room overlooks Christopher Street through two large windows. Peaceful, tranquil and full of light. Doorman, elevator, laundry room.",
+    "photos": []
+  },
+  "gold": {
+    "address": "45 Christopher Street",
+    "unit": "3C",
+    "floor": 3,
+    "side": "front",
+    "building_floors": 17
+  },
+  "answers": {
+    "sleep_from": 22,
+    "sleep_until": 6,
+    "day_bothers": false,
+    "bothers": [
+      "construction"
+    ]
+  },
+  "pull": {
+    "permits": [
+      {
+        "work_permit": "M00000401-I1",
+        "work_type": "General Construction",
+        "job_description": "Facade repair and sidewalk shed for the periodic facade inspection cycle",
+        "issued_date": "2026-05-11",
+        "expired_date": "2027-05-11",
+        "estimated_job_costs": "180000",
+        "house_no": "47",
+        "street_name": "CHRISTOPHER STREET"
+      },
+      {
+        "work_permit": "M00000402-I1",
+        "work_type": "Plumbing",
+        "job_description": "Replace kitchen sink fixtures in one apartment",
+        "issued_date": "2026-07-02",
+        "expired_date": "2026-12-02",
+        "estimated_job_costs": "4000",
+        "house_no": "45",
+        "street_name": "CHRISTOPHER STREET"
+      }
+    ]
+  },
+  "fixtures": {
+    "reader": {
+      "fields": {
+        "address": {
+          "value": "45 Christopher Street",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "45 Christopher Street"
+            }
+          ]
+        },
+        "unit": {
+          "value": "3C",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "unit 3C"
+            }
+          ]
+        },
+        "floor": {
+          "value": 3,
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "third floor"
+            }
+          ]
+        },
+        "side": {
+          "value": "front",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "The living room overlooks Christopher Street"
+            }
+          ]
+        }
+      },
+      "position": "front",
+      "observed": {
+        "view": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "windows": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "ac_units": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "wall_material": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "score": {
+        "engine": "v2",
+        "verdict": "Typical",
+        "quieter_than": 53.9,
+        "uncapped_verdict": "Typical",
+        "caps": [],
+        "range": null,
+        "ingredients": [
+          {
+            "name": "street",
+            "label": "Street",
+            "quieter_than": 84.2,
+            "verdict": "Very quiet",
+            "weight": 25.4,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "CHRISTOPHER STREET: local street, 1 travel lane, 25 mph, 10 m away"
+            ]
+          },
+          {
+            "name": "nightlife",
+            "label": "Nightlife",
+            "quieter_than": 17.3,
+            "verdict": "Very loud",
+            "weight": 11.9,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "5 licensed venues within 150 m: 3 bars, 2 restaurants"
+            ]
+          },
+          {
+            "name": "building",
+            "label": "Building",
+            "quieter_than": 67.4,
+            "verdict": "Quiet",
+            "weight": 15.9,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "32 residential noise complaints to 311 at this building in 24 months"
+            ]
+          },
+          {
+            "name": "sirens",
+            "label": "Sirens",
+            "quieter_than": 82.2,
+            "verdict": "Very quiet",
+            "weight": 15.9,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "3 emergency facilities within 600 m"
+            ]
+          },
+          {
+            "name": "construction",
+            "label": "Construction",
+            "quieter_than": 21.4,
+            "verdict": "Loud",
+            "weight": 31.0,
+            "ticked": true,
+            "temporary": true,
+            "evidence": [
+              "2 active DOB permits on this block"
+            ]
+          }
+        ],
+        "answers": {
+          "sleep": {
+            "from": 22,
+            "until": 6
+          },
+          "day_bothers": false,
+          "ticks": [
+            "construction"
+          ]
+        },
+        "unit": {
+          "floor": 3,
+          "floor_from": "listing",
+          "side": "front",
+          "side_from": "listing",
+          "building_floors": 17
+        },
+        "address": {
+          "label": "45 CHRISTOPHER STREET, New York, NY, USA",
+          "bbl": "1006107501",
+          "borough": "Manhattan"
+        }
+      },
+      "trace": [
+        {
+          "turn": 1,
+          "tool": "submit_listing",
+          "ok": true
+        }
+      ]
+    },
+    "verdict": {
+      "evidence": [
+        {
+          "id": "E1",
+          "text": "Overall for these sleep hours: Typical, quieter than 53.9% of Manhattan apartments"
+        },
+        {
+          "id": "E2",
+          "text": "Street: quieter than 84.2% of Manhattan apartments; CHRISTOPHER STREET: local street, 1 travel lane, 25 mph, 10 m away"
+        },
+        {
+          "id": "E3",
+          "text": "Nightlife: quieter than 17.3% of Manhattan apartments; 5 licensed venues within 150 m: 3 bars, 2 restaurants"
+        },
+        {
+          "id": "E4",
+          "text": "Building: quieter than 67.4% of Manhattan apartments; 32 residential noise complaints to 311 at this building in 24 months"
+        },
+        {
+          "id": "E5",
+          "text": "Sirens: quieter than 82.2% of Manhattan apartments; 3 emergency facilities within 600 m"
+        },
+        {
+          "id": "E6",
+          "text": "Construction: quieter than 21.4% of Manhattan apartments; 2 active DOB permits on this block"
+        },
+        {
+          "id": "E7",
+          "text": "Floor 3 on the street side, both from the listing"
+        }
+      ],
+      "sentences": [
+        {
+          "text": "For the hours you sleep, this apartment is Typical for Manhattan: quieter than 53.9% of apartments.",
+          "cites": [
+            "E1"
+          ]
+        },
+        {
+          "text": "What you will hear most is construction, quieter than only 21.4% of Manhattan.",
+          "cites": [
+            "E6"
+          ]
+        },
+        {
+          "text": "Floor 3 on the street side is what the listing says, so the verdict has no range.",
+          "cites": [
+            "E7"
+          ]
+        }
+      ],
+      "writer": "template"
+    },
+    "adjust": {
+      "adjustments": [
+        {
+          "ingredient": "construction",
+          "delta": -8,
+          "cites": [
+            "M00000401-I1"
+          ],
+          "why": "A facade job with a sidewalk shed next door runs for months; the plumbing job is inside one apartment."
+        }
+      ]
+    }
+  }
+}

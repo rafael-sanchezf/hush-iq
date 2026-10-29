@@ -1,0 +1,251 @@
+{
+  "id": "06-penthouse-ph-only",
+  "about": "The floor is only 'PH': the right answer is the building's top floor (18 in PLUTO), or 'top'.",
+  "tags": [
+    "top-floor"
+  ],
+  "listing": {
+    "text": "PH at 32 Gramercy Park South. Penthouse one-bedroom with a private terrace, glimpses of the park and open skies. Doorman building with key access to the park. Washer and dryer allowed. Board approval required.",
+    "photos": []
+  },
+  "gold": {
+    "address": "32 Gramercy Park South",
+    "unit": "PH",
+    "floor": "top",
+    "side": null,
+    "building_floors": 18
+  },
+  "answers": {
+    "sleep_from": 1,
+    "sleep_until": 9,
+    "day_bothers": false,
+    "bothers": []
+  },
+  "fixtures": {
+    "reader": {
+      "fields": {
+        "address": {
+          "value": "32 Gramercy Park South",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "32 Gramercy Park South"
+            }
+          ]
+        },
+        "unit": {
+          "value": "PH",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "PH at 32 Gramercy Park South"
+            }
+          ]
+        },
+        "floor": {
+          "value": 18,
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "PH at 32 Gramercy Park South"
+            }
+          ]
+        },
+        "side": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "position": "unknown",
+      "observed": {
+        "view": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "windows": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "ac_units": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "wall_material": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "score": {
+        "engine": "v2",
+        "verdict": "Typical",
+        "quieter_than": 52.2,
+        "uncapped_verdict": "Typical",
+        "caps": [],
+        "range": {
+          "loudest_case": {
+            "verdict": "Typical",
+            "quieter_than": 45.6,
+            "floor": 18,
+            "side": "front"
+          },
+          "quietest_case": {
+            "verdict": "Quiet",
+            "quieter_than": 64.4,
+            "floor": 18,
+            "side": "rear"
+          }
+        },
+        "ingredients": [
+          {
+            "name": "street",
+            "label": "Street",
+            "quieter_than": 76.0,
+            "verdict": "Quiet",
+            "weight": 32.0,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "GRAMERCY PARK SOUTH: local street, 1 travel lane, 25 mph, 16 m away"
+            ]
+          },
+          {
+            "name": "nightlife",
+            "label": "Nightlife",
+            "quieter_than": 31.7,
+            "verdict": "Loud",
+            "weight": 15.0,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "6 licensed venues within 150 m: 2 bars, 4 restaurants"
+            ]
+          },
+          {
+            "name": "building",
+            "label": "Building",
+            "quieter_than": 68.5,
+            "verdict": "Quiet",
+            "weight": 20.0,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "5 residential noise complaints to 311 at this building in 24 months"
+            ]
+          },
+          {
+            "name": "sirens",
+            "label": "Sirens",
+            "quieter_than": 30.2,
+            "verdict": "Loud",
+            "weight": 20.0,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "no hospital, firehouse or police station within 600 m"
+            ]
+          },
+          {
+            "name": "construction",
+            "label": "Construction",
+            "quieter_than": 26.3,
+            "verdict": "Loud",
+            "weight": 13.0,
+            "ticked": false,
+            "temporary": true,
+            "evidence": [
+              "no active DOB permits on this block"
+            ]
+          }
+        ],
+        "answers": {
+          "sleep": {
+            "from": 1,
+            "until": 9
+          },
+          "day_bothers": false,
+          "ticks": []
+        },
+        "unit": {
+          "floor": 18,
+          "floor_from": "listing",
+          "side": "unknown",
+          "side_from": "unknown",
+          "building_floors": 18
+        },
+        "address": {
+          "label": "32 GRAMERCY PARK SOUTH, New York, NY, USA",
+          "bbl": "1008750047",
+          "borough": "Manhattan"
+        }
+      },
+      "trace": [
+        {
+          "turn": 1,
+          "tool": "submit_listing",
+          "ok": true
+        }
+      ]
+    },
+    "verdict": {
+      "evidence": [
+        {
+          "id": "E1",
+          "text": "Overall for these sleep hours: Typical, quieter than 52.2% of Manhattan apartments"
+        },
+        {
+          "id": "E2",
+          "text": "Street: quieter than 76.0% of Manhattan apartments; GRAMERCY PARK SOUTH: local street, 1 travel lane, 25 mph, 16 m away"
+        },
+        {
+          "id": "E3",
+          "text": "Nightlife: quieter than 31.7% of Manhattan apartments; 6 licensed venues within 150 m: 2 bars, 4 restaurants"
+        },
+        {
+          "id": "E4",
+          "text": "Building: quieter than 68.5% of Manhattan apartments; 5 residential noise complaints to 311 at this building in 24 months"
+        },
+        {
+          "id": "E5",
+          "text": "Sirens: quieter than 30.2% of Manhattan apartments; no hospital, firehouse or police station within 600 m"
+        },
+        {
+          "id": "E6",
+          "text": "Construction: quieter than 26.3% of Manhattan apartments; no active DOB permits on this block"
+        },
+        {
+          "id": "E7",
+          "text": "The listing leaves floor or side open: from Typical on the loudest floor and side to Quiet on the quietest"
+        }
+      ],
+      "sentences": [
+        {
+          "text": "For the hours you sleep, this apartment is Typical for Manhattan: quieter than 52.2% of apartments.",
+          "cites": [
+            "E1"
+          ]
+        },
+        {
+          "text": "What you will hear most is construction, quieter than only 26.3% of Manhattan.",
+          "cites": [
+            "E6"
+          ]
+        },
+        {
+          "text": "The listing does not settle the floor and side, so expect anything from Typical to Quiet.",
+          "cites": [
+            "E7"
+          ]
+        }
+      ],
+      "writer": "template"
+    }
+  }
+}

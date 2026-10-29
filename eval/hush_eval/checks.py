@@ -1,0 +1,300 @@
+"""The checks. Pure functions over the shapes in shapes.py: no network, no model, no service imports.
+
+Each check returns a list of Problem. A hard problem fails the run; a soft one is reported and does not.
+    reader_grounding   every field marked read has a quote that is in the listing, or a photo that exists
+    verdict_citations  every citation points at an evidence line that exists; no decibels
+    adjustments        every permit adjustment is within its cap and cites rows that are in the pull
+    extraction         the reader's fields against the gold labels, one outcome per field
+"""
+import re
+from dataclasses import asdict, dataclass
+
+from . import shapes as S
+
+
+@dataclass
+class Problem:
+    check: str
+    where: str
+    message: str
+    hard: bool = True
+
+    def as_dict(self):
+        return asdict(self)
+
+
+def _norm_text(s):
+    """Whitespace runs to one space, curly quotes and dashes to plain. Case is kept: a quote is a quote."""
+    s = str(s).replace("’", "'").replace("‘", "'").replace("“", '"').replace("”", '"')
+    s = s.replace("—", "-").replace("–", "-")
+    return re.sub(r"\s+", " ", s).strip()
+
+
+_PHOTO = re.compile(r"^photo:(\d+)$")
+
+
+def _evidence_problems(ev, text, n_photos, where):
+    out = []
+    if not isinstance(ev, dict):
+        return [Problem("reader_grounding", where, f"evidence is not an object: {ev!r}")]
+    src = ev.get("source")
+    if src == "text":
+        q = ev.get("quote")
+        if not isinstance(q, str) or not q.strip():
+            out.append(Problem("reader_grounding", where, "text evidence with an empty quote"))
+        elif _norm_text(q) not in _norm_text(text):
+            out.append(Problem("reader_grounding", where, f"quote not in the listing: {q!r}"))
+    elif isinstance(src, str) and _PHOTO.match(src):
+        i = int(_PHOTO.match(src).group(1))
+        if i >= n_photos:
+            out.append(Problem("reader_grounding", where,
+                               f"cites {src}, but the listing has {n_photos} photo{'s' if n_photos != 1 else ''}"))
+        if not str(ev.get("what") or "").strip():
+            out.append(Problem("reader_grounding", where, f"{src} evidence says nothing about what it shows"))
+    else:
+        out.append(Problem("reader_grounding", where, f"unknown evidence source {src!r}"))
+    return out
+
+
+def _adjective_only(quote):
+    words = re.findall(r"[a-z']+", quote.lower())
+    return bool(words) and all(w in S.SALES_ADJECTIVES for w in words)
+
+
+def iter_fields(result):
+    """(group, name, field) for every text field and observed field the result carries."""
+    for group, names in (("fields", S.TEXT_FIELDS), ("observed", S.OBSERVED_FIELDS)):
+        block = result.get(group) or {}
+        for name in names:
+            if name in block:
+                yield group, name, block[name]
+
+
+def reader_grounding(result, listing):
+    """Every field marked read is tied to the listing it came from: a quote that is a substring of the text,
+    or a photo index that exists. "Can't tell" carries no value. Values stay inside their enums."""
+    text, n_photos = listing.get("text") or "", len(listing.get("photos") or [])
+    out = []
+    if not isinstance(result, dict):
+        return [Problem("reader_grounding", "result", "the reader returned no result object")]
+    for group in ("fields", "observed"):
+        if not isinstance(result.get(group), dict):
+            out.append(Problem("reader_grounding", group, f"missing the {group} object"))
+    for group, name, f in iter_fields(result):
+        where = f"{group}.{name}"
+        if not isinstance(f, dict):
+            out.append(Problem("reader_grounding", where, f"field is not an object: {f!r}"))
+            continue
+        status, value, evidence = f.get("status"), f.get("value"), f.get("evidence") or []
+        if status not in S.STATUSES:
+            out.append(Problem("reader_grounding", where, f"status {status!r} is not read or cant_tell"))
+            continue
+        for ev in evidence:
+            out += _evidence_problems(ev, text, n_photos, where)
+        if status == S.CANT_TELL:
+            if value is not None:
+                out.append(Problem("reader_grounding", where, f"cant_tell with a value: {value!r}"))
+            continue
+        if value is None:
+            out.append(Problem("reader_grounding", where, "read with no value"))
+        if not evidence:
+            out.append(Problem("reader_grounding", where, "read with no evidence"))
+        if name in ("floor", "side") and evidence and all(
+                e.get("source") == "text" and _adjective_only(e.get("quote") or "") for e in evidence if isinstance(e, dict)):
+            out.append(Problem("reader_grounding", where, "the only evidence is a sales adjective: "
+                               + ", ".join(repr(e.get("quote")) for e in evidence if isinstance(e, dict))))
+        out += _value_problems(name, value, where)
+    pos = result.get("position")
+    if pos not in S.POSITIONS:
+        out.append(Problem("reader_grounding", "position", f"position {pos!r} is not front, rear or unknown"))
+    side = (result.get("fields") or {}).get("side") or {}
+    if isinstance(side, dict) and pos in S.POSITIONS:
+        want = S.canonical("side", side.get("value")) if side.get("status") == "read" else "unknown"
+        if want in S.SIDES + ("unknown",) and want != pos:
+            out.append(Problem("reader_grounding", "position", f"position {pos!r} disagrees with the side field ({want!r})"))
+    return out
+
+
+def _value_problems(name, value, where):
+    if name == "floor":
+        if isinstance(value, bool) or not isinstance(value, int) or not S.FLOOR_MIN <= value <= S.FLOOR_MAX:
+            return [Problem("reader_grounding", where, f"floor {value!r} is not an integer from {S.FLOOR_MIN} to {S.FLOOR_MAX}")]
+    elif name == "side":
+        if S.canonical("side", value) not in S.SIDES:
+            return [Problem("reader_grounding", where, f"side {value!r} is not front or rear")]
+    elif name in S.OBSERVED_VALUES:
+        if S.canonical(name, value) not in S.OBSERVED_VALUES[name]:
+            return [Problem("reader_grounding", where, f"{name} {value!r} is not one of {', '.join(S.OBSERVED_VALUES[name])}",
+                            hard=False)]
+    elif name in ("address", "unit"):
+        if not isinstance(value, str) or not value.strip():
+            return [Problem("reader_grounding", where, f"{name} {value!r} is not text")]
+    return []
+
+
+# ---------------------------------------------------------------- verdict
+_DECIBEL = re.compile(r"\b(\d+\s*)?(db|dba|decibels?)\b", re.I)
+_NUMBER = re.compile(r"\d+(?:\.\d+)?")
+
+
+def verdict_citations(verdict, score=None):
+    """Every citation points at an evidence line that exists. Hard: a citation to a missing line, duplicate ids,
+    no sentences, a decibel figure (no decibels leave the engine, V8). Soft: a sentence with no citation, a number
+    in a sentence that none of its cited lines contains, a writer name outside the contract."""
+    out = []
+    if not isinstance(verdict, dict):
+        return [Problem("verdict_citations", "verdict", "the verdict writer returned no object")]
+    evidence = verdict.get("evidence") or []
+    ids = [e.get("id") for e in evidence if isinstance(e, dict)]
+    by_id = {e.get("id"): str(e.get("text") or "") for e in evidence if isinstance(e, dict)}
+    for dup in sorted({i for i in ids if ids.count(i) > 1}, key=str):
+        out.append(Problem("verdict_citations", "evidence", f"evidence id {dup!r} appears more than once"))
+    for e in evidence:
+        if not isinstance(e, dict) or not str(e.get("text") or "").strip():
+            out.append(Problem("verdict_citations", "evidence", f"empty evidence line: {e!r}"))
+    sentences = verdict.get("sentences") or []
+    if not sentences:
+        out.append(Problem("verdict_citations", "sentences", "no sentences"))
+    for k, s in enumerate(sentences):
+        where = f"sentences[{k}]"
+        text = str((s or {}).get("text") or "")
+        cites = (s or {}).get("cites") or []
+        if not text.strip():
+            out.append(Problem("verdict_citations", where, "empty sentence"))
+        for c in cites:
+            if c not in by_id:
+                out.append(Problem("verdict_citations", where, f"cites {c!r}, which is not in the evidence it was sent"))
+        if not cites:
+            out.append(Problem("verdict_citations", where, f"no citation: {text[:80]!r}", hard=False))
+        if _DECIBEL.search(text):
+            out.append(Problem("verdict_citations", where, f"a decibel figure left the engine: {text[:80]!r}"))
+        cited_text = " ".join(by_id.get(c, "") for c in cites)
+        for num in _NUMBER.findall(text):
+            if num not in _NUMBER.findall(cited_text):
+                out.append(Problem("verdict_citations", where, f"the number {num} is in none of its cited lines", hard=False))
+    if verdict.get("writer") not in S.WRITERS:
+        out.append(Problem("verdict_citations", "writer", f"writer {verdict.get('writer')!r} is not one of {S.WRITERS}", hard=False))
+    return out
+
+
+# ---------------------------------------------------------------- permit adjustments
+ADJUST_SIZE_KEYS = ("delta", "size", "points", "adjustment")
+ROW_ID_KEYS = ("id", "work_permit", "job_filing_number", "row_id")
+
+
+def row_id(row):
+    for k in ROW_ID_KEYS:
+        if row.get(k):
+            return str(row[k])
+    return None
+
+
+def adjustments(adj, rows, caps):
+    """Every adjustment names a capped ingredient, stays within that cap, and cites only rows in the pull.
+    `caps` comes from the permit reader's own config when it is importable, never from the model's output."""
+    out = []
+    if adj is None:
+        return out
+    if not isinstance(adj, dict) or not isinstance(adj.get("adjustments"), list):
+        return [Problem("adjustments", "adjust", "the permit reader returned no adjustments list")]
+    pulled = {row_id(r) for r in rows if isinstance(r, dict)} - {None}
+    for k, a in enumerate(adj["adjustments"]):
+        where = f"adjustments[{k}]"
+        if not isinstance(a, dict):
+            out.append(Problem("adjustments", where, f"not an object: {a!r}"))
+            continue
+        ing = a.get("ingredient") or a.get("source")
+        if ing not in caps:
+            out.append(Problem("adjustments", where, f"ingredient {ing!r} has no cap"))
+        size = next((a[k2] for k2 in ADJUST_SIZE_KEYS if k2 in a), None)
+        if isinstance(size, bool) or not isinstance(size, (int, float)):
+            out.append(Problem("adjustments", where, f"size {size!r} is not a number"))
+        elif ing in caps and abs(size) > caps[ing] + 1e-9:
+            out.append(Problem("adjustments", where, f"{ing} moved by {size:g}, over its cap of {caps[ing]:g}"))
+        cites = a.get("cites") or a.get("rows") or []
+        if not cites:
+            out.append(Problem("adjustments", where, "cites no rows"))
+        for c in cites:
+            if str(c) not in pulled:
+                out.append(Problem("adjustments", where, f"cites row {c!r}, which is not in the pull"))
+    return out
+
+
+# ---------------------------------------------------------------- extraction against gold
+CORRECT, WRONG, ABSTAINED, INVENTED = "correct", "wrong", "cant_tell", "invented"
+
+
+def field_value(result, name):
+    """The reader's answer for one field: its value, CANT_TELL, or None when the field is absent."""
+    group = "fields" if name in S.TEXT_FIELDS else "observed"
+    f = (result.get(group) or {}).get(name)
+    if not isinstance(f, dict):
+        return None
+    if f.get("status") != "read" or f.get("value") is None:
+        return S.CANT_TELL
+    return f["value"]
+
+
+def compare(name, gold, got, building_floors=None):
+    """One outcome for one field.
+    gold None or CANT_TELL: the listing does not say (or contradicts itself); the right answer is cant_tell.
+    gold "top": the listing says PH or top floor; "top" or the building's floor count is right."""
+    got = S.canonical(name, got) if got is not None else S.CANT_TELL
+    silent = gold is None or gold == S.CANT_TELL
+    if got == S.CANT_TELL:
+        return CORRECT if silent else ABSTAINED
+    if silent:
+        return INVENTED
+    if name == "address":
+        return CORRECT if S.normalize_address(got) == S.normalize_address(gold) else WRONG
+    if name == "floor":
+        if gold == "top":
+            return CORRECT if got == "top" or (building_floors and _int(got) == int(building_floors)) else WRONG
+        return CORRECT if _int(got) == int(gold) else WRONG
+    if name == "unit":
+        return CORRECT if re.sub(r"[^a-z0-9]", "", str(got).lower()) == re.sub(r"[^a-z0-9]", "", str(gold).lower()) else WRONG
+    return CORRECT if got == S.canonical(name, gold) else WRONG
+
+
+def _int(v):
+    try:
+        return int(v)
+    except (TypeError, ValueError):
+        return None
+
+
+def extraction(result, gold):
+    """{field: {outcome, gold, got}} for every field the gold labels name."""
+    out = {}
+    bf = gold.get("building_floors")
+    for name in S.TEXT_FIELDS:
+        if name in gold:
+            got = field_value(result, name)
+            out[name] = {"outcome": compare(name, gold[name], got, bf), "gold": gold[name], "got": got}
+    for name, g in (gold.get("observed") or {}).items():
+        got = field_value(result, name)
+        out[name] = {"outcome": compare(name, g, got), "gold": g, "got": got}
+    return out
+
+
+def tally(outcomes_by_case, fields):
+    """Per-field counts and rates across cases. answerable = cases whose gold has a value."""
+    rows = {}
+    for name in fields:
+        c = {CORRECT: 0, WRONG: 0, ABSTAINED: 0, INVENTED: 0, "answerable": 0, "silent_ok": 0, "n": 0}
+        for outcomes in outcomes_by_case:
+            o = outcomes.get(name)
+            if not o:
+                continue
+            c["n"] += 1
+            silent = o["gold"] is None or o["gold"] == S.CANT_TELL
+            if not silent:
+                c["answerable"] += 1
+            if o["outcome"] == CORRECT and silent:
+                c["silent_ok"] += 1
+            c[o["outcome"]] += 1
+        right = c[CORRECT] - c["silent_ok"]
+        c["accuracy"] = right / c["answerable"] if c["answerable"] else None
+        c["wrong_rate"] = (c[WRONG] + c[INVENTED]) / c["n"] if c["n"] else None
+        rows[name] = c
+    return rows

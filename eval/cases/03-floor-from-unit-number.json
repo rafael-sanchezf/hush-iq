@@ -1,0 +1,251 @@
+{
+  "id": "03-floor-from-unit-number",
+  "about": "Only the unit number gives the floor: 12F reads as floor 12. The F is a unit letter, not 'front'.",
+  "tags": [
+    "unit-number"
+  ],
+  "listing": {
+    "text": "Apt 12F at 50 Murray Street. Alcove studio in a full-service Tribeca rental with a gym, a roof deck and a package room. In-unit washer and dryer, oak floors. No broker fee. Move-in ready.",
+    "photos": []
+  },
+  "gold": {
+    "address": "50 Murray Street",
+    "unit": "12F",
+    "floor": 12,
+    "side": null,
+    "building_floors": 21
+  },
+  "answers": {
+    "sleep_from": 23,
+    "sleep_until": 7,
+    "day_bothers": true,
+    "bothers": []
+  },
+  "fixtures": {
+    "reader": {
+      "fields": {
+        "address": {
+          "value": "50 Murray Street",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "50 Murray Street"
+            }
+          ]
+        },
+        "unit": {
+          "value": "12F",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "Apt 12F"
+            }
+          ]
+        },
+        "floor": {
+          "value": 12,
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "Apt 12F"
+            }
+          ]
+        },
+        "side": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "position": "unknown",
+      "observed": {
+        "view": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "windows": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "ac_units": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "wall_material": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "score": {
+        "engine": "v2",
+        "verdict": "Loud",
+        "quieter_than": 24.6,
+        "uncapped_verdict": "Loud",
+        "caps": [],
+        "range": {
+          "loudest_case": {
+            "verdict": "Very loud",
+            "quieter_than": 15.4,
+            "floor": 12,
+            "side": "front"
+          },
+          "quietest_case": {
+            "verdict": "Loud",
+            "quieter_than": 38.6,
+            "floor": 12,
+            "side": "rear"
+          }
+        },
+        "ingredients": [
+          {
+            "name": "street",
+            "label": "Street",
+            "quieter_than": 14.3,
+            "verdict": "Very loud",
+            "weight": 32.0,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "MURRAY STREET: local street, 2 travel lanes, 25 mph, 12 m away"
+            ]
+          },
+          {
+            "name": "nightlife",
+            "label": "Nightlife",
+            "quieter_than": 33.6,
+            "verdict": "Loud",
+            "weight": 15.0,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "6 licensed venues within 150 m: 5 bars, 1 restaurants"
+            ]
+          },
+          {
+            "name": "building",
+            "label": "Building",
+            "quieter_than": 20.9,
+            "verdict": "Loud",
+            "weight": 20.0,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "17 residential noise complaints to 311 at this building in 24 months"
+            ]
+          },
+          {
+            "name": "sirens",
+            "label": "Sirens",
+            "quieter_than": 34.8,
+            "verdict": "Loud",
+            "weight": 20.0,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "2 emergency facilities within 600 m"
+            ]
+          },
+          {
+            "name": "construction",
+            "label": "Construction",
+            "quieter_than": 29.2,
+            "verdict": "Loud",
+            "weight": 13.0,
+            "ticked": false,
+            "temporary": true,
+            "evidence": [
+              "no active DOB permits on this block"
+            ]
+          }
+        ],
+        "answers": {
+          "sleep": {
+            "from": 23,
+            "until": 7
+          },
+          "day_bothers": true,
+          "ticks": []
+        },
+        "unit": {
+          "floor": 12,
+          "floor_from": "listing",
+          "side": "unknown",
+          "side_from": "unknown",
+          "building_floors": 21
+        },
+        "address": {
+          "label": "50 MURRAY STREET, New York, NY, USA",
+          "bbl": "1001260027",
+          "borough": "Manhattan"
+        }
+      },
+      "trace": [
+        {
+          "turn": 1,
+          "tool": "submit_listing",
+          "ok": true
+        }
+      ]
+    },
+    "verdict": {
+      "evidence": [
+        {
+          "id": "E1",
+          "text": "Overall for these sleep hours: Loud, quieter than 24.6% of Manhattan apartments"
+        },
+        {
+          "id": "E2",
+          "text": "Street: quieter than 14.3% of Manhattan apartments; MURRAY STREET: local street, 2 travel lanes, 25 mph, 12 m away"
+        },
+        {
+          "id": "E3",
+          "text": "Nightlife: quieter than 33.6% of Manhattan apartments; 6 licensed venues within 150 m: 5 bars, 1 restaurants"
+        },
+        {
+          "id": "E4",
+          "text": "Building: quieter than 20.9% of Manhattan apartments; 17 residential noise complaints to 311 at this building in 24 months"
+        },
+        {
+          "id": "E5",
+          "text": "Sirens: quieter than 34.8% of Manhattan apartments; 2 emergency facilities within 600 m"
+        },
+        {
+          "id": "E6",
+          "text": "Construction: quieter than 29.2% of Manhattan apartments; no active DOB permits on this block"
+        },
+        {
+          "id": "E7",
+          "text": "The listing leaves floor or side open: from Very loud on the loudest floor and side to Loud on the quietest"
+        }
+      ],
+      "sentences": [
+        {
+          "text": "For the hours you sleep, this apartment is Loud for Manhattan: quieter than 24.6% of apartments.",
+          "cites": [
+            "E1"
+          ]
+        },
+        {
+          "text": "What you will hear most is street, quieter than only 14.3% of Manhattan.",
+          "cites": [
+            "E2"
+          ]
+        },
+        {
+          "text": "The listing does not settle the floor and side, so expect anything from Very loud to Loud.",
+          "cites": [
+            "E7"
+          ]
+        }
+      ],
+      "writer": "template"
+    }
+  }
+}

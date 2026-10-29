@@ -1,0 +1,262 @@
+{
+  "id": "14-walkup-no-floor-count",
+  "about": "'Walk-up, a few flights up' gives no floor. Two observed facts are stated in the text.",
+  "tags": [
+    "walk-up",
+    "silent"
+  ],
+  "listing": {
+    "text": "Classic East Village walk-up at 326 East 6th Street, a few flights up. Cozy one-bedroom with exposed brick, a decorative fireplace and a window AC unit included. Heat and hot water included. No pets.",
+    "photos": []
+  },
+  "gold": {
+    "address": "326 East 6th Street",
+    "unit": null,
+    "floor": null,
+    "side": null,
+    "observed": {
+      "wall_material": "brick",
+      "ac_units": "yes"
+    },
+    "building_floors": 5
+  },
+  "answers": {
+    "sleep_from": 23,
+    "sleep_until": 7,
+    "day_bothers": true,
+    "bothers": [
+      "people",
+      "neighbors"
+    ]
+  },
+  "fixtures": {
+    "reader": {
+      "fields": {
+        "address": {
+          "value": "326 East 6th Street",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "326 East 6th Street"
+            }
+          ]
+        },
+        "unit": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "floor": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "side": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "position": "unknown",
+      "observed": {
+        "view": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "windows": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "ac_units": {
+          "value": "yes",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "a window AC unit included"
+            }
+          ]
+        },
+        "wall_material": {
+          "value": "brick",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "exposed brick"
+            }
+          ]
+        }
+      },
+      "score": {
+        "engine": "v2",
+        "verdict": "Typical",
+        "quieter_than": 47.4,
+        "uncapped_verdict": "Typical",
+        "caps": [],
+        "range": {
+          "loudest_case": {
+            "verdict": "Loud",
+            "quieter_than": 31.6,
+            "floor": 1,
+            "side": "front"
+          },
+          "quietest_case": {
+            "verdict": "Quiet",
+            "quieter_than": 62.7,
+            "floor": 5,
+            "side": "rear"
+          }
+        },
+        "ingredients": [
+          {
+            "name": "street",
+            "label": "Street",
+            "quieter_than": 32.0,
+            "verdict": "Loud",
+            "weight": 18.8,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "EAST 6 STREET: local street, 1 travel lane, 25 mph, 9 m away"
+            ]
+          },
+          {
+            "name": "nightlife",
+            "label": "Nightlife",
+            "quieter_than": 9.5,
+            "verdict": "Very loud",
+            "weight": 26.5,
+            "ticked": true,
+            "temporary": false,
+            "evidence": [
+              "14 licensed venues within 150 m: 2 bars, 12 restaurants"
+            ]
+          },
+          {
+            "name": "building",
+            "label": "Building",
+            "quieter_than": 70.8,
+            "verdict": "Quiet",
+            "weight": 35.3,
+            "ticked": true,
+            "temporary": false,
+            "evidence": [
+              "3 residential noise complaints to 311 at this building in 24 months"
+            ]
+          },
+          {
+            "name": "sirens",
+            "label": "Sirens",
+            "quieter_than": 70.2,
+            "verdict": "Quiet",
+            "weight": 11.8,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "3 emergency facilities within 600 m"
+            ]
+          },
+          {
+            "name": "construction",
+            "label": "Construction",
+            "quieter_than": 73.4,
+            "verdict": "Quiet",
+            "weight": 7.6,
+            "ticked": false,
+            "temporary": true,
+            "evidence": [
+              "no active DOB permits on this block"
+            ]
+          }
+        ],
+        "answers": {
+          "sleep": {
+            "from": 23,
+            "until": 7
+          },
+          "day_bothers": true,
+          "ticks": [
+            "people",
+            "neighbors"
+          ]
+        },
+        "unit": {
+          "floor": 3,
+          "floor_from": "expected",
+          "side": "unknown",
+          "side_from": "unknown",
+          "building_floors": 5
+        },
+        "address": {
+          "label": "326 EAST 6 STREET, New York, NY, USA",
+          "bbl": "1004470019",
+          "borough": "Manhattan"
+        }
+      },
+      "trace": [
+        {
+          "turn": 1,
+          "tool": "submit_listing",
+          "ok": true
+        }
+      ]
+    },
+    "verdict": {
+      "evidence": [
+        {
+          "id": "E1",
+          "text": "Overall for these sleep hours: Typical, quieter than 47.4% of Manhattan apartments"
+        },
+        {
+          "id": "E2",
+          "text": "Street: quieter than 32.0% of Manhattan apartments; EAST 6 STREET: local street, 1 travel lane, 25 mph, 9 m away"
+        },
+        {
+          "id": "E3",
+          "text": "Nightlife: quieter than 9.5% of Manhattan apartments; 14 licensed venues within 150 m: 2 bars, 12 restaurants"
+        },
+        {
+          "id": "E4",
+          "text": "Building: quieter than 70.8% of Manhattan apartments; 3 residential noise complaints to 311 at this building in 24 months"
+        },
+        {
+          "id": "E5",
+          "text": "Sirens: quieter than 70.2% of Manhattan apartments; 3 emergency facilities within 600 m"
+        },
+        {
+          "id": "E6",
+          "text": "Construction: quieter than 73.4% of Manhattan apartments; no active DOB permits on this block"
+        },
+        {
+          "id": "E7",
+          "text": "The listing leaves floor or side open: from Loud on the loudest floor and side to Quiet on the quietest"
+        }
+      ],
+      "sentences": [
+        {
+          "text": "For the hours you sleep, this apartment is Typical for Manhattan: quieter than 47.4% of apartments.",
+          "cites": [
+            "E1"
+          ]
+        },
+        {
+          "text": "What you will hear most is nightlife, quieter than only 9.5% of Manhattan.",
+          "cites": [
+            "E3"
+          ]
+        },
+        {
+          "text": "The listing does not settle the floor and side, so expect anything from Loud to Quiet.",
+          "cites": [
+            "E7"
+          ]
+        }
+      ],
+      "writer": "template"
+    }
+  }
+}

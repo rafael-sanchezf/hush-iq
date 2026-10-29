@@ -1,0 +1,17 @@
+{
+  "fields": {
+    "address": {"value": "123 West 78th Street", "status": "read", "evidence": [{"source": "text", "quote": "123 West 78th Street"}]},
+    "unit": {"value": null, "status": "cant_tell", "evidence": []},
+    "floor": {"value": 3, "status": "read", "evidence": [{"source": "text", "quote": "on the third floor"}]},
+    "side": {"value": "front", "status": "read", "evidence": [{"source": "text", "quote": "The living room faces the street"}]}
+  },
+  "position": "front",
+  "observed": {
+    "view": {"value": null, "status": "cant_tell", "evidence": [{"source": "photo:0", "what": "a building across the street"}, {"source": "photo:2", "what": "a brick wall close outside"}]},
+    "windows": {"value": "standard", "status": "read", "evidence": [{"source": "photo:0", "what": "a double-hung window with a meeting rail"}]},
+    "ac_units": {"value": "yes", "status": "read", "evidence": [{"source": "photo:0", "what": "a window AC unit in the lower sash"}]},
+    "wall_material": {"value": "concrete", "status": "read", "evidence": [{"source": "photo:1", "what": "a masonry wall"}]}
+  },
+  "score": null,
+  "trace": [{"turn": 1, "tool": "submit_listing", "ok": true, "note": "synthetic example output, written by hand to exercise the scorer"}]
+}

@@ -1,0 +1,6 @@
+# Real listings and photos stay on Rafa's disk: the repo is public, and listing text and photos belong to
+# their owners. Only the template and the synthetic example 00/ are tracked.
+/*
+!/.gitignore
+!/template/
+!/00/

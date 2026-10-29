@@ -1,0 +1,273 @@
+{
+  "id": "18-photo-evidence",
+  "about": "Two photos carry the observed facts: a window AC unit in photo 0, exposed brick in photo 1.",
+  "tags": [
+    "photos"
+  ],
+  "listing": {
+    "text": "Third-floor one-bedroom in a walk-up at 49 West 11th Street. The front room faces 11th Street. Renovated bath, a pass-through kitchen and good closet space. See the photos.",
+    "photos": [
+      "photos/18-living-room.png",
+      "photos/18-bedroom.png"
+    ]
+  },
+  "gold": {
+    "address": "49 West 11th Street",
+    "unit": null,
+    "floor": 3,
+    "side": "front",
+    "observed": {
+      "ac_units": "yes",
+      "wall_material": "brick",
+      "windows": "standard",
+      "view": "street"
+    },
+    "building_floors": 5
+  },
+  "answers": {
+    "sleep_from": 23,
+    "sleep_until": 7,
+    "day_bothers": false,
+    "bothers": [
+      "traffic",
+      "neighbors"
+    ]
+  },
+  "fixtures": {
+    "reader": {
+      "fields": {
+        "address": {
+          "value": "49 West 11th Street",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "49 West 11th Street"
+            }
+          ]
+        },
+        "unit": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "floor": {
+          "value": 3,
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "Third-floor"
+            }
+          ]
+        },
+        "side": {
+          "value": "front",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "The front room faces 11th Street"
+            }
+          ]
+        }
+      },
+      "position": "front",
+      "observed": {
+        "view": {
+          "value": "street",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "photo:0",
+              "what": "a building with rows of windows across the street"
+            }
+          ]
+        },
+        "windows": {
+          "value": "standard",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "photo:0",
+              "what": "a double-hung window with a meeting rail, sill well above the floor"
+            }
+          ]
+        },
+        "ac_units": {
+          "value": "yes",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "photo:0",
+              "what": "a window AC unit in the lower sash of the living room window"
+            }
+          ]
+        },
+        "wall_material": {
+          "value": "brick",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "photo:1",
+              "what": "exposed brick on the bedroom wall"
+            }
+          ]
+        }
+      },
+      "score": {
+        "engine": "v2",
+        "verdict": "Typical",
+        "quieter_than": 54.6,
+        "uncapped_verdict": "Typical",
+        "caps": [],
+        "range": null,
+        "ingredients": [
+          {
+            "name": "street",
+            "label": "Street",
+            "quieter_than": 66.7,
+            "verdict": "Quiet",
+            "weight": 47.1,
+            "ticked": true,
+            "temporary": false,
+            "evidence": [
+              "WEST 11 STREET: local street, 1 travel lane, 25 mph, 10 m away"
+            ]
+          },
+          {
+            "name": "nightlife",
+            "label": "Nightlife",
+            "quieter_than": 46.6,
+            "verdict": "Typical",
+            "weight": 7.4,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "12 licensed venues within 150 m: 2 bars, 10 restaurants"
+            ]
+          },
+          {
+            "name": "building",
+            "label": "Building",
+            "quieter_than": 24.3,
+            "verdict": "Loud",
+            "weight": 29.4,
+            "ticked": true,
+            "temporary": false,
+            "evidence": [
+              "5 residential noise complaints to 311 at this building in 24 months"
+            ]
+          },
+          {
+            "name": "sirens",
+            "label": "Sirens",
+            "quieter_than": 78.8,
+            "verdict": "Quiet",
+            "weight": 9.8,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "3 emergency facilities within 600 m"
+            ]
+          },
+          {
+            "name": "construction",
+            "label": "Construction",
+            "quieter_than": 75.6,
+            "verdict": "Quiet",
+            "weight": 6.4,
+            "ticked": false,
+            "temporary": true,
+            "evidence": [
+              "no active DOB permits on this block"
+            ]
+          }
+        ],
+        "answers": {
+          "sleep": {
+            "from": 23,
+            "until": 7
+          },
+          "day_bothers": false,
+          "ticks": [
+            "traffic",
+            "neighbors"
+          ]
+        },
+        "unit": {
+          "floor": 3,
+          "floor_from": "listing",
+          "side": "front",
+          "side_from": "listing",
+          "building_floors": 5
+        },
+        "address": {
+          "label": "49 WEST 11 STREET, New York, NY, USA",
+          "bbl": "1005750074",
+          "borough": "Manhattan"
+        }
+      },
+      "trace": [
+        {
+          "turn": 1,
+          "tool": "submit_listing",
+          "ok": true
+        }
+      ]
+    },
+    "verdict": {
+      "evidence": [
+        {
+          "id": "E1",
+          "text": "Overall for these sleep hours: Typical, quieter than 54.6% of Manhattan apartments"
+        },
+        {
+          "id": "E2",
+          "text": "Street: quieter than 66.7% of Manhattan apartments; WEST 11 STREET: local street, 1 travel lane, 25 mph, 10 m away"
+        },
+        {
+          "id": "E3",
+          "text": "Nightlife: quieter than 46.6% of Manhattan apartments; 12 licensed venues within 150 m: 2 bars, 10 restaurants"
+        },
+        {
+          "id": "E4",
+          "text": "Building: quieter than 24.3% of Manhattan apartments; 5 residential noise complaints to 311 at this building in 24 months"
+        },
+        {
+          "id": "E5",
+          "text": "Sirens: quieter than 78.8% of Manhattan apartments; 3 emergency facilities within 600 m"
+        },
+        {
+          "id": "E6",
+          "text": "Construction: quieter than 75.6% of Manhattan apartments; no active DOB permits on this block"
+        },
+        {
+          "id": "E7",
+          "text": "Floor 3 on the street side, both from the listing"
+        }
+      ],
+      "sentences": [
+        {
+          "text": "For the hours you sleep, this apartment is Typical for Manhattan: quieter than 54.6% of apartments.",
+          "cites": [
+            "E1"
+          ]
+        },
+        {
+          "text": "What you will hear most is building, quieter than only 24.3% of Manhattan.",
+          "cites": [
+            "E4"
+          ]
+        },
+        {
+          "text": "Floor 3 on the street side is what the listing says, so the verdict has no range.",
+          "cites": [
+            "E7"
+          ]
+        }
+      ],
+      "writer": "template"
+    }
+  }
+}
