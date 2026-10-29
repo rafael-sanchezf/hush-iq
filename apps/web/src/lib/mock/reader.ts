@@ -6,7 +6,7 @@
  */
 import { getScore } from '../score.ts';
 import type { Answers, EvidenceRef, Field, Observed, ReadInput, ReaderResult, ReaderTurn } from '../types.ts';
-import { DEFAULT_ANSWERS, addressLine, listWords, pct } from '../words.ts';
+import { DEFAULT_ANSWERS, addressLine, listWords, observedLabel, pct, sideLabel } from '../words.ts';
 import { extract } from './extract.ts';
 import { SAMPLES } from './listings.ts';
 
@@ -67,7 +67,7 @@ export async function mockRead(input: ReadInput, onTurn: (t: ReaderTurn) => void
     await emit({ kind: 'read', status: 'cant_tell', title: 'Side: the listing says both', detail: `${q(x.sideConflict[0])} and ${q(x.sideConflict[1])}. Scored as unknown, with the range.` });
   } else {
     await emit(side.status === 'read'
-      ? { kind: 'read', title: side.value === 'front' ? 'Side: street' : 'Side: rear', detail: q((side.evidence[0] as { quote: string }).quote), evidence: ev(side) }
+      ? { kind: 'read', title: `Side: ${sideLabel(side.value).toLowerCase()}`, detail: q((side.evidence[0] as { quote: string }).quote), evidence: ev(side) }
       : { kind: 'read', status: 'cant_tell', title: 'Side: can’t tell', detail: 'Nothing says street or rear. The score shows both ends.' });
   }
 
@@ -82,7 +82,7 @@ export async function mockRead(input: ReadInput, onTurn: (t: ReaderTurn) => void
   const seen = (Object.keys(OBS_LABEL) as (keyof Observed)[]).filter((k) => x.observed[k].status === 'read');
   for (const k of seen) {
     const f = x.observed[k];
-    await emit({ kind: 'read', title: `${OBS_LABEL[k]}: ${f.value}`, detail: q((f.evidence[0] as { quote: string }).quote), evidence: ev(f) }, 320);
+    await emit({ kind: 'read', title: `${OBS_LABEL[k]}: ${observedLabel(k, f.value).toLowerCase()}`, detail: q((f.evidence[0] as { quote: string }).quote), evidence: ev(f) }, 320);
   }
   const unseen = (Object.keys(OBS_LABEL) as (keyof Observed)[]).filter((k) => x.observed[k].status !== 'read');
   if (unseen.length) {

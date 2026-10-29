@@ -93,7 +93,8 @@ export interface Score {
 
 // ---------------------------------------------------------------- reader
 
-export type EvidenceRef = { source: 'text'; quote: string } | { source: `photo:${number}`; what: string };
+/** `start` and `end` are offsets into the text as sent (the live reader adds them). */
+export type EvidenceRef = { source: 'text'; quote: string; start?: number; end?: number } | { source: `photo:${number}`; what: string };
 
 export interface Field<T> {
   value: T | null;
@@ -101,16 +102,25 @@ export interface Field<T> {
   evidence: EvidenceRef[];
 }
 
+/** As services/agent/CONTRACT.md: a cant_tell side has the value "unknown"; read `status`, not `value`. */
+export type Side = 'street' | 'rear' | 'courtyard' | 'corner' | 'unknown';
+
 export interface ReaderFields {
   address: Field<string>;
   unit: Field<string>;
   floor: Field<number>;
-  side: Field<'front' | 'rear'>;
+  side: Field<Side>;
 }
 
+export interface Windows {
+  floor_to_ceiling: boolean;
+  operable: boolean | null;
+}
+
+/** Typed by the reader: view, AC and walls are enums, windows an object. Shown, not scored. */
 export interface Observed {
   view: Field<string>;
-  windows: Field<string>;
+  windows: Field<Windows | string>;
   ac_units: Field<string>;
   wall_material: Field<string>;
 }
@@ -125,6 +135,10 @@ export interface ReaderTurn {
   detail?: string;
   status?: TurnStatus;
   evidence?: EvidenceRef[];
+  /** From the live reader: who chose the step, the tool, and how long it took. */
+  by?: 'model' | 'code';
+  tool?: string | null;
+  ms?: number;
 }
 
 export interface ReaderResult {
@@ -133,6 +147,14 @@ export interface ReaderResult {
   observed: Observed;
   score: Score | Record<string, unknown> | null;
   trace: unknown[];
+  /** The rest of the live reader's result; the replay fills what it can. */
+  status?: 'complete' | 'partial';
+  score_engine?: 'v2' | 'v1' | null;
+  needs?: string[];
+  notes?: string[];
+  location?: ScoreAddress | null;
+  model?: string;
+  mode?: 'live' | 'mock';
 }
 
 export interface ReadInput {
@@ -147,6 +169,8 @@ export interface ReadInput {
 export interface EvidenceLine {
   id: string;
   text: string;
+  kind?: string;
+  source?: string | null;
 }
 
 export interface Sentence {
@@ -157,7 +181,9 @@ export interface Sentence {
 export interface Verdict {
   evidence: EvidenceLine[];
   sentences: Sentence[];
-  writer: 'muse-spark-open' | 'template' | string;
+  writer: 'muse-spark-open' | 'muse-spark-1.3' | 'template' | string;
+  /** Each attempt, so a fallback is never silent: `{writer, attempt, ok, errors, why, ms}`. */
+  trace?: { writer: string; attempt?: number; ok: boolean; errors?: string[]; why?: string; ms?: number }[];
 }
 
 export interface VerdictInput {

@@ -7,9 +7,9 @@ import { mockRead } from './mock/reader.ts';
 import { templateVerdict } from './mock/verdict.ts';
 import { getScore, scoreSource } from './score.ts';
 export { checkCitations } from './cite.ts';
-import type { Answers, ReadInput, ReaderFields, ReaderResult, ReaderTurn, Score, Services, TurnKind, Verdict, VerdictInput } from './types.ts';
+import { fieldTurns, normalizeTurn } from './turns.ts';
+import type { Answers, ReadInput, ReaderFields, ReaderResult, ReaderTurn, Score, Services, Verdict, VerdictInput } from './types.ts';
 
-const KINDS: TurnKind[] = ['read', 'look', 'tool', 'check', 'ask', 'geocode', 'score', 'note'];
 
 export function services(): Services {
   return { reader: ENV.readerUrl ? 'live' : 'mock', verdict: ENV.verdictUrl ? 'live' : 'mock', score: scoreSource() };
@@ -41,19 +41,6 @@ async function* sse(body: ReadableStream<Uint8Array>): AsyncGenerator<{ event: s
   }
 }
 
-function normalizeTurn(raw: Record<string, unknown>, i: number): ReaderTurn {
-  const kind = KINDS.includes(raw.kind as TurnKind) ? (raw.kind as TurnKind) : 'note';
-  const title = String(raw.title ?? raw.text ?? raw.summary ?? raw.tool ?? kind);
-  return {
-    i: typeof raw.i === 'number' ? raw.i : i,
-    kind,
-    title,
-    detail: raw.detail == null ? undefined : String(raw.detail),
-    status: (['ok', 'cant_tell', 'refused', 'error'] as const).find((s) => s === raw.status) ?? 'ok',
-    evidence: Array.isArray(raw.evidence) ? (raw.evidence as ReaderTurn['evidence']) : undefined,
-  };
-}
-
 async function liveRead(input: ReadInput, onTurn: (t: ReaderTurn) => void, signal?: AbortSignal): Promise<ReaderResult> {
   const r = await fetch(`${ENV.readerUrl}/read`, {
     method: 'POST',
@@ -61,13 +48,20 @@ async function liveRead(input: ReadInput, onTurn: (t: ReaderTurn) => void, signa
     body: JSON.stringify(input),
     signal,
   });
-  if (!r.ok || !r.body) throw new Error(`The reader answered ${r.status}.`);
+  if (!r.ok || !r.body) {
+    const body = await r.json().catch(() => null);
+    throw new Error(body?.error ?? `The reader answered ${r.status}.`);
+  }
   let n = 0;
   for await (const { event, data } of sse(r.body)) {
     const parsed = JSON.parse(data);
     if (event === 'turn') onTurn(normalizeTurn(parsed, n++));
-    else if (event === 'result') return parsed as ReaderResult;
-    else if (event === 'error') throw new Error(parsed.message ?? 'The reader stopped.');
+    else if (event === 'result') {
+      // The live reader streams its tool steps; what it read is in the result. Show it in the panel too.
+      for (const t of fieldTurns(parsed as ReaderResult, n++)) onTurn(t);
+      return parsed as ReaderResult;
+    }
+    else if (event === 'error') throw new Error(parsed.error ?? parsed.message ?? 'The reader stopped.');
   }
   throw new Error('The reader closed the stream without a result.');
 }
@@ -88,7 +82,7 @@ function sameAnswers(s: Score, a: Answers): boolean {
 export async function score(result: ReaderResult, answers: Answers, address?: string, signal?: AbortSignal): Promise<Score> {
   const s = result.score as Score | null;
   if (!address && s?.engine === 'v2' && sameAnswers(s, answers)) return s;
-  const where = address ?? s?.address?.query ?? result.fields.address.value;
+  const where = address ?? s?.address?.query ?? result.location?.label ?? result.fields.address.value;
   if (!where) throw new Error('No address to score.');
   return getScore(where, { floor: result.fields.floor.value, position: result.position }, answers, signal);
 }

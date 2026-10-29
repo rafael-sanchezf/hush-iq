@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { VerdictMeter } from '@/components/verdict-meter';
 import type { Answers, Cap, EvidenceRef, Field, Observed, RangeCase, ReaderFields, Score, Services, Source, Verdict } from '@/lib/types';
 import { VERDICTS } from '@/lib/types';
-import { SOURCE_WORDS, addressLine, forWhom, pct, sideWords } from '@/lib/words';
+import { SOURCE_WORDS, addressLine, cleanEvidence, forWhom, observedLabel, pct, sideLabel, sideWords } from '@/lib/words';
 
 interface Props {
   score: Score;
@@ -27,6 +27,16 @@ function quoteOf(f: Field<unknown>): string | null {
 function photoLabel(e: EvidenceRef): string {
   const n = Number(e.source.split(':')[1]);
   return Number.isFinite(n) ? `Photo ${n + 1}` : 'A photo';
+}
+
+const WRITER_NAME: Record<string, string> = { 'muse-spark-open': 'Muse Spark Open', 'muse-spark-1.3': 'Muse Spark 1.3', template: 'Template' };
+
+/** The verdict service's trace, when a model draft was refused before the one shown. */
+function refusedDrafts(v: Verdict): string {
+  const refused = (v.trace ?? []).filter((t) => t.writer !== 'template' && !t.ok);
+  if (!refused.length) return '';
+  const why = refused[0].errors?.[0];
+  return ` The checks refused ${refused.length} model draft${refused.length > 1 ? 's' : ''}${why ? ` (${why})` : ''}.`;
 }
 
 function caseWords(c: RangeCase): string {
@@ -112,7 +122,7 @@ export function Result({ score, verdict, dropped, fields, observed, answers, ser
           </div>
           <div className="unit-fact">
             <span className="k">Side</span>
-            <span className="v">{score.unit.side_from === 'listing' ? (score.unit.side === 'front' ? 'Street side' : 'Rear') : 'Can’t tell'}</span>
+            <span className="v">{score.unit.side_from === 'listing' ? sideLabel(fields.side.status === 'read' ? fields.side.value : score.unit.side) : 'Can’t tell'}</span>
             <span className="q">{score.unit.side_from === 'listing' && sideQuote ? `From the listing: ${sideQuote}` : 'Not in the listing: scored between street side and rear.'}</span>
           </div>
           {range ? (
@@ -144,9 +154,9 @@ export function Result({ score, verdict, dropped, fields, observed, answers, ser
         <section className="card" aria-labelledby="hear-title">
           <div className="block-head">
             <h3 id="hear-title">What you’ll hear</h3>
-            <span className={`pill${verdict?.writer === 'muse-spark-open' ? ' ink' : ''}`}>
+            <span className={`pill${verdict && verdict.writer !== 'template' ? ' ink' : ''}`}>
               <span className="dot" />
-              {verdict ? (verdict.writer === 'muse-spark-open' ? 'Muse Spark Open' : 'Template') : 'Writing'}
+              {verdict ? WRITER_NAME[verdict.writer] ?? verdict.writer : 'Writing'}
             </span>
           </div>
           {verdict ? (
@@ -175,11 +185,12 @@ export function Result({ score, verdict, dropped, fields, observed, answers, ser
                 ))}
               </p>
               <p className="writer">
-                {verdict.writer === 'muse-spark-open'
-                  ? 'Written by Muse Spark Open on Baseten. It may cite only the evidence lines below; the server and this page both check.'
+                {verdict.writer !== 'template'
+                  ? `Written by ${WRITER_NAME[verdict.writer] ?? verdict.writer}${verdict.writer === 'muse-spark-open' ? ' on Baseten' : ''}. It may cite only the evidence lines below; the server and this page both check.`
                   : services.verdict === 'live'
                     ? 'The model did not answer in time, so the writer’s template wrote this, under the same rule: every sentence cites the lines below.'
                     : 'Written by the verdict writer’s template until Muse Spark Open is deployed. Same rule: every sentence cites the lines below.'}
+                {refusedDrafts(verdict)}
                 {dropped ? ` ${dropped} citation${dropped > 1 ? 's' : ''} pointed at no line and ${dropped > 1 ? 'were' : 'was'} removed.` : ''}
               </p>
               <ol className="evidence" aria-label="The evidence the writer was sent">
@@ -232,7 +243,7 @@ export function Result({ score, verdict, dropped, fields, observed, answers, ser
                     <summary>The city data ({i.evidence.length} line{i.evidence.length > 1 ? 's' : ''})</summary>
                     <ul>
                       {i.evidence.map((e, k) => (
-                        <li key={k}>{e}</li>
+                        <li key={k}>{cleanEvidence(e)}</li>
                       ))}
                     </ul>
                   </details>
@@ -251,16 +262,16 @@ export function Result({ score, verdict, dropped, fields, observed, answers, ser
         <div className="saw">
           {(
             [
-              ['Unit', fields.unit],
-              ['View', observed.view],
-              ['Windows', observed.windows],
-              ['AC units', observed.ac_units],
-              ['Walls', observed.wall_material],
-            ] as [string, Field<unknown>][]
-          ).map(([k, f]) => (
+              ['Unit', 'unit', fields.unit],
+              ['View', 'view', observed.view],
+              ['Windows', 'windows', observed.windows],
+              ['AC units', 'ac_units', observed.ac_units],
+              ['Walls', 'wall_material', observed.wall_material],
+            ] as [string, string, Field<unknown>][]
+          ).map(([k, key, f]) => (
             <div className="saw-item" key={k}>
               <span className="k">{k}</span>
-              <span className={`v${f.status === 'read' ? '' : ' cant'}`}>{f.status === 'read' ? String(f.value) : 'Can’t tell'}</span>
+              <span className={`v${f.status === 'read' ? '' : ' cant'}`}>{f.status === 'read' ? (k === 'Unit' ? String(f.value) : observedLabel(key, f.value)) : 'Can’t tell'}</span>
               <span className="q">{quoteOf(f) ?? 'Nothing in the listing says it.'}</span>
             </div>
           ))}

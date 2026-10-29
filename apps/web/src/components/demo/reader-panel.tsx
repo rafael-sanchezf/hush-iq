@@ -7,6 +7,8 @@ import type { ReaderTurn, Services } from '@/lib/types';
 const GLYPH: Record<string, string> = { ok: '✓', cant_tell: '?', refused: '!', error: '×' };
 
 interface Props {
+  /** The reader's own mode from its last result, when it said: a live service with no key runs its mock. */
+  mode: 'live' | 'mock' | null;
   turns: ReaderTurn[];
   working: boolean;
   workingLabel: string;
@@ -17,22 +19,24 @@ interface Props {
 }
 
 /** The reader's turns as they stream: what it read, the line it read it from, what it could not tell. */
-export function ReaderPanel({ turns, working, workingLabel, services, asking, error, onAddress }: Props) {
+export function ReaderPanel({ mode, turns, working, workingLabel, services, asking, error, onAddress }: Props) {
   const [address, setAddress] = useState('');
-  const live = services.reader === 'live';
+  const live = services.reader === 'live' && mode !== 'mock';
   return (
     <section className="reader" aria-labelledby="reader-title">
       <div className="reader-head">
         <h3 id="reader-title">The reader</h3>
         <span className={`pill${live ? ' ink' : ''}`} title={live ? undefined : 'The reader service is not deployed yet. This replay follows the same rules, without a model.'}>
           <span className="dot" />
-          {live ? 'Muse Spark, live' : 'Replay'}
+          {live ? 'Muse Spark, live' : services.reader === 'live' ? 'Reader, no model key' : 'Replay'}
         </span>
       </div>
       <p className="reader-sub">
         {live
           ? 'Muse Spark reads the text and the photos for facts about the unit. A tool refuses any field without its line.'
-          : 'A scripted stand-in for Muse Spark until the reader is deployed. Same rule: a field without its quoted line is refused.'}
+          : services.reader === 'live'
+            ? 'The reader service is up but has no Meta key yet, so its rules stand in for the model. Same checks, no photos.'
+            : 'A scripted stand-in for Muse Spark until the reader is deployed. Same rule: a field without its quoted line is refused.'}
       </p>
 
       {turns.length === 0 && !working ? (
@@ -58,7 +62,10 @@ export function ReaderPanel({ turns, working, workingLabel, services, asking, er
                 <div className="turn-body">
                   <div className="turn-title">
                     <span>{t.title}</span>
-                    <span className="kind">{t.kind}</span>
+                    <span className="kind">
+                      {t.tool ?? t.kind}
+                      {t.ms !== undefined ? ` · ${(t.ms / 1000).toFixed(1)} s` : ''}
+                    </span>
                   </div>
                   {t.detail ? <div className="turn-detail">{t.detail}</div> : null}
                 </div>

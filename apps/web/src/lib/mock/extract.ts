@@ -3,7 +3,7 @@
  * it came from; anything it cannot find is "can't tell". Adjectives are collected so the reader can say it
  * ignored them.
  */
-import type { Field, Observed, ReaderFields } from '../types.ts';
+import type { Field, Observed, ReaderFields, Side, Windows } from '../types.ts';
 
 const STREET_TYPES = 'Street|St|Avenue|Ave|Place|Pl|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Terrace|Ter|Square|Sq|Parkway|Pkwy|Court|Ct';
 const ORDINAL_AVE = 'First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth|Tenth|Eleventh|Twelfth';
@@ -37,17 +37,39 @@ const REAR = [
   /\brear (?:unit|apartment)\b/i,
   /\bback of the building\b/i,
 ];
+const CORNER = /\bcorner (?:unit|apartment)\b/i;
 
 const VIEW = /\b(?:views? of|overlook(?:s|ing)|looks? out (?:on|onto|over))\s+([^.,;\n]+)/i;
-const WINDOWS = /\b(?:floor-to-ceiling windows|(?:double|triple)[- ]pane(?:d)? windows|casement windows|bay windows?|(?:[A-Za-z]+\s){0,2}windows? in the (?:bedroom|living room|kitchen))/i;
+// The reader's view enum (services/agent/CONTRACT.md), matched on the words after "views of" and the like.
+const VIEW_KINDS: [RegExp, string][] = [
+  [/\b(?:street|avenue|ave|st|boulevard|broadway)\b/i, 'street'],
+  [/\bcourtyard\b/i, 'courtyard'],
+  [/\b(?:garden|gardens|yards?|backyards?)\b/i, 'rear_yards'],
+  [/\bair ?shaft\b/i, 'airshaft'],
+  [/\bpark\b/i, 'park'],
+  [/\b(?:river|hudson|water|harbor|bay)\b/i, 'water'],
+  [/\b(?:skyline|city)\b/i, 'skyline'],
+];
+const WINDOWS = /\bfloor[- ]to[- ]ceiling (?:windows|glass)\b/i;
 const AC = /\b(?:through[- ](?:the[- ])?wall (?:air conditioners?|AC|A\/C)(?: units?)?|window (?:AC|A\/C|air conditioners?|air conditioning)(?: units?)?|central (?:air|AC|A\/C)|ductless (?:mini[- ])?splits?|PTAC units?)(?:\s+in each \w+)?/i;
 const WALLS = /\b(?:exposed brick(?: walls?)?|brick walls?|concrete (?:walls?|ceilings?|construction)|plaster walls?)/i;
 
 const ADJECTIVES = /\b(quiet|peaceful|serene|tranquil|calm|charming|sunny|bright|sun-drenched|sun-filled|cozy|stunning|gorgeous|spacious|oversized|lovely|beautiful|bustling|vibrant|lively|classic)\b/gi;
 
 const cantTell = <T,>(): Field<T> => ({ value: null, status: 'cant_tell', evidence: [] });
+const sideUnknown = (): Field<Side> => ({ value: 'unknown', status: 'cant_tell', evidence: [] });
 const read = <T,>(value: T, quote: string): Field<T> => ({ value, status: 'read', evidence: [{ source: 'text', quote }] });
-const plain = (s: string) => s.replace(ADJECTIVES, '').replace(/\s{2,}/g, ' ').trim().toLowerCase();
+
+function acKind(m: string): string {
+  if (/window/i.test(m)) return 'window';
+  if (/central/i.test(m)) return 'central';
+  if (/split/i.test(m)) return 'split';
+  return 'through_wall';
+}
+
+function wallKind(m: string): string {
+  return /brick/i.test(m) ? 'brick' : /concrete/i.test(m) ? 'concrete' : 'plaster';
+}
 
 export interface Extraction {
   fields: ReaderFields;
@@ -88,28 +110,31 @@ export function extract(text: string): Extraction {
   const firstMatch = (res: RegExp[]) => res.map((re) => text.match(re)).find(Boolean) ?? null;
   const f = firstMatch(FRONT);
   const r = firstMatch(REAR);
-  let side: Field<'front' | 'rear'> = cantTell();
+  const c = text.match(CORNER);
+  let side: Field<Side> = sideUnknown();
   let sideConflict: [string, string] | null = null;
   if (f && r) sideConflict = [f[0], r[0]];
-  else if (f) side = read('front', f[0]);
-  else if (r) side = read('rear', r[0]);
+  else if (c) side = read('corner', c[0]);
+  else if (f) side = read('street', f[0]);
+  else if (r) side = read(/courtyard/i.test(r[0]) ? 'courtyard' : 'rear', r[0]);
 
   const v = text.match(VIEW);
+  const viewKind = v ? VIEW_KINDS.find(([re]) => re.test(v[1]))?.[1] : undefined;
   const w = text.match(WINDOWS);
   const ac = text.match(AC);
   const wall = text.match(WALLS);
   const observed: Observed = {
-    view: v ? read(plain(v[1]), v[0].trim()) : cantTell(),
-    windows: w ? read(plain(w[0]), w[0]) : cantTell(),
-    ac_units: ac ? read(plain(ac[0]), ac[0]) : cantTell(),
-    wall_material: wall ? read(plain(wall[0]), wall[0]) : cantTell(),
+    view: v && viewKind ? read(viewKind, v[0].trim()) : cantTell(),
+    windows: w ? read<Windows>({ floor_to_ceiling: true, operable: null }, w[0]) : cantTell(),
+    ac_units: ac ? read(acKind(ac[0]), ac[0]) : cantTell(),
+    wall_material: wall ? read(wallKind(wall[0]), wall[0]) : cantTell(),
   };
 
   const ignored = [...new Set([...text.matchAll(ADJECTIVES)].map((m) => m[0]))];
   return {
     fields: { address, unit, floor, side },
     observed,
-    position: side.status === 'read' && side.value ? side.value : 'unknown',
+    position: side.status !== 'read' ? 'unknown' : side.value === 'street' || side.value === 'corner' ? 'front' : 'rear',
     geocode,
     sideConflict,
     ignored,

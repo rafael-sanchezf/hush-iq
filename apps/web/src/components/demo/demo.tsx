@@ -65,7 +65,7 @@ export function Demo() {
       const r = await read({ text, photos: photos.map((p) => p.url), answers }, (t) => setTurns((prev) => [...prev, t]), ctl.signal);
       if (ctl.signal.aborted) return;
       setReading(r);
-      if (!r.score && !r.fields.address.value) {
+      if (!r.score && (r.needs?.includes('address') || !r.fields.address.value)) {
         setPhase('asking');
         return;
       }
@@ -153,6 +153,7 @@ export function Demo() {
           </button>
         </div>
         <ReaderPanel
+          mode={reading?.mode ?? null}
           turns={turns}
           working={busy}
           workingLabel={phase === 'scoring' ? 'Writing the verdict…' : turns.length > 6 ? 'Scoring the building…' : 'Reading…'}

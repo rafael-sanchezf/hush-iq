@@ -4,7 +4,7 @@
  * sentence from those lines alone, citing them by id: the same contract the model is held to.
  */
 import type { EvidenceLine, RangeCase, Score, Sentence, Source, Verdict, VerdictInput } from '../types.ts';
-import { SOURCE_WORDS, addressLine, forWhom, listWords, ordinal, pct, sideWords, sleepLabel } from '../words.ts';
+import { SOURCE_WORDS, addressLine, cleanEvidence, forWhom, listWords, ordinal, pct, sideLabel, sideWords, sleepLabel } from '../words.ts';
 
 export function evidenceFor({ score, answers, fields }: VerdictInput): { lines: EvidenceLine[]; ids: Record<string, string> } {
   const lines: EvidenceLine[] = [];
@@ -18,7 +18,7 @@ export function evidenceFor({ score, answers, fields }: VerdictInput): { lines: 
   const byRank = [...score.ingredients].sort((x, y) => x.quieter_than - y.quieter_than);
   for (const i of byRank) {
     add(`rank:${i.name}`, `${SOURCE_WORDS[i.name].title}: quieter than ${pct(i.quieter_than)} of Manhattan apartments; weight ${Math.round(i.weight)}%${i.ticked ? ', ticked by the renter' : ''}.`);
-    if (i.evidence[0]) add(`fact:${i.name}`, `${SOURCE_WORDS[i.name].title}: ${i.evidence[0]}.`);
+    if (i.evidence[0]) add(`fact:${i.name}`, `${SOURCE_WORDS[i.name].title}: ${cleanEvidence(i.evidence[0])}.`);
   }
   for (const c of score.caps) {
     add(`cap:${c.source}:${c.cap}`, `${SOURCE_WORDS[c.source].title} ${c.applied ? 'caps the verdict' : 'would cap the verdict'} at ${c.cap}: ${c.why}.`);
@@ -30,7 +30,7 @@ export function evidenceFor({ score, answers, fields }: VerdictInput): { lines: 
   const fq = fields.floor.evidence[0];
   if (fields.floor.status === 'read' && fq?.source === 'text') add('floor', `Floor ${fields.floor.value}, from the listing: “${fq.quote}”.`);
   const sq = fields.side.evidence[0];
-  if (fields.side.status === 'read' && sq?.source === 'text') add('side', `${fields.side.value === 'front' ? 'Street side' : 'Rear'}, from the listing: “${sq.quote}”.`);
+  if (fields.side.status === 'read' && sq?.source === 'text') add('side', `${sideLabel(fields.side.value)}, from the listing: “${sq.quote}”.`);
   return { lines, ids };
 }
 
@@ -101,7 +101,7 @@ export function templateVerdict(input: VerdictInput): Verdict {
       cites: [ids.range],
     });
   } else if (ids.side) {
-    sentences.push({ text: `The listing places it on the ${input.fields.side.value === 'front' ? 'street side' : 'rear'}, and the score uses that.`, cites: [ids.side] });
+    sentences.push({ text: `The listing places it on the ${score.unit.side === 'front' ? 'street side' : 'rear'}, and the score uses that.`, cites: [ids.side] });
   }
 
   return { evidence: lines, sentences: sentences.map((s) => ({ ...s, cites: s.cites.filter(Boolean) })), writer: 'template' };
