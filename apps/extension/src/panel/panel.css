@@ -20,6 +20,8 @@
   --ok: #2c7a52;
   --warn: #8a5a00;
   --warn-soft: #fbefd5;
+  --missing: #c42b2b;
+  --missing-soft: #fdeaea;
 
   --radius: 22px;
   --radius-sm: 14px;
@@ -50,6 +52,8 @@
     --ok: #6fd3a4;
     --warn: #f0c46a;
     --warn-soft: #3a2d12;
+    --missing: #ff7b7b;
+    --missing-soft: #3a1717;
     color-scheme: dark;
   }
 }
@@ -1263,56 +1267,193 @@ details.trace .evidence {
   margin-bottom: 8px;
 }
 
-.shaped-group > .link {
-  margin-top: 8px;
+.shaped-group .eyebrow + * {
+  margin-top: 0;
 }
 
-.shaped-row {
+/* The noise around it: one row per source, the why in a hover card. */
+.src-list {
+  display: grid;
+  gap: 4px;
+}
+
+.src-row {
   display: grid;
   grid-template-columns: 34px 1fr;
   gap: 12px;
-  align-items: start;
+  align-items: center;
+  padding: 6px;
+  margin: 0 -6px;
+  border-radius: 12px;
+  cursor: pointer;
 }
 
-.shaped-row + .shaped-row {
-  margin-top: 12px;
-}
-
-.shaped-body {
+.src-body {
   display: grid;
-  gap: 2px;
+  gap: 4px;
   min-width: 0;
 }
 
-.shaped-body .k {
-  font-size: 11px;
-  font-weight: 650;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-3);
+.src-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
 }
 
-.shaped-body .v {
+.src-top .v {
   font-weight: 650;
   font-size: 15px;
 }
 
-.shaped-body .q {
-  font-size: 13px;
+.lvl {
+  font-size: 12px;
+  font-weight: 700;
   color: var(--ink-2);
 }
 
-.shaped-body .q.cap {
-  color: var(--warn);
+.lvl.loud {
+  color: var(--missing);
+}
+
+.lvl.quiet {
+  color: var(--ok);
+}
+
+.src-body .rank-bar {
+  margin: 2px 0 0;
+}
+
+.src-body .tags {
+  display: flex;
+  gap: 6px;
+}
+
+.src-body .tags .pill {
+  font-size: 11px;
+  padding: 2px 8px;
+}
+
+/* What the listing said: two columns of one-word tiles, red where it is silent. */
+.tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: var(--card-2);
+  font-weight: 650;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.tile .mark {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font: 800 11px/1 var(--display);
+  background: var(--ok);
+  color: var(--card-2);
+}
+
+.tile.missing {
+  background: var(--missing-soft);
+  color: var(--missing);
+  box-shadow: inset 0 0 0 1px rgba(196, 43, 43, 0.3);
+}
+
+.tile.missing .mark {
+  background: var(--missing);
+}
+
+.src-row:focus-visible,
+.tile:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+
+/* A hover card: on hover, on keyboard focus, or open by click or tap. */
+.tipped {
+  position: relative;
+}
+
+.tip {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 230px;
+  max-width: calc(100vw - 2 * var(--gutter));
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--card-2);
+  box-shadow: 0 10px 28px rgba(13, 12, 18, 0.16), 0 0 0 1px var(--line);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ink-2);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 0.12s var(--ease), transform 0.12s var(--ease), visibility 0.12s;
+  /* Text only, so it never takes a click from the row or tile it covers. */
+  pointer-events: none;
+}
+
+.src-list .tip {
+  left: 40px;
+}
+
+.tip.end {
+  left: auto;
+  right: 0;
+}
+
+.tipped:hover > .tip,
+.tipped:focus-within > .tip,
+.tipped.open > .tip {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+}
+
+.tip p + p {
+  margin-top: 4px;
+}
+
+.tip .tip-main {
+  color: var(--ink);
   font-weight: 600;
 }
 
-.shaped-body .rank-bar {
-  margin-top: 6px;
+.tip .tip-why {
+  color: var(--ink);
 }
 
-.shaped-body details {
-  margin-top: 4px;
+.tip-more {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-3);
+}
+
+/* One line where the panel is wide enough (about 400 px and up); on a narrower panel they wrap rather than shrink. */
+.shaped-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 10px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
 }
 
 .ico {
@@ -1331,7 +1472,11 @@ details.trace .evidence {
 }
 
 .ico.missing {
-  color: var(--missing, #c42b2b);
-  background: var(--missing-soft, #fdeaea);
+  color: var(--missing);
+  background: var(--missing-soft);
   box-shadow: 0 0 0 1px rgba(196, 43, 43, 0.35), 0 0 12px rgba(220, 38, 38, 0.45);
+}
+
+.shaped-links .link {
+  font-size: 12px;
 }

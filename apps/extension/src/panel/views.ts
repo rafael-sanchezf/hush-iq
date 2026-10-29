@@ -3,9 +3,11 @@
  * so the two read as one product.
  */
 import type { Live } from '../lib/client.ts';
-import type { AiInfo, Answers, Bother, Cap, EvidenceRef, Field, Observed, RangeCase, ReaderFields, ReaderTurn, Score, Source } from '../lib/types.ts';
+import type { AiInfo, Answers, Bother, Cap, Observed, ReaderFields, ReaderTurn, Score, Source } from '../lib/types.ts';
 import { BOTHERS, VERDICTS } from '../lib/types.ts';
-import { BOTHER_WORDS, SOURCE_WORDS, addressLine, cleanEvidence, forWhom, hourLabel, hoursAsleep, observedLabel, pct, sideLabel, sideWords } from '../lib/words.ts';
+import type { Tile } from '../lib/reasons.ts';
+import { level, sourceLines, tiles } from '../lib/reasons.ts';
+import { BOTHER_WORDS, SOURCE_WORDS, hourLabel, hoursAsleep, pct } from '../lib/words.ts';
 import { clear, glyph, h } from './dom.ts';
 
 // ---------------------------------------------------------------- the three questions
@@ -194,10 +196,6 @@ function meter(verdict: Score['verdict'], range: Score['range']): HTMLElement {
     h('div', { class: 'meter-ends' }, h('span', null, 'Very loud'), h('span', null, 'Very quiet')));
 }
 
-function caseWords(c: RangeCase): string {
-  return [c.floor ? `floor ${c.floor}` : null, sideWords(c.side)].filter(Boolean).join(', ');
-}
-
 /** One line per source that hit a cap: the strongest cap it set, and whether it changed the verdict. */
 function capLines(caps: Cap[]): Cap[] {
   const best = new Map<Source, Cap>();
@@ -206,20 +204,6 @@ function capLines(caps: Cap[]): Cap[] {
     if (!prev || VERDICTS.indexOf(c.cap) < VERDICTS.indexOf(prev.cap) || (c.applied && !prev.applied)) best.set(c.source, c);
   }
   return [...best.values()].sort((a, b) => Number(b.applied) - Number(a.applied));
-}
-
-function photoNumber(e: EvidenceRef): number | null {
-  const n = Number(e.source.split(':')[1]);
-  return Number.isFinite(n) ? n : null;
-}
-
-function quoteOf(f: Field<unknown>, photos: string[]): (Node | string)[] | null {
-  const e = f.evidence[0];
-  if (!e) return null;
-  if (e.source === 'text') return [`“${e.quote}”`];
-  const n = photoNumber(e);
-  const src = n !== null ? photos[n] : undefined;
-  return [src ? h('img', { src, alt: '' }) : '', `Photo ${n !== null ? n + 1 : ''}: ${e.what}`];
 }
 
 export interface ResultView {
@@ -261,83 +245,125 @@ function icon(name: string, missing = false): HTMLSpanElement {
 
 // ---------------------------------------------------------------- the result
 
+/** "71%", or "52 to 71%" when an open floor or side spreads the rank across the range's two cases. */
+function rankWords(score: Score): string {
+  const r = score.range;
+  if (!r) return pct(score.quieter_than);
+  const a = Math.round(r.loudest_case.quieter_than);
+  const b = Math.round(r.quietest_case.quieter_than);
+  return a === b ? pct(score.quieter_than) : `${Math.min(a, b)} to ${pct(Math.max(a, b))}`;
+}
+
 /** The score alone: the word, where it sits from very loud to very quiet, and the rank (Rafa, 2026-10-29). */
 export function scoreCard(v: ResultView): HTMLElement {
   const { score } = v;
   return h('section', { class: 'card verdict', 'aria-label': 'Your Hush score', 'aria-live': 'polite' },
     h('h2', { class: 'word' }, score.verdict, h('small', null, 'for Manhattan')),
     meter(score.verdict, score.range),
-    h('p', { class: 'for' }, h('b', null, `Quieter than ${pct(score.quieter_than)} of Manhattan apartments.`)));
+    h('p', { class: 'for' }, h('b', null, `Quieter than ${rankWords(score)} of Manhattan apartments.`)));
 }
 
-/** One row: an icon, what it is, what we used, and a line on where it came from. */
-function row(ico: HTMLElement, k: string, v: string, note?: (Node | string)[] | string | null, extra?: (Node | null)[]): HTMLElement {
-  return h('div', { class: 'shaped-row' }, ico,
-    h('div', { class: 'shaped-body' },
-      h('span', { class: 'k' }, k),
-      h('span', { class: 'v' }, v),
-      note ? h('span', { class: 'q' }, ...(Array.isArray(note) ? note : [note])) : null,
-      ...(extra ?? [])));
+// ---------------------------------------------------------------- what informed the score (HIQ-140)
+
+let tipSeq = 0;
+let tipsWired = false;
+
+/** Close every open hover card; a click anywhere else does it too. */
+function closeTips(except?: Element): void {
+  for (const t of document.querySelectorAll('.tipped.open')) {
+    if (t !== except) {
+      t.classList.remove('open');
+      t.querySelector('[aria-expanded]')?.setAttribute('aria-expanded', 'false');
+    }
+  }
 }
 
-function group(title: string, ...rows: (Node | null)[]): HTMLElement {
-  return h('div', { class: 'shaped-group' }, h('h4', { class: 'eyebrow' }, title), ...rows);
-}
-
-/** What informed the score, grouped: what the listing said (red where it is silent), the building, the noise
- * around it, and the renter's own answers. Only what the score uses; nothing else from the page. */
-export function shapedCard(v: ResultView, on: { answers: () => void; fix: () => void }): HTMLElement {
-  const { score, fields, answers } = v;
-  const unit = score.unit;
-  const range = score.range;
-  const rangeLine = range
-    ? range.loudest_case.verdict === range.quietest_case.verdict
-      ? `${range.loudest_case.verdict} either way.`
-      : `So the score is a range: ${range.loudest_case.verdict} at ${caseWords(range.loudest_case)}, ${range.quietest_case.verdict} at ${caseWords(range.quietest_case)}.`
-    : '';
-  const floorOk = unit.floor_from === 'listing';
-  const sideOk = unit.side_from === 'listing';
-  const quote = (f: Field<unknown>) => (f.status === 'read' ? quoteOf(f, v.photos) : null);
-  const facts = score.building_facts;
-
-  const caps = new Map(capLines(score.caps).map((c) => [c.source, c]));
-  const sources = [...score.ingredients].sort((a, b) => a.quieter_than - b.quieter_than).map((i) => {
-    const c = caps.get(i.name);
-    return h('div', { class: 'shaped-row' }, icon(i.name === 'building' ? 'neighbors' : i.name),
-      h('div', { class: 'shaped-body' },
-        h('div', { class: 'source-top' }, h('span', { class: 'v' }, SOURCE_WORDS[i.name].title), h('span', { class: 'num' }, pct(i.quieter_than))),
-        h('span', { class: 'q' }, `Quieter than ${pct(i.quieter_than)} of Manhattan · ${Math.round(i.weight)}% of your score`),
-        h('div', { class: `rank-bar${i.ticked ? ' ticked' : ''}`, 'aria-hidden': 'true' }, h('i', { style: `width: ${Math.max(2, i.quieter_than)}%` })),
-        c ? h('span', { class: 'q cap' }, c.applied ? `Holds your score at ${c.cap}.` : `Loud enough on its own to hold it at ${c.cap}.`) : null,
-        i.ticked || i.temporary ? h('div', { class: 'tags' }, i.ticked ? h('span', { class: 'pill ink' }, 'Matters to you') : null, i.temporary ? h('span', { class: 'pill' }, 'Temporary') : null) : null,
-        i.evidence.length ? h('details', null,
-          h('summary', null, `The city data (${i.evidence.length})`),
-          h('ul', null, i.evidence.map((e) => h('li', null, cleanEvidence(e))))) : null));
+/**
+ * A row or tile with a hover card. The card opens on hover, on keyboard focus, and on click or tap; Escape closes
+ * it. The target gets a tabindex and `aria-describedby` pointing at the card, so a screen reader reads the why too.
+ */
+function tipped(target: HTMLElement, lines: string[], more: (string | null)[] = [], align: 'start' | 'end' = 'start', lead = false): HTMLElement {
+  if (!tipsWired) {
+    tipsWired = true;
+    document.addEventListener('click', (e) => closeTips((e.target as Element).closest?.('.tipped') ?? undefined));
+  }
+  const id = `why-${++tipSeq}`;
+  const rest = more.filter((m): m is string => Boolean(m));
+  const card = h('div', { class: `tip${align === 'end' ? ' end' : ''}`, id, role: 'tooltip' },
+    lines.map((l, i) => h('p', { class: lead && i === 0 ? 'tip-main' : 'tip-why' }, l)),
+    rest.length ? h('div', { class: 'tip-more' }, rest.map((m) => h('p', null, m))) : null);
+  const wrap = h('div', { class: 'tipped' }, target, card);
+  target.tabIndex = 0;
+  target.setAttribute('role', 'button');
+  target.setAttribute('aria-expanded', 'false');
+  target.setAttribute('aria-describedby', id);
+  const toggle = () => {
+    const open = !wrap.classList.contains('open');
+    closeTips(wrap);
+    wrap.classList.toggle('open', open);
+    target.setAttribute('aria-expanded', String(open));
+  };
+  target.addEventListener('click', toggle);
+  target.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggle();
+    } else if (e.key === 'Escape') {
+      wrap.classList.remove('open');
+      target.setAttribute('aria-expanded', 'false');
+      target.blur();
+    }
   });
+  return wrap;
+}
 
+/** One noise source: icon, name, its level word, the rank bar, and the tag when it matters to the renter. */
+function sourceRow(i: Score['ingredients'][number], score: Score, cap: Cap | undefined): HTMLElement {
+  const word = level(i.quieter_than);
+  const row = h('div', { class: 'src-row', 'aria-label': `${SOURCE_WORDS[i.name].title}: ${word}` },
+    icon(i.name === 'building' ? 'neighbors' : i.name),
+    h('div', { class: 'src-body' },
+      h('div', { class: 'src-top' },
+        h('span', { class: 'v' }, SOURCE_WORDS[i.name].title),
+        h('span', { class: `lvl ${word.toLowerCase()}` }, word)),
+      h('div', { class: `rank-bar${i.ticked ? ' ticked' : ''}`, 'aria-hidden': 'true' }, h('i', { style: `width: ${Math.max(2, i.quieter_than)}%` })),
+      i.ticked ? h('div', { class: 'tags' }, h('span', { class: 'pill ink' }, 'Matters to you')) : null));
+  return tipped(row, sourceLines(i, { groundFloorCommercial: score.unit.ground_floor_commercial }), [
+    `Quieter than ${pct(i.quieter_than)} of Manhattan apartments · ${Math.round(i.weight)}% of your score.`,
+    cap ? (cap.applied ? `Holds your score at ${cap.cap}.` : `Loud enough on its own to hold it at ${cap.cap}.`) : null,
+    i.temporary ? 'Temporary: it ends when the work does.' : null,
+  ]);
+}
+
+/** One building tile: a single word, a green check when known, a red question mark when the listing is silent. */
+function tileView(t: Tile, i: number): HTMLElement {
+  const el = h('div', { class: `tile${t.known ? '' : ' missing'}`, 'aria-label': `${t.label}: ${t.known ? 'known' : 'not on the listing'}` },
+    h('span', { class: 'mark', 'aria-hidden': 'true' }, t.known ? '✓' : '?'),
+    h('span', null, t.label));
+  return tipped(el, t.lines, [], i % 2 ? 'end' : 'start', true);
+}
+
+/**
+ * What informed the score, to Rafa's design of 2026-10-29: the noise around the building, loudest first, then six
+ * one-word tiles for what the listing said about the apartment. Each row and tile keeps its why in a hover card,
+ * built by rules from the engine's evidence (lib/reasons.ts), so it reads the same with AI reading on or off.
+ */
+export function shapedCard(v: ResultView, on: { answers: () => void; fix: () => void }): HTMLElement {
+  const { score } = v;
+  const caps = new Map(capLines(score.caps).map((c) => [c.source, c]));
+  const sources = [...score.ingredients].sort((a, b) => a.quieter_than - b.quieter_than);
+  const aiOff = v.readerAi?.mode === 'basic';
+  const grid = tiles(score, v.fields, v.observed, { aiOff, photos: aiOff ? 0 : v.photos.length });
   return h('section', { class: 'card shaped', 'aria-label': 'What informed your Hush score' },
     h('h3', null, 'What informed your Hush score'),
-    group('From the listing',
-      row(icon('address', fields.address.status !== 'read'), 'Address', addressLine(score.address.label, score.address.query),
-        quote(fields.address) ?? 'Not on the listing: found from the city’s records.'),
-      row(icon('floor', !floorOk), 'Floor',
-        floorOk ? `Floor ${unit.floor}${unit.building_floors ? ` of ${unit.building_floors}` : ''}` : 'Not on the listing',
-        floorOk
-          ? fields.floor.derived?.from === 'unit' ? `From unit ${fields.floor.derived.unit}: the listing does not state the floor.` : quote(fields.floor)
-          : `Scored at the middle floor${unit.floor ? `, ${unit.floor}` : ''}. ${rangeLine}`),
-      row(icon('side', !sideOk), 'Side', sideOk ? sideLabel(fields.side.status === 'read' ? fields.side.value : unit.side) : 'Not on the listing',
-        sideOk ? quote(fields.side) : `Scored between street side and rear.${floorOk ? ` ${rangeLine}` : ''}`),
-      h('button', { type: 'button', class: 'link small', onclick: on.fix }, 'Something wrong? Fix what it read')),
-    group('The building',
-      row(icon('building'), 'From city records',
-        [unit.building_floors ? `${unit.building_floors} floors` : null, facts?.yearbuilt ? `built ${facts.yearbuilt}` : null].filter(Boolean).join(', ') || 'Unknown',
-        [facts?.unitsres ? `${facts.unitsres} apartments` : null, unit.ground_floor_commercial ? 'shops or a bar on the ground floor' : null].filter(Boolean).join(', ') || null)),
-    group('Noise around it, loudest first', ...sources),
-    group('You',
-      row(icon('sleep'), 'Asleep', `${hourLabel(answers.sleep_from)} to ${hourLabel(answers.sleep_until)}`, 'Each hour asleep counts three times an hour awake.'),
-      row(icon('day'), 'Daytime noise', answers.day_bothers ? 'Bothers you' : 'Does not bother you'),
-      row(icon('bothers'), 'What gets to you', answers.bothers.length ? answers.bothers.map((b) => BOTHER_WORDS[b].label).join(', ') : 'Nothing ticked',
-        answers.bothers.length ? 'Each counts three times as much.' : null),
+    h('div', { class: 'shaped-group' },
+      h('h4', { class: 'eyebrow' }, 'Noise around it, loudest first'),
+      h('div', { class: 'src-list' }, sources.map((i) => sourceRow(i, score, caps.get(i.name))))),
+    h('div', { class: 'shaped-group' },
+      h('h4', { class: 'eyebrow' }, 'Building parameters affecting noise'),
+      h('div', { class: 'tiles' }, grid.map(tileView))),
+    h('div', { class: 'shaped-links' },
+      h('button', { type: 'button', class: 'link small', onclick: on.fix }, 'Something wrong? Fix what it read'),
       h('button', { type: 'button', class: 'link small', onclick: on.answers }, 'Change my answers')),
   );
 }
