@@ -1,0 +1,8 @@
+{
+  "_about": "What a correct reading returns for each synthetic listing in this folder. Written by hand for the hush-iq listing reader; the addresses are real Manhattan buildings, the listing texts are invented. null means cant_tell.",
+  "01-stated-rear.txt": {"address": "315 West 86th Street", "unit": "11C", "floor": 11, "side": "rear", "position": "rear"},
+  "02-silent.txt": {"address": "201 East 87th Street", "unit": null, "floor": null, "side": "unknown", "position": "unknown"},
+  "03-street-front.txt": {"address": "155 Ludlow Street", "unit": "2A", "floor": 2, "side": "street", "position": "front"},
+  "04-corner.txt": {"address": "305 East 24th Street", "unit": "14G", "floor": 14, "side": "corner", "position": "front"},
+  "05-courtyard-unit-only.txt": {"address": "235 East 10th Street", "unit": "3F", "floor": null, "side": "courtyard", "position": "rear"}
+}
