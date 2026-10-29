@@ -5,8 +5,9 @@
  * Built by rules from the engine's own evidence: `score.ingredients[].evidence`, `building_facts` and `unit`, plus
  * the reader's fields for the tiles. No model writes these, so they read the same with AI reading on or off, and
  * they say only what the evidence holds. A street is "a bus or truck route" because the city's street file says so,
- * never "heavy truck volume"; sirens name the facilities near the building, never a route past it, which waits for
- * HIQ-49.
+ * never "heavy truck volume". Sirens lead with the emergency trips the engine's sirens upgrade routed past the block
+ * (packages/model/upgrades/sirens.md), then the nearest firehouse or hospital; with no route sentence in the evidence
+ * (no upgrade, or no routed street within 500 m) they fall back to the stations' distances.
  *
  * The evidence lines are the engine's (packages/model, frozen). A line in a shape this file does not know is
  * skipped; when nothing for a source parses, its first line is shown as the city data has it.
@@ -19,11 +20,23 @@ import { addressLine, cleanEvidence, observedLabel, sideLabel } from './words.ts
 export type Level = 'Loud' | 'Average' | 'Quiet';
 
 /**
- * A source's rank in thirds of Manhattan. `quieter_than` is the share of Manhattan apartments this one is quieter
- * than: under a third is Loud, a third to two thirds is Average, two thirds and over is Quiet.
+ * A source's rank in thirds of Manhattan, as a share of Manhattan apartments this one is quieter than: under a third
+ * is Loud, a third to two thirds is Average, two thirds and over is Quiet. The card passes the objective rank
+ * (`objectiveRank`), so the word is the same for every renter.
  */
 export function level(quieterThan: number): Level {
   return quieterThan < 100 / 3 ? 'Loud' : quieterThan < 200 / 3 ? 'Average' : 'Quiet';
+}
+
+/**
+ * The rank the bars show (Rafa, 2026-10-29): the building's typical apartment, all 24 hours equal, the same for every
+ * renter (`block_quieter_than`, display only). The renter's answers, floor and side shape only the roll-up score.
+ * A score without it (the hosted API until it serves /v2/score, and the replay of v1) falls back to `quieter_than`.
+ */
+export function objectiveRank(i: Pick<Ingredient, 'quieter_than' | 'block_quieter_than'>): { rank: number; objective: boolean } {
+  return typeof i.block_quieter_than === 'number' && Number.isFinite(i.block_quieter_than)
+    ? { rank: i.block_quieter_than, objective: true }
+    : { rank: i.quieter_than, objective: false };
 }
 
 // ---------------------------------------------------------------- small words
@@ -160,9 +173,64 @@ function neighbors(ev: string[]): string[] {
   return out;
 }
 
+/**
+ * The sirens upgrade's own sentences, as packages/model/noise_score/upgrades/sirens.py writes them: trips a day on
+ * this block by kind, or almost none and the busiest street within 300 m. /v2/score carries these sentences, not the
+ * upgrade's numeric steps, so the busiest street is known only when the block itself is quiet.
+ */
+interface Routes {
+  ambulance: number | null;
+  /** Set when the upgrade says most of those ambulance trips head to a hospital this far away. */
+  hospitalM: number | null;
+  fire: number | null;
+  quiet: boolean;
+  busiest: { within: string; n: number } | null;
+}
+
+function routesOf(ev: string[]): Routes | null {
+  const r: Routes = { ambulance: null, hospitalM: null, fire: null, quiet: false, busiest: null };
+  let any = false;
+  for (const e of ev) {
+    let m = e.match(/^About (\d+) ambulance trips? a day pass(?:es)? on this block(?:, most heading to a hospital about (\d+) m away)?\.$/);
+    if (m) {
+      r.ambulance = Number(m[1]);
+      r.hospitalM = m[2] ? Number(m[2]) : null;
+      any = true;
+      continue;
+    }
+    m = e.match(/^About (\d+) fire engine runs? a day uses? it(?: too)?\.$/);
+    if (m) {
+      r.fire = Number(m[1]);
+      any = true;
+      continue;
+    }
+    if (/^Almost no ambulance or fire engine trips pass this block\.$/.test(e)) {
+      r.quiet = true;
+      any = true;
+      continue;
+    }
+    m = e.match(/^The busiest street within (\d+) m carries about (\d+) emergency trips a day\.$/);
+    if (m) r.busiest = { within: m[1], n: Number(m[2]) };
+  }
+  return any ? r : null;
+}
+
+function routeLine(r: Routes): string {
+  if (r.quiet) {
+    return `Almost no ambulance or fire engine trips on this block${r.busiest ? `; about ${r.busiest.n} a day on the busiest street within ${r.busiest.within} m` : ''}.`;
+  }
+  const kinds = [
+    r.ambulance !== null ? `${r.ambulance} ambulance ${plural(r.ambulance, 'trip')}` : null,
+    r.fire !== null ? `${r.fire} fire engine ${plural(r.fire, 'run')}` : null,
+  ].filter(Boolean);
+  const toHospital = r.hospitalM !== null && r.fire === null ? `, most heading to a hospital about ${r.hospitalM} m away` : '';
+  return `About ${kinds.join(' and ')} a day on this block${toHospital}.`;
+}
+
 function sirens(ev: string[]): string[] {
   let total: { n: number; within: string } | null = null;
   const places: { kind: string; m: number }[] = [];
+  let nearby = '';
   for (const e of ev) {
     let m = e.match(/^(\d+) emergency facilit(?:y|ies) within (\d+) m/);
     if (m) {
@@ -170,10 +238,28 @@ function sirens(ev: string[]): string[] {
       continue;
     }
     m = e.match(/^.+ \(([a-z ]+)\), .+, ([\d.]+) m$/);
-    if (m) places.push({ kind: m[1], m: Number(m[2]) });
+    if (m) {
+      places.push({ kind: m[1], m: Number(m[2]) });
+      continue;
+    }
+    if (/^Nearby: .+\.$/.test(e)) nearby = e;
   }
   places.sort((a, b) => a.m - b.m);
   const out: string[] = [];
+
+  const routes = routesOf(ev);
+  if (routes) {
+    out.push(routeLine(routes));
+    // With room left, the nearest firehouse and hospital: the stations those trips start from or head to.
+    const fire = places.find((p) => p.kind === 'firehouse');
+    const hospital = routes.hospitalM === null || routes.fire !== null ? places.find((p) => p.kind === 'hospital') : undefined;
+    const near = [fire, hospital].filter((p): p is { kind: string; m: number } => Boolean(p)).sort((a, b) => a.m - b.m);
+    if (near.length) out.push(sentence(near.map((p) => `${article(p.kind)} ${metres(p.m)} away`).join(' and ')));
+    else if (nearby) out.push(nearby);
+    return out;
+  }
+
+  // No route sentence: the stations' distances alone.
   const shown = places.slice(0, 2).map((p) => `${article(p.kind)} ${metres(p.m)} away`);
   if (shown.length) out.push(sentence(shown.join(' and ')));
   if (total && total.n > shown.length) {

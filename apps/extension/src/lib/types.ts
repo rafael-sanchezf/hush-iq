@@ -48,6 +48,9 @@ export interface Ingredient {
   name: Source;
   label: string;
   quieter_than: number;
+  /** Display only: the building's typical apartment, all 24 hours equal, the same for every renter. Engine v2 on
+   * /v2/score since 2026-10-29; absent from the replay of v1. */
+  block_quieter_than?: number;
   verdict: VerdictWord;
   weight: number;
   ticked: boolean;

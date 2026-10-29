@@ -39,6 +39,12 @@ test('the classmates’ build holds every one of them', () => {
   for (const s of KEY_UI) assert.ok(all.includes(s), `the byok build lacks "${s}"`);
 });
 
+test('no renter reads "Nightlife": the source is "Local businesses"', () => {
+  for (const [file, text] of judged) {
+    if (file.endsWith('.js') || file.endsWith('.html')) assert.doesNotMatch(text, /Nightlife|Bars and nightlife|late talk/, file);
+  }
+});
+
 test('both builds have the AI reading switch', () => {
   for (const files of [judged, classmates]) {
     assert.match(files.get('options.html')!, /id="ai"/);

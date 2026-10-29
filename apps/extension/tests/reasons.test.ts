@@ -5,7 +5,8 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 
-import { level, sourceLines, streetName, tiles } from '../src/lib/reasons.ts';
+import { level, objectiveRank, sourceLines, streetName, tiles } from '../src/lib/reasons.ts';
+import { BOTHER_WORDS, SOURCE_WORDS } from '../src/lib/words.ts';
 import type { Field, Ingredient, Observed, ReaderFields, Score } from '../src/lib/types.ts';
 
 const read = (p: string) => JSON.parse(readFileSync(new URL(p, import.meta.url), 'utf8'));
@@ -51,7 +52,29 @@ test('neighbors: complaints at the building, then how it is built', () => {
   assert.match(sourceLines(ev('w47', 'building'))[0], /^No noise complaints about neighbors/);
 });
 
-test('sirens: the facilities near the building, never a route past it', () => {
+const W57 = read('./fixtures/v2-w57-two-units.json');
+
+test('sirens: the routed emergency trips lead, then the nearest firehouse and hospital', () => {
+  // The engine's own evidence for 315 W 57th St, with its sirens upgrade.
+  assert.deepEqual(sourceLines({ name: 'sirens', evidence: W57.sirens_evidence }), [
+    'About 45 ambulance trips a day on this block.',
+    'A firehouse 292 m away and a hospital 364 m away.',
+  ]);
+  const stations = ['ENGINE 1 (firehouse), 1 MAIN STREET, 150 m', 'GENERAL (hospital), 2 MAIN STREET, 420 m'];
+  assert.deepEqual(sourceLines({ name: 'sirens', evidence: [...stations, 'About 12 ambulance trips a day pass on this block.', 'About 3 fire engine runs a day use it too.'] }), [
+    'About 12 ambulance trips and 3 fire engine runs a day on this block.',
+    'A firehouse 150 m away and a hospital 420 m away.',
+  ]);
+  assert.deepEqual(sourceLines({ name: 'sirens', evidence: [...stations, 'About 20 ambulance trips a day pass on this block, most heading to a hospital about 400 m away.'] }), [
+    'About 20 ambulance trips a day on this block, most heading to a hospital about 400 m away.',
+    'A firehouse 150 m away.',
+  ]);
+  assert.deepEqual(sourceLines({ name: 'sirens', evidence: ['Almost no ambulance or fire engine trips pass this block.', 'The busiest street within 300 m carries about 120 emergency trips a day.'] }), [
+    'Almost no ambulance or fire engine trips on this block; about 120 a day on the busiest street within 300 m.',
+  ]);
+});
+
+test('sirens without route sentences (no upgrade, or no routed street within 500 m): the stations alone', () => {
   assert.deepEqual(sourceLines(ev('ludlow', 'sirens')), [
     'A hospital 275 m away and a firehouse 484 m away.',
     'Four emergency facilities within 600 m in all.',
@@ -59,6 +82,27 @@ test('sirens: the facilities near the building, never a route past it', () => {
   assert.deepEqual(sourceLines(ev('w47', 'sirens')), ['A firehouse 132 m away and a police station 541 m away.']);
   for (const slug of ['bedford', 'claremont', 'ludlow', 'w47']) {
     for (const l of sourceLines(ev(slug, 'sirens'))) assert.doesNotMatch(l, /route|street|avenue|past/i, l);
+  }
+});
+
+test('the bars show the objective rank: the same for every renter, floor and side; the verdict still differs', () => {
+  const [low, high] = W57.units;
+  assert.notEqual(low.verdict, high.verdict);
+  const bars = (u: typeof low) => Object.fromEntries(u.ingredients.map((i: Ingredient) => [i.name, Math.round(objectiveRank(i).rank)]));
+  assert.deepEqual(bars(low), { street: 10, nightlife: 31, building: 52, sirens: 11, construction: 46 });
+  assert.deepEqual(bars(high), bars(low));
+  assert.deepEqual(low.ingredients.map((i: Ingredient) => level(objectiveRank(i).rank)), high.ingredients.map((i: Ingredient) => level(objectiveRank(i).rank)));
+  // A score without the field (the hosted API, the replay of v1) falls back to the renter's rank.
+  assert.deepEqual(objectiveRank({ quieter_than: 40 }), { rank: 40, objective: false });
+  assert.deepEqual(objectiveRank({ quieter_than: 40, block_quieter_than: 12 }), { rank: 12, objective: true });
+});
+
+test('nightlife reads "Local businesses" for the renter; the API key and the tick stay', () => {
+  assert.equal(SOURCE_WORDS.nightlife.title, 'Local businesses');
+  assert.deepEqual(BOTHER_WORDS.people, { label: 'Local businesses', hint: 'Bars, restaurants, theatres, crowds' });
+  assert.equal(W57.units[0].ingredients.find((i: Ingredient) => i.name === 'nightlife').label, 'Local businesses');
+  for (const slug of ['bedford', 'claremont', 'ludlow', 'w47']) {
+    assert.equal(ev(slug, 'nightlife').label, 'Local businesses', slug);
   }
 });
 

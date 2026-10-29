@@ -4,7 +4,7 @@ import { VERDICTS } from './types.ts';
 
 export const SOURCE_WORDS: Record<Source, { title: string; short: string }> = {
   street: { title: 'Street traffic', short: 'traffic' },
-  nightlife: { title: 'Bars and nightlife', short: 'nightlife' },
+  nightlife: { title: 'Local businesses', short: 'local businesses' },
   building: { title: 'Neighbors', short: 'neighbors' },
   sirens: { title: 'Sirens', short: 'sirens' },
   construction: { title: 'Construction', short: 'construction' },
@@ -14,7 +14,7 @@ export const BOTHER_WORDS: Record<Bother, { label: string; hint: string }> = {
   traffic: { label: 'Traffic', hint: 'Buses, trucks, horns' },
   sirens: { label: 'Sirens', hint: 'Ambulances, fire, police' },
   neighbors: { label: 'Neighbors', hint: 'Footsteps, music, voices' },
-  people: { label: 'Nightlife', hint: 'Bars, crowds, late talk' },
+  people: { label: 'Local businesses', hint: 'Bars, restaurants, theatres, crowds' },
   construction: { label: 'Construction', hint: 'Jackhammers, early crews' },
 };
 

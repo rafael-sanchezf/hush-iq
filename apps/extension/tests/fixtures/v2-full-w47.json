@@ -41,7 +41,7 @@
   },
   {
    "name": "nightlife",
-   "label": "Nightlife",
+   "label": "Local businesses",
    "quieter_than": 1.3,
    "verdict": "Very loud",
    "weight": 7.4,

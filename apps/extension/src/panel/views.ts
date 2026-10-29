@@ -6,7 +6,7 @@ import type { Live } from '../lib/client.ts';
 import type { AiInfo, Answers, Bother, Cap, Observed, ReaderFields, ReaderTurn, Score, Source } from '../lib/types.ts';
 import { BOTHERS, VERDICTS } from '../lib/types.ts';
 import type { Tile } from '../lib/reasons.ts';
-import { level, sourceLines, tiles } from '../lib/reasons.ts';
+import { level, objectiveRank, sourceLines, tiles } from '../lib/reasons.ts';
 import { BOTHER_WORDS, SOURCE_WORDS, hourLabel, hoursAsleep, pct } from '../lib/words.ts';
 import { clear, glyph, h } from './dom.ts';
 
@@ -149,7 +149,7 @@ export function questionsCard(start: Answers, onDone: (a: Answers) => void, done
         h('div', { class: 'q-title' }, h('span', { id: 'q-bothers' }, 'What gets to you?'), h('small', null, a.bothers.length ? `${a.bothers.length} ticked` : 'Tick any, or none')),
         h('div', { class: 'chips', role: 'group', 'aria-labelledby': 'q-bothers' },
           BOTHERS.map((b) => h('button', { type: 'button', class: 'chip', 'aria-pressed': String(a.bothers.includes(b)), title: BOTHER_WORDS[b].hint, onclick: () => toggle(b) }, BOTHER_WORDS[b].label))),
-        h('p', { class: 'chip-hint' }, 'Each one you tick counts three times as much. Nightlife covers bars, crowds and late talk.'),
+        h('p', { class: 'chip-hint' }, 'Each one you tick counts three times as much. Local businesses covers bars, restaurants, theatres and crowds.'),
         h('button', { type: 'button', class: 'btn block', onclick: () => onDone(a) }, done));
     }
     card.append(
@@ -317,19 +317,24 @@ function tipped(target: HTMLElement, lines: string[], more: (string | null)[] = 
   return wrap;
 }
 
-/** One noise source: icon, name, its level word, the rank bar, and the tag when it matters to the renter. */
+/**
+ * One noise source: icon, name, its level word, the rank bar, and the tag when it matters to the renter. The bar and
+ * the word show the objective rank (lib/reasons.ts objectiveRank); the renter's own rank and weight sit in the hover.
+ */
 function sourceRow(i: Score['ingredients'][number], score: Score, cap: Cap | undefined): HTMLElement {
-  const word = level(i.quieter_than);
+  const { rank, objective } = objectiveRank(i);
+  const word = level(rank);
   const row = h('div', { class: 'src-row', 'aria-label': `${SOURCE_WORDS[i.name].title}: ${word}` },
     icon(i.name === 'building' ? 'neighbors' : i.name),
     h('div', { class: 'src-body' },
       h('div', { class: 'src-top' },
         h('span', { class: 'v' }, SOURCE_WORDS[i.name].title),
         h('span', { class: `lvl ${word.toLowerCase()}` }, word)),
-      h('div', { class: `rank-bar${i.ticked ? ' ticked' : ''}`, 'aria-hidden': 'true' }, h('i', { style: `width: ${Math.max(2, i.quieter_than)}%` })),
+      h('div', { class: `rank-bar${i.ticked ? ' ticked' : ''}`, 'aria-hidden': 'true' }, h('i', { style: `width: ${Math.max(2, rank)}%` })),
       i.ticked ? h('div', { class: 'tags' }, h('span', { class: 'pill ink' }, 'Matters to you')) : null));
   return tipped(row, sourceLines(i, { groundFloorCommercial: score.unit.ground_floor_commercial }), [
-    `Quieter than ${pct(i.quieter_than)} of Manhattan apartments · ${Math.round(i.weight)}% of your score.`,
+    objective ? `The building’s typical apartment, all hours alike: quieter than ${pct(rank)} of Manhattan.` : null,
+    `For your floor, side and hours: quieter than ${pct(i.quieter_than)} · ${Math.round(i.weight)}% of your score.`,
     cap ? (cap.applied ? `Holds your score at ${cap.cap}.` : `Loud enough on its own to hold it at ${cap.cap}.`) : null,
     i.temporary ? 'Temporary: it ends when the work does.' : null,
   ]);
@@ -351,7 +356,7 @@ function tileView(t: Tile, i: number): HTMLElement {
 export function shapedCard(v: ResultView, on: { answers: () => void; fix: () => void }): HTMLElement {
   const { score } = v;
   const caps = new Map(capLines(score.caps).map((c) => [c.source, c]));
-  const sources = [...score.ingredients].sort((a, b) => a.quieter_than - b.quieter_than);
+  const sources = [...score.ingredients].sort((a, b) => objectiveRank(a).rank - objectiveRank(b).rank);
   const aiOff = v.readerAi?.mode === 'basic';
   const grid = tiles(score, v.fields, v.observed, { aiOff, photos: aiOff ? 0 : v.photos.length });
   return h('section', { class: 'card shaped', 'aria-label': 'What informed your Hush score' },
