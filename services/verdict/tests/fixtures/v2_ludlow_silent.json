@@ -1,0 +1,194 @@
+{
+ "engine": "v2",
+ "verdict": "Very loud",
+ "quieter_than": 4.7,
+ "uncapped_verdict": "Very loud",
+ "caps": [
+  {
+   "source": "nightlife",
+   "cap": "Loud",
+   "why": "in Manhattan's loudest 5%",
+   "applied": false
+  },
+  {
+   "source": "nightlife",
+   "cap": "Typical",
+   "why": "you said it bothers you, and it is in Manhattan's loudest 10%",
+   "applied": false
+  }
+ ],
+ "range": {
+  "loudest_case": {
+   "verdict": "Very loud",
+   "quieter_than": 0.0,
+   "floor": 2,
+   "side": "front"
+  },
+  "quietest_case": {
+   "verdict": "Loud",
+   "quieter_than": 35.7,
+   "floor": 5,
+   "side": "rear"
+  }
+ },
+ "ingredients": [
+  {
+   "name": "street",
+   "label": "Street",
+   "quieter_than": 25.0,
+   "verdict": "Loud",
+   "weight": 24.6,
+   "ticked": false,
+   "temporary": false,
+   "evidence": [
+    "LUDLOW ST: one lane, 1 travel lane, 25 mph, 14 m away",
+    "STANTON ST: one lane, 1 travel lane, 25 mph, 49 m away",
+    "ORCHARD ST: one lane, 1 travel lane, 25 mph, 54 m away",
+    "116 vehicle noise complaints to 311 within 100 m in 24 months (car/truck music 83, engine idling 28)"
+   ]
+  },
+  {
+   "name": "nightlife",
+   "label": "Nightlife",
+   "quieter_than": 0.0,
+   "verdict": "Very loud",
+   "weight": 34.6,
+   "ticked": true,
+   "temporary": false,
+   "evidence": [
+    "86 licensed venues within 150 m: 21 bars, 35 restaurants, 30 venues",
+    "nearest loud: LICENSEE (bar), 152 LUDLOW STREET, 15 m",
+    "nearest loud: LICENSEE (venue), 152 LUDLOW STREET, 15 m",
+    "nearest loud: LICENSEE (bar), 158 LUDLOW STREET, 31 m",
+    "1670 party, music or loud-talking complaints within 150 m in 24 months; 916 of them 10 pm to 5 am"
+   ]
+  },
+  {
+   "name": "building",
+   "label": "Building",
+   "quieter_than": 29.0,
+   "verdict": "Loud",
+   "weight": 15.4,
+   "ticked": false,
+   "temporary": false,
+   "evidence": [
+    "0 residential noise complaints to 311 at this building in 24 months, 7 units: 0.00 per unit-year vs 0.07 for Manhattan (0.6x after shrinkage)",
+    "built 1900: pre-war walk-up, wood joists and plaster carry footsteps",
+    "class C4: walk-up, stairs pass every door"
+   ]
+  },
+  {
+   "name": "sirens",
+   "label": "Sirens",
+   "quieter_than": 19.7,
+   "verdict": "Very loud",
+   "weight": 15.4,
+   "ticked": false,
+   "temporary": false,
+   "evidence": [
+    "2 emergency facilities within 600 m: 1 hospital, 1 firehouse",
+    "MOUNT SINAI -  BEHAVIORAL HEALTH CENTER (hospital), 45 RIVINGTON STREET, 258 m",
+    "ENGINE 28/LADDER 11 (firehouse), 222 EAST 2 STREET, 485 m"
+   ]
+  },
+  {
+   "name": "construction",
+   "label": "Construction",
+   "quieter_than": 44.3,
+   "verdict": "Typical",
+   "weight": 10.0,
+   "ticked": false,
+   "temporary": true,
+   "evidence": [
+    "27 construction noise complaints within 100 m in 24 months (noise: construction before/after hours (nm1) 16, noise: construction equipment (nc1) 7)"
+   ]
+  }
+ ],
+ "answers": {
+  "sleep": {
+   "from": 1,
+   "until": 9
+  },
+  "day_bothers": false,
+  "ticks": [
+   "people"
+  ]
+ },
+ "slot_weights": {
+  "night": 42.2,
+  "early": 28.1,
+  "day": 29.7
+ },
+ "unit": {
+  "floor": 4,
+  "floor_from": "expected",
+  "side": "unknown",
+  "side_from": "unknown",
+  "building_floors": 5,
+  "ground_floor_commercial": true
+ },
+ "address": {
+  "query": "151 Ludlow St, Manhattan",
+  "label": "151 LUDLOW STREET, New York, NY, USA",
+  "lat": 40.720872,
+  "lng": -73.988142,
+  "bbl": "1004110023",
+  "bin": "1005355",
+  "borough": "Manhattan"
+ },
+ "building_facts": {
+  "address": "151 LUDLOW STREET",
+  "yearbuilt": "1900",
+  "numfloors": "5.0000000",
+  "bldgclass": "C4",
+  "unitsres": "7",
+  "unitstotal": "8"
+ },
+ "manhattan": {
+  "buildings": 298,
+  "apartments": 958418,
+  "as_of": "2026-10-22"
+ },
+ "as_of": "2026-10-29",
+ "lookback_months": 24,
+ "sources": [
+  {
+   "name": "NYC GeoSearch (address, BBL, BIN)",
+   "url": "https://geosearch.planninglabs.nyc/v2/search"
+  },
+  {
+   "name": "NYC 311 Service Requests",
+   "url": "https://data.cityofnewyork.us/resource/erm2-nwe9.json"
+  },
+  {
+   "name": "NYC PLUTO (year built, floors, units, class)",
+   "url": "https://data.cityofnewyork.us/resource/64uk-42ks.json"
+  },
+  {
+   "name": "NYC Street Centerline (road class, lanes, speed)",
+   "url": "https://data.cityofnewyork.us/resource/inkn-q76z.json"
+  },
+  {
+   "name": "DOB NOW approved permits (same tax block)",
+   "url": "https://data.cityofnewyork.us/resource/rbx6-tga4.json"
+  },
+  {
+   "name": "NYS Liquor Authority active licenses",
+   "url": "https://data.ny.gov/resource/9s3h-dpkz.json"
+  },
+  {
+   "name": "MTA subway stations (elevated structures)",
+   "url": "https://data.ny.gov/resource/39hk-dx4f.json"
+  },
+  {
+   "name": "NYC Facilities Database (hospitals, firehouses, police)",
+   "url": "https://data.cityofnewyork.us/resource/67g2-p84d.json"
+  }
+ ],
+ "caveats": [
+  "Every number here is a rank against Manhattan, not a sound measurement.",
+  "Each source is compared only with the same source elsewhere; the weights say which matters more.",
+  "311 counts measure who complains, not how loud it is.",
+  "Construction is temporary; permits expire."
+ ]
+}
