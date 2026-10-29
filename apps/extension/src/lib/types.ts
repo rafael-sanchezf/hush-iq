@@ -103,6 +103,10 @@ export interface Field<T> {
   value: T | null;
   status: 'read' | 'cant_tell';
   evidence: EvidenceRef[];
+  /** Set when the value was not in the listing as written: a top floor from the city's floor count, or a floor from
+   * the unit number (services/agent/CONTRACT.md). */
+  derived?: { from: 'top' | 'unit'; unit?: string; floors?: number | null; source: string };
+  note?: string;
 }
 
 /** As services/agent/CONTRACT.md: a cant_tell side has the value "unknown"; read `status`, not `value`. */

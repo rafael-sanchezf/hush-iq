@@ -87,6 +87,15 @@ export interface Extraction {
   ignored: string[];
 }
 
+/** As the reader (services/agent/reader/evidence.py, floor_from_unit): in New York's usual numbering 3E or 12F is
+ * floor 3 or 12, and 503 or 1203 is floor 5 or 12. Used only when the listing states no floor (Rafa, 2026-10-29). */
+export function floorFromUnit(unit: string): number | null {
+  const core = unit.replace(/\b(?:apt|apartment|unit|no)\b\.?|#/gi, '').replace(/\s+/g, '').toLowerCase();
+  const m = /^(\d{1,2})[a-z]{1,2}$/.exec(core) ?? /^(\d{1,2})\d{2}$/.exec(core);
+  const n = m ? Number(m[1]) : 0;
+  return n >= 1 && n <= 120 ? n : null;
+}
+
 export function extract(text: string): Extraction {
   // Address, with the borough when the listing gives it right after the street.
   let address: Field<string> = cantTell();
@@ -136,6 +145,12 @@ export function extract(text: string): Extraction {
       floor = read(val(m), m[0]);
       break;
     }
+  }
+
+  const fromUnit = floor.status !== 'read' && u ? floorFromUnit(u[1]) : null;
+  if (fromUnit && u) {
+    floor = { ...read(fromUnit, u[0]), derived: { from: 'unit', unit: u[1], floors: null, source: 'the unit number' },
+      note: `Unit ${u[1]}: floor ${fromUnit}, by the usual New York numbering. The listing does not state the floor.` };
   }
 
   const firstMatch = (res: RegExp[]) => res.map((re) => text.match(re)).find(Boolean) ?? null;

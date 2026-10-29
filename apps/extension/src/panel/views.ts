@@ -322,7 +322,9 @@ export function shapedCard(v: ResultView, on: { answers: () => void; fix: () => 
         quote(fields.address) ?? 'Not on the listing: found from the city’s records.'),
       row(icon('floor', !floorOk), 'Floor',
         floorOk ? `Floor ${unit.floor}${unit.building_floors ? ` of ${unit.building_floors}` : ''}` : 'Not on the listing',
-        floorOk ? quote(fields.floor) : `Scored at the middle floor${unit.floor ? `, ${unit.floor}` : ''}. ${rangeLine}`),
+        floorOk
+          ? fields.floor.derived?.from === 'unit' ? `From unit ${fields.floor.derived.unit}: the listing does not state the floor.` : quote(fields.floor)
+          : `Scored at the middle floor${unit.floor ? `, ${unit.floor}` : ''}. ${rangeLine}`),
       row(icon('side', !sideOk), 'Side', sideOk ? sideLabel(fields.side.status === 'read' ? fields.side.value : unit.side) : 'Not on the listing',
         sideOk ? quote(fields.side) : `Scored between street side and rear.${floorOk ? ` ${rangeLine}` : ''}`),
       h('button', { type: 'button', class: 'link small', onclick: on.fix }, 'Something wrong? Fix what it read')),
