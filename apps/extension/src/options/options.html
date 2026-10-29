@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hush IQ settings</title>
+    <link rel="stylesheet" href="panel.css" />
+    <style>
+      main {
+        max-width: 560px;
+        margin: 0 auto;
+        padding-top: 28px;
+      }
+      label.field {
+        display: grid;
+        gap: 6px;
+        font-weight: 650;
+      }
+      .radio {
+        display: grid;
+        grid-template-columns: 20px minmax(0, 1fr);
+        gap: 8px;
+        align-items: start;
+        padding: 8px 0;
+        cursor: pointer;
+      }
+      .radio + .radio {
+        border-top: 1px solid var(--line);
+      }
+      .radio input {
+        margin-top: 4px;
+      }
+      .radio small {
+        display: block;
+        color: var(--ink-2);
+        font-size: 13px;
+      }
+      #status {
+        min-height: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <img src="icons/icon-48.png" alt="" />
+      <span class="name">Hush IQ settings</span>
+    </header>
+    <main>
+      <section class="card">
+        <label class="field" for="apiBase">
+          Hush IQ API
+          <input id="apiBase" type="url" spellcheck="false" />
+        </label>
+        <p class="small">
+          Every call goes here: the listing reader (<code>POST /read</code>), the verdict writer (<code>POST /verdict</code>) and the
+          score (<code>/v2/score</code>, or <code>/v1/score</code> until v2 is deployed). The extension holds no model key; the API does.
+          Another address works when its server allows cross-origin calls, as Hush IQ's services do.
+        </p>
+      </section>
+      <section class="card">
+        <div class="q-title"><span>The reader and the verdict writer</span></div>
+        <label class="radio"><input type="radio" name="mode" value="auto" /><span>Live when hosted, replay otherwise<small>Asks the API whether each service is there. The default.</small></span></label>
+        <label class="radio"><input type="radio" name="mode" value="replay" /><span>Always replay<small>Fixed rules stand in for the model. The score is still the real one.</small></span></label>
+        <label class="radio"><input type="radio" name="mode" value="live" /><span>Always live<small>A missing service shows as an error instead of a replay.</small></span></label>
+      </section>
+      <section class="card">
+        <div class="q-title"><span>Your three taps</span></div>
+        <p class="small" id="answers"></p>
+        <button id="forget" class="btn ghost small" type="button">Forget my answers</button>
+      </section>
+      <div class="actions">
+        <button id="save" class="btn" type="button">Save</button>
+        <button id="reset" class="btn ghost" type="button">Back to defaults</button>
+      </div>
+      <p id="status" class="small" role="status"></p>
+    </main>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>
