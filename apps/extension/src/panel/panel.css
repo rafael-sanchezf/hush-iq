@@ -1087,7 +1087,8 @@ details.trace .evidence {
   margin-top: 6px;
 }
 
-.source summary {
+.source summary,
+.shaped-body summary {
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
@@ -1095,16 +1096,19 @@ details.trace .evidence {
   list-style: none;
 }
 
-.source summary::-webkit-details-marker {
+.source summary::-webkit-details-marker,
+.shaped-body summary::-webkit-details-marker {
   display: none;
 }
 
-.source summary::before {
+.source summary::before,
+.shaped-body summary::before {
   content: '+ ';
   font-family: var(--mono);
 }
 
-.source details[open] summary::before {
+.source details[open] summary::before,
+.shaped-body details[open] summary::before {
   content: '− ';
 }
 

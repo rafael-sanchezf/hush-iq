@@ -303,7 +303,7 @@ export function shapedCard(v: ResultView, on: { answers: () => void; fix: () => 
   const caps = new Map(capLines(score.caps).map((c) => [c.source, c]));
   const sources = [...score.ingredients].sort((a, b) => a.quieter_than - b.quieter_than).map((i) => {
     const c = caps.get(i.name);
-    return h('div', { class: 'shaped-row' }, icon(i.name),
+    return h('div', { class: 'shaped-row' }, icon(i.name === 'building' ? 'neighbors' : i.name),
       h('div', { class: 'shaped-body' },
         h('div', { class: 'source-top' }, h('span', { class: 'v' }, SOURCE_WORDS[i.name].title), h('span', { class: 'num' }, pct(i.quieter_than))),
         h('span', { class: 'q' }, `Quieter than ${pct(i.quieter_than)} of Manhattan · ${Math.round(i.weight)}% of your score`),
@@ -344,5 +344,5 @@ export function fineprint(score: Score): HTMLElement {
   return h('p', { class: 'fine' },
     `Engine v2 against ${score.manhattan.buildings} Manhattan buildings standing for ${score.manhattan.apartments.toLocaleString('en-US')} apartments (sample of ${score.manhattan.as_of}); city data as of ${score.as_of ?? 'today'}. `,
     score.replayed_from === 'v1' ? 'Ranked in this panel from the hosted model’s ingredients until /v2/score is deployed; the numbers match the engine’s own. ' : '',
-    'Every number is a rank against Manhattan, not a sound measurement.');
+  );
 }
