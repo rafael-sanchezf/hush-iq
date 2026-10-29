@@ -4,8 +4,9 @@
     backend = mock.backend(reply, mode="json_schema")           # Muse Spark 1.3's shape: JSON in the content
     writer.write(lines, backend)
 
-Each script item is a reply (a dict, or a raw string for broken JSON), {"_content_only": True, "content": ...} for a
-host that answers in the content instead of the tool call, or an exception to raise.
+Each script item is a reply (a dict, or a raw string for broken JSON), {"_content_only": True, "content": ...,
+"finish_reason": ...} for a host that answers in the content instead of the tool call (or runs out of tokens), or an
+exception to raise.
 """
 import json
 from types import SimpleNamespace
@@ -24,6 +25,7 @@ class ScriptedClient:
         if isinstance(item, BaseException):
             raise item
         content_only = isinstance(item, dict) and item.get("_content_only")
+        finish = item.get("finish_reason", "stop") if content_only else "stop"
         if content_only:
             item = item["content"]
         text = item if isinstance(item, str) else json.dumps(item)
@@ -33,7 +35,7 @@ class ScriptedClient:
             call = SimpleNamespace(id="call_1", type="function",
                                    function=SimpleNamespace(name=writer.TOOL_NAME, arguments=text))
             msg = SimpleNamespace(content=None, tool_calls=[call])
-        return SimpleNamespace(choices=[SimpleNamespace(message=msg)])
+        return SimpleNamespace(choices=[SimpleNamespace(message=msg, finish_reason=finish)], usage=None)
 
 
 def backend(*script, mode="tool"):

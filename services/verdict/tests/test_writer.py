@@ -133,3 +133,12 @@ def test_the_one_call_entry_the_eval_uses(lines):
     assert [e["id"] for e in out["evidence"]] == [l.id for l in lines("ludlow")]
     assert writer.TOOL_NAME.startswith("submit")   # the eval's scripted client answers the first submit_* tool
     assert verdict.write(score=load("ludlow"), writer_choice="template")["writer"] == "template"
+
+
+def test_an_empty_reply_from_a_spent_token_budget_is_retried_with_twice_the_room(lines, backend):
+    # The Meta Model API returns empty content, finish_reason "length" and no error when reasoning eats the budget.
+    ls, b = lines("ludlow"), backend({"_content_only": True, "content": "", "finish_reason": "length"}, GOOD, mode="json_schema")
+    out = writer.write(ls, b)
+    assert out["writer"] == "muse-spark-1.3"
+    assert out["trace"][0]["errors"] == ["the reply is empty (finish_reason length, ? completion tokens of 6000)"]
+    assert [c["max_completion_tokens"] for c in b.client.calls] == [6000, 12000]

@@ -119,11 +119,23 @@ sentence once a line says it.
 | `writer` | Model | Host | Key | How the shape is held |
 |---|---|---|---|---|
 | `muse-spark-open` | `meta-models/muse-spark-open-1026` | `https://inference.baseten.co/v1` | `BASETEN_API_KEY` | one forced tool call, `submit_verdict`, whose parameters are the schema. Baseten's docs say this model accepts a `json_schema` response format but does not enforce it, so the tool call is used instead. |
-| `muse-spark-1.3` | `muse-spark-1.3` | `https://api.meta.ai/v1` | `MODEL_API_KEY` | `response_format: {type: "json_schema", json_schema: {strict: true}}` |
+| `muse-spark-1.3` | `muse-spark-1.3` | `https://api.meta.ai/v1` | `MODEL_API_KEY` | `response_format: {type: "json_schema", json_schema: {strict: true}}`, `reasoning_effort: "low"`, `max_completion_tokens` |
 
 Both go through the OpenAI Python SDK, and in both `cites` is an enum of the ids sent. `VERDICT_BACKEND` picks
 (`auto`, `muse-spark-open`, `muse-spark-1.3`, `template`); `auto` takes Baseten when its key is set, then Meta, then
-the template. `VERDICT_TIMEOUT_S` (default 12) is per call; a timeout or an API error goes straight to the template.
+the template. `VERDICT_TIMEOUT_S` (default 25) is per call; a timeout or an API error goes straight to the template.
+
+Reasoning tokens count against the token ceiling (`VERDICT_MAX_TOKENS`, default 6000): live, Muse Spark 1.3 at effort
+low spent 1,300 to 3,500 of them per draft. A spent budget comes back as empty content with `finish_reason:
+"length"` and no error; the writer treats it as a refused draft and retries once with twice the room.
+
+Measured live on Oct 28 (Muse Spark 1.3, the three example addresses, 17 drafts): one call takes 6 to 13 s, median
+8 s, so a paragraph that needs its retry takes about 20 s. One draft in 17 was refused (a sentence over the length
+limit) and its retry passed.
+
+The checks prove each fact a sentence states is in a line it cites. They do not prove the links between facts: a
+live draft said "you sleep from 1 am to 9 am, when sirens stay very loud", and both halves are cited, but no line ties
+sirens to those hours.
 
 ## GET /health
 

@@ -111,7 +111,11 @@ def main():
             print(f"**Live, {live.name}** (writer: `{out['writer']}`):\n")
             for t in out["trace"]:
                 if t.get("attempt"):
-                    print(f"- attempt {t['attempt']}: {'passed' if t['ok'] else 'refused: ' + '; '.join(t['errors'])} ({t['ms']} ms)")
+                    u = t.get("usage") or {}
+                    tokens = (f", {u['completion_tokens']} completion tokens, {u.get('reasoning_tokens', '?')} of them "
+                              f"reasoning" if "completion_tokens" in u else "")
+                    print(f"- attempt {t['attempt']}: {'passed' if t['ok'] else 'refused: ' + '; '.join(t['errors'])} "
+                          f"({t['ms'] / 1000:.1f} s{tokens})")
             print(f"\n> {paragraph(out)}\n")
 
 
