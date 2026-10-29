@@ -7,7 +7,7 @@
 const LONG_SIDE = 1280;
 const MAX_INLINE = 8;
 
-export async function toDataUrl(url: string, signal?: AbortSignal): Promise<string> {
+async function toDataUrl(url: string, signal?: AbortSignal): Promise<string> {
   const r = await fetch(url, { signal, mode: 'cors', credentials: 'omit' });
   if (!r.ok) throw new Error(String(r.status));
   const bitmap = await createImageBitmap(await r.blob());

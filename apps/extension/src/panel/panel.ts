@@ -359,8 +359,10 @@ function saveButton(c: Capture): HTMLElement {
       button.textContent = 'Saving…';
       try {
         const s = await saveForPhotoTest(c, text);
-        slot.replaceChildren(h('div', { class: 'note' }, glyph('ok'), h('span', null, h('b', null, `Saved as photo test listing ${s.folder}. `),
-          `${s.photos} photo${s.photos === 1 ? '' : 's'}${s.missed ? `; ${s.missed} could not be fetched` : ''}. Label it in eval/labeler.html.`)));
+        slot.replaceChildren(h('div', { class: 'note' }, glyph('ok'), h('span', null, ...(s.already
+          ? [h('b', null, `Already saved as photo test listing ${s.folder}.`)]
+          : [h('b', null, `Saved as photo test listing ${s.folder}. `),
+            `${s.photos} photo${s.photos === 1 ? '' : 's'}${s.missed ? `; ${s.missed} left out (not a format the reader takes, or not reachable)` : ''}. Label it in eval/labeler.html.`]))));
       } catch (e) {
         button.disabled = false;
         button.textContent = 'Save for the photo test';
