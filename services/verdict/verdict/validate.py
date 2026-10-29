@@ -87,6 +87,8 @@ asleep awake sleep sleeping bedroom windows window quiet loud mainly also both t
 besides beyond closest compared consider expect generally instead main meanwhile plus together unlike usually
 whatever wherever worst best biggest bigger good bad great fine light heavy rest add note keep look think plan
 light sleeper sleepers source sources records record city complaints complaint permits permit range case cases
+afternoon afternoons midnight noon overnight weeknight weeknights nightly hourly between ever never there's
+he her him his i'd let me my myself ours ourselves themselves itself yourself what's that's who's
 """.split())
 _ALWAYS_OK = set("""very loud typical quiet i january february march april may june july august september october
 november december jan feb mar apr jun jul aug sep sept oct nov dec""".split())
@@ -99,8 +101,17 @@ _CONTEXT_NAMES = {"manhattan", "nyc", "new", "york", "ny"}
 _WORD = re.compile(r"[A-Za-z][A-Za-z'’]*")
 
 
+def _base(word):
+    """A word without its apostrophe tail, curly or straight: "You’ll" -> "you", "It's" -> "it", "Don't" -> "do",
+    "Manhattan’s" -> "manhattan"."""
+    w = word.lower().replace("’", "'")
+    if w.endswith("n't"):
+        return {"won't": "will", "can't": "can", "shan't": "shall"}.get(w, w[:-3])
+    return re.sub(r"'(?:ll|re|ve|d|s|m)?$", "", w)
+
+
 def _norm(word):
-    w = re.sub(r"['’]s?$", "", word.lower())
+    w = _base(word)
     return _PLACE_NORM.get(w, w)
 
 
@@ -108,23 +119,26 @@ def _tokens(text):
     return {_norm(w) for w in _WORD.findall(text)}
 
 
-def names(text):
-    """The capitalised words of a text that are not plain English: candidate names, in order. A sentence's first word
-    is a name only if it does not read as an adverb or a verb ("Roughly", "Living", "Expected")."""
+def names(text, plain=frozenset()):
+    """The capitalised words of a text that are not plain English: candidate names, in order. Contractions count as
+    the word they shorten, with either apostrophe ("You’ll", "It's"). A capital that only starts a sentence is a name
+    only if the word is not ordinary English: not common, not an adverb or verb form ("Roughly", "Living"), and not a
+    word the evidence itself writes in lowercase (`plain`). So "Nights here are loud." passes and "Broadway is
+    loud." does not."""
     out = []
     for m in _WORD.finditer(text):
         w = m.group(0)
         if not w[0].isupper():
             continue
-        low = re.sub(r"['’]s?$", "", w.lower())
+        low = _base(w)
         if low in _ALWAYS_OK or low in _NUMBER_WORDS or low in _ORDINALS:
             continue
         if low in _COMMON and not (w.isupper() and len(w) > 1):
             continue
         if any(rx.fullmatch(low) for rx, _ in _TERMS):   # "Bar", "Hospital": a kind of source, checked by C5
             continue
-        first = re.search(r"(?:^|[.!?:;\"“(])\s*$", text[:m.start()]) is not None
-        if first and re.search(r"(?:ly|ing|ed)$", low):
+        first = re.search(r"(?:^|[.!?:;\"“”(])\s*[\"“]?$", text[:m.start()]) is not None
+        if first and (re.search(r"(?:ly|ing|ed)$", low) or low in plain):
             continue
         out.append(w)
     return out
@@ -181,6 +195,7 @@ def check(reply, lines):
     if not sentences:
         return ["the reply has no sentences"]
     context = _CONTEXT_NAMES & set().union(*(_tokens(l.text) for l in lines)) if lines else set()
+    plain = {_base(w) for l in lines for w in _WORD.findall(l.text) if w.islower()}
     errs = []
     if len(sentences) > MAX_SENTENCES:
         errs.append(f"the reply has {len(sentences)} sentences; at most {MAX_SENTENCES}")
@@ -214,7 +229,7 @@ def check(reply, lines):
                             f"{'are' if len(extra) > 1 else 'is'} not in the lines it cites ({label})")
             known = set().union(*(_tokens(l.text) for l in cited)) | context   # C4
             missing = []
-            for w in names(re.sub(r"\bE\d+\b", "", text)):
+            for w in names(re.sub(r"\bE\d+\b", "", text), plain):
                 if _norm(w) not in known and w not in missing:
                     missing.append(w)
             if missing:

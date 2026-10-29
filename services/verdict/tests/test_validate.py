@@ -97,3 +97,24 @@ def test_the_template_says_the_range_for_a_silent_listing(lines):
                                       "(among the loudest in Manhattan) to loud on floor 5 at the rear (36%).")
     floor = [s for s in reply["sentences"] if ids(ls, "floor")[0] in s["cites"]]
     assert "neither the floor nor the side" in floor[0]["text"]
+
+
+@pytest.mark.parametrize("text", [
+    "You'll hear the street most at night.",
+    "You’ll hear the street most at night.",
+    "It's loud by Manhattan standards.",
+    "It’s loud by Manhattan standards.",
+    "Nights here are loud.",
+    "Don’t expect quiet nights.",
+    "There’s a lot of street noise here.",
+])
+def test_sentence_starts_and_contractions_are_not_names(lines, text):
+    # The live eval (cases 08 and 15) had first drafts refused for "'You’ll' is not in the lines it cites".
+    assert validate.check({"sentences": [{"text": text, "cites": ["E9"]}]}, lines("ludlow")) == []
+
+
+def test_an_invented_street_is_still_refused_anywhere_in_the_sentence(lines):
+    ls = lines("ludlow")
+    for text in ("You’ll hear traffic from Delancey Street, 14 m away.", "Delancey Street is the loudest road here."):
+        errs = validate.check({"sentences": [{"text": text, "cites": ["E11"]}]}, ls)
+        assert errs == ["sentence 1: 'Delancey' is not in the lines it cites (E11)"], text
