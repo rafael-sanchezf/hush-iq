@@ -24,6 +24,7 @@ async function bundle(byok: boolean) {
         "export * as client from './src/lib/client.ts';",
         "export * as byok from './src/lib/byok.ts';",
         "export { CONFIG } from './src/lib/config.ts';",
+        "export { warm } from './src/lib/score.ts';",
       ].join('\n'),
       resolveDir: root,
       loader: 'ts',
@@ -165,6 +166,21 @@ test('AI off and the services out of reach: the rules reader and template run he
 test('AI on and the reader out of reach: an error to show, not a silent fallback', async () => {
   answer = (url, method) => method === 'POST' && url.pathname === '/read' ? json({ error: 'down' }, 502) : healthy(url, method);
   await assert.rejects(judged.client.read({ text: TEXT, photos: [], answers: ANSWERS }, () => {}), /down/);
+});
+
+test('warming the score sends the address alone, once, with no AI or key header', async () => {
+  await saveKey(classmates);
+  classmates.warm('245 West 54th Street, Manhattan');
+  classmates.warm('245 West 54th Street, Manhattan');
+  classmates.warm('310 West 47th Street, Manhattan'); // recorded: never sent
+  await new Promise((r) => setTimeout(r, 20));
+  const sent = calls.filter((c) => c.url.includes('/score'));
+  assert.equal(sent.length, 1);
+  const u = new URL(sent[0].url);
+  assert.equal(u.origin, API);
+  assert.equal(u.pathname, '/v2/score');
+  assert.deepEqual([...u.searchParams.keys()], ['address']);
+  assert.deepEqual(hushHeaders(sent[0]), []);
 });
 
 // ---------------------------------------------------------------- the renter's own key, classmates' build only

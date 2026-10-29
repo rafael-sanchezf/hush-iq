@@ -18,10 +18,16 @@ class Aborted extends Error {
   name = 'AbortError';
 }
 
+/**
+ * The replay once paced its steps (360 ms each) so the panel could show them one by one. The panel now shows one
+ * line of progress, not the steps (Rafa, 2026-10-29), so the pause is gone: it cost three to four seconds a listing.
+ */
+const PACE = 0;
+
 function wait(ms: number, signal?: AbortSignal): Promise<void> {
   return new Promise((resolve, reject) => {
     if (signal?.aborted) return reject(new Aborted());
-    const t = setTimeout(resolve, ms);
+    const t = setTimeout(resolve, ms * PACE);
     signal?.addEventListener('abort', () => {
       clearTimeout(t);
       reject(new Aborted());

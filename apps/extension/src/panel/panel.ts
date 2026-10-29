@@ -20,6 +20,7 @@ import { extract } from '../lib/mock/extract.ts';
 import { checkPlace, sameBuilding } from '../lib/nyc.ts';
 import { canSave, saveForPhotoTest } from '../lib/photo-test.ts';
 import { inlinePhotos } from '../lib/photos.ts';
+import { warm } from '../lib/score.ts';
 import { redactContacts } from '../lib/redact.ts';
 import type { Answers, ReadInput, ReaderResult, ReaderTurn, Score } from '../lib/types.ts';
 import { DEFAULT_ANSWERS, addressLine, forWhom } from '../lib/words.ts';
@@ -235,6 +236,15 @@ function noAddress(): void {
   ], h('div', { style: 'display: grid; gap: 8px' }, input, add));
 }
 
+/** The progress line for a reader step, or null to keep the current one. */
+function progressLine(t: ReaderTurn): string | null {
+  if (t.kind === 'look') return 'Looking at the photos…';
+  if (t.kind === 'check') return t.status === 'refused' ? 'Checking what it read…' : 'Finding the building…';
+  if (t.kind === 'geocode' && t.status !== 'error') return 'Ranking it against Manhattan…';
+  if (t.kind === 'score') return 'Putting it together…';
+  return null;
+}
+
 async function score(): Promise<void> {
   stop();
   const ctl = new AbortController();
@@ -255,6 +265,12 @@ async function score(): Promise<void> {
 
   const kept = (capture?.photos ?? []).filter((_, i) => photoOn[i]);
   const svc = await client.services();
+  // The model reads for several seconds before it scores; start the building's city data now, alongside it. With AI
+  // reading off the service scores at once, so there is nothing to win.
+  if (CONFIG.ai && svc.reader === 'live') {
+    const where = extract(text).geocode;
+    if (where) warm(where);
+  }
   const input: ReadInput = { text, photos: [], answers: a };
   let sent: string[] = kept;
   // The rules reader reads text only, so with AI reading off the photos stay in the browser.
@@ -271,8 +287,12 @@ async function score(): Promise<void> {
     input.photo_urls = kept;
   }
 
+  // The steps stay out of sight, but the one line follows them, so a long read shows it is moving.
   const onTurn = (t: ReaderTurn) => {
-    if (!signal.aborted) turns.push(t);
+    if (signal.aborted) return;
+    turns.push(t);
+    const next = progressLine(t);
+    if (next) status.textContent = next;
   };
 
   let result: ReaderResult;

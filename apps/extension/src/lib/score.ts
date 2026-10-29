@@ -74,6 +74,25 @@ export function scoreSource(): 'v2' | 'v1-replay' {
   return v2Missing ? 'v1-replay' : 'v2';
 }
 
+const warmed = new Set<string>();
+
+/**
+ * Starts the city-data pulls for an address on the API before the reader asks for them. A first score of a building
+ * takes 1 to 6 seconds on the server and a second one, under any spelling, about a tenth of a second, because the
+ * pulls are cached by place. The live reader spends its first model turns reading before it scores, so a request
+ * sent as the run starts finishes in that time. Only the address goes, to the same API the listing goes to; the
+ * answer is not used.
+ */
+export function warm(address: string): void {
+  const key = `${CONFIG.apiBase} ${address.trim().toLowerCase()}`;
+  if (warmed.has(key) || recorded(address)) return;
+  warmed.add(key);
+  const path = v2Missing ? '/v1/score' : '/v2/score';
+  void fetch(`${CONFIG.apiBase}${path}?${new URLSearchParams({ address })}`, { headers: { accept: 'application/json' } })
+    .then((r) => r.body?.cancel())
+    .catch(() => warmed.delete(key));
+}
+
 export async function getScore(address: string, unit: Unit, answers: Answers, signal?: AbortSignal): Promise<Score> {
   if (!v2Missing) {
     const q = new URLSearchParams({
