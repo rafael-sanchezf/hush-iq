@@ -20,7 +20,7 @@ const card = scoreFromV1(claremont as unknown as V1Response, { floor: 4, positio
 
 const GETS = [
   { h: 'The word, for this renter', f: 'verdict', p: 'Very loud to Very quiet, one fifth of Manhattan each. The same apartment can read Quiet to one renter and Typical to another, because what keeps them up differs.' },
-  { h: 'Each source’s rank', f: 'ingredients[].quieter_than', p: 'Street, nightlife, neighbors, sirens and construction, each “quieter than X% of Manhattan apartments”, with its weight for this renter and the city records behind it.' },
+  { h: 'Each source’s rank', f: 'ingredients[].quieter_than', p: 'Street traffic, local businesses, neighbors, sirens and construction, each “quieter than X% of Manhattan apartments”, with its weight for this renter and the city records behind it.' },
   { h: 'Dealbreakers, named', f: 'caps', p: 'A source in Manhattan’s loudest 5% holds the verdict at Loud; one the renter cares about, in the loudest 10%, at Typical. The response says which source did it.' },
   { h: 'A range instead of a guess', f: 'range', p: 'When your listing does not give the floor or the side, the score uses the expected floor and returns the loudest and quietest case, so nobody is asked what they have not seen.' },
   { h: 'A paragraph that shows its work', f: 'POST /verdict', p: 'Three to five sentences on what this renter will hear, each citing numbered evidence lines. Code checks every citation, number and name before it leaves.' },

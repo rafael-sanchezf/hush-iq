@@ -97,7 +97,7 @@ export function Taps({ answers, onChange }: { answers: Answers; onChange: (a: An
             </button>
           ))}
         </div>
-        <p className="chip-hint">Each one you tick counts three times as much. Nightlife covers bars, crowds and late talk.</p>
+        <p className="chip-hint">Each one you tick counts three times as much. Local businesses covers bars, restaurants, theatres and crowds.</p>
       </div>
     </div>
   );

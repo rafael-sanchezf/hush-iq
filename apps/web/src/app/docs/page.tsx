@@ -155,7 +155,7 @@ export default function Docs() {
                     <tr><td><code>sleep_from</code></td><td>int 0 to 23</td><td>The hour the renter falls asleep. Default 23.</td></tr>
                     <tr><td><code>sleep_until</code></td><td>int 0 to 23</td><td>The hour the renter wakes up. Default 7.</td></tr>
                     <tr><td><code>day_bothers</code></td><td>bool</td><td>Does noise during the day bother them. Default true; false halves an awake hour’s weight.</td></tr>
-                    <tr><td><code>bothers</code></td><td>comma list</td><td>Any of <code>traffic, people, neighbors, sirens, construction</code>. Each counts three times. <code>people</code> is nightlife.</td></tr>
+                    <tr><td><code>bothers</code></td><td>comma list</td><td>Any of <code>traffic, people, neighbors, sirens, construction</code>. Each counts three times. <code>people</code> is local businesses: bars, restaurants, theatres (the <code>nightlife</code> source).</td></tr>
                     <tr><td><code>fresh</code></td><td>bool</td><td>Pull the city data again instead of the cache. A fresh pull takes 6 to 8 s; cached, under 1 s.</td></tr>
                   </tbody>
                 </table>

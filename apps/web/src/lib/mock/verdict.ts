@@ -4,7 +4,7 @@
  * sentence from those lines alone, citing them by id: the same contract the model is held to.
  */
 import type { EvidenceLine, RangeCase, Score, Sentence, Source, Verdict, VerdictInput } from '../types.ts';
-import { SOURCE_WORDS, addressLine, cleanEvidence, forWhom, listWords, ordinal, pct, sideLabel, sideWords, sleepLabel } from '../words.ts';
+import { SOURCE_WORDS, addressLine, cleanEvidence, forWhom, listWords, ordinal, pct, sideLabel, sideWords, sleepLabel, verb } from '../words.ts';
 
 export function evidenceFor({ score, answers, fields }: VerdictInput): { lines: EvidenceLine[]; ids: Record<string, string> } {
   const lines: EvidenceLine[] = [];
@@ -21,7 +21,7 @@ export function evidenceFor({ score, answers, fields }: VerdictInput): { lines: 
     if (i.evidence[0]) add(`fact:${i.name}`, `${SOURCE_WORDS[i.name].title}: ${cleanEvidence(i.evidence[0])}.`);
   }
   for (const c of score.caps) {
-    add(`cap:${c.source}:${c.cap}`, `${SOURCE_WORDS[c.source].title} ${c.applied ? 'caps the verdict' : 'would cap the verdict'} at ${c.cap}: ${c.why}.`);
+    add(`cap:${c.source}:${c.cap}`, `${SOURCE_WORDS[c.source].title} ${c.applied ? verb(c.source, 'caps', 'cap') : 'would cap'} the verdict at ${c.cap}: ${c.why}.`);
   }
   if (score.range) {
     const { loudest_case: l, quietest_case: q } = score.range;
@@ -61,9 +61,14 @@ export function templateVerdict(input: VerdictInput): Verdict {
 
   const ticked = score.ingredients.filter((i) => i.ticked);
   if (ticked.length) {
+    const many = ticked.length > 1 || SOURCE_WORDS[ticked[0].name].plural;
     sentences.push({
-      text: `You said ${listWords(ticked.map((i) => SOURCE_WORDS[i.name].short))} ${ticked.length > 1 ? 'bother' : 'bothers'} you, so ${ticked.length > 1 ? 'they count' : 'it counts'} three times as much: ${ticked
-        .map((i, k) => (k === 0 ? `${SOURCE_WORDS[i.name].short} is quieter than ${pct(i.quieter_than)} of Manhattan apartments` : `${SOURCE_WORDS[i.name].short} than ${pct(i.quieter_than)}`))
+      text: `You said ${listWords(ticked.map((i) => SOURCE_WORDS[i.name].short))} ${many ? 'bother' : 'bothers'} you, so ${many ? 'they count' : 'it counts'} three times as much: ${ticked
+        .map((i, k) =>
+          k === 0
+            ? `${SOURCE_WORDS[i.name].short} ${verb(i.name, 'is', 'are')} quieter than ${pct(i.quieter_than)} of Manhattan apartments`
+            : `${SOURCE_WORDS[i.name].short} than ${pct(i.quieter_than)}`,
+        )
         .join(', ')}.`,
       cites: ticked.map((i) => ids[`rank:${i.name}`]),
     });
@@ -74,7 +79,7 @@ export function templateVerdict(input: VerdictInput): Verdict {
   if (applied.length) {
     const c = applied[0];
     sentences.push({
-      text: `${SOURCE_WORDS[c.source].title} holds the verdict at ${c.cap}: it is ${c.why.replace(/^you said it bothers you, and it is /, '')}, which a good average elsewhere cannot outvote.`,
+      text: `${SOURCE_WORDS[c.source].title} ${verb(c.source, 'holds', 'hold')} the verdict at ${c.cap}: ${verb(c.source, 'it is', 'they are')} ${c.why.replace(/^you said it bothers you, and it is /, '')}, which a good average elsewhere cannot outvote.`,
       cites: [ids[`cap:${c.source}:${c.cap}`]],
     });
   } else if (warned.length) {
@@ -83,7 +88,7 @@ export function templateVerdict(input: VerdictInput): Verdict {
     sentences.push({
       text: srcs.length > 1
         ? `${["", "One", "Two", "Three", "Four", "Five"][srcs.length]} sources sit among Manhattan's loudest, ${names}; either one alone would keep the verdict from reading better than ${warned[0].cap}.`
-        : `${SOURCE_WORDS[srcs[0]].title} sits among Manhattan's loudest, so the verdict could not read better than ${warned[0].cap} whatever the rest.`,
+        : `${SOURCE_WORDS[srcs[0]].title} ${verb(srcs[0], 'sits', 'sit')} among Manhattan's loudest, so the verdict could not read better than ${warned[0].cap} whatever the rest.`,
       cites: warned.map((c) => ids[`cap:${c.source}:${c.cap}`]),
     });
   }

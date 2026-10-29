@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { VerdictMeter } from '@/components/verdict-meter';
 import type { Answers, Cap, EvidenceRef, Field, Observed, RangeCase, ReaderFields, Score, Services, Source, Verdict } from '@/lib/types';
 import { VERDICTS } from '@/lib/types';
-import { SOURCE_WORDS, addressLine, cleanEvidence, forWhom, observedLabel, pct, sideLabel, sideWords } from '@/lib/words';
+import { SOURCE_WORDS, addressLine, cleanEvidence, forWhom, observedLabel, pct, sideLabel, sideWords, verb } from '@/lib/words';
 
 interface Props {
   score: Score;
@@ -102,8 +102,8 @@ export function Result({ score, verdict, dropped, fields, observed, answers, ser
                   </>
                 ) : (
                   <>
-                    <b>{SOURCE_WORDS[c.source].title}</b> is {c.why.replace(/^you said it bothers you, and it is /, '')}
-                    {c.why.startsWith('you said') ? ', and you said it bothers you' : ''}. On its own it would hold the verdict at {c.cap}.
+                    <b>{SOURCE_WORDS[c.source].title}</b> {verb(c.source, 'is', 'are')} {c.why.replace(/^you said it bothers you, and it is /, '')}
+                    {c.why.startsWith('you said') ? ', and you said it bothers you' : ''}. {verb(c.source, 'On its own it', 'On their own they')} would hold the verdict at {c.cap}.
                   </>
                 )}
               </span>

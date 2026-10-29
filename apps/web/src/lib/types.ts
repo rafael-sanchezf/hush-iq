@@ -13,7 +13,7 @@ export type VerdictWord = (typeof VERDICTS)[number];
 export const WINDOWS = ['night', 'early', 'day'] as const;
 export type Window = (typeof WINDOWS)[number];
 
-/** What the renter ticks, in the v2 query's names. `people` is nightlife and street life. */
+/** What the renter ticks, in the v2 query's names. `people` is the nightlife source, shown as local businesses. */
 export const BOTHERS = ['traffic', 'sirens', 'neighbors', 'people', 'construction'] as const;
 export type Bother = (typeof BOTHERS)[number];
 

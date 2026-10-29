@@ -2,19 +2,25 @@
 import type { Answers, Bother, Source, VerdictWord } from './types.ts';
 import { VERDICTS } from './types.ts';
 
-export const SOURCE_WORDS: Record<Source, { title: string; short: string }> = {
-  street: { title: 'Street traffic', short: 'traffic' },
-  nightlife: { title: 'Bars and nightlife', short: 'nightlife' },
-  building: { title: 'Neighbors', short: 'neighbors' },
-  sirens: { title: 'Sirens', short: 'sirens' },
-  construction: { title: 'Construction', short: 'construction' },
+/** The `nightlife` source reads "Local businesses": bars, restaurants, theatres and busy spots (Rafa, 2026-10-29). */
+export const SOURCE_WORDS: Record<Source, { title: string; short: string; plural: boolean }> = {
+  street: { title: 'Street traffic', short: 'traffic', plural: false },
+  nightlife: { title: 'Local businesses', short: 'local businesses', plural: true },
+  building: { title: 'Neighbors', short: 'neighbors', plural: true },
+  sirens: { title: 'Sirens', short: 'sirens', plural: true },
+  construction: { title: 'Construction', short: 'construction', plural: false },
 };
+
+/** The verb that agrees with a source's name: verb('sirens', 'is', 'are') is "are". */
+export function verb(n: Source, singular: string, plural: string): string {
+  return SOURCE_WORDS[n].plural ? plural : singular;
+}
 
 export const BOTHER_WORDS: Record<Bother, { label: string; hint: string }> = {
   traffic: { label: 'Traffic', hint: 'Buses, trucks, horns' },
   sirens: { label: 'Sirens', hint: 'Ambulances, fire, police' },
   neighbors: { label: 'Neighbors', hint: 'Footsteps, music, voices' },
-  people: { label: 'Nightlife', hint: 'Bars, crowds, late talk' },
+  people: { label: 'Local businesses', hint: 'Bars, restaurants, theatres, crowds' },
   construction: { label: 'Construction', hint: 'Jackhammers, early crews' },
 };
 

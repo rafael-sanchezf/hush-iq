@@ -92,8 +92,8 @@ export const LANES: Lane[] = [
         gap: 'Not wired yet.',
       },
       {
-        name: 'Bars, clubs and restaurants', status: 'live', basis: ['Judgment', 'Physics'],
-        line: 'Liquor licenses nearby plus party and music complaints.',
+        name: 'Local businesses', status: 'live', basis: ['Judgment', 'Physics'],
+        line: 'Bars, restaurants, theatres and other licensed venues nearby, plus party and music complaints.',
         meta: 'Could read each venue’s public page for closing hours, only with a real source to cite.',
         data: 'NYS liquor licenses (current, active); 311 party, music and loud-talking complaints.',
         rule: [
@@ -108,7 +108,7 @@ export const LANES: Lane[] = [
       {
         name: 'Street life and crowds', status: 'partial', basis: ['Judgment'],
         line: 'Party and loud-talking complaints are live; foot traffic, schools, parks and vendors are not.',
-        data: 'Live: 311 party and loud-talking complaints (counted under nightlife). Available: 311 park-noise complaints; schools are in the NYC Facilities Database already pulled.',
+        data: 'Live: 311 party and loud-talking complaints (counted under local businesses). Available: 311 park-noise complaints; schools are in the NYC Facilities Database already pulled.',
         gap: 'Foot traffic has no public count. Schools, playgrounds, parks, street vendors and ice cream trucks are not wired.',
       },
       {
@@ -168,7 +168,7 @@ export const LANES: Lane[] = [
         line: 'From the listing only, never asked. Each floor above the first takes 1 dB off outdoor noise, at most 8.',
         meta: 'The listing reader takes it from a line that states it next to the word floor. A unit number like 3F is not a floor.',
         rule: [
-          '-1 dB per floor above the first, at most -8, on street, trains, nightlife, sirens and construction.',
+          '-1 dB per floor above the first, at most -8, on street, trains, local businesses, sirens and construction.',
           'Listing silent: the building’s middle residential floor (counting from floor 2 when the ground floor is commercial) [V7].',
           'Either floor or side missing adds a range: the lowest residential floor on the street side to the top floor at the rear [V7].',
         ],
@@ -198,7 +198,7 @@ export const LANES: Lane[] = [
       {
         name: 'Top floor, ground floor, over a shop', status: 'live', basis: ['Judgment'], path: 'Neighbors',
         line: 'Nobody above you, a lobby beside you, or a bar below you.',
-        rule: ['Top floor -3 dB on neighbor noise.', 'First floor +2 dB (lobby, buzzer, front door).', 'Floors 1 and 2 in a building with a shop or restaurant +5 dB on nightlife; the second floor over it +2 on neighbors.'],
+        rule: ['Top floor -3 dB on neighbor noise.', 'First floor +2 dB (lobby, buzzer, front door).', 'Floors 1 and 2 in a building with a shop or restaurant +5 dB on local businesses; the second floor over it +2 on neighbors.'],
       },
       {
         name: 'How many neighbors you share walls with', status: 'next', basis: ['Data'], path: 'Neighbors',
@@ -240,7 +240,7 @@ export const LANES: Lane[] = [
         name: 'What gets to you', status: 'v2', basis: ['Data', 'Judgment'],
         line: 'Tick the sources that get to you. Each tick counts three times as much [V3].',
         rule: [
-          'Starting weights: street 32, sirens 20, neighbors 20, nightlife 15, construction 13, from New York City health department noise surveys (Epi Data Briefs 45 and 105), the mean of three readings, rounded.',
+          'Starting weights: street 32, sirens 20, neighbors 20, local businesses 15, construction 13, from New York City health department noise surveys (Epi Data Briefs 45 and 105), the mean of three readings, rounded.',
           '311 complaint shares are not used: the surveys show they over-count neighbors and under-count traffic.',
           'A ticked source counts three times; the weights are then rescaled. Tick traffic and street noise goes from 32% to 58.5% of the verdict.',
         ],
@@ -307,9 +307,9 @@ export const LANES: Lane[] = [
 
 /** Engine v2's rules, V1 to V8, in plain words (packages/model/ENGINE_V2.md). */
 export const RULES: { k: string; title: string; body: string[] }[] = [
-  { k: 'V1', title: 'Five sources', body: ['Street, nightlife, neighbors, sirens and construction, each estimated per time slot from the frozen model, after the floor and the side.'] },
+  { k: 'V1', title: 'Five sources', body: ['Street traffic, local businesses, neighbors, sirens and construction, each estimated per time slot from the frozen model, after the floor and the side.'] },
   { k: 'V2', title: 'Your hours', body: ['An hour you are asleep weighs 3, an hour awake 1, or 0.5 if daytime noise does not bother you. Each source’s night, early and day levels are averaged with those weights.'] },
-  { k: 'V3', title: 'Weights', body: ['Street 32, sirens 20, neighbors 20, nightlife 15, construction 13, from New York City health department noise surveys. A source you tick counts three times; the weights are then rescaled.'] },
+  { k: 'V3', title: 'Weights', body: ['Street 32, sirens 20, neighbors 20, local businesses 15, construction 13, from New York City health department noise surveys. A source you tick counts three times; the weights are then rescaled.'] },
   { k: 'V4', title: 'Ranks', body: ['Each source is ranked against the same source in 300 Manhattan buildings, each at a typical apartment. The rank reads “quieter than X% of Manhattan apartments”.'] },
   { k: 'V5', title: 'The verdict', body: ['The weighted average of the five ranks, ranked again against the same average for every sample building, in fifths: Very loud, Loud, Typical, Quiet, Very quiet.'] },
   { k: 'V6', title: 'Caps', body: ['Any source in Manhattan’s loudest 5% caps the verdict at Loud. A source you ticked in the loudest 10% caps it at Typical. Each cap is shown with the source that set it.'] },
