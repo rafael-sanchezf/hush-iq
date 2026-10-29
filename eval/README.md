@@ -187,6 +187,9 @@ repo wherever the listings are.
 The reader takes at most 12 photos, as JPEG, PNG, WebP or GIF. `photo check` names any folder with more or with
 another format, and `photo run` sends the first 12 it can read.
 
+Save a listing one way only. Save spots a repeat by the URL in `source.json`, which a folder saved by hand in
+the labeler doesn't have, so the same listing saved both ways makes two folders.
+
 ### Rafa's 45 minutes (HIQ-47)
 
 1. Open `eval/labeler.html` in Chrome by double-clicking it. Click **Open photo_test folder** and pick
