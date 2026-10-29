@@ -103,24 +103,24 @@ case holds:
 
 "top (18)" means the right answer is `top` or the building's floor count from PLUTO.
 
-### What the first in-process run found (Oct 28)
+### Live results (Oct 29, muse-spark-1.3)
 
-Run against the reader, verdict and permit-reader branches as pushed on Oct 28, in mock mode, offline: no fails.
+Two live passes, one run each. Tables, cost and latency are in the PR #2 comments.
 
-- **Floor**: the reader declines four floors the gold says are knowable: "PH" (06), "top floor" (08),
-  "garden level" (15), and the unit number "12F" (03). Its rule is that a floor must be a number next to the
-  word floor. So floor is 75% correct with no wrong answers, under the 85% rule even with a perfect model.
-- **Side**: the reader declines "faces the interior air shaft" as rear (20).
-- **Observed facts**: the reader takes view, windows, AC and walls from photos only, so it declines them when
-  only the text states them (07, 11 to 14, 16, 17). The photo-cited ones in 18 pass `read_photo`'s check.
-- **Permits**: the rules reader gives facade work +1 step (04), a new building +2 (09) and a demolition +2 (13),
-  each within the cap of 2 and citing only its own permit. The sign permit gets nothing (17).
-- **Verdicts**: the writer builds 22 to 25 evidence lines per case. The scripted draft passes its checks in
-  all 19 cases that have a score, so the model's path is exercised, not only the template's. Case 19 has no
-  address, so it has no score and no verdict.
+| | Pass 1 | Pass 2 |
+|---|---|---|
+| Services | reader `ec76930`, verdict `546c710`, permits `c8b13c9` | reader `105a06e`, verdict `bf508fa`, permits `c8b13c9` |
+| Gate | fail (floor, side) | **pass** |
+| Floor | 75%. The reader declined "PH", "top floor", "garden level" and "12F". | 94%. PH and top floor come from PLUTO's floor count; garden level is 1. "Apt 12F" stays can't tell on purpose. |
+| Side | 88%, 1 invented (the floor-through in 15) | 88%, 0 wrong. The air shaft (20) is still declined as rear. |
+| Cost | $0.495, 22.9 s a case | $0.426, 17.8 s a case |
 
-These are policy choices in the reader, not bugs. The eval reports them as *can't tell*, which never counts
-as wrong.
+What both passes showed:
+
+- Every grounding, citation and cap check held on real model output.
+- The reader takes observed facts from photos only, so text-only ones are can't tell.
+- On the photo case (18), pass 2 read the living room's painted wall as plaster where gold says the bedroom's
+  brick. The photo-test labels should say which room counts. For sleep, it is the bedroom.
 
 ## The photo test
 
