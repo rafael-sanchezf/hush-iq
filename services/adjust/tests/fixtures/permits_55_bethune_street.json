@@ -1,0 +1,57 @@
+{
+ "address": {
+  "query": "55 Bethune Street, Manhattan",
+  "label": "55 BETHUNE STREET, New York, NY, USA",
+  "bbl": "1006397501",
+  "borough": "Manhattan"
+ },
+ "as_of": "2026-10-28",
+ "source": "https://data.cityofnewyork.us/resource/rbx6-tga4.json",
+ "rows_on_block": 10,
+ "permits": [
+  {
+   "work_permit": "M01113570-I1-GC",
+   "work_type": "General Construction",
+   "job_description": "EXTERIOR MASONRY RESTORATION, ROOF REPLACEMENTS, INSTALLATION OF NEW GREEN ROOFING, SKYLIGHT REPLACEMENT, REPLACEMENT OF EXISTING EXTERIOR DOOR, REPAIR OF DECORATIVE STEEL ELEMENTS, REFURBISHMENT",
+   "house_no": "155",
+   "street_name": "BANK STREET",
+   "bin": "1012047",
+   "issued_date": "2026-03-02T00:00:00.000",
+   "expired_date": "2027-02-28T00:00:00.000",
+   "estimated_job_costs": "20390875"
+  },
+  {
+   "work_permit": "M01265075-I1-PMM",
+   "work_type": "Protection and Mechanical Methods",
+   "job_description": "INSTALLATION OF TEMPORARY DEBRIS CHUTE AS PER PLANS. NO CHANGE IN USE, EGRESS OR OCCUPANCY.",
+   "house_no": "463",
+   "street_name": "WEST STREET",
+   "bin": "1012047",
+   "issued_date": "2026-03-02T00:00:00.000",
+   "expired_date": "2027-02-28T00:00:00.000",
+   "estimated_job_costs": "5000"
+  },
+  {
+   "work_permit": "M01255421-S1-SH",
+   "work_type": "Sidewalk Shed",
+   "job_description": "INSTL OF TEMP SIDEWALK SHED AS PER PLAN. THERE IS NO CHANGE IN USE, EGRESS, OR OCCUPANCY. THE SIDEWALK SHED COLUMNS ARE TO BE PLACED ON THE ROADWAY AND SHALL BE PERMITTED AT DOT. DOT PERMIT FILED SEPARATELY BY OTHERS. THE SWB W,SPLAZA,BANK, AND BETHUNE ST",
+   "house_no": "463",
+   "street_name": "WEST STREET",
+   "bin": "1012047",
+   "issued_date": "2026-01-21T00:00:00.000",
+   "expired_date": "2027-01-21T05:00:00.000",
+   "estimated_job_costs": "1"
+  },
+  {
+   "work_permit": "M01181311-I1-SC",
+   "work_type": "Suspended Scaffold",
+   "job_description": "Installation of suspended scaffold for facade work or inspection.",
+   "house_no": "55",
+   "street_name": "BETHUNE STREET",
+   "bin": "1012047",
+   "issued_date": "2026-02-26T00:00:00.000",
+   "expired_date": "2027-02-26T00:00:00.000",
+   "estimated_job_costs": "0"
+  }
+ ]
+}
