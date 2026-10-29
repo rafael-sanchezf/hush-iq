@@ -16,13 +16,18 @@ def post(body, client=None):
         api.app.dependency_overrides.clear()
 
 
-def test_rules_when_no_key():
+def test_no_key_is_basic_and_the_count_stands():
     r = post({"permits": BETHUNE["permits"], "as_of": BETHUNE["as_of"]})
     assert r.status_code == 200
     body = r.json()
-    assert body["reader"] == "rules" and body["source"] == "construction"
-    assert body["adjustment"]["cites"] == ["M01113570-I1-GC"]
+    assert body["reader"] is None and body["source"] == "construction" and body["adjustment"] is None
+    assert body["ai"]["mode"] == "basic" and body["ai"]["reason"] == "no_key"
     assert {p["id"] for p in body["permits"]} == {p["work_permit"] for p in BETHUNE["permits"]}
+
+
+def test_rules_on_request():
+    body = post({"permits": BETHUNE["permits"], "as_of": BETHUNE["as_of"], "reader": "rules"}).json()
+    assert body["reader"] == "rules" and body["adjustment"]["cites"] == ["M01113570-I1-GC"]
 
 
 def test_model_when_a_client_is_set():

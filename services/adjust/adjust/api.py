@@ -1,17 +1,20 @@
-"""HTTP surface: POST /adjust/permits. (Hackathon work, Oct 28.) The shape is in CONTRACT.md.
+"""HTTP surface: POST /adjust/permits. (Hackathon work, Oct 28; the AI switch and caller keys Oct 29, HIQ-77.)
+The shape is in CONTRACT.md.
 
     uvicorn adjust.api:app --port 8030        (from services/adjust)
 
-`router` is what the main API mounts once the engine is wired; `app` serves it alone.
+Four optional headers pick the AI path (switch.py): X-HushIQ-AI, X-HushIQ-Provider, X-HushIQ-Key, X-HushIQ-Model.
+Headers, never query parameters, so a key never lands in a URL or a log line. `router` is what the main API mounts
+once the engine is wired; `app` serves it alone.
 """
 import datetime as dt
 from typing import Literal
 
-from fastapi import APIRouter, Depends, FastAPI, HTTPException
+from fastapi import APIRouter, Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, model_validator
 
-from . import __version__, llm
+from . import __version__, llm, switch
 from .permits import block_permits, read_permits
 
 
@@ -32,14 +35,23 @@ def get_client():
     return llm.client_from_env()
 
 
+def get_connect():
+    return llm.client_for
+
+
 router = APIRouter()
 
 
 @router.post("/adjust/permits")
-def adjust_permits(req: PermitsRequest, client=Depends(get_client)):
-    if req.reader == "model" and client is None:
-        raise HTTPException(status_code=503, detail="no model key is set; use reader=rules or auto")
-    use = None if req.reader == "rules" else client
+def adjust_permits(req: PermitsRequest, client=Depends(get_client), connect=Depends(get_connect),
+                   x_hushiq_ai: str | None = Header(None), x_hushiq_provider: str | None = Header(None),
+                   x_hushiq_key: str | None = Header(None), x_hushiq_model: str | None = Header(None)):
+    try:
+        choice = switch.choose(x_hushiq_ai, x_hushiq_provider, x_hushiq_key, x_hushiq_model)
+    except switch.BadSwitch as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    if req.reader == "model" and switch.blocked(choice, client):
+        raise HTTPException(status_code=503, detail="no model can run for this request; use reader=auto")
     located = None
     rows = req.permits
     if req.address is not None:
@@ -48,7 +60,11 @@ def adjust_permits(req: PermitsRequest, client=Depends(get_client)):
             located, rows = block_permits(req.address, req.as_of)
         except sources.SourceError as e:
             raise HTTPException(status_code=502, detail=str(e))
-    out = read_permits(rows, req.as_of, client=use, model=llm.model_name() if use else None)
+    if req.reader == "rules" and choice.on:   # tests and the eval: the keyword rules, no model call
+        out = read_permits(rows, req.as_of)
+        out["ai"] = {"mode": "rules", "provider": None, "model": None, "key": None, "reason": None, "message": None}
+    else:
+        out = switch.run(rows, req.as_of, choice, house=client, connect=connect)
     if located:
         out["address"] = {k: located.get(k) for k in ("query", "label", "bbl", "bin", "borough")}
     return out
