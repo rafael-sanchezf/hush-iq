@@ -1,7 +1,8 @@
 /*
  * Hush IQ's web signature, carried over from the iOS app (apps/ios/NoiseScore/Theme.swift): one corner
- * radius (22), one gutter (20), rounded bold numerals, greyscale first, and the accent spent on one thing per
- * screen. On the demo that one thing is the verdict meter. Everything else carries hierarchy through size,
+ * radius (22), one gutter (20), greyscale first, and the accent spent on one thing per screen. The type departs
+ * from the app's SF Rounded on purpose (Rafa, 2026-10-29): Bricolage Grotesque for headings and numbers, Inter
+ * for text. On the demo that one thing is the verdict meter. Everything else carries hierarchy through size,
  * weight, grey and space.
  */
 
@@ -27,8 +28,8 @@
   --gutter: 20px;
   --max: 1120px;
 
-  --display: ui-rounded, 'SF Pro Rounded', var(--font-nunito), system-ui, sans-serif;
-  --body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', var(--font-nunito-sans), system-ui, sans-serif;
+  --display: var(--font-display), 'Helvetica Neue', Arial, system-ui, sans-serif;
+  --body: var(--font-text), -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   --mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 
@@ -109,9 +110,9 @@ h2,
 h3,
 h4 {
   font-family: var(--display);
-  font-weight: 800;
-  letter-spacing: -0.015em;
-  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.06;
   margin: 0;
   text-wrap: balance;
 }
@@ -143,7 +144,7 @@ p {
 .num {
   font-family: var(--display);
   font-variant-numeric: tabular-nums;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .sr-only {
@@ -182,8 +183,8 @@ p {
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  font: 800 20px/1 var(--display);
-  letter-spacing: -0.01em;
+  font: 750 20px/1 var(--body);
+  letter-spacing: -0.025em;
   white-space: nowrap;
 }
 
@@ -505,8 +506,9 @@ p {
 }
 
 .hero h1 {
-  font-size: clamp(42px, 6.4vw, 76px);
-  letter-spacing: -0.03em;
+  font-size: clamp(44px, 6.4vw, 80px);
+  font-weight: 700;
+  letter-spacing: 0;
   line-height: 1.02;
 }
 
@@ -537,7 +539,7 @@ p {
 .hero-proof b {
   color: var(--ink);
   font-family: var(--display);
-  font-weight: 800;
+  font-weight: 700;
   font-size: 22px;
   display: block;
   line-height: 1.1;
@@ -564,7 +566,7 @@ p {
 }
 
 .phone-card .word {
-  font: 800 34px/1.05 var(--display);
+  font: 700 34px/1.05 var(--display);
   letter-spacing: -0.02em;
 }
 
@@ -646,7 +648,7 @@ p {
 }
 
 .three .card .k {
-  font: 800 15px/1 var(--display);
+  font: 700 15px/1 var(--display);
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -751,7 +753,7 @@ p {
 }
 
 .step-label .n {
-  font: 800 13px/1 var(--display);
+  font: 700 13px/1 var(--display);
   color: var(--ink-3);
 }
 
@@ -956,7 +958,7 @@ p {
   appearance: none;
   border: 0;
   background: transparent;
-  font: 800 20px/1.2 var(--display);
+  font: 700 20px/1.2 var(--display);
   padding: 0 24px 0 0;
   cursor: pointer;
   width: 100%;
@@ -1166,7 +1168,7 @@ p {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font: 800 13px/1 var(--display);
+  font: 700 13px/1 var(--display);
   background: var(--ink);
   color: var(--bg);
   position: relative;
@@ -1326,8 +1328,8 @@ p {
 }
 
 .verdict-card .word {
-  font: 800 clamp(40px, 5.4vw, 60px) / 1.02 var(--display);
-  letter-spacing: -0.03em;
+  font: 700 clamp(40px, 5.4vw, 60px) / 1.02 var(--display);
+  letter-spacing: -0.012em;
   margin: 8px 0 18px;
 }
 
@@ -1720,8 +1722,9 @@ p {
 }
 
 .page-hero h1 {
-  font-size: clamp(38px, 5.6vw, 64px);
-  letter-spacing: -0.03em;
+  font-size: clamp(38px, 5.6vw, 66px);
+  font-weight: 700;
+  letter-spacing: 0;
   max-width: 15em;
 }
 
@@ -1831,7 +1834,7 @@ p {
 }
 
 .rules li .k {
-  font: 800 22px/1.1 var(--display);
+  font: 700 22px/1.1 var(--display);
   color: var(--ink-3);
 }
 
@@ -1995,7 +1998,7 @@ details.factor .tag.meta {
 }
 
 details.factor .chev {
-  font: 800 16px/1 var(--display);
+  font: 700 16px/1 var(--display);
   color: var(--ink-3);
   transition: transform 0.2s var(--ease);
 }
@@ -2284,7 +2287,7 @@ table.params td:first-child {
 }
 
 .listing-mock .fake .price {
-  font: 800 24px/1 var(--display);
+  font: 700 24px/1 var(--display);
 }
 
 .embed {
@@ -2308,7 +2311,7 @@ table.params td:first-child {
 }
 
 .embed .word {
-  font: 800 28px/1.05 var(--display);
+  font: 700 28px/1.05 var(--display);
   letter-spacing: -0.02em;
 }
 
@@ -2392,7 +2395,7 @@ table.params td:first-child {
   color: var(--bg);
   display: grid;
   place-items: center;
-  font: 800 15px/1 var(--display);
+  font: 700 15px/1 var(--display);
 }
 
 .steps-list li p {

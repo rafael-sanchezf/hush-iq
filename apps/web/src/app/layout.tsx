@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Nunito, Nunito_Sans } from 'next/font/google';
+import { Bricolage_Grotesque, Inter } from 'next/font/google';
 import type { ReactNode } from 'react';
 
 import { SiteFooter } from '@/components/site-footer';
@@ -8,12 +8,12 @@ import { SiteNav } from '@/components/site-nav';
 import './globals.css';
 
 /**
- * The app's type is SF Pro Rounded for numbers and headings and SF Pro for text. Apple devices get exactly
- * that (`ui-rounded`, `-apple-system` lead the stacks in globals.css); everywhere else falls back to Nunito
- * and Nunito Sans, self-hosted by next/font at build time so no reader's browser asks Google for a font.
+ * Bricolage Grotesque for headings and numbers, Inter for text, both variable and self-hosted by next/font at
+ * build time so no reader's browser asks Google for a font. Both follow the size through their optical-size axes:
+ * the hero gets the display cut, small labels the open one.
  */
-const nunito = Nunito({ subsets: ['latin'], weight: ['700', '800'], display: 'swap', variable: '--font-nunito' });
-const nunitoSans = Nunito_Sans({ subsets: ['latin'], display: 'swap', variable: '--font-nunito-sans' });
+const display = Bricolage_Grotesque({ subsets: ['latin'], display: 'swap', variable: '--font-display', axes: ['opsz'] });
+const text = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-text', axes: ['opsz'] });
 
 export const metadata: Metadata = {
   title: { default: 'Hush IQ: how loud is this apartment, for the way you sleep', template: '%s · Hush IQ' },
@@ -34,7 +34,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${nunito.variable} ${nunitoSans.variable}`}>
+    <html lang="en" className={`${display.variable} ${text.variable}`}>
       <body>
         <SiteNav />
         <main>{children}</main>
