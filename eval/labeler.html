@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photo-test labeler</title>
+<!-- Hush IQ photo test (HIQ-46). Opens from disk, no server, no network. Chrome, Edge or Arc read and write the
+     eval/photo_test folder directly; other browsers read it and download labels-<nn>.json instead
+     (then: cd eval && python -m hush_eval photo collect ~/Downloads). Labels schema: hush_eval/photo.py. -->
+<style>
+:root {
+  --bg: #f6f5fa; --surface: #fff; --ink: #1d1a2b; --muted: #5f5a73; --line: #dcd8ea;
+  --accent: #5a4eb0; --accent-ink: #fff; --accent-soft: #e6e1f9;
+  --warn: #8a5a00; --warn-soft: #fbefd5; --good: #1f7a52; --good-soft: #dff2e8; --bad: #a3312b;
+  --r: 6px; --mono: ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --bg: #14121c; --surface: #1d1a29; --ink: #ece9f6; --muted: #a9a3c0; --line: #33304a;
+  --accent: #a99df0; --accent-ink: #14121c; --accent-soft: #2b2650;
+  --warn: #f0c46a; --warn-soft: #3a2d12; --good: #6fd3a4; --good-soft: #173527; --bad: #f09a93;
+  color-scheme: dark; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+header { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--surface); position: sticky; top: 0; z-index: 5; }
+header h1 { font-size: 17px; margin: 0 8px 0 0; }
+header .grow { flex: 1; }
+#progress { font: 13px var(--mono); color: var(--muted); }
+button { font: inherit; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: var(--r); padding: 6px 11px; cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+button:disabled { opacity: .45; cursor: default; }
+main { display: grid; grid-template-columns: 190px minmax(0, 1fr); min-height: calc(100vh - 58px); }
+nav { border-right: 1px solid var(--line); padding: 10px; display: grid; gap: 4px; align-content: start; }
+nav button { text-align: left; display: flex; justify-content: space-between; align-items: center; }
+nav button.on { border-color: var(--accent); background: var(--accent-soft); }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--line); flex: none; }
+.dot.partial { background: var(--warn); } .dot.done { background: var(--good); }
+section.pane { padding: 16px; display: grid; gap: 16px; align-content: start; min-width: 0; }
+.cols { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 16px; align-items: start; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: grid; gap: 10px; min-width: 0; }
+.card h2 { font-size: 14px; margin: 0; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+pre.text { white-space: pre-wrap; margin: 0; font: 14px/1.5 inherit; font-family: inherit; max-height: 220px; overflow: auto; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.ph { position: relative; border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); cursor: zoom-in; background: var(--bg); aspect-ratio: 4 / 3; }
+.ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ph span { position: absolute; left: 6px; top: 6px; font: 12px var(--mono); background: rgba(0,0,0,.6); color: #fff; padding: 1px 6px; border-radius: 4px; }
+.field { display: grid; gap: 6px; padding: 8px 0; border-top: 1px solid var(--line); }
+.field:first-of-type { border-top: 0; }
+.field .head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.field .name { font-weight: 600; }
+.tag { font: 11px var(--mono); padding: 2px 6px; border-radius: 4px; }
+.tag.pre { color: var(--warn); background: var(--warn-soft); }
+.tag.set { color: var(--good); background: var(--good-soft); }
+.opts { display: flex; flex-wrap: wrap; gap: 6px; }
+.opts button { padding: 5px 9px; font-size: 14px; }
+.opts button.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.opts button.ct.on { background: var(--muted); border-color: var(--muted); color: var(--surface); }
+.opts input { width: 64px; font: inherit; padding: 5px 6px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); color: var(--ink); }
+.opts input.on { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+textarea, input[type=url] { font: inherit; width: 100%; border: 1px solid var(--line); border-radius: var(--r); padding: 8px; background: var(--surface); color: var(--ink); }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.muted { color: var(--muted); font-size: 13px; }
+.err { color: var(--bad); font-size: 13px; }
+.drop { border: 2px dashed var(--line); border-radius: var(--r); padding: 18px; text-align: center; color: var(--muted); }
+.drop.over { border-color: var(--accent); color: var(--accent); }
+#box { position: fixed; inset: 0; background: rgba(10, 8, 20, .88); display: none; align-items: center; justify-content: center; z-index: 10; cursor: zoom-out; }
+#box.on { display: flex; }
+#box img { max-width: 94vw; max-height: 88vh; }
+#box .cap { position: absolute; bottom: 14px; color: #fff; font: 13px var(--mono); }
+.empty { padding: 40px 16px; max-width: 640px; display: grid; gap: 10px; }
+kbd { font: 12px var(--mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; }
+@media (max-width: 900px) { main { grid-template-columns: 1fr; } nav { border-right: 0; border-bottom: 1px solid var(--line); grid-auto-flow: column; overflow-x: auto; } .cols { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Photo-test labeler</h1>
+  <button id="open" class="primary">Open photo_test folder</button>
+  <button id="reopen" hidden>Reopen last folder</button>
+  <label id="openRO" hidden><button type="button" onclick="this.nextElementSibling.click()">Open folder (read only)</button><input type="file" id="dirInput" webkitdirectory multiple hidden></label>
+  <button id="new" disabled>New listing</button>
+  <label class="muted"><input type="checkbox" id="example"> show the example 00</label>
+  <span class="grow"></span>
+  <span id="progress"></span>
+</header>
+<main>
+  <nav id="list"></nav>
+  <section class="pane" id="pane">
+    <div class="empty">
+      <p><b>Open the <code>eval/photo_test</code> folder</b> to start. Each listing is a folder <code>01</code>, <code>02</code>, …
+        with <code>listing.txt</code>, <code>photos/</code> and <code>labels.json</code>.</p>
+      <p class="muted">New listing: paste the link and the description, then on the listing page right-click a photo,
+        <i>Copy Image</i>, and press <kbd>⌘V</kbd> here, once per photo. Labels: click one answer per field, or
+        <i>Can't tell</i>. Amber fields were pre-filled from the text; any click confirms them. <kbd>Enter</kbd> saves and
+        moves on; <kbd>←</kbd> <kbd>→</kbd> step through listings.</p>
+      <p class="muted" id="support"></p>
+    </div>
+  </section>
+</main>
+<div id="box"><img alt=""><div class="cap"></div></div>
+
+<script>
+"use strict";
+const SCHEMA = "hush-iq/photo-labels/1";
+const CANT = "cant_tell";
+const FIELDS = [
+  { key: "floor", name: "Floor", kind: "floor" },
+  { key: "side", name: "Side", opts: [["front", "Street"], ["rear", "Rear, courtyard or shaft"]] },
+  { key: "view", name: "View", opts: [["street", "A street"], ["courtyard", "Courtyard or yards"], ["open", "Open: river, park, skyline"], ["wall", "A wall close by"]] },
+  { key: "windows", name: "Windows", opts: [["floor_to_ceiling", "Floor-to-ceiling"], ["standard", "Standard"]] },
+  { key: "ac_units", name: "Window or wall AC unit", opts: [["yes", "Yes"], ["no", "No"]] },
+  { key: "wall_material", name: "Wall material", opts: [["brick", "Brick"], ["concrete", "Concrete"], ["drywall", "Plaster or drywall"]] },
+];
+const KEYS = FIELDS.map(f => f.key);
+const PHOTO_RE = /\.(jpe?g|png|webp|gif|heic|avif)$/i;
+const S = { mode: null, root: null, listings: [], cur: -1, pending: [], newOpen: false };
+const $ = s => document.querySelector(s);
+const el = (tag, attrs = {}, ...kids) => {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) k.startsWith("on") ? e.addEventListener(k.slice(2), v) : e.setAttribute(k, v);
+  for (const k of kids) e.append(k);
+  return e;
+};
+
+// ------------------------------------------------------------ the labels document
+function blank(id, link = "") {
+  return { schema: SCHEMA, listing: id, link, labels: Object.fromEntries(KEYS.map(k => [k, null])), prefilled: [], notes: "", labeled_at: null };
+}
+function validate(doc) {
+  const errs = [];
+  if (!doc || typeof doc !== "object") return ["not an object"];
+  if (doc.schema !== SCHEMA) errs.push(`schema is ${JSON.stringify(doc.schema)}`);
+  for (const k of KEYS) {
+    const v = doc.labels?.[k];
+    if (v === null || v === undefined || v === CANT) continue;
+    if (k === "floor") { if (!Number.isInteger(v) || v < 1 || v > 120) errs.push(`floor ${v}`); }
+    else if (!FIELDS.find(f => f.key === k).opts.some(([o]) => o === v)) errs.push(`${k} ${v}`);
+  }
+  return errs;
+}
+const complete = doc => KEYS.every(k => doc.labels[k] !== null && doc.labels[k] !== undefined) && !(doc.prefilled || []).length;
+const started = doc => KEYS.some(k => doc.labels[k] !== null && doc.labels[k] !== undefined);
+
+// ------------------------------------------------------------ what the text says, as a starting point
+const ORD = { ground: 1, first: 1, second: 2, third: 3, fourth: 4, fifth: 5, sixth: 6, seventh: 7, eighth: 8, ninth: 9, tenth: 10, eleventh: 11, twelfth: 12 };
+function prefill(text) {
+  const t = text || "", out = {}, floors = new Set();
+  for (const m of t.matchAll(/\b(\d{1,2})(?:st|nd|rd|th)[\s-]*(?:fl\b|floor)/gi)) floors.add(+m[1]);
+  for (const m of t.matchAll(/\bfloor\s+(\d{1,2})\b/gi)) floors.add(+m[1]);
+  for (const m of t.matchAll(/\b(ground|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth)[\s-]+floor/gi)) floors.add(ORD[m[1].toLowerCase()]);
+  if (/\bgarden[\s-]+level\b/i.test(t)) floors.add(1);
+  const top = t.match(/\btop[\s-]+floor of an?\s+(\w+)[\s-]+stor(?:y|ey)\b/i);   // "top floor of a five-story walk-up"
+  if (top) floors.add(/^\d+$/.test(top[1]) ? +top[1] : ({ two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8 })[top[1].toLowerCase()]);
+  floors.delete(undefined);
+  if (!floors.size) { const m = t.match(/\b(?:apt\.?|apartment|unit|#)\s*(\d{1,2})[A-Z]{1,2}\b/i); if (m) floors.add(+m[1]); }
+  if (floors.size === 1) out.floor = [...floors][0];               // two different numbers: leave it to you
+  const rear = /courtyard|\brear\b|back (?:of the building|yards?|gardens?)|air ?shaft|\bbackyard\b|onto the (?:garden|yard)/i.test(t);
+  const front = /street[\s-]facing|corner unit|\b(?:faces?|facing|overlook(?:s|ing)?)\s+(?:the\s+)?(?:street|avenue|broadway|[A-Z0-9][\w.']*(?:\s+[A-Z0-9][\w.']*)*\s+(?:Street|St|Avenue|Ave|Place|Pl|Boulevard|Blvd|Road))\b/i.test(t);
+  if (rear !== front) out.side = rear ? "rear" : "front";
+  if (/air ?shaft/i.test(t)) out.view = "wall";
+  else if (/courtyard|back gardens?|rear yards?/i.test(t)) out.view = "courtyard";
+  else if (/river views?|park views?|skyline|open views?/i.test(t)) out.view = "open";
+  if (/floor[\s-]to[\s-]ceiling/i.test(t)) out.windows = "floor_to_ceiling";
+  if (/central (?:air|a\/?c)|split[\s-]system|ductless/i.test(t)) out.ac_units = "no";
+  else if (/(?:window|through[\s-]wall|wall)[\s-](?:a\/?c|air[\s-]?condition\w*)/i.test(t)) out.ac_units = "yes";
+  if (/exposed brick/i.test(t)) out.wall_material = "brick";
+  else if (/exposed concrete|concrete ceilings?/i.test(t)) out.wall_material = "concrete";
+  return out;
+}
+function applyPrefill(L) {
+  if (started(L.labels) || L.labels.labeled_at) return;
+  const p = prefill(L.text);
+  for (const [k, v] of Object.entries(p)) L.labels.labels[k] = v;
+  L.labels.prefilled = Object.keys(p);
+}
+
+// ------------------------------------------------------------ reading the folder
+async function readHandleDir(root) {
+  const out = [];
+  for await (const [name, h] of root.entries()) {
+    if (h.kind !== "directory" || !/^\d{2}$/.test(name)) continue;
+    const L = { id: name, dir: h, text: "", photos: [], labels: null, errors: [] };
+    try { L.text = await (await (await h.getFileHandle("listing.txt")).getFile()).text(); } catch { }
+    try { L.labels = JSON.parse(await (await (await h.getFileHandle("labels.json")).getFile()).text()); } catch { }
+    try {
+      const ph = await h.getDirectoryHandle("photos");
+      for await (const [pn, f] of ph.entries()) if (f.kind === "file" && PHOTO_RE.test(pn)) L.photos.push({ name: pn, file: await f.getFile() });
+    } catch { }
+    out.push(L);
+  }
+  return out;
+}
+function readFileList(entries) {   // [{path, file}] from <input webkitdirectory>: "photo_test/07/photos/02.jpg"
+  const by = new Map();
+  for (const { path, file } of entries) {
+    const parts = path.split("/");
+    const i = parts.findIndex(p => /^\d{2}$/.test(p));
+    if (i < 0) continue;
+    const id = parts[i], rest = parts.slice(i + 1).join("/");
+    if (!by.has(id)) by.set(id, { id, dir: null, text: "", photos: [], labels: null, errors: [], _files: {} });
+    const L = by.get(id);
+    if (rest.startsWith("photos/") && PHOTO_RE.test(rest)) L.photos.push({ name: rest.slice(7), file });
+    else L._files[rest] = file;
+  }
+  return Promise.all([...by.values()].map(async L => {
+    if (L._files["listing.txt"]) L.text = await L._files["listing.txt"].text();
+    if (L._files["labels.json"]) { try { L.labels = JSON.parse(await L._files["labels.json"].text()); } catch { } }
+    delete L._files;
+    return L;
+  }));
+}
+function adopt(listings, mode, root) {
+  for (const L of listings) {
+    L.photos.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+    for (const p of L.photos) p.url = URL.createObjectURL(p.file);
+    if (!L.labels || validate(L.labels).length) {
+      if (L.labels) L.errors = validate(L.labels);
+      L.labels = Object.assign(blank(L.id), L.labels && typeof L.labels === "object" ? { link: L.labels.link || "" } : {});
+    }
+    L.labels.listing = L.id;
+    L.labels.prefilled = L.labels.prefilled || [];
+    applyPrefill(L);
+  }
+  listings.sort((a, b) => a.id.localeCompare(b.id));
+  Object.assign(S, { mode, root, listings, cur: -1 });
+  $("#new").disabled = mode !== "fs";
+  renderList();
+  const first = visible().findIndex(L => !complete(L.labels));
+  select(first >= 0 ? first : 0);
+}
+const visible = () => S.listings.filter(L => L.id !== "00" || $("#example").checked);
+
+async function openFolder() {
+  const root = await window.showDirectoryPicker({ id: "hiq-photo-test", mode: "readwrite" });
+  await remember(root);
+  adopt(await readHandleDir(root), "fs", root);
+}
+
+// the last folder, kept in IndexedDB so a reload is one click
+function idb() {
+  return new Promise((res, rej) => { const r = indexedDB.open("hiq-labeler", 1); r.onupgradeneeded = () => r.result.createObjectStore("h"); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+}
+async function remember(h) { try { const db = await idb(); db.transaction("h", "readwrite").objectStore("h").put(h, "root"); } catch { } }
+async function recall() {
+  try { const db = await idb(); return await new Promise(r => { const q = db.transaction("h").objectStore("h").get("root"); q.onsuccess = () => r(q.result); q.onerror = () => r(null); }); } catch { return null; }
+}
+
+// ------------------------------------------------------------ writing
+async function writeFile(dir, name, data) {
+  const w = await (await dir.getFileHandle(name, { create: true })).createWritable();
+  await w.write(data);
+  await w.close();
+}
+async function saveLabels(L) {
+  L.labels.labeled_at = new Date().toISOString();
+  const body = JSON.stringify(L.labels, null, 2) + "\n";
+  if (S.mode === "fs") await writeFile(L.dir, "labels.json", body);
+  else download(`labels-${L.id}.json`, body);
+  L.saved = true;
+}
+function download(name, body) {
+  const a = el("a", { href: URL.createObjectURL(new Blob([body], { type: "application/json" })), download: name });
+  document.body.append(a); a.click(); a.remove();
+}
+async function saveNewListing(link, text, blobs) {
+  const taken = new Set(S.listings.map(L => L.id));
+  let n = 1; while (taken.has(String(n).padStart(2, "0"))) n++;
+  const id = String(n).padStart(2, "0");
+  const dir = await S.root.getDirectoryHandle(id, { create: true });
+  const photos = await dir.getDirectoryHandle("photos", { create: true });
+  await writeFile(dir, "listing.txt", text.trim() + "\n");
+  const saved = [];
+  for (const [i, b] of blobs.entries()) {
+    const ext = ({ "image/jpeg": "jpg", "image/webp": "webp", "image/gif": "gif", "image/avif": "avif" })[b.type] || "png";
+    const name = `${String(i + 1).padStart(2, "0")}.${ext}`;
+    await writeFile(photos, name, b);
+    saved.push({ name, file: b, url: URL.createObjectURL(b) });
+  }
+  const L = { id, dir, text, photos: saved, labels: blank(id, link), errors: [] };
+  applyPrefill(L);
+  await writeFile(dir, "labels.json", JSON.stringify(L.labels, null, 2) + "\n");
+  S.listings.push(L);
+  S.listings.sort((a, b) => a.id.localeCompare(b.id));
+  return L;
+}
+
+// ------------------------------------------------------------ rendering
+function renderList() {
+  const nav = $("#list"); nav.textContent = "";
+  const vis = visible();
+  vis.forEach((L, i) => {
+    const state = complete(L.labels) ? "done" : started(L.labels) ? "partial" : "";
+    nav.append(el("button", { class: i === S.cur ? "on" : "", onclick: () => select(i) },
+      el("span", {}, `${L.id}  `, el("span", { class: "muted" }, `${L.photos.length} ph`)), el("span", { class: `dot ${state}` })));
+  });
+  const real = S.listings.filter(L => L.id !== "00");
+  $("#progress").textContent = S.mode ? `${real.filter(L => complete(L.labels)).length} of ${real.length} labeled` + (S.mode === "files" ? " · read only, saves download" : "") : "";
+}
+function select(i) {
+  const vis = visible();
+  if (!vis.length) { S.cur = -1; renderList(); return showEmpty(); }
+  S.cur = Math.max(0, Math.min(i, vis.length - 1));
+  S.newOpen = false;
+  renderList();
+  renderListing(vis[S.cur]);
+  window.scrollTo(0, 0);
+}
+function showEmpty() {
+  $("#pane").innerHTML = "";
+  $("#pane").append(el("div", { class: "empty" }, el("p", {}, S.mode === "fs" ? "No listings yet. Click New listing." : "No listing folders found in that folder.")));
+}
+function renderListing(L) {
+  const pane = $("#pane"); pane.textContent = "";
+  const left = el("div", { class: "card" }, el("h2", {}, `Listing ${L.id}`));
+  if (L.labels.link) left.append(el("div", { class: "muted" }, L.labels.link));
+  if (L.errors.length) left.append(el("div", { class: "err" }, `labels.json was invalid and was reset: ${L.errors.join("; ")}`));
+  left.append(el("pre", { class: "text" }, L.text.trim() || "(listing.txt is empty)"));
+  const grid = el("div", { class: "grid" });
+  L.photos.forEach((p, k) => grid.append(el("div", { class: "ph", onclick: () => lightbox(L, k) }, el("img", { src: p.url, alt: `photo ${k}`, loading: "lazy" }), el("span", {}, `photo ${k}`))));
+  const photosCard = el("div", { class: "card" }, el("h2", {}, `Photos (${L.photos.length})`), L.photos.length ? grid : el("div", { class: "muted" }, "No photos in photos/."));
+  const right = el("div", { class: "card", id: "labels" }, el("h2", {}, "Labels"));
+  for (const f of FIELDS) right.append(fieldRow(L, f));
+  const notes = el("textarea", { rows: "2", placeholder: "Notes (optional)" });
+  notes.value = L.labels.notes || "";
+  notes.addEventListener("input", () => { L.labels.notes = notes.value; });
+  right.append(notes);
+  const status = el("div", { class: "muted", id: "status" }, L.saved ? "Saved." : "");
+  right.append(el("div", { class: "row" },
+    el("button", { onclick: () => { L.labels.prefilled = []; renderListing(L); renderList(); } }, "Confirm pre-fills"),
+    el("button", { class: "primary", id: "save", onclick: () => saveAndNext(L) }, S.mode === "fs" ? "Save and next  ⏎" : "Download and next  ⏎")), status);
+  pane.append(el("div", { class: "cols" }, el("div", { style: "display:grid;gap:16px;min-width:0" }, left, photosCard), right));
+}
+function fieldRow(L, f) {
+  const v = L.labels.labels[f.key];
+  const pre = (L.labels.prefilled || []).includes(f.key);
+  const set = val => {
+    L.labels.labels[f.key] = val;
+    L.labels.prefilled = (L.labels.prefilled || []).filter(k => k !== f.key);
+    L.saved = false;
+    renderListing(L); renderList();
+  };
+  const opts = el("div", { class: "opts" });
+  if (f.kind === "floor") {
+    const inp = el("input", { type: "number", min: "1", max: "120", inputmode: "numeric", "aria-label": "floor", class: Number.isInteger(v) ? "on" : "" });
+    if (Number.isInteger(v)) inp.value = v;
+    inp.addEventListener("change", () => { const n = parseInt(inp.value, 10); if (n >= 1 && n <= 120) set(n); });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); e.stopPropagation(); const n = parseInt(inp.value, 10); if (n >= 1 && n <= 120) set(n); } });
+    opts.append(inp);
+    for (const n of [1, 2, 3, 4, 5, 6]) opts.append(el("button", { class: v === n ? "on" : "", onclick: () => set(n) }, String(n)));
+  } else {
+    for (const [val, label] of f.opts) opts.append(el("button", { class: v === val ? "on" : "", "data-v": val, onclick: () => set(val) }, label));
+  }
+  opts.append(el("button", { class: `ct ${v === CANT ? "on" : ""}`, "data-v": CANT, onclick: () => set(CANT) }, "Can't tell"));
+  const tag = pre ? el("span", { class: "tag pre" }, "pre-filled from text") : v !== null && v !== undefined ? el("span", { class: "tag set" }, "set") : el("span");
+  return el("div", { class: "field", "data-field": f.key }, el("div", { class: "head" }, el("span", { class: "name" }, f.name), tag), opts);
+}
+async function saveAndNext(L) {
+  const missing = KEYS.filter(k => L.labels.labels[k] === null || L.labels.labels[k] === undefined);
+  const status = $("#status");
+  if (missing.length) { status.className = "err"; status.textContent = `Still open: ${missing.join(", ")}. Click an answer or Can't tell.`; return; }
+  if ((L.labels.prefilled || []).length) { status.className = "err"; status.textContent = `Confirm the pre-filled ${L.labels.prefilled.join(", ")} first (click it, or Confirm pre-fills).`; return; }
+  try { await saveLabels(L); } catch (e) { status.className = "err"; status.textContent = `Could not save: ${e.message}`; return; }
+  renderList();
+  const vis = visible();
+  const next = vis.findIndex((x, i) => i > S.cur && !complete(x.labels));
+  if (next >= 0) select(next);
+  else { renderListing(L); $("#status").textContent = "Saved. Every listing is labeled."; }
+}
+function lightbox(L, k) {
+  const box = $("#box");
+  box.dataset.k = k; box._L = L;
+  box.querySelector("img").src = L.photos[k].url;
+  box.querySelector(".cap").textContent = `photo ${k} of ${L.photos.length}  ·  ← → to step, Esc to close`;
+  box.classList.add("on");
+}
+
+// ------------------------------------------------------------ new listing
+function openNew() {
+  S.newOpen = true; S.pending = [];
+  const pane = $("#pane"); pane.textContent = "";
+  const link = el("input", { type: "url", placeholder: "Listing link (kept on your disk only)" });
+  const text = el("textarea", { rows: "9", placeholder: "Paste the description exactly as the listing shows it" });
+  const drop = el("div", { class: "drop", id: "drop" }, "Right-click a photo on the listing, Copy Image, then ⌘V here. Or drop image files.");
+  const thumbs = el("div", { class: "grid", id: "pendingThumbs" });
+  const status = el("div", { class: "muted" });
+  const save = el("button", { class: "primary", onclick: async () => {
+    if (!text.value.trim()) { status.className = "err"; status.textContent = "Paste the listing text first."; return; }
+    save.disabled = true;
+    try {
+      const L = await saveNewListing(link.value.trim(), text.value, S.pending.map(p => p.blob));
+      S.pending = [];
+      select(visible().findIndex(x => x.id === L.id));
+    } catch (e) { save.disabled = false; status.className = "err"; status.textContent = `Could not save: ${e.message}`; }
+  } }, "Save listing");
+  for (const ev of ["dragover", "dragenter"]) drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); });
+  drop.addEventListener("dragleave", () => drop.classList.remove("over"));
+  drop.addEventListener("drop", e => {
+    e.preventDefault(); drop.classList.remove("over");
+    const files = [...e.dataTransfer.files].filter(f => f.type.startsWith("image/"));
+    if (!files.length) { status.className = "err"; status.textContent = "Dragging from a web page gives a link, not the image. Use Copy Image and ⌘V."; return; }
+    files.forEach(addPending);
+  });
+  pane.append(el("div", { class: "card", style: "max-width:860px" }, el("h2", {}, "New listing"), link, text, drop, thumbs,
+    el("div", { class: "row" }, save, el("button", { onclick: () => select(Math.max(S.cur, 0)) }, "Cancel")), status));
+  text.focus();
+}
+function addPending(blob) {
+  S.pending.push({ blob, url: URL.createObjectURL(blob) });
+  const t = $("#pendingThumbs"); if (!t) return;
+  t.textContent = "";
+  S.pending.forEach((p, k) => t.append(el("div", { class: "ph" }, el("img", { src: p.url, alt: `photo ${k}` }), el("span", {}, `photo ${k}`))));
+}
+
+// ------------------------------------------------------------ wiring
+document.addEventListener("paste", e => {
+  if (!S.newOpen) return;
+  const imgs = [...(e.clipboardData?.items || [])].filter(i => i.kind === "file" && i.type.startsWith("image/")).map(i => i.getAsFile());
+  if (imgs.length) { e.preventDefault(); imgs.forEach(addPending); }
+});
+document.addEventListener("keydown", e => {
+  const box = $("#box");
+  if (box.classList.contains("on")) {
+    const L = box._L, k = +box.dataset.k;
+    if (e.key === "Escape") box.classList.remove("on");
+    if (e.key === "ArrowRight" && k < L.photos.length - 1) lightbox(L, k + 1);
+    if (e.key === "ArrowLeft" && k > 0) lightbox(L, k - 1);
+    return;
+  }
+  if (S.newOpen || /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName)) return;
+  if (e.key === "ArrowRight") select(S.cur + 1);
+  if (e.key === "ArrowLeft") select(S.cur - 1);
+  if (e.key === "Enter" && S.cur >= 0) { e.preventDefault(); saveAndNext(visible()[S.cur]); }
+});
+$("#box").addEventListener("click", () => $("#box").classList.remove("on"));
+$("#new").addEventListener("click", openNew);
+$("#example").addEventListener("change", () => { if (S.mode) select(0); });
+$("#dirInput").addEventListener("change", async e => {
+  adopt(await readFileList([...e.target.files].map(f => ({ path: f.webkitRelativePath, file: f }))), "files", null);
+});
+if ("showDirectoryPicker" in window) {
+  $("#open").addEventListener("click", () => openFolder().catch(err => { if (err.name !== "AbortError") alert(err.message); }));
+  recall().then(h => {
+    if (!h) return;
+    const btn = $("#reopen"); btn.hidden = false; btn.textContent = `Reopen ${h.name}`;
+    btn.addEventListener("click", async () => {
+      if ((await h.requestPermission({ mode: "readwrite" })) === "granted") adopt(await readHandleDir(h), "fs", h);
+    });
+  });
+  $("#support").textContent = "This browser can write labels.json straight into each listing folder.";
+} else {
+  $("#open").hidden = true; $("#openRO").hidden = false;
+  $("#support").textContent = "This browser cannot write to a folder: labels download as labels-<nn>.json. Then run: cd eval && python -m hush_eval photo collect ~/Downloads. New listing needs Chrome, Edge or Arc.";
+}
+
+// For tests and the console: the same functions the page uses.
+window.hiq = { S, prefill, validate, complete, blank, readFileList, readHandleDir, adopt, saveLabels, saveNewListing, select, addPending, openNew };
+</script>
+</body>
+</html>
