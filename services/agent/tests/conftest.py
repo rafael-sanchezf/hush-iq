@@ -92,3 +92,20 @@ class FakeScorer:
 @pytest.fixture
 def scorer():
     return FakeScorer()
+
+
+@pytest.fixture(autouse=True)
+def no_house_key(monkeypatch):
+    """Importing reader.app loads services/agent/.env; no test may reach the real Model API with it."""
+    for name in ("MODEL_API_KEY", "MODEL_API_BASE_URL", "MODEL_API_MODEL", "HOUSE_AI", "READER_MODE",
+                 "OPENAI_API_KEY", "ANTHROPIC_API_KEY"):
+        monkeypatch.delenv(name, raising=False)
+
+
+def events(response):
+    """[(event, data)] from a server-sent event stream."""
+    out = []
+    for block in response.text.strip().split("\n\n"):
+        lines = dict(line.split(": ", 1) for line in block.splitlines())
+        out.append((lines["event"], json.loads(lines["data"])))
+    return out

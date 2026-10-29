@@ -166,7 +166,7 @@ def test_budget_exhaustion_returns_a_clean_partial_result(scorer):
     assert any("used its 3 turns" in n for n in result["notes"])
 
 
-def test_a_failing_model_api_returns_a_clean_partial_result(scorer):
+def test_a_failing_model_api_reads_again_with_the_basic_reader(scorer):
     def down(body):
         raise mock.ApiFailure(503, "overloaded")
 
@@ -174,10 +174,13 @@ def test_a_failing_model_api_returns_a_clean_partial_result(scorer):
     model = Scripted([("submit_listing", {"fields": invented}), down])
     result = loop.read(listing(fixture_text("01-stated-rear.txt")), client=model.client, scorer=scorer)
 
-    assert result["status"] == "partial" and result["stopped"] == "model_error"
-    assert "the Model API failed" in result["trace"][1]["result"]["error"]
-    assert result["fields"]["address"]["status"] == "read" and result["fields"]["floor"]["status"] == "cant_tell"
-    assert result["score"] is not None
+    assert "the Model API failed: InternalServerError (503)" in result["trace"][1]["result"]["error"]
+    assert result["trace"][1]["result"]["reason"] == "provider_error"
+    assert [t["n"] for t in result["trace"]] == [1, 2, 3, 4, 5] and result["trace"][2]["tool"] == "submit_listing"
+    assert result["ai"]["mode"] == "basic" and result["ai"]["reason"] == "provider_error"
+    assert result["ai"]["message"] == "Meta did not answer, so the basic reader read this listing."
+    assert result["status"] == "complete" and result["mode"] == "mock"
+    assert result["fields"]["floor"]["value"] == 11 and result["score"] is not None
 
 
 def test_plain_text_is_not_a_turn_the_model_can_end_on(scorer):

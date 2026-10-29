@@ -1,7 +1,12 @@
 """HTTP surface of the listing reader. (Hackathon work, Oct 28.)
 
-    POST /read    the listing in (multipart or JSON: text, photos, optional answers); server-sent events out,
-                  one `turn` event per turn and then one `result` event. The shape is in CONTRACT.md.
+    POST /read       the listing in (multipart or JSON: text, photos, optional answers); server-sent events out,
+                     one `turn` event per turn and then one `result` event. The shape is in CONTRACT.md.
+    POST /key-check  is a caller's key accepted (one free models-list call)?
+
+Both take four optional headers, never query parameters, so a key stays out of URLs and logs: X-HushIQ-AI
+(on|off), X-HushIQ-Provider (meta|openai|anthropic), X-HushIQ-Key and X-HushIQ-Model. client.py decides what
+they mean.
 
     .venv/bin/uvicorn reader.app:app --port 8100
 """
@@ -13,7 +18,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from . import client as model_client
-from . import loop, settings
+from . import failures, loop, settings
 from .listing import MAX_PHOTOS, Answers, BadInput, Listing, Photo
 from .scoring import HostedScorer
 
@@ -23,7 +28,16 @@ def default_scorer():
     return None if os.environ.get("READER_SCORE", "").lower() == "off" else HostedScorer()
 
 
-def create_app(make_client=model_client.make_client, make_scorer=default_scorer, turns=None):
+HEADERS = {"ai": "x-hushiq-ai", "provider": "x-hushiq-provider", "key": "x-hushiq-key", "model": "x-hushiq-model"}
+
+
+def choice(headers):
+    """The four X-HushIQ headers as make_client's arguments."""
+    return {arg: headers.get(name) for arg, name in HEADERS.items()}
+
+
+def create_app(make_client=model_client.make_client, make_scorer=default_scorer, turns=None,
+               check_key=model_client.check_key):
     app = FastAPI(title="Hush IQ listing reader", version="0.1.0")
     # Public, keyless, read-only for the caller: any site may call it from the browser.
     app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET", "POST"], allow_headers=["*"])
@@ -31,8 +45,9 @@ def create_app(make_client=model_client.make_client, make_scorer=default_scorer,
 
     @app.get("/")
     def index():
-        _, mode = make_client()
-        return {"service": "hush-iq listing reader", "mode": mode, "model": settings.model(),
+        house = make_client()
+        return {"service": "hush-iq listing reader", "mode": house.mode, "model": settings.model(),
+                "ai": {"house": house.ai, "providers": model_client.providers(), "headers": sorted(HEADERS.values())},
                 "read": "POST /read (multipart or JSON: text, photos[], answers); streams turn events, then result",
                 "contract": "https://github.com/rafael-sanchezf/hush-iq/blob/main/services/agent/CONTRACT.md"}
 
@@ -43,13 +58,21 @@ def create_app(make_client=model_client.make_client, make_scorer=default_scorer,
     @app.post("/read")
     async def read(request: Request):
         try:
+            plan = make_client(**choice(request.headers))
             listing = await parse(request)
-        except BadInput as e:
+        except (BadInput, model_client.BadChoice) as e:
             return JSONResponse({"error": str(e)}, status_code=400)
-        client, mode = make_client()
-        events = loop.read_listing(listing, client=client, scorer=scorer, mode=mode, turns=turns)
-        return StreamingResponse(sse(events), media_type="text/event-stream",
+        events = loop.read_listing(listing, plan=plan, scorer=scorer, turns=turns)
+        return StreamingResponse(sse(events, plan.secrets), media_type="text/event-stream",
                                  headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+    @app.post("/key-check")
+    def key_check(request: Request):
+        c = choice(request.headers)
+        try:
+            return check_key(c["provider"], c["key"], c["model"])
+        except model_client.BadChoice as e:
+            return JSONResponse({"error": str(e)}, status_code=400)
 
     return app
 
@@ -93,12 +116,13 @@ def _json_field(value):
         raise BadInput("answers must be a JSON object")
 
 
-def sse(events):
+def sse(events, secrets=()):
     try:
         for kind, data in events:
             yield f"event: {kind}\ndata: {json.dumps(data)}\n\n"
     except Exception as e:   # a bug, not a refusal: the stream still ends with an event the client can read
-        yield f"event: error\ndata: {json.dumps({'error': f'{type(e).__name__}: {e}'})}\n\n"
+        error = failures.scrub(f"{type(e).__name__}: {e}", secrets)
+        yield f"event: error\ndata: {json.dumps({'error': error})}\n\n"
 
 
 settings.load_env()

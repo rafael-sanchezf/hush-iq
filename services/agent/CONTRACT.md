@@ -1,7 +1,8 @@
-# Listing reader contract: `POST /read`
+# Listing reader contract: `POST /read` and `POST /key-check`
 
-What the website and the eval code against. Changes to this shape are additive only: new keys may appear,
-existing keys keep their name, type and meaning. Hackathon work, Oct 28.
+What the website, the extension and the eval code against. Changes to this shape are additive only: new keys
+may appear, existing keys keep their name, type and meaning. Hackathon work, Oct 28; the AI switch and caller
+keys, Oct 29 (HIQ-75).
 
 ## Run it
 
@@ -11,10 +12,12 @@ uv venv --python 3.14 .venv && uv pip install --python .venv/bin/python -r requi
 .venv/bin/uvicorn reader.app:app --port 8100
 ```
 
-`GET /` says the mode. **mock**: no `MODEL_API_KEY`, an offline stand-in made of regular expressions answers
-instead of the model; it cannot see photos (every photo reads as cant_tell). **live**: `MODEL_API_KEY` is set
-in `services/agent/.env`, Muse Spark (`muse-spark-1.3`) answers through the Meta Model API. Every result
-carries `mode`, so a mock result is never shown as the model's.
+Who reads a listing is decided per request (below, [The AI switch and caller keys](#the-ai-switch-and-caller-keys)).
+With no headers it is Muse Spark (`muse-spark-1.3`) on the house key, `MODEL_API_KEY` in `services/agent/.env`.
+With no house key, with `HOUSE_AI=off`, or with AI switched off, it is the **basic reader**: regular
+expressions on the text, no model call, photos unread. Every result carries `ai` (and the older `mode`:
+`live` or `mock`), so a basic result is never shown as the model's. `GET /` says what the house runs and which
+providers and models a caller may ask for.
 
 ## Request
 
@@ -37,7 +40,9 @@ carries `mode`, so a mock result is never shown as the model's.
 `sleep_from` and `sleep_until` are hours, 0 to 23. `bothers` is any subset of those five.
 
 A bad request is `400 {"error": "<what to fix>"}`: no text and no photos, a file that is not an image, too
-many photos, a bad `answers`.
+many photos, a bad `answers`, a bad `X-HushIQ-` header (an unknown provider, a model not on the list).
+
+Four optional headers choose the model; see [The AI switch and caller keys](#the-ai-switch-and-caller-keys).
 
 ## Response: server-sent events
 
@@ -83,9 +88,9 @@ End to end: 7 to 11 s for text, about 20 s with two photos.
 |---|---|
 | `n` | 1, 2, 3, ... across model turns and code steps |
 | `by` | `model`: the model chose this tool. `code`: a fixed step after the reading |
-| `tool` | `read_photo`, `submit_listing`, `locate`, `floors`, `score`, or `null` when the model replied in plain text |
+| `tool` | `read_photo`, `submit_listing`, `locate`, `floors`, `score`, or `null` when the model replied in plain text or the provider failed |
 | `args` | what the tool was called with. Never photo bytes: `read_photo` args are `{"indexes": [0, 1]}` |
-| `result` | what the tool returned. A refusal has `error`; a refused `submit_listing` also has `refused: {field: why}` and `accepted: [field names]` |
+| `result` | what the tool returned. A refusal has `error`; a refused `submit_listing` also has `refused: {field: why}` and `accepted: [field names]`. A failed provider call has `error` and `reason` (as in `ai.reason`) |
 | `ok` | false when `result` has `error` |
 | `ms` | the whole turn; `model_ms` the model's decision; `tool_ms` the tool. `tokens` from the Model API, reasoning included in output (mock: fixed numbers) |
 | `retries` | times the model was asked again in this turn because its reply was empty (cut off at the token cap) |
@@ -129,7 +134,9 @@ result.
   "trace": [{"n": 1, "...": "every turn, as streamed"}],
   "turns": {"used": 1, "budget": 8},
   "model": "muse-spark-1.3",
-  "mode": "mock"
+  "mode": "mock",
+  "ai": {"mode": "basic", "provider": null, "model": null, "key": null, "reason": "switched_off",
+         "message": "AI reading is off in your settings, so the basic reader read this listing."}
 }
 ```
 
@@ -175,7 +182,7 @@ yet.
 | Key | Meaning |
 |---|---|
 | `status` | `complete`: a full submission passed every check. `partial`: the reader stopped first; fields that passed earlier are kept, the rest are `cant_tell` |
-| `stopped` | `submitted`, `budget` (turns ran out), or `model_error` (the Model API kept failing) |
+| `stopped` | `submitted`, or `budget` (turns ran out). A provider that keeps failing no longer stops the reading: the basic reader reads it again (see `ai`). `model_error` stays in the vocabulary but is not expected |
 | `position` | what the engine gets from `side`: `street` and `corner` are `front`, `rear` and `courtyard` are `rear`, otherwise `unknown` |
 | `photo_readings` | one per photo read, by index: `{"index", "fields": {floor, side, view, windows, ac_units, wall_material}, "note", "dropped": [why], "tokens"}`; each field is `{value, status, what}`. `dropped` lists what the photo model said that failed its type and became cant_tell |
 | `location` | the building GeoSearch has at that house number on that street, or `null`. `borough_from` says how the borough was chosen when the address exists in more than one: `{"how": "only match"}`, `{"how": "text", "borough", "said"}` (a borough, ZIP or neighborhood in the listing), or `{"how": "default", "borough": "Manhattan"}` with a note. `alternatives` lists the other boroughs' labels |
@@ -184,8 +191,130 @@ yet.
 | `answers` | the answers the score used, defaults filled in |
 | `needs` | what the renter must add for a score; today only `"address"` |
 | `notes` | plain sentences for the UI: why a result is partial, why there is no score |
-| `turns` | model turns used and the budget (`READER_TURNS`, default 8) |
-| `model`, `mode` | the model name, and `live` or `mock` |
+| `turns` | model turns used and the budget (`READER_TURNS`, default 8). After a provider failure, `used` counts the failed turns and the basic reader's |
+| `model`, `mode` | kept for older clients: the model asked for, and `live` (a model read) or `mock` (the basic reader). Read `ai` instead |
+| `ai` | who read the listing and, for the basic reader, why. Below |
+
+## The AI switch and caller keys
+
+The Meta-model reading may be removed when the hackathon credits end, so it sits behind a switch, and a caller
+may bring their own OpenAI or Anthropic key to run the same prompt and the same checks. The shared contract for
+every service is `AI_SWITCH.md` (HIQ-74); this is the reader's part.
+
+### Headers
+
+On `POST /read` and `POST /key-check`. Headers, never query parameters, so a key never lands in a URL, a log
+line or browser history. Names are case-insensitive.
+
+| Header | Values | Absent means |
+|---|---|---|
+| `X-HushIQ-AI` | `on`, `off` | `on` |
+| `X-HushIQ-Provider` | `meta`, `openai`, `anthropic` | `meta` |
+| `X-HushIQ-Key` | the caller's API key for that provider | the house key (Meta only) |
+| `X-HushIQ-Model` | a model id from the provider's list below | the provider's default |
+
+| Request | Who reads | `ai.reason` |
+|---|---|---|
+| `X-HushIQ-AI: off` | the basic reader; no model call at all, cost zero | `switched_off` |
+| a key | that provider with that key, for this request only | |
+| no key, `meta` | Muse Spark on the house key | |
+| no key, `meta`, server has `HOUSE_AI=off` (or `READER_MODE=mock`) | the basic reader | `house_off` |
+| no key, `meta`, server has no `MODEL_API_KEY` | the basic reader | `no_key` |
+| no key, `openai` or `anthropic` | the basic reader | `no_key` |
+| the provider rejects the key (401, 402, 403) | the basic reader, from the start | `key_rejected` |
+| the provider rate-limits or is overloaded (429, 529) | the basic reader, from the start | `provider_busy` |
+| the provider fails otherwise (timeout, 5xx, 404) | the basic reader, from the start | `provider_error` |
+
+A provider failure is caught on the model's turn: the failed turn stays in the trace (`ok: false`, `result`
+has `error` and `reason`), and the basic reader then reads the listing from the start, numbering its turns on
+from there. Fields the model had read before the failure are not kept. **There is no path from a caller's key to
+the house key**: a stranger's failing key never spends the house credits. A photo the provider fails to read
+comes back unread (`failed: true`) and the reading goes on.
+
+### Providers and models
+
+| Provider | Base URL (fixed on the server) | Models | Default |
+|---|---|---|---|
+| `meta` | `https://api.meta.ai/v1` | `muse-spark-1.3` | `muse-spark-1.3` (the house sets it with `MODEL_API_MODEL`) |
+| `openai` | `https://api.openai.com/v1` | `gpt-6-luna`, `gpt-6.1-terra`, `gpt-6.1-sol` | `gpt-6-luna` |
+| `anthropic` | `https://api.anthropic.com` | `claude-opus-5-5`, `claude-sonnet-5-5`, `claude-haiku-5-5` | `claude-opus-5-5` |
+
+The caller cannot set a base URL, so a key only ever goes to its own provider. An id not on the list is a 400.
+Ids were checked against each provider's docs on 2026-10-29. The OpenAI and Anthropic defaults stand until the
+eval compares the models (HIQ-79); `gpt-6-luna` is OpenAI's cheapest current model and takes images and
+function tools in the Responses API.
+
+- **meta**: today's path, unchanged: the OpenAI SDK at api.meta.ai, Responses API.
+- **openai**: the same SDK at api.openai.com. Two request differences: `include:
+  ["reasoning.encrypted_content"]`, because with `store: false` a reasoning model's reasoning must travel with
+  the conversation, and `strict: false` on both tools, because OpenAI's function tools are strict by default and
+  our optional fields do not fit strict mode.
+- **anthropic**: the Anthropic Python SDK, Messages API, behind an adapter (`reader/anthropic_adapter.py`) that
+  answers the loop's Responses calls: tools, images (base64), tool results, and Claude's thinking blocks
+  replayed unchanged on the next turn. `max_tokens` is at least 16,000 because thinking counts against it.
+  Anthropic takes images up to 5 MB, under the reader's 8 MB limit: a larger photo comes back unread.
+- Every provider gets the same prompt (`reader/instructions.md`), the same tools and the same checks in code.
+  A provider's reply is held to exactly the checks Muse is held to.
+
+Not verified live: no OpenAI or Anthropic key exists yet, so both paths are tested against in-process fakes of
+their APIs only. Whether `gpt-6-luna` honours the photo reader's JSON mode is unverified; if it does not, its
+photos come back unread.
+
+### The `ai` object
+
+On every result, next to `model` and `mode`:
+
+```json
+"ai": {"mode": "model" | "basic", "provider": "meta" | "openai" | "anthropic" | null,
+       "model": "<id>" | null, "key": "house" | "caller" | null,
+       "reason": null | "switched_off" | "house_off" | "no_key" | "key_rejected" | "provider_busy" | "provider_error",
+       "message": "<one plain sentence for the panel>" | null}
+```
+
+- `mode: "model"`: `provider`, `model` and `key` say who read it; `reason` and `message` are `null`.
+- `mode: "basic"`: `reason` and `message` are set; `model` is `null`; `provider` and `key` say what was asked for
+  and did not run (`null` when the caller switched AI off).
+- Show `message` in the panel, for example "AI reading is off. Add your own key in settings to turn it on." or
+  "OpenAI rejected your key, so the basic reader read this listing."
+
+### The key, on the server
+
+1. Never logged, never in a trace, never in a response, never in an error message: every event passes through
+   `failures.scrub()`, which replaces the caller's key and the house key wherever they appear, and an error from a
+   provider is described with anything key-shaped (`sk-...`, long tokens) masked as `[redacted]`.
+2. Never stored or cached: the client is built for the request and dropped with it.
+3. Sent only to its provider's fixed base URL.
+4. `tests/test_keys.py` sends a fake key through every path (success, 401, 429, timeout, a model the provider
+   does not have, a model id not on the list), for each provider, on both endpoints, with every logger at DEBUG,
+   and asserts the key appears in none of the body, the trace, the logs or the console. The fake providers quote
+   the key in full in their errors.
+
+### `POST /key-check`
+
+Same headers, no body. One call to the provider's models list, which spends no tokens. Always `200` unless a
+header is bad (`400`):
+
+```json
+{"ok": true, "provider": "openai", "message": "OpenAI accepted the key, and gpt-6-luna is available."}
+```
+
+`ok` is false when no key was sent, when the provider rejects the key, rate-limits it or cannot be reached, or
+when the key works but the chosen model is not in its list. `message` says which, in one sentence. The
+extension's "Test key" button uses it.
+
+### In process (the eval)
+
+```python
+from reader import loop
+from reader.client import from_env, make_client
+
+plan = make_client(provider="anthropic", key=..., model=None, ai="on")   # the four headers, as arguments
+plan = from_env("openai")          # the key from OPENAI_API_KEY or ANTHROPIC_API_KEY, never a tracked file
+result = loop.read(listing, plan=plan, scorer=scorer)
+```
+
+The command line takes the same choice: `python -m reader listing.txt --ai off` and `scripts/run_fixtures.py
+--provider anthropic --model claude-haiku-5-5`.
 
 ## What the checks guarantee
 
@@ -202,3 +331,5 @@ These run in code inside the tools (`reader/evidence.py`), so no prompt or model
    off-type becomes `cant_tell`.
 4. The model gets the refusal and the reason, and tries again within its turns. When the turns run out the
    result is still clean: nothing unchecked is ever returned.
+5. All of this holds for every provider and for the basic reader: they answer the same tools, and the tools do
+   the checking.

@@ -8,7 +8,7 @@ import json
 
 import openai
 
-from . import evidence
+from . import evidence, failures
 
 FIELDS = ("floor", "side") + evidence.OBSERVED_FIELDS
 MAX_ATTEMPTS = 2           # an empty or cut-off reply is not valid JSON, so it is asked again
@@ -85,7 +85,7 @@ def read_safely(client, model, photo, index):
     try:
         return read(client, model, photo, index)
     except openai.APIError as e:
-        return _unread(index, f"the photo model call failed: {e}", failed=True)
+        return _unread(index, f"the photo model call failed: {failures.describe(e)}", failed=True)
 
 
 def _unread(index, note, failed=False):

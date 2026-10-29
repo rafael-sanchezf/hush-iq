@@ -2,12 +2,16 @@
 
 Each turn the model picks one tool (tools.py), the code runs it and sends the result back, and the turn joins
 the trace with its tool, args, result and ms. The loop stops when submit_listing accepts, when the turns run
-out, or when the Model API keeps failing; every way out gives a clean result: the fields the checks accepted,
+out, or when the provider keeps failing; every way out gives a clean result: the fields the checks accepted,
 cant_tell for the rest. Then the code, not the model, places the address and scores it.
+
+Which model reads is the plan's (client.make_client). When the provider fails (a rejected key, a rate limit, no
+answer), the basic reader reads the listing from the start and the result's `ai` says why; nothing falls back
+from a caller's key to the house key. Everything yielded passes through failures.scrub(), so no key leaves.
 
 read_listing() is a generator, so the app can stream each turn as it happens:
 
-    for kind, data in read_listing(listing, client=client, scorer=scorer):
+    for kind, data in read_listing(listing, plan=make_client(), scorer=scorer):
         ...   # ("turn", entry) for each turn, then ("result", result) once
 """
 import json
@@ -16,7 +20,8 @@ from pathlib import Path
 
 import openai
 
-from . import evidence, settings, tools
+from . import client as model_client
+from . import evidence, failures, settings, tools
 from .evidence import OBSERVED_FIELDS, SCORE_FIELDS
 from .scoring import ScoreError
 
@@ -40,50 +45,22 @@ def first_message(listing):
     return f"Read this listing.\n\n{text}\n\n{shown}"
 
 
-def read_listing(listing, *, client, scorer=None, model=None, turns=None, mode="live"):
-    model = model or settings.model()
-    turns = turns or settings.turns()
-    record = tools.Record(listing)
-    ctx = tools.Context(client, model, record)
-    messages = [_user(first_message(listing))]
-    trace, stopped, n = [], "budget", 0
+def read_listing(listing, *, plan=None, client=None, scorer=None, model=None, turns=None, mode="live"):
+    """plan comes from client.make_client(). A bare client (and model and mode) still works, read as the house
+    key's: that is how the tests' scripted models run."""
+    if plan is None:
+        plan = model_client.given(client, model or settings.model(), mode)
+    for kind, data in _read_listing(listing, plan, scorer, turns or settings.turns()):
+        yield kind, failures.scrub(data, plan.secrets)
 
-    while n < turns:
-        n += 1
-        if n == turns:
-            messages.append(_user(LAST_TURN))
-        started = time.perf_counter()
-        try:
-            response, retries = _decide(client, model, messages)
-        except openai.APIError as e:   # still failing after the SDK's own retries
-            entry = {"n": n, "by": "model", "tool": None, "args": None,
-                     "result": {"error": f"the Model API failed: {e}"}, "ok": False, "ms": _ms(started)}
-            trace.append(entry)
-            yield "turn", entry
-            stopped = "model_error"
-            break
-        model_ms = _ms(started)
-        messages += response.output
-        calls = [item for item in response.output if item.type == "function_call"]
-        if calls:
-            ran = time.perf_counter()
-            result = tools.run(ctx, calls[0])
-            messages.append(_output(calls[0].call_id, result))
-            for extra in calls[1:]:
-                messages.append(_output(extra.call_id, {"error": ONE_TOOL}))
-            entry = {"n": n, "by": "model", "tool": calls[0].name, "args": tools.args_of(calls[0]), "result": result,
-                     "ok": "error" not in result, "ms": _ms(started), "model_ms": model_ms, "tool_ms": _ms(ran),
-                     "tokens": _usage(response), "retries": retries}
-        else:
-            messages.append(_user(PLAIN_TEXT))
-            entry = {"n": n, "by": "model", "tool": None, "args": None, "result": {"error": PLAIN_TEXT},
-                     "said": (response.output_text or "")[:500], "ok": False, "ms": _ms(started),
-                     "model_ms": model_ms, "tokens": _usage(response), "retries": retries}
-        trace.append(entry)
-        yield "turn", entry
-        if record.submitted:
-            stopped = "submitted"
-            break
+
+def _read_listing(listing, plan, scorer, turns):
+    trace, ai = [], plan.ai
+    record, stopped, n, error = yield from _agent(listing, plan, turns, trace, 0)
+    if error is not None and plan.ai["mode"] == "model":
+        basic = model_client.fallback(plan, error)
+        ai = basic.ai
+        record, stopped, n, _ = yield from _agent(listing, basic, turns, trace, n)
     used = n
 
     fields = {f: record.kept.get(f) or evidence.cant_tell(f) for f in SCORE_FIELDS}
@@ -170,9 +147,58 @@ def read_listing(listing, *, client, scorer=None, model=None, turns=None, mode="
         "notes": notes,
         "trace": trace,
         "turns": {"used": used, "budget": turns},
-        "model": model,
-        "mode": mode,
+        "model": plan.model,
+        "mode": "live" if ai["mode"] == "model" else "mock",
+        "ai": ai,
     }
+
+
+def _agent(listing, plan, turns, trace, n):
+    """The agent's turns, numbered on from n: yields each turn and returns (record, stopped, n, error)."""
+    record = tools.Record(listing)
+    ctx = tools.Context(plan.client, plan.model, record)
+    messages = [_user(first_message(listing))]
+    stopped, error, last = "budget", None, n + turns
+
+    while n < last:
+        n += 1
+        if n == last:
+            messages.append(_user(LAST_TURN))
+        started = time.perf_counter()
+        try:
+            response, retries = _decide(plan, messages)
+        except openai.APIError as e:   # still failing after the SDK's own retries
+            error = e
+            entry = {"n": n, "by": "model", "tool": None, "args": None, "ok": False, "ms": _ms(started),
+                     "result": {"error": f"the Model API failed: {failures.describe(e)}",
+                                "reason": failures.reason(e)}}
+            trace.append(entry)
+            yield "turn", entry
+            stopped = "model_error"
+            break
+        model_ms = _ms(started)
+        messages += response.output
+        calls = [item for item in response.output if item.type == "function_call"]
+        if calls:
+            ran = time.perf_counter()
+            result = tools.run(ctx, calls[0])
+            messages.append(_output(calls[0].call_id, result))
+            for extra in calls[1:]:
+                messages.append(_output(extra.call_id, {"error": ONE_TOOL}))
+            entry = {"n": n, "by": "model", "tool": calls[0].name, "args": tools.args_of(calls[0]), "result": result,
+                     "ok": "error" not in result, "ms": _ms(started), "model_ms": model_ms, "tool_ms": _ms(ran),
+                     "tokens": _usage(response), "retries": retries}
+        else:
+            messages.append(_user(PLAIN_TEXT))
+            entry = {"n": n, "by": "model", "tool": None, "args": None, "result": {"error": PLAIN_TEXT},
+                     "said": (response.output_text or "")[:500], "ok": False, "ms": _ms(started),
+                     "model_ms": model_ms, "tokens": _usage(response), "retries": retries}
+        trace.append(entry)
+        yield "turn", entry
+        if record.submitted:
+            stopped = "submitted"
+            break
+    return record, stopped, n, error
 
 
 def top_floor(field, floors, quote):
@@ -200,13 +226,14 @@ def headline(body):
     return {"verdict": src.get("verdict"), "quieter_than": src.get("quieter_than")}
 
 
-def _decide(client, model, messages):
+def _decide(plan, messages):
     """One agent decision, and how many times it was asked again: a reply with neither a tool call nor text (cut
     off at the token cap) is not an answer, so it is asked once more before the turn counts it."""
+    request = dict(model=plan.model, instructions=INSTRUCTIONS, input=messages, tools=tools.DEFINITIONS,
+                   parallel_tool_calls=False, store=False, max_output_tokens=MAX_OUTPUT_TOKENS)
+    request.update(plan.options)
     for retries in range(EMPTY_RETRIES + 1):
-        response = client.responses.create(model=model, instructions=INSTRUCTIONS, input=messages,
-                                           tools=tools.DEFINITIONS, parallel_tool_calls=False, store=False,
-                                           max_output_tokens=MAX_OUTPUT_TOKENS)
+        response = plan.client.responses.create(**request)
         if any(i.type == "function_call" for i in response.output) or (response.output_text or "").strip():
             break
     return response, retries

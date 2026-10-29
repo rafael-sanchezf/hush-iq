@@ -7,6 +7,10 @@ with the Hush IQ API (engine v2, v1 until v2 is deployed). Each turn streams as 
 
 The contract the website and the eval use: [`CONTRACT.md`](CONTRACT.md).
 
+Oct 29: the model reading sits behind a switch (`X-HushIQ-AI: off`, or `HOUSE_AI=off` on the server), and a
+caller may bring their own OpenAI or Anthropic key in a header to run the same prompt and the same checks. With
+no model, a basic reader (regular expressions) reads the text. Every result says which in `ai`.
+
 ## How it works
 
 An agent loop on the OpenAI Python SDK, pointed at the Meta Model API (`https://api.meta.ai/v1`,
@@ -30,9 +34,11 @@ reader/
   evidence.py      every check on a field
   photos.py        one photo, one Muse Spark multimodal call
   scoring.py       GeoSearch (house number, street, borough) and the score API (v2, falling back to v1)
-  client.py        the Meta Model API client, or the offline mock when there is no key
-  mock.py          the offline Model API: a real OpenAI client answered locally
-  app.py           FastAPI, POST /read as server-sent events
+  client.py        which model reads, per request: the house Meta key, a caller's key, or the basic reader
+  anthropic_adapter.py  Claude behind the loop's Responses calls, through the Messages API
+  failures.py      what a failed provider call means; keys scrubbed from everything a request returns
+  mock.py          the offline Model API (a real OpenAI client answered locally) and the basic reader
+  app.py           FastAPI, POST /read as server-sent events, POST /key-check
   instructions.md  the system prompt
 fixtures/          seven synthetic listings for real Manhattan buildings (one with two photos made with
                    muse-image-1.0), and what a correct reading returns
@@ -45,9 +51,11 @@ tests/             mock mode, offline, about a second
 ```bash
 cd services/agent
 uv venv --python 3.14 .venv && uv pip install --python .venv/bin/python -r requirements.txt
-cp .env.example .env              # add MODEL_API_KEY for live; leave it empty for mock
+cp .env.example .env              # add MODEL_API_KEY for Muse Spark; leave it empty for the basic reader
 .venv/bin/python -m pytest -q     # offline
 .venv/bin/python -m reader fixtures/01-stated-rear.txt          # one listing, turn by turn
+.venv/bin/python -m reader fixtures/01-stated-rear.txt --ai off # the basic reader
+ANTHROPIC_API_KEY=... .venv/bin/python -m reader fixtures/01-stated-rear.txt --provider anthropic
 .venv/bin/python scripts/run_fixtures.py                        # every fixture against expected.json
 .venv/bin/uvicorn reader.app:app --port 8100                    # POST /read
 ```

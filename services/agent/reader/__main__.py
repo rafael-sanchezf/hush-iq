@@ -1,8 +1,10 @@
 """Read one listing from the terminal, turn by turn.
 
     .venv/bin/python -m reader fixtures/01-stated-rear.txt [--photo kitchen.jpg ...] [--turns 8] [--no-score] [--json]
+                               [--ai off] [--provider openai|anthropic] [--model ID]
 
-Live when MODEL_API_KEY is set (services/agent/.env), mock otherwise.
+The house Meta key when MODEL_API_KEY is set (services/agent/.env), the basic reader otherwise or with --ai off.
+--provider openai or anthropic reads the key from OPENAI_API_KEY or ANTHROPIC_API_KEY.
 """
 import argparse
 import json
@@ -10,7 +12,7 @@ import sys
 from pathlib import Path
 
 from . import loop, settings
-from .client import make_client
+from .client import from_env
 from .listing import Answers, Listing, Photo
 from .scoring import HostedScorer
 
@@ -23,16 +25,20 @@ def main(argv=None):
     p.add_argument("--answers", default=None, help='JSON, e.g. {"sleep_from": 0, "bothers": ["sirens"]}')
     p.add_argument("--no-score", action="store_true", help="skip GeoSearch and the score API")
     p.add_argument("--json", action="store_true", help="print the full result as JSON")
+    p.add_argument("--ai", choices=("on", "off"), default="on")
+    p.add_argument("--provider", choices=("meta", "openai", "anthropic"), default=None)
+    p.add_argument("--model", default=None)
     a = p.parse_args(argv)
 
     settings.load_env()
     text = sys.stdin.read() if a.text == "-" else Path(a.text).read_text() if a.text else ""
     photos = [Photo.from_bytes(Path(f).read_bytes(), Path(f).name) for f in a.photo]
     listing = Listing(text=text, photos=photos, answers=Answers.parse(json.loads(a.answers) if a.answers else None))
-    client, mode = make_client()
+    plan = from_env(a.provider, a.model, a.ai)
     scorer = None if a.no_score else HostedScorer()
-    print(f"mode {mode}, model {settings.model()}", file=sys.stderr)
-    for kind, data in loop.read_listing(listing, client=client, scorer=scorer, turns=a.turns, mode=mode):
+    print(f"ai {plan.ai['mode']}, provider {plan.ai['provider']}, model {plan.ai['model'] or 'basic'}"
+          + (f" ({plan.ai['reason']})" if plan.ai["reason"] else ""), file=sys.stderr)
+    for kind, data in loop.read_listing(listing, plan=plan, scorer=scorer, turns=a.turns):
         if kind == "turn":
             mark = "ok " if data["ok"] else "ERR"
             brief = json.dumps(data["result"])[:160]
@@ -58,6 +64,8 @@ def summary(result):
         lines.append(f"  score          {result['score_engine']}: {h['verdict']}, quieter than "
                      f"{h['quieter_than']}% of Manhattan")
     lines += [f"  note           {n}" for n in result["notes"]]
+    if result["ai"]["message"]:
+        lines.append(f"  ai             {result['ai']['message']}")
     return "\n".join(lines)
 
 

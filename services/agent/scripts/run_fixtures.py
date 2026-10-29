@@ -1,9 +1,12 @@
 """Run the synthetic listings through the reader and compare with fixtures/expected.json.
 
     .venv/bin/python scripts/run_fixtures.py [--only 06,07] [--no-score] [--turns 8] [--save results.json]
+                                             [--ai off] [--provider openai|anthropic] [--model ID]
 
-Live when MODEL_API_KEY is set (services/agent/.env), mock otherwise. Mock skips the fixtures with photos (it
-cannot see). Exits 1 if any score field differs; observed fields from photos are printed, not counted.
+The house Meta key when MODEL_API_KEY is set (services/agent/.env), the basic reader otherwise or with --ai off;
+--provider reads OPENAI_API_KEY or ANTHROPIC_API_KEY from the environment. The basic reader skips the fixtures
+with photos (it cannot see). Exits 1 if any score field differs; observed fields from photos are printed, not
+counted.
 """
 import argparse
 import json
@@ -15,7 +18,7 @@ AGENT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(AGENT))
 
 from reader import loop, settings  # noqa: E402
-from reader.client import make_client  # noqa: E402
+from reader.client import from_env  # noqa: E402
 from reader.listing import Listing, Photo  # noqa: E402
 from reader.scoring import HostedScorer  # noqa: E402
 
@@ -29,6 +32,9 @@ def main():
     p.add_argument("--no-score", action="store_true")
     p.add_argument("--turns", type=int, default=None)
     p.add_argument("--save", default=None, help="write every result here as JSON")
+    p.add_argument("--ai", choices=("on", "off"), default="on")
+    p.add_argument("--provider", choices=("meta", "openai", "anthropic"), default=None)
+    p.add_argument("--model", default=None)
     a = p.parse_args()
 
     settings.load_env()
@@ -39,14 +45,15 @@ def main():
     ran = misses = 0
     saved = {}
     for name, want in expected.items():
-        client, mode = make_client()
-        if want.get("photos") and mode == "mock":
+        plan = from_env(a.provider, a.model, a.ai)
+        if want.get("photos") and plan.mode == "mock":
             print(f"skip {name:<28} mock cannot see photos")
             continue
         photos = [Photo.from_bytes((FIXTURES / f).read_bytes(), Path(f).name) for f in want.get("photos", [])]
         started = time.perf_counter()
-        result = loop.read(Listing(text=(FIXTURES / name).read_text(), photos=photos), client=client, scorer=scorer,
-                           turns=a.turns, mode=mode)
+        result = loop.read(Listing(text=(FIXTURES / name).read_text(), photos=photos), plan=plan, scorer=scorer,
+                           turns=a.turns)
+        mode = result["ai"]["model"] or f"basic ({result['ai']['reason']})"
         seconds = time.perf_counter() - started
         got = {k: result["fields"][k]["value"] for k in KEYS[:-1]}
         got["position"] = result["position"]
