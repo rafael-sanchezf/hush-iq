@@ -169,7 +169,7 @@ yet.
 | `status` | `complete`: a full submission passed every check. `partial`: the reader stopped first; fields that passed earlier are kept, the rest are `cant_tell` |
 | `stopped` | `submitted`, `budget` (turns ran out), or `model_error` (the Model API kept failing) |
 | `position` | what the engine gets from `side`: `street` and `corner` are `front`, `rear` and `courtyard` are `rear`, otherwise `unknown` |
-| `photo_readings` | one per photo read, by index: `{"index", "fields": {floor, side, view, windows, ac_units, wall_material}, "note", "dropped": [why]}`; each field is `{value, status, what}`. `dropped` lists what the photo model said that failed its type and became cant_tell |
+| `photo_readings` | one per photo read, by index: `{"index", "fields": {floor, side, view, windows, ac_units, wall_material}, "note", "dropped": [why], "tokens"}`; each field is `{value, status, what}`. `dropped` lists what the photo model said that failed its type and became cant_tell |
 | `location` | the building GeoSearch has at that house number on that street, or `null`. `borough_from` says how the borough was chosen when the address exists in more than one: `{"how": "only match"}`, `{"how": "text", "borough", "said"}` (a borough, ZIP or neighborhood in the listing), or `{"how": "default", "borough": "Manhattan"}` with a note. `alternatives` lists the other boroughs' labels |
 | `score` | the score API's response, untouched: engine v2 (`/v2/score`), or v1 (`/v1/score`) until v2 is deployed. `null` when there is no address, it could not be placed, or scoring failed (`notes` says which) |
 | `score_engine` | `v2`, `v1` or `null`. v2 has `verdict` and `quieter_than` at the top level and a `range` when floor or side is unknown; v1 has them under `manhattan` |

@@ -37,8 +37,8 @@ Return only JSON:
 
 
 def read(client, model, photo, index):
-    """{"index", "fields": {name: field}, "note", "dropped": [why]} for one photo."""
-    error, parsed = "", None
+    """{"index", "fields": {name: field}, "note", "dropped": [why], "tokens"} for one photo."""
+    error, parsed, tokens = "", None, {"input": 0, "output": 0, "reasoning": 0}
     for _ in range(MAX_ATTEMPTS):
         prompt = PROMPT.format(index=index)
         if error:
@@ -51,6 +51,7 @@ def read(client, model, photo, index):
             store=False,
             max_output_tokens=MAX_OUTPUT_TOKENS,
         )
+        _add_usage(tokens, response)
         try:
             parsed = json.loads(response.output_text)
             if not isinstance(parsed, dict):
@@ -59,7 +60,7 @@ def read(client, model, photo, index):
         except ValueError as e:
             error, parsed = str(e), None
     if parsed is None:
-        return _unread(index, f"the photo model returned no usable JSON: {error}")
+        return dict(_unread(index, f"the photo model returned no usable JSON: {error}"), tokens=tokens)
     raw = parsed.get("fields") if isinstance(parsed.get("fields"), dict) else {}
     fields, dropped = {}, []
     for name in FIELDS:
@@ -67,7 +68,16 @@ def read(client, model, photo, index):
         if why:
             dropped.append(why)
     return {"index": index, "fields": fields, "note": evidence.normalize(parsed.get("note"))[:evidence.MAX_WHAT],
-            "dropped": dropped}
+            "dropped": dropped, "tokens": tokens}
+
+
+def _add_usage(tokens, response):
+    u = getattr(response, "usage", None)
+    if u:
+        details = getattr(u, "output_tokens_details", None)
+        tokens["input"] += u.input_tokens or 0
+        tokens["output"] += u.output_tokens or 0
+        tokens["reasoning"] += getattr(details, "reasoning_tokens", 0) or 0
 
 
 def read_safely(client, model, photo, index):
