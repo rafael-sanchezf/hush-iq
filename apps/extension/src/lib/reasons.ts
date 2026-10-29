@@ -12,9 +12,14 @@
  * variances; emergency trips routed past the block), joined to the frozen model's lines they belong with, loudest
  * facts first, two lines at most. Without an upgrade sentence a source falls back to the frozen lines alone.
  * A line in a shape this file does not know is skipped; when nothing for a source parses, its first line is shown
- * as the city data has it. When /v2/score carries the upgrades' numbers as fields, they should replace the parsing.
+ * as the city data has it.
+ *
+ * Where /v2/score carries the upgrades' numbers (engine V12: `ingredients[].numbers`, and `routes` for sirens), the
+ * numbers win over the sentences: vehicles, buses and truck share; complaint nights and outdoor dining; apartments
+ * per floor; active street work and night-work variances; emergency trips on the nearest and the busiest street.
+ * Names, kinds and how a count was made are only in the sentences, so those still come from there.
  */
-import type { Field, Ingredient, Observed, ReaderFields, Score, Source } from './types.ts';
+import type { Field, Ingredient, Observed, ReaderFields, Score, SirenRoutes, SlotValue, Source, StepNumber } from './types.ts';
 import { addressLine, cleanEvidence, observedLabel, sideLabel } from './words.ts';
 
 // ---------------------------------------------------------------- the level word
@@ -94,6 +99,33 @@ export function streetName(raw: string): string {
 
 const sameStreet = (a: string, b: string) => a.toLowerCase() === b.toLowerCase();
 
+/** A count a renter can read, rounded the way the engine's upgrades round theirs: to 100 from 1,000, 10 from 100, 5 from 20. */
+export function roundCount(v: number): string {
+  if (v >= 1000) return (Math.round(v / 100) * 100).toLocaleString('en-US');
+  if (v >= 100) return String(Math.round(v / 10) * 10);
+  if (v >= 20) return String(Math.round(v / 5) * 5);
+  return String(Math.round(v));
+}
+
+/** What /v2/score says about a source in numbers, when it says it (engine V12). */
+interface Facts {
+  numbers: Record<string, StepNumber>;
+  routes: SirenRoutes | null;
+}
+
+/** A step's value: a number, one slot of a per-slot value, or the sum of named counts. Null when it is not there. */
+function num(f: Facts, key: string, slot?: keyof SlotValue): number | null {
+  const v = f.numbers[key]?.value;
+  if (typeof v === 'number') return Number.isFinite(v) ? v : null;
+  if (!v || typeof v !== 'object') return null;
+  if (slot) return typeof (v as SlotValue)[slot] === 'number' ? (v as SlotValue)[slot] : null;
+  const parts = Object.values(v).filter((x): x is number => typeof x === 'number');
+  return parts.length ? parts.reduce((a, b) => a + b, 0) : null;
+}
+
+/** The radius a step's label names ("Street-work sites within 100 m"), or the given default. */
+const radiusOf = (f: Facts, key: string, d: number) => Number(f.numbers[key]?.label.match(/within (\d+) m/)?.[1] ?? d);
+
 /** The first two of a source's candidate lines, in the order given: loudest facts first. */
 const firstTwo = (...lines: (string | null | undefined | false)[]) => lines.filter((l): l is string => Boolean(l)).slice(0, 2);
 
@@ -107,7 +139,7 @@ export interface SourceContext {
   groundFloorCommercial?: boolean;
 }
 
-function street(ev: string[]): string[] {
+function street(ev: string[], _ctx: SourceContext, f: Facts): string[] {
   const streets: { name: string; lanes: number; route: boolean; m: number }[] = [];
   let complaints = '';
   let volume: { name: string; day: string; night: string; how: string } | null = null;
@@ -157,17 +189,33 @@ function street(ev: string[]): string[] {
   }
   // The street that matters most: the most lanes, a bus or truck route counting as one more, then the nearest.
   const main = [...streets].sort((a, b) => b.lanes + Number(b.route) - (a.lanes + Number(a.route)) || a.m - b.m)[0];
-  const describe = (st: typeof main) => `${st.name}, ${words(st.lanes)} ${plural(st.lanes, 'lane')}, ${metres(st.m)} away`;
+  const describe = (st: typeof main, m = st.m) => `${st.name}, ${words(st.lanes)} ${plural(st.lanes, 'lane')}, ${metres(m)} away`;
+  // The numbers, when /v2/score has them, for the street the upgrade scored: the one its sentence names, or else the
+  // street in the city's file nearest the distance it gives.
+  const day = num(f, 'vehicles_per_hour', 'day');
+  const dist = num(f, 'distance');
+  if (day !== null) {
+    const night = num(f, 'vehicles_per_hour', 'night');
+    const near = dist !== null ? [...streets].sort((a, b) => Math.abs(a.m - dist) - Math.abs(b.m - dist))[0] : main;
+    volume = { name: volume?.name ?? near?.name ?? 'The main street', day: roundCount(day), night: night !== null ? roundCount(night) : '', how: volume?.how ?? '' };
+  }
+  const busDay = num(f, 'buses_per_hour', 'day');
+  if (busDay !== null) {
+    const busNight = num(f, 'buses_per_hour', 'night');
+    buses = busDay >= 1 ? { day: roundCount(busDay), night: busNight !== null && busNight >= 1 ? roundCount(busNight) : null } : null;
+  }
+  const share = num(f, 'truck_share', 'day');
+  if (share !== null && share >= 1) trucks = { label: trucks?.label ?? '', share: String(Math.round(share)) };
   const counted = volume
     ? (() => {
       const st = streets.find((x) => sameStreet(x.name, volume!.name));
-      return `${st ? describe(st) : volume.name}: about ${volume.day} vehicles an hour by day and ${volume.night} at night${volume.how}.`;
+      return `${st ? describe(st, dist ?? st.m) : volume.name}: about ${volume.day} vehicles an hour by day${volume.night ? ` and ${volume.night} at night` : ''}${volume.how}.`;
     })()
     : null;
   const heavy = buses || trucks
     ? sentence([
       buses ? `about ${buses.day} buses an hour by day${buses.night ? ` and ${buses.night} at night` : ''}` : null,
-      trucks ? `${trucks.label}${trucks.share ? `, about ${trucks.share} in 100 daytime vehicles trucks` : ''}` : null,
+      trucks ? [trucks.label, trucks.share ? `about ${trucks.share} in 100 daytime vehicles trucks` : ''].filter(Boolean).join(', ') : null,
     ].filter(Boolean).join('; '))
     : null;
   return firstTwo(
@@ -178,12 +226,14 @@ function street(ev: string[]): string[] {
   );
 }
 
-function nightlife(ev: string[], ctx: SourceContext): string[] {
+function nightlife(ev: string[], ctx: SourceContext, f: Facts): string[] {
   let venues: { n: number; within: string; kinds: string } | null = null;
   let nearest: { kind: string; m: number } | null = null;
   let complaints = '';
   let nights = '';
   let cafes = '';
+  let cafeNear = '';
+  let cafeClose = '';
   let none = '';
   for (const e of ev) {
     let m = e.match(/^(\d+) licensed venues within (\d+) m(?:: (.+))?$/);
@@ -214,6 +264,8 @@ function nightlife(ev: string[], ctx: SourceContext): string[] {
     m = e.match(/^(\d+) licensed sidewalk or roadway dining spots? within (\d+) m \(nearest (\d+) m\); outdoor tables close at (\d+ [ap]m)\.$/);
     if (m) {
       cafes = `${m[1]} outdoor dining ${plural(Number(m[1]), 'spot')}, the nearest ${m[3]} m away, open until ${m[4]}`;
+      cafeNear = m[3];
+      cafeClose = m[4];
       continue;
     }
     if (/^No outdoor dining, bar-style licence or reported late-night noise within \d+ m\.$/.test(e)) none = e;
@@ -232,11 +284,25 @@ function nightlife(ev: string[], ctx: SourceContext): string[] {
         : nearest
           ? `${cap(article(nearest.kind))} ${metres(nearest.m)} away.`
           : null;
+  // Numbers first: nights a year with a late complaint (the 10 pm to 5 am slot), and outdoor dining by count.
+  const lateNights = num(f, 'complaint_nights', 'night');
+  if (lateNights !== null) {
+    const r = radiusOf(f, 'complaint_nights', 150);
+    nights = lateNights >= 0.5
+      ? `party, music or loud-talking complaints within ${r} m on about ${Math.round(lateNights)} ${plural(Math.round(lateNights), 'night')} a year, 10 pm to 5 am`
+      : `almost no nights with a late complaint within ${r} m`;
+  }
+  const outdoor = num(f, 'cafes');
+  if (outdoor !== null) {
+    cafes = outdoor >= 1
+      ? `${outdoor} outdoor dining ${plural(outdoor, 'spot')} within ${radiusOf(f, 'cafes', 150)} m${cafeNear ? `, the nearest ${cafeNear} m away` : ''}${cafeClose ? `, open until ${cafeClose}` : ''}`
+      : '';
+  }
   const late = nights || cafes ? sentence([nights || complaints, cafes].filter(Boolean).join('; ')) : complaints ? sentence(complaints) : null;
   return firstTwo(places, late, none);
 }
 
-function neighbors(ev: string[]): string[] {
+function neighbors(ev: string[], _ctx: SourceContext, f: Facts): string[] {
   let complaints = '';
   let built = '';
   let perFloor = '';
@@ -270,6 +336,14 @@ function neighbors(ev: string[]): string[] {
     m = e.match(/^(\d+) whole-apartment short-term rentals? \(under 30 nights\) listed within about (\d+) m\.$/);
     if (m) shortStays = `${m[1]} short-term ${plural(Number(m[1]), 'rental')} listed within about ${m[2]} m`;
   }
+  const upf = num(f, 'upf');
+  if (upf !== null) {
+    const typical = num(f, 'upf_typical');
+    perFloor = upf < 1.5 ? 'about one apartment per floor' : `about ${Math.round(upf)} apartments share each floor`;
+    if (typical !== null && Math.round(typical) !== Math.round(upf)) perFloor += `, against ${Math.round(typical)} in a typical Manhattan building`;
+  }
+  const stays = num(f, 'str_n');
+  if (stays !== null) shortStays = stays >= 1 ? `${stays} short-term ${plural(stays, 'rental')} listed within about ${radiusOf(f, 'str_n', 150)} m` : '';
   return firstTwo(
     // With the building type's rate to compare against, that comparison says more than the commonest complaint.
     complaints ? sentence(type ? `${complaints}; ${type}` : `${complaints}${kind ? `, most often ${kind}` : ''}`) : type ? sentence(type) : null,
@@ -332,7 +406,34 @@ function routeLine(r: Routes): string {
   return `About ${kinds.join(' and ')} a day on this block${toHospital}.`;
 }
 
-function sirens(ev: string[]): string[] {
+/** The routes as numbers (engine V12): trips a day on the nearest street, then the busiest street within reach. */
+function routeNumbers(r: SirenRoutes): string | null {
+  if (!r.covered) return null;
+  const ns = r.nearest_street;
+  const total = ns ? ns.fire_per_day + ns.ambulance_per_day + ns.transport_per_day : 0;
+  const b = r.busiest_street;
+  const busiest = b && b.trips_per_day >= 0.5 && !(ns && b.name && ns.name === b.name)
+    ? `; about ${roundCount(b.trips_per_day)} on ${b.name ?? 'the busiest street'}, the busiest within ${r.radius_m} m`
+    : '';
+  if (!ns || total < 0.5) return `Almost no emergency trips on ${ns?.name ?? 'this block'}${busiest}.`;
+  const ambulances = ns.ambulance_per_day + ns.transport_per_day;
+  const mostly = ambulances >= (2 / 3) * total ? ', most of them ambulances' : ns.fire_per_day >= (2 / 3) * total ? ', most of them fire engines' : '';
+  return `About ${roundCount(total)} emergency trips a day on ${ns.name ?? 'this block'}${mostly}${busiest}.`;
+}
+
+function sirens(ev: string[], _ctx: SourceContext, f: Facts): string[] {
+  if (f.routes) {
+    const near = (['firehouse', 'hospital'] as const)
+      .map((k) => (f.routes!.nearest[k] ? { kind: k, m: f.routes!.nearest[k]!.m } : null))
+      .filter((p): p is { kind: 'firehouse' | 'hospital'; m: number } => Boolean(p))
+      .sort((a, b) => a.m - b.m);
+    const stations = near.length ? sentence(near.map((p) => `${article(p.kind)} ${metres(p.m)} away`).join(' and ')) : null;
+    return firstTwo(routeNumbers(f.routes), stations);
+  }
+  return sirenSentences(ev);
+}
+
+function sirenSentences(ev: string[]): string[] {
   let total: { n: number; within: string } | null = null;
   const places: { kind: string; m: number }[] = [];
   let nearby = '';
@@ -377,7 +478,7 @@ function sirens(ev: string[]): string[] {
   return out;
 }
 
-function construction(ev: string[]): string[] {
+function construction(ev: string[], _ctx: SourceContext, f: Facts): string[] {
   let complaints = '';
   let block: { n: number; kinds: string } | null = null;
   let until = '';
@@ -385,6 +486,9 @@ function construction(ev: string[]): string[] {
   let night = '';
   let sites = '';
   let none = '';
+  let streetKind = '';
+  let streetWhere = '';
+  let nightWhere = '';
   for (const e of ev) {
     let m = e.match(/^(\d+) construction noise complaints within (\d+) m in (\d+) months(?: \((.+)\))?$/);
     if (m) {
@@ -407,11 +511,14 @@ function construction(ev: string[]): string[] {
     m = e.match(/^A (.+) permit is active ((?:on a block )?(?:within 10 m|\d+ m away))\.$/);
     if (m) {
       street = `a ${m[1]} permit is active ${m[2]}`;
+      streetKind = m[1];
+      streetWhere = m[2];
       continue;
     }
     m = e.match(/^An after-hours variance (within 10 m|\d+ m away) allowed night work on (\d+) nights in the past year(?:, with (\d+) more scheduled)?\.$/);
     if (m) {
       night = `Night work allowed on ${m[2]} nights in the past year by an after-hours variance ${m[1]}${m[3] ? `, with ${m[3]} more scheduled` : ''}.`;
+      nightWhere = m[1];
       continue;
     }
     m = e.match(/^(\d+) street-work sites within (\d+) m in the past year(?:, (\d+) with night hours in the permit)?\.$/);
@@ -420,6 +527,25 @@ function construction(ev: string[]): string[] {
       continue;
     }
     if (/^No DOT street-work permits or after-hours variances within \d+ m/.test(e)) none = e;
+  }
+  // Numbers first: street work active now and in the past year, night-work variances; kinds and places from the text.
+  const active = num(f, 'street_active');
+  const total = num(f, 'street_sites');
+  const r = radiusOf(f, 'street_sites', 100);
+  if (active !== null && active >= 1) {
+    street = `${words(active)} street-work ${plural(active, 'site')} active within ${r} m${streetKind ? `, the nearest a ${streetKind} permit ${streetWhere}` : ''}`;
+  } else if (active !== null) {
+    street = '';
+  }
+  if (total !== null) {
+    const nightSites = num(f, 'street_night_sites');
+    sites = total >= 1 ? `${total} street-work ${plural(total, 'site')} within ${r} m in the past year${nightSites ? `, ${nightSites} with night hours` : ''}.` : '';
+  }
+  const ahvNights = num(f, 'ahv_nights');
+  const ahvSites = num(f, 'ahv_sites');
+  if (ahvNights !== null) {
+    const by = ahvSites === 1 && nightWhere ? `an after-hours variance ${nightWhere}` : `${words(ahvSites ?? 0)} after-hours ${plural(ahvSites ?? 0, 'variance')} within ${radiusOf(f, 'ahv_sites', r)} m`;
+    night = ahvNights >= 1 ? `Night work allowed on ${ahvNights} ${plural(ahvNights, 'night')} in the past year by ${by}.` : '';
   }
   const end = until ? `, the last running to ${MONTHS[Number(until.slice(5, 7)) - 1]} ${until.slice(0, 4)}` : '';
   const permits = block?.n ? `${words(block.n)} open loud-work ${plural(block.n, 'permit')} on this block${block.kinds ? ` (${block.kinds})` : ''}${end}` : '';
@@ -433,14 +559,15 @@ function construction(ev: string[]): string[] {
   );
 }
 
-const RULES: Record<Source, (ev: string[], ctx: SourceContext) => string[]> = {
+const RULES: Record<Source, (ev: string[], ctx: SourceContext, f: Facts) => string[]> = {
   street, nightlife, building: neighbors, sirens, construction,
 };
 
 /** At most two lines of why for one noise source, from its own evidence. */
-export function sourceLines(i: Pick<Ingredient, 'name' | 'evidence'>, ctx: SourceContext = {}): string[] {
+export function sourceLines(i: Pick<Ingredient, 'name' | 'evidence' | 'numbers' | 'routes'>, ctx: SourceContext = {}): string[] {
   const ev = i.evidence ?? [];
-  const lines = (RULES[i.name]?.(ev, ctx) ?? []).slice(0, 2);
+  const facts: Facts = { numbers: i.numbers ?? {}, routes: i.routes ?? null };
+  const lines = (RULES[i.name]?.(ev, ctx, facts) ?? []).slice(0, 2);
   if (lines.length) return lines;
   if (ev.length) return [sentence(cleanEvidence(ev[0]))];
   return ['The city data has nothing on this near the building.'];

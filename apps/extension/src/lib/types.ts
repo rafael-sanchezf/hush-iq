@@ -51,11 +51,40 @@ export interface Ingredient {
   /** Display only: the building's typical apartment, all 24 hours equal, the same for every renter. Engine v2 on
    * /v2/score since 2026-10-29; absent from the replay of v1. */
   block_quieter_than?: number;
+  /** Display only (engine V12, 2026-10-29): the source's inputs and rules as numbers, by step key. */
+  numbers?: Record<string, StepNumber>;
+  /** Sirens only: the routed emergency trips near the building; null when the upgrades are off. */
+  routes?: SirenRoutes | null;
   verdict: VerdictWord;
   weight: number;
   ticked: boolean;
   temporary: boolean;
   evidence: string[];
+}
+
+export interface SlotValue {
+  night: number;
+  early: number;
+  day: number;
+}
+
+/** One step of a source's math, as /v2/score shows it: a number, a per-slot number, or named counts. */
+export interface StepNumber {
+  label: string;
+  value: number | SlotValue | Record<string, number> | null;
+  unit: string;
+  kind: 'today_input' | 'new_input' | 'rule' | string;
+}
+
+/** The sirens upgrade's routes (packages/model/upgrades/sirens.md); street names from OpenStreetMap, null when unnamed. */
+export interface SirenRoutes {
+  covered: boolean;
+  /** The nearest street with trips, within 50 m; null beyond. */
+  nearest_street: { name: string | null; m: number; fire_per_day: number; ambulance_per_day: number; transport_per_day: number } | null;
+  busiest_street: { name: string | null; trips_per_day: number } | null;
+  nearest: Partial<Record<'hospital' | 'firehouse' | 'police_station', { m: number; name: string } | null>>;
+  radius_m: number;
+  window: [string, string];
 }
 
 export interface ScoreAddress {

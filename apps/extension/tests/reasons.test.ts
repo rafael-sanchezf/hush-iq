@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 
-import { level, objectiveRank, sourceLines, streetName, tiles } from '../src/lib/reasons.ts';
+import { level, objectiveRank, roundCount, sourceLines, streetName, tiles } from '../src/lib/reasons.ts';
 import { BOTHER_WORDS, SOURCE_WORDS } from '../src/lib/words.ts';
 import type { Field, Ingredient, Observed, ReaderFields, Score } from '../src/lib/types.ts';
 
@@ -25,10 +25,64 @@ test('level words cut Manhattan in thirds', () => {
 });
 
 const W57 = read('./fixtures/v2-w57-two-units.json');
+/** A source as /v2/score had it before the V12 numbers: its upgrade's sentences only. */
 const up = (name: Ingredient['name']) => ({ name, evidence: W57.evidence[name] as string[] });
+/** The same source with its V12 numbers, and the routes for sirens. */
+const v12 = (name: Ingredient['name']) => ({ ...up(name), numbers: W57.numbers[name], routes: name === 'sirens' ? W57.routes : undefined });
 const UP = { groundFloorCommercial: W57.ground_floor_commercial as boolean };
 
-// ---------------------------------------------------------------- with the upgrades: their facts lead
+// ---------------------------------------------------------------- with the V12 numbers: they win over the sentences
+
+test('numbers: street traffic from the counts, the name and how it was counted from the text', () => {
+  assert.deepEqual(sourceLines(v12('street')), [
+    'West 57th St, four lanes, 32 m away: about 920 vehicles an hour by day and 330 at night, estimated from streets like it.',
+    'About 25 buses an hour by day and 5 at night; a local truck route, about 6 in 100 daytime vehicles trucks.',
+  ]);
+});
+
+test('numbers: late-complaint nights a year and outdoor dining by count', () => {
+  assert.deepEqual(sourceLines(v12('nightlife'), UP)[1],
+    'Party, music or loud-talking complaints within 150 m on about 13 nights a year, 10 pm to 5 am; 4 outdoor dining spots within 150 m, the nearest 32 m away, open until 11 pm.');
+});
+
+test('numbers: apartments per floor against a typical Manhattan building', () => {
+  assert.equal(sourceLines(v12('building'))[1], 'About 7 apartments share each floor; built 1965.');
+  const big = { ...v12('building'), numbers: { ...W57.numbers.building, upf: { label: 'apartments per floor', value: 14.2, unit: 'apartments', kind: 'new_input' } } };
+  assert.equal(sourceLines(big)[1], 'About 14 apartments share each floor, against 7 in a typical Manhattan building; built 1965.');
+});
+
+test('numbers: street work active now, then night-work variances', () => {
+  assert.deepEqual(sourceLines(v12('construction')), [
+    'Four street-work sites active within 100 m, the nearest a Con Ed street opening permit on a block 30 m away; four open loud-work permits on this block (general construction), the last running to December 2026.',
+    'Night work allowed on 12 nights in the past year by an after-hours variance 100 m away.',
+  ]);
+});
+
+test('numbers: siren routes on the nearest street and the busiest within 300 m, then the stations', () => {
+  assert.deepEqual(sourceLines(v12('sirens')), [
+    'About 45 emergency trips a day on West 57th Street, most of them ambulances; about 85 on Columbus Avenue, the busiest within 300 m.',
+    'A firehouse 292 m away and a hospital 365 m away.',
+  ]);
+  const routes = W57.routes;
+  const withRoutes = (r: object) => ({ ...v12('sirens'), routes: { ...routes, ...r } });
+  // No routed street within 50 m: the busiest one still counts.
+  assert.equal(sourceLines(withRoutes({ nearest_street: null }))[0], 'Almost no emergency trips on this block; about 85 on Columbus Avenue, the busiest within 300 m.');
+  // An unnamed way, and a block where fire engines dominate.
+  assert.equal(sourceLines(withRoutes({ nearest_street: { name: null, m: 20, fire_per_day: 30, ambulance_per_day: 4, transport_per_day: 2 }, busiest_street: { name: null, trips_per_day: 120 } }))[0],
+    'About 35 emergency trips a day on this block, most of them fire engines; about 120 on the busiest street, the busiest within 300 m.');
+  // The busiest street is the nearest one: said once.
+  assert.equal(sourceLines(withRoutes({ busiest_street: { name: 'West 57th Street', trips_per_day: 46.9 } }))[0], 'About 45 emergency trips a day on West 57th Street, most of them ambulances.');
+  // Outside the route data: the stations alone, never a route.
+  assert.deepEqual(sourceLines(withRoutes({ covered: false, nearest_street: null, busiest_street: null })), ['A firehouse 292 m away and a hospital 365 m away.']);
+  // Upgrades off (routes null): the evidence sentences, as before.
+  assert.equal(sourceLines({ ...v12('sirens'), routes: null })[0], 'About 45 ambulance trips a day on this block.');
+});
+
+test('roundCount rounds as the engine does for a renter', () => {
+  assert.deepEqual([3.4, 22.9, 82.5, 327, 922, 1384].map(roundCount), ['3', '25', '85', '330', '920', '1,400']);
+});
+
+// ---------------------------------------------------------------- with the upgrades' sentences only: their facts lead
 
 test('street with its upgrade: the main street, its lanes and its traffic, then buses and trucks', () => {
   assert.deepEqual(sourceLines(up('street')), [
@@ -186,12 +240,28 @@ test('every source of every recorded address gets one or two lines, the v2 score
 
 test('only what the evidence says: every number in a line is a number in that source’s evidence', () => {
   const nums = (t: string) => (t.match(/\d[\d,]*/g) ?? []).map((n) => n.replace(/,/g, ''));
-  const cases: { name: Ingredient['name']; evidence: string[] }[] = [
+  const cases: Pick<Ingredient, 'name' | 'evidence' | 'numbers' | 'routes'>[] = [
     ...(Object.keys(W57.evidence) as Ingredient['name'][]).map(up),
+    ...(Object.keys(W57.evidence) as Ingredient['name'][]).map(v12),
     ...['bedford', 'claremont', 'ludlow', 'w47'].flatMap((slug) => v1(slug).ingredients),
   ];
+  // A number from the V12 fields may show rounded, and the nearest street's trips as their sum.
+  const fromFields = (c: (typeof cases)[number]) => {
+    const vals: number[] = [];
+    const walk = (x: unknown) => {
+      if (typeof x === 'number') vals.push(x);
+      else if (typeof x === 'string') vals.push(...nums(x).map(Number)); // street names: "West 57th Street"
+      else if (x && typeof x === 'object') Object.values(x).forEach(walk);
+    };
+    walk(c.numbers);
+    walk(c.routes);
+    const ns = c.routes?.nearest_street;
+    if (ns) vals.push(ns.fire_per_day + ns.ambulance_per_day + ns.transport_per_day);
+    const labels = Object.values(c.numbers ?? {}).map((n) => n.label).join(' ');
+    return [...vals.flatMap((v) => [String(Math.round(v)), roundCount(v).replace(/,/g, '')]), ...nums(labels)];
+  };
   for (const c of cases) {
-    const have = new Set(nums(c.evidence.join(' ')));
+    const have = new Set([...nums(c.evidence.join(' ')), ...fromFields(c)]);
     for (const line of sourceLines(c, UP)) {
       for (const n of nums(line)) assert.ok(have.has(n), `${c.name}: ${n} in "${line}" is not in its evidence`);
     }
