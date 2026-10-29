@@ -1,5 +1,6 @@
 /**
- * The side panel: the three questions, one at a time, the first time only; then the verdict.
+ * The side panel: the three questions, one at a time, the first time only; then the verdict and the source ranks,
+ * with what the reader took from the listing folded away. No written paragraph: Rafa cut it, 2026-10-29.
  *
  * What the page gave stays out of sight. The renter sees it only when it falls short (no address, outside the city,
  * very little text), with a way to fix it (Rafa, 2026-10-29). Nothing leaves the browser until the renter clicks
@@ -20,7 +21,7 @@ import type { Answers, ReadInput, ReaderResult, ReaderTurn, Score } from '../lib
 import { DEFAULT_ANSWERS, addressLine, forWhom } from '../lib/words.ts';
 import { clear, glyph, h } from './dom.ts';
 import type { ResultView } from './views.ts';
-import { fineprint, hearCard, questionsCard, sourcesCard, turnItem, verdictCard } from './views.ts';
+import { fineprint, informedCard, questionsCard, sourcesCard, turnItem, verdictCard } from './views.ts';
 
 const app = document.getElementById('app')!;
 const modePill = document.getElementById('mode')!;
@@ -52,7 +53,7 @@ async function refreshMode(): Promise<void> {
   if (!CONFIG.ai) {
     modePill.textContent = 'AI off';
     modePill.className = 'pill';
-    modePill.title = 'AI reading is off in settings: fixed rules read the listing and a template writes the verdict. The scores are the same.';
+    modePill.title = 'AI reading is off in settings: fixed rules read the listing. The scores are the same.';
     return;
   }
   const s = await client.services();
@@ -60,7 +61,7 @@ async function refreshMode(): Promise<void> {
   modePill.textContent = live ? 'Live' : 'Replay';
   modePill.className = `pill${live ? ' ink' : ''}`;
   modePill.title = live
-    ? `${modelName()} reads the listing and writes the verdict through ${CONFIG.apiBase}.`
+    ? `${modelName()} reads the listing through ${CONFIG.apiBase}.`
     : 'The live reader is not hosted yet, so fixed rules stand in for the model. The scores are real, from the hosted engine.';
 }
 
@@ -293,31 +294,14 @@ async function score(): Promise<void> {
 
 async function showResult(result: ReaderResult, first: Score, reader: client.Live, photos: string[], signal: AbortSignal): Promise<void> {
   const v: ResultView = {
-    score: first, verdict: null, dropped: 0, fields: result.fields, observed: result.observed,
-    answers: answers ?? DEFAULT_ANSWERS, reader, writer: 'replay', photos, readerAi: result.ai ?? null,
+    score: first, fields: result.fields, observed: result.observed,
+    answers: answers ?? DEFAULT_ANSWERS, reader, photos, readerAi: result.ai ?? null,
   };
-  const slot = { verdict: h('div'), hear: h('div'), sources: h('div'), fine: h('div') };
+  const slot = { verdict: h('div'), sources: h('div'), fine: h('div') };
   const draw = () => {
     slot.verdict.replaceChildren(verdictCard(v));
-    slot.hear.replaceChildren(hearCard(v));
     slot.sources.replaceChildren(sourcesCard(v.score));
     slot.fine.replaceChildren(fineprint(v.score));
-  };
-  const write = async () => {
-    v.verdict = null;
-    slot.hear.replaceChildren(hearCard(v));
-    try {
-      const got = await client.verdict({ score: v.score, answers: v.answers, fields: v.fields }, signal);
-      const checked = client.checkCitations(got.verdict);
-      v.verdict = checked.verdict;
-      v.dropped = checked.dropped;
-      v.writer = got.via;
-    } catch (e) {
-      if (signal.aborted) return;
-      slot.hear.replaceChildren(h('section', { class: 'card' }, h('h3', null, 'What you’ll hear'), h('p', { class: 'muted' }, `The verdict writer did not answer: ${(e as Error).message}`)));
-      return;
-    }
-    if (!signal.aborted) slot.hear.replaceChildren(hearCard(v));
   };
 
   const tapsSlot = h('div');
@@ -335,7 +319,6 @@ async function showResult(result: ReaderResult, first: Score, reader: client.Liv
         if (mine !== rescoring || signal.aborted) return;
         v.score = s;
         draw();
-        await write();
       } catch (e) {
         slot.fine.replaceChildren(h('p', { class: 'fine' }, `Could not re-score: ${(e as Error).message}`));
       } finally {
@@ -351,14 +334,13 @@ async function showResult(result: ReaderResult, first: Score, reader: client.Liv
     basic ? h('div', { class: 'note' }, glyph('cant_tell'), h('span', null, result.ai!.message!)) : null,
     tapsSlot,
     slot.verdict,
-    slot.hear,
     slot.sources,
+    informedCard(v),
     h('div', { class: 'actions' },
       h('button', { type: 'button', class: 'btn ghost small', onclick: change }, 'Change my answers'),
       h('button', { type: 'button', class: 'btn ghost small', onclick: () => fixCard(null) }, 'Check what was read')),
     slot.fine,
   );
-  await write();
 }
 
 // ---------------------------------------------------------------- what the service worker hands over

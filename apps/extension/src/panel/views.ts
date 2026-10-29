@@ -3,9 +3,9 @@
  * so the two read as one product.
  */
 import type { Live } from '../lib/client.ts';
-import type { AiInfo, Answers, Bother, Cap, EvidenceRef, Field, Observed, RangeCase, ReaderFields, ReaderTurn, Score, Source, Verdict } from '../lib/types.ts';
+import type { AiInfo, Answers, Bother, Cap, EvidenceRef, Field, Observed, RangeCase, ReaderFields, ReaderTurn, Score, Source } from '../lib/types.ts';
 import { BOTHERS, VERDICTS } from '../lib/types.ts';
-import { BOTHER_WORDS, SOURCE_WORDS, addressLine, cleanEvidence, forWhom, hourLabel, hoursAsleep, pct, sideLabel, sideWords } from '../lib/words.ts';
+import { BOTHER_WORDS, SOURCE_WORDS, addressLine, cleanEvidence, forWhom, hourLabel, hoursAsleep, observedLabel, pct, sideLabel, sideWords } from '../lib/words.ts';
 import { clear, glyph, h } from './dom.ts';
 
 // ---------------------------------------------------------------- the three questions
@@ -138,24 +138,12 @@ function quoteOf(f: Field<unknown>, photos: string[]): (Node | string)[] | null 
   return [src ? h('img', { src, alt: '' }) : '', `Photo ${n !== null ? n + 1 : ''}: ${e.what}`];
 }
 
-const WRITER_NAME: Record<string, string> = { 'muse-spark-open': 'Muse Spark Open', 'muse-spark-1.3': 'Muse Spark 1.3', template: 'Template' };
-
-function refusedDrafts(v: Verdict): string {
-  const refused = (v.trace ?? []).filter((t) => t.writer !== 'template' && !t.ok);
-  if (!refused.length) return '';
-  const why = refused[0].errors?.[0];
-  return ` The checks refused ${refused.length} model draft${refused.length > 1 ? 's' : ''}${why ? ` (${why})` : ''}.`;
-}
-
 export interface ResultView {
   score: Score;
-  verdict: Verdict | null;
-  dropped: number;
   fields: ReaderFields;
   observed: Observed;
   answers: Answers;
   reader: Live;
-  writer: Live;
   /** The photos as sent, so `photo:<i>` evidence can show its picture. */
   photos: string[];
   /** The reader's `ai` label: `basic` when rules read it, with the message the panel shows. */
@@ -197,64 +185,6 @@ export function verdictCard(v: ResultView): HTMLElement {
   );
 }
 
-export function hearCard(v: ResultView): HTMLElement {
-  const card = h('section', { class: 'card', 'aria-label': 'What you’ll hear' });
-  const verdict = v.verdict;
-  const head = h('div', { class: 'block-head' }, h('h3', null, 'What you’ll hear'),
-    h('span', { class: `pill${verdict && verdict.writer !== 'template' ? ' ink' : ''}` }, h('span', { class: 'dot' }), verdict ? WRITER_NAME[verdict.writer] ?? verdict.writer : 'Writing'));
-  card.append(head);
-  if (!verdict) {
-    card.append(h('p', { class: 'muted' }, 'Writing the paragraph from the evidence…'));
-    return card;
-  }
-  const list = h('ol', { class: 'evidence', 'aria-label': 'The evidence the writer was sent' });
-  // The lines stay folded in a narrow panel; a citation opens them at its line.
-  const box = h('details', { class: 'trace' }, h('summary', null, `The evidence it was sent (${verdict.evidence.length} lines)`), list);
-  const items = new Map<string, HTMLLIElement>();
-  const cites: HTMLButtonElement[] = [];
-  const hot = (id: string | null) => {
-    for (const [k, li] of items) li.classList.toggle('hot', k === id);
-    for (const c of cites) c.classList.toggle('hot', c.dataset.id === id);
-  };
-  for (const e of verdict.evidence) {
-    const li = h('li', { onmouseenter: () => hot(e.id) }, h('b', null, e.id), h('span', null, e.text));
-    items.set(e.id, li);
-    list.append(li);
-  }
-  const para = h('p', { class: 'paragraph' });
-  for (const s of verdict.sentences) {
-    const span = h('span', { class: 's' }, s.text);
-    for (const c of s.cites) {
-      const b = h('button', {
-        type: 'button', class: 'cite', 'aria-label': `Evidence ${c}`,
-        onmouseenter: () => hot(c), onfocus: () => hot(c),
-        onclick: () => {
-          box.open = true;
-          hot(c);
-          items.get(c)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        },
-      }, c.replace(/^E/, ''));
-      b.dataset.id = c;
-      cites.push(b);
-      span.append(b);
-    }
-    para.append(span, ' ');
-  }
-  const basic = verdict.ai?.mode === 'basic';
-  // The reader's message is already at the top of the panel; say the writer's only when it is a different one.
-  const own = basic && verdict.ai!.message && verdict.ai!.message !== v.readerAi?.message ? `${verdict.ai!.message} ` : '';
-  const writerNote = basic
-    ? `${own}Written by the template, with no model. Every sentence cites the lines below.`
-    : verdict.writer !== 'template'
-    ? `Written by ${WRITER_NAME[verdict.writer] ?? verdict.writer}${verdict.writer === 'muse-spark-open' ? ' on Baseten' : ''}. It may cite only the evidence lines below; the server and this panel both check.`
-    : v.writer === 'live'
-      ? 'The model did not answer in time, so the writer’s template wrote this, under the same rule: every sentence cites the lines below.'
-      : 'Written by the verdict writer’s template until Muse Spark Open is hosted. Same rule: every sentence cites the lines below.';
-  const dropped = v.dropped ? ` ${v.dropped} citation${v.dropped > 1 ? 's' : ''} pointed at no line and ${v.dropped > 1 ? 'were' : 'was'} removed.` : '';
-  card.append(para, h('p', { class: 'writer' }, writerNote + refusedDrafts(verdict) + dropped), box);
-  return card;
-}
-
 export function sourcesCard(score: Score): HTMLElement {
   const sources = [...score.ingredients].sort((a, b) => a.quieter_than - b.quieter_than);
   return h('section', { class: 'card', 'aria-label': 'Source by source' },
@@ -268,6 +198,34 @@ export function sourcesCard(score: Score): HTMLElement {
       i.evidence.length ? h('details', null,
         h('summary', null, `The city data (${i.evidence.length} line${i.evidence.length > 1 ? 's' : ''})`),
         h('ul', null, i.evidence.map((e) => h('li', null, cleanEvidence(e))))) : null))));
+}
+
+/** What the reader took from the listing, folded away under the results: open it to see what informed the score.
+ * Hidden by default, since a renter does not need it to act (Rafa, 2026-10-29). */
+export function informedCard(v: ResultView): HTMLElement {
+  const { fields, observed } = v;
+  const rows: [string, string, Field<unknown>][] = [
+    ['Address', 'address', fields.address],
+    ['Unit', 'unit', fields.unit],
+    ['Floor', 'floor', fields.floor],
+    ['Side', 'side', fields.side],
+    ['View', 'view', observed.view],
+    ['Windows', 'windows', observed.windows],
+    ['AC units', 'ac_units', observed.ac_units],
+    ['Walls', 'wall_material', observed.wall_material],
+  ];
+  const value = (key: string, f: Field<unknown>) =>
+    f.status !== 'read' ? 'Can’t tell' : key === 'side' ? sideLabel(f.value as string) : ['address', 'unit', 'floor'].includes(key) ? String(f.value) : observedLabel(key, f.value);
+  const who = v.readerAi?.mode === 'basic' || v.reader === 'replay' ? 'Fixed rules read the text, never the photos.' : 'Muse Spark read the listing; each fact shows the line it came from.';
+  return h('section', { class: 'card', 'aria-label': 'What informed your Hush score' },
+    h('details', { class: 'informed' },
+      h('summary', null, 'What informed your Hush score'),
+      h('p', { class: 'small' }, who),
+      h('div', { class: 'facts' }, rows.map(([k, key, f]) => h('div', { class: 'fact' },
+        h('span', { class: 'k' }, k),
+        h('span', { class: `v${f.status === 'read' ? '' : ' cant'}` }, value(key, f)),
+        h('span', { class: 'q' }, ...(quoteOf(f, v.photos) ?? ['Nothing in the listing says it.']))))),
+      h('p', { class: 'small' }, 'Floor and side feed the score. The rest are here to check at a viewing.')));
 }
 
 export function fineprint(score: Score): HTMLElement {
