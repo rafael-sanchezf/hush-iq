@@ -5,12 +5,14 @@
  * Built by rules from the engine's own evidence: `score.ingredients[].evidence`, `building_facts` and `unit`, plus
  * the reader's fields for the tiles. No model writes these, so they read the same with AI reading on or off, and
  * they say only what the evidence holds. A street is "a bus or truck route" because the city's street file says so,
- * never "heavy truck volume". Sirens lead with the emergency trips the engine's sirens upgrade routed past the block
- * (packages/model/upgrades/sirens.md), then the nearest firehouse or hospital; with no route sentence in the evidence
- * (no upgrade, or no routed street within 500 m) they fall back to the stations' distances.
+ * never "heavy truck volume".
  *
- * The evidence lines are the engine's (packages/model, frozen). A line in a shape this file does not know is
- * skipped; when nothing for a source parses, its first line is shown as the city data has it.
+ * Each source draws first on its engine v2 upgrade's sentences (packages/model/upgrades/*.md: traffic counts, buses,
+ * truck routes; late-night complaint nights and outdoor dining; apartments per floor; street permits and night-work
+ * variances; emergency trips routed past the block), joined to the frozen model's lines they belong with, loudest
+ * facts first, two lines at most. Without an upgrade sentence a source falls back to the frozen lines alone.
+ * A line in a shape this file does not know is skipped; when nothing for a source parses, its first line is shown
+ * as the city data has it. When /v2/score carries the upgrades' numbers as fields, they should replace the parsing.
  */
 import type { Field, Ingredient, Observed, ReaderFields, Score, Source } from './types.ts';
 import { addressLine, cleanEvidence, observedLabel, sideLabel } from './words.ts';
@@ -71,15 +73,29 @@ function topKind(breakdown: string | undefined): string | null {
 
 const STREET_ABBR: Record<string, string> = { ST: 'St', AVE: 'Ave', AV: 'Ave', DR: 'Dr', PL: 'Pl', BLVD: 'Blvd', PKWY: 'Pkwy', RD: 'Rd', LN: 'Ln', SQ: 'Sq', HWY: 'Hwy', CT: 'Ct', TER: 'Ter', EXPY: 'Expy', EXPWY: 'Expwy' };
 
-/** "W  47 ST" reads "W 47 St", "ESSEX ST" reads "Essex St"; a word with no vowel, like FDR, stays in capitals. */
+/**
+ * A city street name the way the engine's upgrades write it, so the two can be matched: "W  47 ST" reads
+ * "West 47th St", "ESSEX ST" reads "Essex St". A word with no vowel, like FDR, stays in capitals.
+ */
 export function streetName(raw: string): string {
-  return raw.trim().split(/\s+/).map((w) => {
+  const toks = raw.trim().split(/\s+/);
+  return toks.map((w, i) => {
     const up = w.toUpperCase();
+    if (/^\d+$/.test(w)) {
+      const n = Number(w);
+      return `${n}${n % 100 >= 10 && n % 100 <= 20 ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' } as Record<number, string>)[n % 10] ?? 'th'}`;
+    }
+    if ((up === 'E' || up === 'W') && i === 0 && /^\d+$/.test(toks[1] ?? '')) return up === 'E' ? 'East' : 'West';
     if (STREET_ABBR[up]) return STREET_ABBR[up];
-    if (/^\d/.test(w) || w.length === 1 || !/[AEIOUY]/i.test(w)) return up;
+    if (w.length === 1 || !/[AEIOUY]/i.test(w)) return up;
     return up.charAt(0) + up.slice(1).toLowerCase();
   }).join(' ');
 }
+
+const sameStreet = (a: string, b: string) => a.toLowerCase() === b.toLowerCase();
+
+/** The first two of a source's candidate lines, in the order given: loudest facts first. */
+const firstTwo = (...lines: (string | null | undefined | false)[]) => lines.filter((l): l is string => Boolean(l)).slice(0, 2);
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -94,6 +110,10 @@ export interface SourceContext {
 function street(ev: string[]): string[] {
   const streets: { name: string; lanes: number; route: boolean; m: number }[] = [];
   let complaints = '';
+  let volume: { name: string; day: string; night: string; how: string } | null = null;
+  let buses: { day: string; night: string | null } | null = null;
+  let trucks: { label: string; share: string | null } | null = null;
+  let plain = '';
   for (const e of ev) {
     let m = e.match(/^(.+?): [a-z ]+, (\d+) travel lanes?, \d+ mph, (bus or truck route, )?([\d.]+) m away$/);
     if (m) {
@@ -105,25 +125,72 @@ function street(ev: string[]): string[] {
       const n = Number(m[1]);
       const top = n ? topKind(m[4]) : null;
       complaints = `${n ? n : 'No'} traffic noise ${plural(n, 'complaint')} to 311 within ${m[2]} m in ${span(Number(m[3]))}${top ? `, most often ${top}` : ''}.`;
+      continue;
     }
+    // The street upgrade (packages/model/upgrades/street.md): counts, buses and truck routes on the main street.
+    m = e.match(/^NYC DOT counted about ([\d,]+) vehicles an hour on (.+) by day and about ([\d,]+) an hour at night \((\d{4}) count\)\.$/);
+    if (m) {
+      volume = { name: m[2], day: m[1], night: m[3], how: `, counted by the city in ${m[4]}` };
+      continue;
+    }
+    m = e.match(/^(.+) has no count on this block; the nearest count on the same street, (\d+) m away, and similar streets suggest about ([\d,]+) vehicles an hour by day and ([\d,]+) at night\.$/);
+    if (m) {
+      volume = { name: m[1], day: m[3], night: m[4], how: `, estimated from a count ${m[2]} m along the street` };
+      continue;
+    }
+    m = e.match(/^(.+) has no traffic count; streets like it carry about ([\d,]+) vehicles an hour by day and ([\d,]+) at night\.$/);
+    if (m) {
+      volume = { name: m[1], day: m[2], night: m[3], how: ', estimated from streets like it' };
+      continue;
+    }
+    m = e.match(/^About ([\d,]+) buses an hour pass on .+ in the day(?: and ([\d,]+) at night)?\.$/);
+    if (m) {
+      buses = { day: m[1], night: m[2] ?? null };
+      continue;
+    }
+    m = e.match(/^.+ is (a local truck route|a through truck route)(?:; about (\d+) in 100 daytime vehicles are trucks)?\.$/);
+    if (m) {
+      trucks = { label: m[1], share: m[2] ?? null };
+      continue;
+    }
+    if (/^.+ is a footpath or bike path with no motor traffic\.$/.test(e) || /^No street lies within \d+ m of this point/.test(e)) plain = e;
   }
-  const out: string[] = [];
   // The street that matters most: the most lanes, a bus or truck route counting as one more, then the nearest.
   const main = [...streets].sort((a, b) => b.lanes + Number(b.route) - (a.lanes + Number(a.route)) || a.m - b.m)[0];
-  if (main) out.push(`${main.name}, ${words(main.lanes)} ${plural(main.lanes, 'lane')}, ${metres(main.m)} away${main.route ? ', a bus or truck route' : ''}.`);
-  if (complaints) out.push(complaints);
-  return out;
+  const describe = (st: typeof main) => `${st.name}, ${words(st.lanes)} ${plural(st.lanes, 'lane')}, ${metres(st.m)} away`;
+  const counted = volume
+    ? (() => {
+      const st = streets.find((x) => sameStreet(x.name, volume!.name));
+      return `${st ? describe(st) : volume.name}: about ${volume.day} vehicles an hour by day and ${volume.night} at night${volume.how}.`;
+    })()
+    : null;
+  const heavy = buses || trucks
+    ? sentence([
+      buses ? `about ${buses.day} buses an hour by day${buses.night ? ` and ${buses.night} at night` : ''}` : null,
+      trucks ? `${trucks.label}${trucks.share ? `, about ${trucks.share} in 100 daytime vehicles trucks` : ''}` : null,
+    ].filter(Boolean).join('; '))
+    : null;
+  return firstTwo(
+    counted ?? (main ? `${describe(main)}${main.route ? ', a bus or truck route' : ''}.` : null),
+    plain,
+    heavy,
+    complaints,
+  );
 }
 
 function nightlife(ev: string[], ctx: SourceContext): string[] {
-  let venues: { n: number; within: string; bars: number } | null = null;
+  let venues: { n: number; within: string; kinds: string } | null = null;
   let nearest: { kind: string; m: number } | null = null;
   let complaints = '';
+  let nights = '';
+  let cafes = '';
+  let none = '';
   for (const e of ev) {
     let m = e.match(/^(\d+) licensed venues within (\d+) m(?:: (.+))?$/);
     if (m) {
-      const bars = m[3]?.match(/(\d+) bars?\b/);
-      venues = { n: Number(m[1]), within: m[2], bars: bars ? Number(bars[1]) : 0 };
+      // "4 bars, 14 restaurants, 6 venues" reads "4 bars, 14 restaurants and 6 other venues".
+      const kinds = (m[3] ?? '').split(/,\s*/).filter(Boolean).map((k) => k.replace(/^(\d+) venues?$/, (_, n) => `${n} other ${Number(n) === 1 ? 'venue' : 'venues'}`));
+      venues = { n: Number(m[1]), within: m[2], kinds: kinds.length > 1 ? `${kinds.slice(0, -1).join(', ')} and ${kinds[kinds.length - 1]}` : kinds.join('') };
       continue;
     }
     m = e.match(/^nearest loud: .+ \(([a-z ]+)\), .+, ([\d.]+) m$/);
@@ -135,42 +202,80 @@ function nightlife(ev: string[], ctx: SourceContext): string[] {
     if (m) {
       const n = Number(m[1]);
       const late = m[4] !== undefined ? Number(m[4]) : null;
-      complaints = `${n ? n : 'No'} party or music ${plural(n, 'complaint')} within ${m[2]} m in ${span(Number(m[3]))}${n && late !== null ? `, ${late} of them 10 pm to 5 am` : ''}.`;
+      complaints = `${n ? n : 'no'} party or music ${plural(n, 'complaint')} within ${m[2]} m in ${span(Number(m[3]))}${n && late !== null ? `, ${late} of them 10 pm to 5 am` : ''}`;
+      continue;
     }
+    // The local-businesses upgrade (packages/model/upgrades/nightlife.md): nights with late complaints, outdoor dining.
+    m = e.match(/^Neighbors reported a party, music or loud talking within (\d+) m on (\d+) of the last (\d+) nights between 10 pm and 5 am\.$/);
+    if (m) {
+      nights = `party, music or loud talking reported within ${m[1]} m on ${m[2]} of the last ${m[3]} nights, 10 pm to 5 am`;
+      continue;
+    }
+    m = e.match(/^(\d+) licensed sidewalk or roadway dining spots? within (\d+) m \(nearest (\d+) m\); outdoor tables close at (\d+ [ap]m)\.$/);
+    if (m) {
+      cafes = `${m[1]} outdoor dining ${plural(Number(m[1]), 'spot')}, the nearest ${m[3]} m away, open until ${m[4]}`;
+      continue;
+    }
+    if (/^No outdoor dining, bar-style licence or reported late-night noise within \d+ m\.$/.test(e)) none = e;
   }
-  const out: string[] = [];
   const count = venues
     ? venues.n
-      ? `${venues.n} licensed ${plural(venues.n, 'place')} within ${venues.within} m${venues.bars ? `, ${venues.bars} of them ${plural(venues.bars, 'bar')}` : ''}`
+      ? `${venues.n} licensed ${plural(venues.n, 'place')} within ${venues.within} m${venues.kinds ? `: ${venues.kinds}` : ''}`
       : `no licensed bars or restaurants within ${venues.within} m`
     : '';
-  if (ctx.groundFloorCommercial) {
-    out.push(`Shops or a bar on this building’s ground floor${count ? `; ${count}` : ''}.`);
-  } else if (nearest && venues?.n) {
-    out.push(`${cap(article(nearest.kind))} ${metres(nearest.m)} away, the nearest of ${count}.`);
-  } else if (count) {
-    out.push(sentence(count));
-  } else if (nearest) {
-    out.push(`${cap(article(nearest.kind))} ${metres(nearest.m)} away.`);
-  }
-  if (complaints) out.push(complaints);
-  return out;
+  const places = ctx.groundFloorCommercial
+    ? `Shops or a bar on this building’s ground floor${count ? `; ${count}` : ''}.`
+    : nearest && venues?.n
+      ? `${cap(article(nearest.kind))} ${metres(nearest.m)} away is the nearest of ${count}.`
+      : count
+        ? sentence(count)
+        : nearest
+          ? `${cap(article(nearest.kind))} ${metres(nearest.m)} away.`
+          : null;
+  const late = nights || cafes ? sentence([nights || complaints, cafes].filter(Boolean).join('; ')) : complaints ? sentence(complaints) : null;
+  return firstTwo(places, late, none);
 }
 
 function neighbors(ev: string[]): string[] {
-  const out: string[] = [];
+  let complaints = '';
+  let built = '';
+  let perFloor = '';
+  let type = '';
+  let shortStays = '';
+  let kind: string | null = null;
   for (const e of ev) {
     let m = e.match(/^(\d+) residential noise complaints to 311 at this building in (\d+) months, (\d+) units: .+?(?: \(([^()]+ \d+(?:, [^()]+ \d+)*)\))?$/);
     if (m) {
       const n = Number(m[1]);
-      const top = n ? topKind(m[4]) : null;
-      out.unshift(`${n ? n : 'No'} noise ${plural(n, 'complaint')} about neighbors at this building in ${span(Number(m[2]))}, across ${m[3]} apartments${top ? `, most often ${top}` : ''}.`);
+      complaints = `${n ? n : 'No'} noise ${plural(n, 'complaint')} about neighbors at this building in ${span(Number(m[2]))}, across ${m[3]} apartments`;
+      kind = n ? topKind(m[4]) : null;
       continue;
     }
-    m = e.match(/^built (\d{4}): (.+)$/);
-    if (m) out.push(`Built ${m[1]}: ${m[2].replace(/[.\s]*$/, '')}.`);
+    m = e.match(/^built (\d{4})(?:: (.+))?$/);
+    if (m) {
+      built = `built ${m[1]}${m[2] ? `, ${m[2].replace(/[.\s]*$/, '')}` : ''}`;
+      continue;
+    }
+    // The neighbors upgrade (packages/model/upgrades/building.md): apartments per floor, the building type's rate.
+    m = e.match(/^About (one|\d+) apartments? (?:per floor|share each floor)\.$/);
+    if (m) {
+      perFloor = m[1] === 'one' ? 'about one apartment per floor' : `about ${m[1]} apartments share each floor`;
+      continue;
+    }
+    m = e.match(/^Buildings of this type \((.+?)\) average (.+?) per 100 apartments a year; the Manhattan average is (.+?)\.$/);
+    if (m) {
+      type = `${m[1]} average ${m[2]} per 100 apartments a year, against ${m[3]} for Manhattan`;
+      continue;
+    }
+    m = e.match(/^(\d+) whole-apartment short-term rentals? \(under 30 nights\) listed within about (\d+) m\.$/);
+    if (m) shortStays = `${m[1]} short-term ${plural(Number(m[1]), 'rental')} listed within about ${m[2]} m`;
   }
-  return out;
+  return firstTwo(
+    // With the building type's rate to compare against, that comparison says more than the commonest complaint.
+    complaints ? sentence(type ? `${complaints}; ${type}` : `${complaints}${kind ? `, most often ${kind}` : ''}`) : type ? sentence(type) : null,
+    perFloor || built ? sentence([perFloor, built].filter(Boolean).join('; ')) : null,
+    shortStays ? sentence(shortStays) : null,
+  );
 }
 
 /**
@@ -273,30 +378,59 @@ function sirens(ev: string[]): string[] {
 }
 
 function construction(ev: string[]): string[] {
-  const out: string[] = [];
-  let permits: { n: number } | null = null;
+  let complaints = '';
+  let block: { n: number; kinds: string } | null = null;
   let until = '';
+  let street = '';
+  let night = '';
+  let sites = '';
+  let none = '';
   for (const e of ev) {
     let m = e.match(/^(\d+) construction noise complaints within (\d+) m in (\d+) months(?: \((.+)\))?$/);
     if (m) {
       const n = Number(m[1]);
       const top = n ? topKind(m[4])?.replace(/^construction (before or after hours)$/, 'work $1') : null;
-      out.unshift(`${n ? n : 'No'} construction noise ${plural(n, 'complaint')} within ${m[2]} m in ${span(Number(m[3]))}${top ? `, most often ${top}` : ''}.`);
+      complaints = `${n ? n : 'No'} construction noise ${plural(n, 'complaint')} within ${m[2]} m in ${span(Number(m[3]))}${top ? `, most often ${top}` : ''}.`;
       continue;
     }
-    m = e.match(/^(\d+) unexpired loud-work permits? on this tax block/);
+    m = e.match(/^(\d+) unexpired loud-work permits? on this tax block(?:: (.+))?$/);
     if (m) {
-      permits = { n: Number(m[1]) };
+      block = { n: Number(m[1]), kinds: (m[2] ?? '').split(/,\s*/).map((k) => k.replace(/\s+\d+$/, '').toLowerCase()).filter(Boolean).join(', ') };
       continue;
     }
     m = e.match(/^.+: .+ to (\d{4}-\d{2}-\d{2})$/);
-    if (m && m[1] > until) until = m[1];
+    if (m) {
+      if (m[1] > until) until = m[1];
+      continue;
+    }
+    // The construction upgrade (packages/model/upgrades/construction.md): street permits, night-work variances.
+    m = e.match(/^A (.+) permit is active ((?:on a block )?(?:within 10 m|\d+ m away))\.$/);
+    if (m) {
+      street = `a ${m[1]} permit is active ${m[2]}`;
+      continue;
+    }
+    m = e.match(/^An after-hours variance (within 10 m|\d+ m away) allowed night work on (\d+) nights in the past year(?:, with (\d+) more scheduled)?\.$/);
+    if (m) {
+      night = `Night work allowed on ${m[2]} nights in the past year by an after-hours variance ${m[1]}${m[3] ? `, with ${m[3]} more scheduled` : ''}.`;
+      continue;
+    }
+    m = e.match(/^(\d+) street-work sites within (\d+) m in the past year(?:, (\d+) with night hours in the permit)?\.$/);
+    if (m) {
+      sites = `${m[1]} street-work ${plural(Number(m[1]), 'site')} within ${m[2]} m in the past year${m[3] ? `, ${m[3]} with night hours` : ''}.`;
+      continue;
+    }
+    if (/^No DOT street-work permits or after-hours variances within \d+ m/.test(e)) none = e;
   }
-  if (permits?.n) {
-    const end = until ? `, the last running to ${MONTHS[Number(until.slice(5, 7)) - 1]} ${until.slice(0, 4)}` : '';
-    out.push(`${Words(permits.n)} open loud-work ${plural(permits.n, 'permit')} on this block${end}.`);
-  }
-  return out;
+  const end = until ? `, the last running to ${MONTHS[Number(until.slice(5, 7)) - 1]} ${until.slice(0, 4)}` : '';
+  const permits = block?.n ? `${words(block.n)} open loud-work ${plural(block.n, 'permit')} on this block${block.kinds ? ` (${block.kinds})` : ''}${end}` : '';
+  // Active permits first, by kind and distance; then night work, the complaints, and street work in the past year.
+  return firstTwo(
+    street || permits ? sentence([street, permits].filter(Boolean).join('; ')) : null,
+    night,
+    complaints,
+    sites,
+    none,
+  );
 }
 
 const RULES: Record<Source, (ev: string[], ctx: SourceContext) => string[]> = {

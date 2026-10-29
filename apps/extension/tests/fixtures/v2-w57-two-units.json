@@ -1,5 +1,5 @@
 {
- "note": "engine v2 /v2/score (HIQ-43-engine-v2, 02dbdc4) for 315 W 57th St with traffic ticked, two units; ranks and labels only",
+ "note": "engine v2 /v2/score (HIQ-43-engine-v2, 02dbdc4) for 315 W 57th St with traffic ticked, two units: ranks and labels; the evidence of the first, with every source upgrade",
  "units": [
   {
    "unit": {
@@ -102,12 +102,51 @@
    ]
   }
  ],
- "sirens_evidence": [
-  "3 emergency facilities within 600 m: 1 hospital, 1 firehouse, 1 police station",
-  "ENGINE 23 (firehouse), 215 WEST 58 STREET, 292 m",
-  "MIDTWN NORTH POLICE STATION (police station), 306 WEST 54 STREET, 313 m",
-  "MOUNT SINAI WEST (hospital), 1000 10 AVENUE, 364 m",
-  "About 45 ambulance trips a day pass on this block.",
-  "Nearby: a hospital about 360 m away and a fire or ambulance station about 290 m away."
- ]
+ "evidence": {
+  "street": [
+   "W  57 ST: arterial, 4 travel lanes, 25 mph, bus or truck route, 31 m away",
+   "W  58 ST: arterial, 3 travel lanes, 25 mph, bus or truck route, 54 m away",
+   "25 vehicle noise complaints to 311 within 100 m in 24 months (car/truck horn 13, engine idling 11)",
+   "West 57th St has no traffic count; streets like it carry about 920 vehicles an hour by day and 330 at night.",
+   "About 25 buses an hour pass on West 57th St in the day and 5 at night.",
+   "West 57th St is a local truck route; about 6 in 100 daytime vehicles are trucks."
+  ],
+  "nightlife": [
+   "24 licensed venues within 150 m: 4 bars, 14 restaurants, 6 venues",
+   "nearest loud: PMACS 12 LLC (bar), 327 W 57th St, 43 m",
+   "nearest loud: DM 58 LLC (bar), 312 W 58TH ST, 59 m",
+   "nearest loud: BB 57 LLC (restaurant), 313 W 57TH ST, 38 m",
+   "42 party, music or loud-talking complaints within 150 m in 24 months; 19 of them 10 pm to 5 am",
+   "Neighbors reported a party, music or loud talking within 150 m on 26 of the last 730 nights between 10 pm and 5 am.",
+   "4 licensed sidewalk or roadway dining spots within 150 m (nearest 32 m); outdoor tables close at 11 pm.",
+   "4 of the 24 licensed venues within 150 m hold a bar-style liquor licence."
+  ],
+  "building": [
+   "9 residential noise complaints to 311 at this building in 24 months, 284 units: 0.02 per unit-year vs 0.07 for Manhattan (0.2x after shrinkage) (loud music/party 5, banging/pounding 4)",
+   "built 1965",
+   "class D6: elevator building",
+   "complaint hours at this building: night 4, early 0, day 5",
+   "About 7 apartments share each floor.",
+   "Buildings of this type (elevator apartment buildings) average 3 noise complaints per 100 apartments a year; the Manhattan average is 6.",
+   "2 whole-apartment short-term rentals (under 30 nights) listed within about 150 m."
+  ],
+  "sirens": [
+   "3 emergency facilities within 600 m: 1 hospital, 1 firehouse, 1 police station",
+   "ENGINE 23 (firehouse), 215 WEST 58 STREET, 292 m",
+   "MIDTWN NORTH POLICE STATION (police station), 306 WEST 54 STREET, 313 m",
+   "MOUNT SINAI WEST (hospital), 1000 10 AVENUE, 364 m",
+   "About 45 ambulance trips a day pass on this block.",
+   "Nearby: a hospital about 360 m away and a fire or ambulance station about 290 m away."
+  ],
+  "construction": [
+   "22 construction noise complaints within 100 m in 24 months (noise: construction equipment (nc1) 10, noise: construction before/after hours (nm1) 7)",
+   "4 unexpired loud-work permits on this tax block: General Construction 4",
+   "301 West 57 Street: General Construction to 2026-12-03",
+   "4 Columbus Circle: General Construction to 2026-11-01",
+   "A Con Ed street opening permit is active on a block 30 m away.",
+   "15 street-work sites within 100 m in the past year.",
+   "An after-hours variance 100 m away allowed night work on 12 nights in the past year."
+  ]
+ },
+ "ground_floor_commercial": true
 }
