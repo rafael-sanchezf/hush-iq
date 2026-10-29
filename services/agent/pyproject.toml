@@ -1,0 +1,20 @@
+[project]
+name = "hush-iq-reader"
+version = "0.1.0"
+description = "Hush IQ listing reader: a Meta model reads a pasted listing and its photos, every field tied to a quote or a photo, then the address is scored. Hackathon work."
+requires-python = ">=3.12"
+dependencies = [
+    "openai>=2.0,<3",
+    "anthropic>=2.3,<3",
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+    "httpx>=0.27",
+    "python-multipart>=0.0.9",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "tests"]
