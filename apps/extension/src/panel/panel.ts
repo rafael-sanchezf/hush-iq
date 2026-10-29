@@ -18,6 +18,7 @@ import * as client from '../lib/client.ts';
 import { CONFIG, REPO_URL, load, loadAnswers, saveAnswers } from '../lib/config.ts';
 import { extract } from '../lib/mock/extract.ts';
 import { checkPlace, sameBuilding } from '../lib/nyc.ts';
+import { canSave, saveForPhotoTest } from '../lib/photo-test.ts';
 import { inlinePhotos } from '../lib/photos.ts';
 import { redactContacts } from '../lib/redact.ts';
 import type { Answers, ReadInput, ReaderResult, ReaderTurn, Score } from '../lib/types.ts';
@@ -341,10 +342,34 @@ async function showResult(result: ReaderResult, first: Score, reader: client.Liv
   };
   const basic = result.ai?.mode === 'basic' && result.ai.message;
   const note = basic ? h('div', { class: 'note' }, glyph('cant_tell'), h('span', null, result.ai!.message!)) : null;
-  const home = () => show(note, tapsSlot, slot.score, slot.shaped, slot.fine);
+  const save = canSave() && capture ? saveButton(capture) : null;
+  const home = () => show(note, tapsSlot, slot.score, slot.shaped, save, slot.fine);
   draw();
   goHome = home;
   home();
+}
+
+/** Testing only (lib/photo-test.ts): files this listing for the photo test. */
+function saveButton(c: Capture): HTMLElement {
+  const slot = h('div');
+  const button = h('button', {
+    type: 'button', class: 'btn ghost block',
+    onclick: async () => {
+      button.disabled = true;
+      button.textContent = 'Saving…';
+      try {
+        const s = await saveForPhotoTest(c, text);
+        slot.replaceChildren(h('div', { class: 'note' }, glyph('ok'), h('span', null, h('b', null, `Saved as photo test listing ${s.folder}. `),
+          `${s.photos} photo${s.photos === 1 ? '' : 's'}${s.missed ? `; ${s.missed} could not be fetched` : ''}. Label it in eval/labeler.html.`)));
+      } catch (e) {
+        button.disabled = false;
+        button.textContent = 'Save for the photo test';
+        slot.append(h('p', { class: 'fine' }, `Could not save: ${(e as Error).message}`));
+      }
+    },
+  }, 'Save for the photo test');
+  slot.append(button);
+  return slot;
 }
 
 // ---------------------------------------------------------------- what the service worker hands over

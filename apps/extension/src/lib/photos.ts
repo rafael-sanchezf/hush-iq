@@ -1,13 +1,13 @@
 /**
  * The reader takes photos as JPEG data URLs (services/agent/CONTRACT.md). A listing's photos live on the listing
- * site's image host, which the extension has no permission for, so each one is fetched as any web page would
- * fetch it: it works when that host allows cross-origin reads, and the rest go as `photo_urls` for the backend.
+ * site's image host. The extension may read the listing sites' own hosts and zillowstatic.com (StreetEasy's and
+ * Zillow's photos); any other host works when it allows cross-origin reads, and the rest go as `photo_urls`.
  * Downscaled to 1280 px on the long side, as the website does with uploads.
  */
 const LONG_SIDE = 1280;
 const MAX_INLINE = 8;
 
-async function toDataUrl(url: string, signal?: AbortSignal): Promise<string> {
+export async function toDataUrl(url: string, signal?: AbortSignal): Promise<string> {
   const r = await fetch(url, { signal, mode: 'cors', credentials: 'omit' });
   if (!r.ok) throw new Error(String(r.status));
   const bitmap = await createImageBitmap(await r.blob());

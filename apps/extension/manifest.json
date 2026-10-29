@@ -35,6 +35,7 @@
     "https://*.zillow.com/*",
     "https://*.apartments.com/*",
     "https://*.craigslist.org/*",
+    "https://*.zillowstatic.com/*",
     "https://hush-iq-api.vercel.app/*"
   ]
 }
