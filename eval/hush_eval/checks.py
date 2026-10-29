@@ -44,6 +44,10 @@ def _evidence_problems(ev, text, n_photos, where):
             out.append(Problem("reader_grounding", where, "text evidence with an empty quote"))
         elif _norm_text(q) not in _norm_text(text):
             out.append(Problem("reader_grounding", where, f"quote not in the listing: {q!r}"))
+        elif "start" in ev or "end" in ev:            # offsets, where the reader sends them, must point at the quote
+            a, b = ev.get("start"), ev.get("end")
+            if not (isinstance(a, int) and isinstance(b, int) and text[a:b] == q):
+                out.append(Problem("reader_grounding", where, f"offsets {a}:{b} do not point at the quote {q!r}"))
     elif isinstance(src, str) and _PHOTO.match(src):
         i = int(_PHOTO.match(src).group(1))
         if i >= n_photos:
@@ -92,7 +96,7 @@ def reader_grounding(result, listing):
         for ev in evidence:
             out += _evidence_problems(ev, text, n_photos, where)
         if status == S.CANT_TELL:
-            if value is not None:
+            if value not in S.CANT_TELL_VALUES:
                 out.append(Problem("reader_grounding", where, f"cant_tell with a value: {value!r}"))
             continue
         if value is None:
@@ -178,8 +182,10 @@ def verdict_citations(verdict, score=None):
 
 
 # ---------------------------------------------------------------- permit adjustments
-ADJUST_SIZE_KEYS = ("delta", "size", "points", "adjustment")
-ROW_ID_KEYS = ("id", "work_permit", "job_filing_number", "row_id")
+ADJUST_SIZE_KEYS = ("size", "delta", "points", "adjustment")
+ROW_ID_KEYS = ("work_permit", "id", "job_filing_number", "row_id")
+DIRECTIONS = ("louder", "quieter")
+_PERMIT = re.compile(r"^permit:(.+)$")
 
 
 def row_id(row):
@@ -189,34 +195,60 @@ def row_id(row):
     return None
 
 
+def adjustment_list(adj):
+    """The permit reader returns one `adjustment` (or null); an `adjustments` list is read the same way."""
+    if "adjustment" in adj:
+        return [adj["adjustment"]] if adj["adjustment"] is not None else []
+    return adj.get("adjustments")
+
+
 def adjustments(adj, rows, caps):
-    """Every adjustment names a capped ingredient, stays within that cap, and cites only rows in the pull.
-    `caps` comes from the permit reader's own config when it is importable, never from the model's output."""
+    """Every adjustment names a capped source, stays within that cap, and cites only rows in the pull; every
+    permit reading quotes its own row's job description. `caps` comes from the permit reader's own config when it
+    is importable, never from the model's output."""
     out = []
     if adj is None:
         return out
-    if not isinstance(adj, dict) or not isinstance(adj.get("adjustments"), list):
-        return [Problem("adjustments", "adjust", "the permit reader returned no adjustments list")]
-    pulled = {row_id(r) for r in rows if isinstance(r, dict)} - {None}
-    for k, a in enumerate(adj["adjustments"]):
+    items = adjustment_list(adj) if isinstance(adj, dict) else None
+    if not isinstance(items, list):
+        return [Problem("adjustments", "adjust", "the permit reader returned no adjustment or adjustments")]
+    by_id = {row_id(r): r for r in rows if isinstance(r, dict)}
+    by_id.pop(None, None)
+    for k, a in enumerate(items):
         where = f"adjustments[{k}]"
         if not isinstance(a, dict):
             out.append(Problem("adjustments", where, f"not an object: {a!r}"))
             continue
-        ing = a.get("ingredient") or a.get("source")
-        if ing not in caps:
-            out.append(Problem("adjustments", where, f"ingredient {ing!r} has no cap"))
+        src = a.get("source") or a.get("ingredient")
+        if src not in caps:
+            out.append(Problem("adjustments", where, f"source {src!r} has no cap"))
         size = next((a[k2] for k2 in ADJUST_SIZE_KEYS if k2 in a), None)
         if isinstance(size, bool) or not isinstance(size, (int, float)):
             out.append(Problem("adjustments", where, f"size {size!r} is not a number"))
-        elif ing in caps and abs(size) > caps[ing] + 1e-9:
-            out.append(Problem("adjustments", where, f"{ing} moved by {size:g}, over its cap of {caps[ing]:g}"))
+        elif src in caps and abs(size) > caps[src] + 1e-9:
+            out.append(Problem("adjustments", where, f"{src} moved by {size:g}, over its cap of {caps[src]:g}"))
+        if "direction" in a and a["direction"] not in DIRECTIONS:
+            out.append(Problem("adjustments", where, f"direction {a['direction']!r} is not louder or quieter"))
         cites = a.get("cites") or a.get("rows") or []
         if not cites:
             out.append(Problem("adjustments", where, "cites no rows"))
         for c in cites:
-            if str(c) not in pulled:
+            if str(c) not in by_id:
                 out.append(Problem("adjustments", where, f"cites row {c!r}, which is not in the pull"))
+    for k, r in enumerate(adj.get("readings") or []):
+        for name in ("kind", "duration"):
+            f = (r or {}).get(name) or {}
+            if f.get("status") != "read":
+                continue
+            for ev in f.get("evidence") or []:
+                m = _PERMIT.match(str(ev.get("source") or ""))
+                where = f"readings[{k}].{name}"
+                if not m or m.group(1) not in by_id:
+                    out.append(Problem("adjustments", where, f"cites {ev.get('source')!r}, which is not a permit in the pull"))
+                    continue
+                desc = _norm_text(by_id[m.group(1)].get("job_description") or "").lower()
+                if _norm_text(ev.get("quote") or "").lower() not in desc or not str(ev.get("quote") or "").strip():
+                    out.append(Problem("adjustments", where, f"quote {ev.get('quote')!r} is not in {m.group(1)}'s description"))
     return out
 
 

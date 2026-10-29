@@ -1,17 +1,22 @@
 """The seam between the eval and the three services. Each service is reached one of three ways:
 
-    inproc   the service's folder is importable: call its entry function in this process
+    inproc   the service's folder is on this branch and imports: call it in this process
     http     HIQ_<SERVICE>_URL is set: POST to it (the reader answers with server-sent events)
     fixture  neither: replay the output recorded in the case file (mock mode only)
 
-Mock mode (the default) never reaches a model. In process, the eval hands the service a scripted client that
-answers every model call with the case's recorded model output, so the service's own validation (the tools that
-refuse an ungrounded field, an uncited sentence, an adjustment over cap) runs on it for free. Live mode passes no
-client: the service builds its real one from MODEL_API_KEY or BASETEN_API_KEY.
+Mock mode (the default) never reaches a model and never needs a key:
+    reader   its own mock client (services/agent reader/mock.py) is driven by a responder that answers with the
+             case's recorded model output, so the reader's real tools check it: submit_listing refuses an
+             unsupported field, read_photo refuses a photo that does not exist. A scorer stand-in returns the
+             recorded score, so nothing reaches the city's data.
+    adjust   the permit reader's rules reader (client=None), through the same checks as the model.
+    verdict  a scripted OpenAI-SDK client, when the writer takes `client`.
+Live mode passes no stand-ins: each service builds its real client from MODEL_API_KEY or BASETEN_API_KEY.
 
-ENTRYPOINTS is the one place that knows each service's module and function. Until a service has merged, its
-candidates are guesses taken from the shared shapes; the first one that imports wins, and `transport_report()`
-says which was used and why.
+One Binding per service is the only place that knows its module names and call shape, taken from each service's
+CONTRACT.md: services/agent (HIQ-13) and services/adjust (HIQ-18). The verdict writer's (HIQ-20) is not pushed
+yet, so its binding guesses from the shared shape and falls back to fixture replay until it imports.
+HIQ_EVAL_REPO points the eval at another checkout, to run it against a service's unmerged branch.
 """
 import base64
 import importlib
@@ -24,32 +29,18 @@ import time
 import urllib.request
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[2]
-
-ENTRYPOINTS = {
-    # service: (folder, [module:function candidates], url env var, http path)
-    "reader": ("services/agent", ["reader:read", "agent.reader:read", "hiq_agent.reader:read", "app.reader:read"],
-               "HIQ_READER_URL", "/read"),
-    "verdict": ("services/verdict", ["verdict:write", "writer:write", "verdict.writer:write", "app.verdict:write"],
-                "HIQ_VERDICT_URL", "/verdict"),
-    "adjust": ("services/adjust", ["adjust:adjust", "permits:adjust", "adjust.permits:adjust", "app.adjust:adjust"],
-               "HIQ_ADJUST_URL", "/adjust"),
-}
-CAPS_ATTR = "CAPS"
-DEFAULT_ADJUST_CAPS = {"construction": 15.0}   # rank points; the permit reader's own CAPS wins when importable
+REPO = Path(os.environ.get("HIQ_EVAL_REPO") or Path(__file__).resolve().parents[2])
+DEFAULT_ADJUST_CAPS = {"construction": 2.0}   # steps, as services/adjust config.CAPS; its own table wins when importable
 
 
 class Unreachable(RuntimeError):
     pass
 
 
-# ---------------------------------------------------------------- a scripted OpenAI-SDK-shaped client
+# ---------------------------------------------------------------- a scripted OpenAI-SDK-shaped client (chat API)
 class _Obj:
     def __init__(self, **kw):
         self.__dict__.update(kw)
-
-    def model_dump(self):
-        return {k: (v.model_dump() if isinstance(v, _Obj) else v) for k, v in self.__dict__.items()}
 
 
 class ScriptedClient:
@@ -79,29 +70,7 @@ class ScriptedClient:
                     choices=[_Obj(index=0, message=msg, finish_reason=finish)])
 
 
-# ---------------------------------------------------------------- discovery
-def _import_entry(service):
-    folder, candidates, _, _ = ENTRYPOINTS[service]
-    root = REPO / folder
-    if not root.is_dir():
-        return None, f"{folder} does not exist on this branch"
-    if str(root) not in sys.path:
-        sys.path.insert(0, str(root))
-    errors = []
-    for cand in candidates:
-        mod_name, fn_name = cand.split(":")
-        try:
-            mod = importlib.import_module(mod_name)
-        except ImportError as e:
-            errors.append(f"{cand}: {e}")
-            continue
-        fn = getattr(mod, fn_name, None)
-        if callable(fn):
-            return (mod, fn), f"in process, {folder} {cand}"
-        errors.append(f"{cand}: no callable {fn_name}")
-    return None, f"{folder} has no entry point ({'; '.join(errors)})"
-
-
+# ---------------------------------------------------------------- helpers
 def _accepts(fn, name):
     try:
         params = inspect.signature(fn).parameters
@@ -116,7 +85,7 @@ def _photo_payload(path):
     return f"data:{mime};base64,{base64.b64encode(p.read_bytes()).decode()}"
 
 
-def _post(url, body, timeout=120):
+def _post(url, body, timeout=180):
     req = urllib.request.Request(url, data=json.dumps(body).encode(), method="POST",
                                  headers={"Content-Type": "application/json", "Accept": "text/event-stream, application/json",
                                           "User-Agent": "hush-iq-eval"})
@@ -126,17 +95,20 @@ def _post(url, body, timeout=120):
 def read_sse(lines):
     """Server-sent events -> [(event, data)]. `data` is parsed as JSON when it can be."""
     events, name, data = [], "message", []
+
+    def flush():
+        payload = "\n".join(data)
+        try:
+            payload = json.loads(payload)
+        except ValueError:
+            pass
+        events.append((name, payload))
+
     for raw in lines:
-        line = raw.decode() if isinstance(raw, bytes) else raw
-        line = line.rstrip("\r\n")
+        line = (raw.decode() if isinstance(raw, bytes) else raw).rstrip("\r\n")
         if not line:
             if data:
-                payload = "\n".join(data)
-                try:
-                    payload = json.loads(payload)
-                except ValueError:
-                    pass
-                events.append((name, payload))
+                flush()
             name, data = "message", []
         elif line.startswith(":"):
             continue
@@ -145,71 +117,218 @@ def read_sse(lines):
         elif line.startswith("data:"):
             data.append(line[5:].lstrip())
     if data:
-        payload = "\n".join(data)
-        try:
-            payload = json.loads(payload)
-        except ValueError:
-            pass
-        events.append((name, payload))
+        flush()
     return events
 
 
-# ---------------------------------------------------------------- the three services
+def _import_from(folder, modules):
+    """Import `modules` with `folder` on sys.path. (namespace, None) or (None, why)."""
+    root = REPO / folder
+    if not root.is_dir():
+        return None, f"{folder} does not exist on this branch"
+    if str(root) not in sys.path:
+        sys.path.insert(0, str(root))
+    got = {}
+    for alias, name in modules.items():
+        try:
+            got[alias] = importlib.import_module(name)
+        except Exception as e:   # a missing dependency or a broken module: say which
+            return None, f"{folder} does not import ({name}: {type(e).__name__}: {e})"
+    return _Obj(**got), None
+
+
+# ---------------------------------------------------------------- the bindings
+class ReaderBinding:
+    """services/agent: reader.loop.read_listing(Listing, client=, scorer=, mode=) -> ("turn", t)..., ("result", r)."""
+    name, folder, url_env, path = "reader", "services/agent", "HIQ_READER_URL", "/read"
+
+    def load(self):
+        mods, why = _import_from(self.folder, {"loop": "reader.loop", "listing": "reader.listing", "mock": "reader.mock",
+                                               "client": "reader.client", "scoring": "reader.scoring"})
+        return mods, why or f"in process, {self.folder} reader.loop.read_listing"
+
+    def call(self, mods, case, inputs, mode, on_turn):
+        L = mods.listing
+        listing = L.Listing(text=inputs["text"], photos=[L.Photo.from_data_url(p, str(i)) for i, p in enumerate(inputs["photos"])],
+                            answers=L.Answers.parse(inputs.get("answers") or {}))
+        if mode == "mock":
+            client, scorer, label = mods.mock.client(reader_responder(mods.mock, (case.get("fixtures") or {}).get("reader") or {})), \
+                FixtureScorer(case, mods.scoring.ScoreError), "mock"
+        else:
+            client, label = mods.client.make_client()
+            scorer = mods.scoring.HostedScorer()
+        result = None
+        for kind, data in mods.loop.read_listing(listing, client=client, scorer=scorer, mode=label):
+            if kind == "turn":
+                on_turn(data)
+            elif kind == "result":
+                result = data
+        return result
+
+    def http_body(self, inputs):
+        return inputs
+
+
+def reader_responder(mock, recorded):
+    """Plays the model for the reader's mock client: read the photos the recorded output cites, then submit the
+    recorded fields; a field the reader refuses is resubmitted as cant_tell, as a model correcting itself would."""
+    fields, observed = recorded.get("fields") or {}, recorded.get("observed") or {}
+    photo_fields = {}
+    for group in (fields, observed):
+        for name, f in group.items():
+            for ev in (f or {}).get("evidence") or []:
+                src = str(ev.get("source") or "")
+                if src.startswith("photo:") and f.get("status") == "read":
+                    photo_fields.setdefault(int(src[6:]), {})[name] = {"status": "read", "value": f["value"], "what": ev.get("what")}
+
+    def submit_args(drop=()):
+        def strip(f, name):
+            if not f or f.get("status") != "read" or name in drop:
+                return {"status": "cant_tell", "value": None, "evidence": []}
+            ev = [{"source": e["source"], **({"quote": e["quote"]} if e.get("source") == "text" else {})} for e in f["evidence"]]
+            return {"status": "read", "value": f["value"], "evidence": ev}
+        return {"fields": {n: strip(f, n) for n, f in fields.items()}, "observed": {n: strip(f, n) for n, f in observed.items()}}
+
+    def respond(body):
+        i = mock.photo_index(body)
+        if i is not None:
+            return {"output_text": json.dumps({"fields": photo_fields.get(i, {}), "note": "scripted by the eval"})}
+        hist = mock.history(body)
+        n = len(hist) + 1
+        if photo_fields and not any(c.get("name") == "read_photo" for c, _ in hist):
+            return mock.tool_call("read_photo", {"indexes": sorted(photo_fields)}, n)
+        refused = set()
+        for c, out in hist:
+            if c.get("name") == "submit_listing" and isinstance(out, dict):
+                refused |= set((out.get("refused") or {}).keys())
+        return mock.tool_call("submit_listing", submit_args(refused), n)
+
+    return respond
+
+
+class FixtureScorer:
+    """Stands in for the reader's HostedScorer in mock mode: the recorded location and score, no network."""
+
+    def __init__(self, case, error):
+        self.score_body = ((case.get("fixtures") or {}).get("reader") or {}).get("score") or (case.get("fixtures") or {}).get("score")
+        self.error = error
+
+    def locate(self, address):
+        addr = (self.score_body or {}).get("address") or {}
+        if not addr.get("label"):
+            raise self.error(f"no recorded location for {address!r}")
+        return {"label": addr["label"], "lat": addr.get("lat"), "lng": addr.get("lng"), "bbl": addr.get("bbl"),
+                "bin": addr.get("bin"), "borough": addr.get("borough")}
+
+    def score(self, address, floor, position, answers):
+        if not self.score_body:
+            raise self.error("no recorded score")
+        return {"engine": self.score_body.get("engine", "v2"), "url": "fixture", "body": self.score_body}
+
+
+class AdjustBinding:
+    """services/adjust: adjust.permits.read_permits(rows, as_of, client=None) -> {adjustment, readings, ...}."""
+    name, folder, url_env, path = "adjust", "services/adjust", "HIQ_ADJUST_URL", "/adjust/permits"
+
+    def load(self):
+        mods, why = _import_from(self.folder, {"permits": "adjust.permits", "config": "adjust.config"})
+        return mods, why or f"in process, {self.folder} adjust.permits.read_permits"
+
+    def call(self, mods, case, inputs, mode, on_turn):
+        client = None
+        if mode == "live":
+            llm = importlib.import_module("adjust.llm")
+            client = next((getattr(llm, f)() for f in ("make_client", "client") if callable(getattr(llm, f, None))), None)
+        return mods.permits.read_permits(inputs["rows"], inputs["as_of"], client=client)
+
+    def caps(self, mods):
+        caps = getattr(mods.config, "CAPS", None)
+        return {k: float(v) for k, v in caps.items()} if isinstance(caps, dict) and caps else None
+
+    def http_body(self, inputs):
+        return {"permits": inputs["rows"], "as_of": inputs["as_of"], "reader": "auto"}
+
+
+class VerdictBinding:
+    """services/verdict: not pushed yet. Tries the names the shared shape suggests; fixture replay until one imports."""
+    name, folder, url_env, path = "verdict", "services/verdict", "HIQ_VERDICT_URL", "/verdict"
+    CANDIDATES = ("verdict:write", "writer:write", "verdict.writer:write", "app.verdict:write")
+
+    def load(self):
+        errors = []
+        for cand in self.CANDIDATES:
+            mod_name, fn = cand.split(":")
+            mods, why = _import_from(self.folder, {"m": mod_name})
+            if mods and callable(getattr(mods.m, fn, None)):
+                self.fn = getattr(mods.m, fn)
+                return mods, f"in process, {self.folder} {cand}"
+            errors.append(why or f"{cand}: no {fn}")
+            if why and "does not exist" in why:
+                return None, why
+        return None, f"{self.folder} has no entry point ({'; '.join(errors)})"
+
+    def call(self, mods, case, inputs, mode, on_turn):
+        kw = dict(inputs)
+        if mode == "mock":
+            if not _accepts(self.fn, "client"):
+                raise Unreachable(f"{self.folder} takes no client, so mock mode cannot script it")
+            recorded = (case.get("fixtures") or {}).get("verdict") or {}
+            kw["client"] = ScriptedClient({"sentences": recorded.get("sentences", [])})
+        return self.fn(**kw)
+
+    def http_body(self, inputs):
+        return inputs
+
+
+BINDINGS = {"reader": ReaderBinding, "verdict": VerdictBinding, "adjust": AdjustBinding}
+
+
 class Service:
-    """One service, resolved once per run. `call(case, mode)` returns (output, meta)."""
+    """One service, resolved once per run. `call(case, **inputs)` returns (output, meta)."""
 
     def __init__(self, name, mode="mock", transport="auto"):
         self.name, self.mode = name, mode
-        self.entry, why = (None, "not tried")
-        url_env = ENTRYPOINTS[name][2]
-        self.url = os.environ.get(url_env)
+        self.binding = BINDINGS[name]()
+        self.mods, why = None, "not tried"
+        self.url = os.environ.get(self.binding.url_env)
         if transport in ("auto", "inproc"):
-            self.entry, why = _import_entry(name)
-        if self.entry:
+            self.mods, why = self.binding.load()
+        if self.mods:
             self.transport, self.why = "inproc", why
         elif transport in ("auto", "http") and self.url:
-            self.transport, self.why = "http", f"over HTTP, {self.url}"
+            self.transport, self.why = "http", f"over HTTP, {self.url}{self.binding.path}"
         elif transport in ("auto", "fixture") and mode == "mock":
             self.transport = "fixture"
-            self.why = f"fixture replay ({why}; {url_env} not set)" if transport == "auto" else "fixture replay (forced)"
+            self.why = (f"fixture replay ({why}; {self.binding.url_env} not set)" if transport == "auto"
+                        else "fixture replay (forced)")
         else:
-            self.transport, self.why = None, f"unreachable: {why}; {url_env} not set"
+            self.transport, self.why = None, f"unreachable: {why}; {self.binding.url_env} not set"
 
     def caps(self):
-        if self.transport == "inproc":
-            caps = getattr(self.entry[0], CAPS_ATTR, None)
-            if isinstance(caps, dict) and caps:
-                return {k: float(v) for k, v in caps.items()}, f"{ENTRYPOINTS[self.name][0]} {CAPS_ATTR}"
-        return dict(DEFAULT_ADJUST_CAPS), "eval default (the permit reader's CAPS is not importable)"
+        if self.transport == "inproc" and hasattr(self.binding, "caps"):
+            caps = self.binding.caps(self.mods)
+            if caps:
+                return caps, f"{self.binding.folder} config.CAPS"
+        return dict(DEFAULT_ADJUST_CAPS), "eval default, the same as services/adjust config.CAPS on Oct 28"
 
     def call(self, case, **inputs):
         if self.transport is None:
             raise Unreachable(f"{self.name}: {self.why}")
-        recorded = (case.get("fixtures") or {}).get(self.name)
         t0 = time.perf_counter()
         turns = []
         if self.transport == "fixture":
-            out = recorded
+            out = (case.get("fixtures") or {}).get(self.name)
         elif self.transport == "inproc":
-            fn = self.entry[1]
-            kw = dict(inputs)
-            client = None
-            if self.mode == "mock":
-                client = ScriptedClient((case.get("fixtures") or {}).get(f"{self.name}_model", _model_view(self.name, recorded)))
-                if _accepts(fn, "client"):
-                    kw["client"] = client
-                else:
-                    raise Unreachable(f"{self.name}: {ENTRYPOINTS[self.name][0]} takes no client, so mock mode cannot script it")
-            if _accepts(fn, "on_turn"):
-                kw["on_turn"] = turns.append
-            out = fn(**kw)
+            out = self.binding.call(self.mods, case, inputs, self.mode, turns.append)
         else:
-            resp = _post(self.url.rstrip("/") + ENTRYPOINTS[self.name][3], inputs)
-            ctype = resp.headers.get("Content-Type", "")
-            if "event-stream" in ctype:
+            resp = _post(self.url.rstrip("/") + self.binding.path, self.binding.http_body(inputs))
+            if "event-stream" in resp.headers.get("Content-Type", ""):
                 events = read_sse(resp)
                 turns = [d for e, d in events if e == "turn"]
+                errors = [d for e, d in events if e == "error"]
                 finals = [d for e, d in events if e == "result"]
+                if errors and not finals:
+                    raise RuntimeError(f"{self.name} streamed an error: {errors[-1]}")
                 out = finals[-1] if finals else None
             else:
                 out = json.loads(resp.read().decode())
@@ -218,42 +337,54 @@ class Service:
                      "usage": usage_of(out, turns)}
 
 
-def _model_view(service, recorded):
-    """What the model itself returned, for scripting: the recorded output minus what the service adds."""
-    if not isinstance(recorded, dict):
-        return recorded
-    if service == "reader":
-        return {k: recorded[k] for k in ("fields", "position", "observed") if k in recorded}
-    if service == "verdict":
-        return {"sentences": recorded.get("sentences", [])}
-    return recorded
-
-
 def reader_inputs(case, cases_dir):
     listing = case["listing"]
-    return {"text": listing["text"], "photos": [_photo_payload(Path(cases_dir) / p) for p in listing.get("photos") or []]}
+    return {"text": listing["text"], "photos": [_photo_payload(Path(cases_dir) / p) for p in listing.get("photos") or []],
+            "answers": case.get("answers")}
+
+
+def refusals(out):
+    """What a service's own checks refused on the way, as (where, why): the reader's refused submit_listing
+    fields and the permit reader's refusals. Shown as notes: a refusal is the checks working, not a failure."""
+    found = []
+    if not isinstance(out, dict):
+        return found
+    for t in out.get("trace") or []:
+        res = (t or {}).get("result") if isinstance(t, dict) else None
+        if isinstance(res, dict):
+            for field, why in (res.get("refused") or {}).items():
+                found.append((f"{t.get('tool')}.{field}", str(why)))
+            if not res.get("refused") and res.get("error") and t.get("tool"):
+                found.append((str(t.get("tool")), str(res["error"])))
+    for r in out.get("refusals") or []:
+        if isinstance(r, dict):
+            found.append((f"{r.get('tool')}{'.' + str(r['id']) if r.get('id') else ''}", str(r.get("why"))))
+    return found
 
 
 def usage_of(out, turns=()):
-    """Token counts by model from a result's `usage` or its trace/turns, where the services report them."""
+    """Token counts by model, from a result's `usage`, or from its turns' `usage` or `tokens` (the reader's)."""
     found = {}
+    model_default = out.get("model") if isinstance(out, dict) else None
 
     def add(u, model=None):
         if not isinstance(u, dict):
             return
-        m = u.get("model") or model or "unknown"
+        m = u.get("model") or model or model_default or "unknown"
+        p = u.get("prompt_tokens") or u.get("input_tokens") or u.get("input") or 0
+        c = u.get("completion_tokens") or u.get("output_tokens") or u.get("output") or 0
+        if not (p or c):
+            return
         d = found.setdefault(m, {"prompt_tokens": 0, "completion_tokens": 0})
-        d["prompt_tokens"] += int(u.get("prompt_tokens") or u.get("input_tokens") or 0)
-        d["completion_tokens"] += int(u.get("completion_tokens") or u.get("output_tokens") or 0)
+        d["prompt_tokens"] += int(p)
+        d["completion_tokens"] += int(c)
 
+    seen = list(turns) or (list(out.get("trace") or []) if isinstance(out, dict) else [])
     if isinstance(out, dict):
         add(out.get("usage"), out.get("model"))
-        for t in out.get("trace") or []:
-            if isinstance(t, dict):
-                add(t.get("usage"), t.get("model"))
-    for t in turns:
+    for t in seen:
         if isinstance(t, dict):
-            add(t.get("usage"), t.get("model"))
+            add(t.get("usage") or t.get("tokens"), t.get("model"))
     return found
 
 

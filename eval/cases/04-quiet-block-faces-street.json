@@ -46,10 +46,13 @@
         "house_no": "45",
         "street_name": "CHRISTOPHER STREET"
       }
-    ]
+    ],
+    "as_of": "2026-10-28"
   },
   "fixtures": {
     "reader": {
+      "status": "complete",
+      "stopped": "submitted",
       "fields": {
         "address": {
           "value": "45 Christopher Street",
@@ -57,7 +60,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "45 Christopher Street"
+              "quote": "45 Christopher Street",
+              "start": 72,
+              "end": 93
             }
           ]
         },
@@ -67,7 +72,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "unit 3C"
+              "quote": "unit 3C",
+              "start": 95,
+              "end": 102
             }
           ]
         },
@@ -77,17 +84,21 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "third floor"
+              "quote": "third floor",
+              "start": 104,
+              "end": 115
             }
           ]
         },
         "side": {
-          "value": "front",
+          "value": "street",
           "status": "read",
           "evidence": [
             {
               "source": "text",
-              "quote": "The living room overlooks Christopher Street"
+              "quote": "The living room overlooks Christopher Street",
+              "start": 117,
+              "end": 161
             }
           ]
         }
@@ -207,13 +218,17 @@
           "borough": "Manhattan"
         }
       },
+      "score_engine": "v2",
+      "needs": [],
       "trace": [
         {
-          "turn": 1,
+          "n": 1,
+          "by": "model",
           "tool": "submit_listing",
           "ok": true
         }
-      ]
+      ],
+      "mode": "fixture"
     },
     "verdict": {
       "evidence": [
@@ -269,16 +284,47 @@
       "writer": "template"
     },
     "adjust": {
-      "adjustments": [
+      "source": "construction",
+      "as_of": "2026-10-28",
+      "reader": "fixture",
+      "readings": [
         {
-          "ingredient": "construction",
-          "delta": -8,
-          "cites": [
-            "M00000401-I1"
-          ],
-          "why": "A facade job with a sidewalk shed next door runs for months; the plumbing job is inside one apartment."
+          "id": "M00000401-I1",
+          "work_type": "General Construction",
+          "kind": {
+            "value": "facade",
+            "status": "read",
+            "evidence": [
+              {
+                "source": "permit:M00000401-I1",
+                "quote": "Facade repair"
+              }
+            ]
+          },
+          "duration": {
+            "value": "months",
+            "status": "read",
+            "evidence": [
+              {
+                "source": "permit:M00000401-I1",
+                "quote": "Facade repair"
+              }
+            ]
+          }
         }
-      ]
+      ],
+      "adjustment": {
+        "source": "construction",
+        "direction": "louder",
+        "size": 1,
+        "cap": 2,
+        "cites": [
+          "M00000401-I1"
+        ],
+        "reason": "Heavier or longer work than the permit count shows: a facade job (months) next door."
+      },
+      "why_none": null,
+      "refusals": []
     }
   }
 }

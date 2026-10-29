@@ -25,6 +25,8 @@
   },
   "fixtures": {
     "reader": {
+      "status": "complete",
+      "stopped": "submitted",
       "fields": {
         "address": {
           "value": "437 East 12th Street",
@@ -32,7 +34,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "437 East 12th Street"
+              "quote": "437 East 12th Street",
+              "start": 18,
+              "end": 38
             }
           ]
         },
@@ -47,12 +51,14 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "Top floor unit"
+              "quote": "Top floor unit",
+              "start": 0,
+              "end": 14
             }
           ]
         },
         "side": {
-          "value": null,
+          "value": "unknown",
           "status": "cant_tell",
           "evidence": []
         }
@@ -185,13 +191,17 @@
           "borough": "Manhattan"
         }
       },
+      "score_engine": "v2",
+      "needs": [],
       "trace": [
         {
-          "turn": 1,
+          "n": 1,
+          "by": "model",
           "tool": "submit_listing",
           "ok": true
         }
-      ]
+      ],
+      "mode": "fixture"
     },
     "verdict": {
       "evidence": [

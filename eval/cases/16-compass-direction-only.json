@@ -29,6 +29,8 @@
   },
   "fixtures": {
     "reader": {
+      "status": "complete",
+      "stopped": "submitted",
       "fields": {
         "address": {
           "value": "1 Fifth Avenue",
@@ -36,7 +38,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "1 Fifth Avenue"
+              "quote": "1 Fifth Avenue",
+              "start": 30,
+              "end": 44
             }
           ]
         },
@@ -51,12 +55,14 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "Eleventh-floor"
+              "quote": "Eleventh-floor",
+              "start": 0,
+              "end": 14
             }
           ]
         },
         "side": {
-          "value": null,
+          "value": "unknown",
           "status": "cant_tell",
           "evidence": []
         }
@@ -64,12 +70,14 @@
       "position": "unknown",
       "observed": {
         "view": {
-          "value": "open",
+          "value": "skyline",
           "status": "read",
           "evidence": [
             {
               "source": "text",
-              "quote": "open views over the rooftops"
+              "quote": "open views over the rooftops",
+              "start": 65,
+              "end": 93
             }
           ]
         },
@@ -79,12 +87,14 @@
           "evidence": []
         },
         "ac_units": {
-          "value": "yes",
+          "value": "through_wall",
           "status": "read",
           "evidence": [
             {
               "source": "text",
-              "quote": "Through-wall air conditioner"
+              "quote": "Through-wall air conditioner",
+              "start": 155,
+              "end": 183
             }
           ]
         },
@@ -199,13 +209,17 @@
           "borough": "Manhattan"
         }
       },
+      "score_engine": "v2",
+      "needs": [],
       "trace": [
         {
-          "turn": 1,
+          "n": 1,
+          "by": "model",
           "tool": "submit_listing",
           "ok": true
         }
-      ]
+      ],
+      "mode": "fixture"
     },
     "verdict": {
       "evidence": [

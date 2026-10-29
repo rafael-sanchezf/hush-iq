@@ -41,10 +41,13 @@
         "house_no": "240",
         "street_name": "RIVERSIDE BOULEVARD"
       }
-    ]
+    ],
+    "as_of": "2026-10-28"
   },
   "fixtures": {
     "reader": {
+      "status": "complete",
+      "stopped": "submitted",
       "fields": {
         "address": {
           "value": "220 Riverside Boulevard",
@@ -52,7 +55,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "220 Riverside Boulevard"
+              "quote": "220 Riverside Boulevard",
+              "start": 26,
+              "end": 49
             }
           ]
         },
@@ -67,12 +72,14 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "38th-floor"
+              "quote": "38th-floor",
+              "start": 0,
+              "end": 10
             }
           ]
         },
         "side": {
-          "value": null,
+          "value": "unknown",
           "status": "cant_tell",
           "evidence": []
         }
@@ -80,32 +87,41 @@
       "position": "unknown",
       "observed": {
         "view": {
-          "value": "open",
+          "value": "water",
           "status": "read",
           "evidence": [
             {
               "source": "text",
-              "quote": "Hudson River views"
+              "quote": "Hudson River views",
+              "start": 55,
+              "end": 73
             }
           ]
         },
         "windows": {
-          "value": "floor_to_ceiling",
+          "value": {
+            "floor_to_ceiling": true,
+            "operable": null
+          },
           "status": "read",
           "evidence": [
             {
               "source": "text",
-              "quote": "Floor-to-ceiling windows"
+              "quote": "Floor-to-ceiling windows",
+              "start": 75,
+              "end": 99
             }
           ]
         },
         "ac_units": {
-          "value": "no",
+          "value": "central",
           "status": "read",
           "evidence": [
             {
               "source": "text",
-              "quote": "central air"
+              "quote": "central air",
+              "start": 101,
+              "end": 112
             }
           ]
         },
@@ -220,13 +236,17 @@
           "borough": "Manhattan"
         }
       },
+      "score_engine": "v2",
+      "needs": [],
       "trace": [
         {
-          "turn": 1,
+          "n": 1,
+          "by": "model",
           "tool": "submit_listing",
           "ok": true
         }
-      ]
+      ],
+      "mode": "fixture"
     },
     "verdict": {
       "evidence": [
@@ -282,7 +302,13 @@
       "writer": "template"
     },
     "adjust": {
-      "adjustments": []
+      "source": "construction",
+      "as_of": "2026-10-28",
+      "reader": "fixture",
+      "readings": [],
+      "adjustment": null,
+      "why_none": "no permit on the block reads as heavier work than the count shows",
+      "refusals": []
     }
   }
 }

@@ -35,6 +35,8 @@
   },
   "fixtures": {
     "reader": {
+      "status": "complete",
+      "stopped": "submitted",
       "fields": {
         "address": {
           "value": "49 West 11th Street",
@@ -42,7 +44,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "49 West 11th Street"
+              "quote": "49 West 11th Street",
+              "start": 40,
+              "end": 59
             }
           ]
         },
@@ -57,17 +61,21 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "Third-floor"
+              "quote": "Third-floor",
+              "start": 0,
+              "end": 11
             }
           ]
         },
         "side": {
-          "value": "front",
+          "value": "street",
           "status": "read",
           "evidence": [
             {
               "source": "text",
-              "quote": "The front room faces 11th Street"
+              "quote": "The front room faces 11th Street",
+              "start": 61,
+              "end": 93
             }
           ]
         }
@@ -85,7 +93,10 @@
           ]
         },
         "windows": {
-          "value": "standard",
+          "value": {
+            "floor_to_ceiling": false,
+            "operable": true
+          },
           "status": "read",
           "evidence": [
             {
@@ -95,7 +106,7 @@
           ]
         },
         "ac_units": {
-          "value": "yes",
+          "value": "window",
           "status": "read",
           "evidence": [
             {
@@ -208,13 +219,17 @@
           "borough": "Manhattan"
         }
       },
+      "score_engine": "v2",
+      "needs": [],
       "trace": [
         {
-          "turn": 1,
+          "n": 1,
+          "by": "model",
           "tool": "submit_listing",
           "ok": true
         }
-      ]
+      ],
+      "mode": "fixture"
     },
     "verdict": {
       "evidence": [

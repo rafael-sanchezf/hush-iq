@@ -23,6 +23,8 @@
   },
   "fixtures": {
     "reader": {
+      "status": "complete",
+      "stopped": "submitted",
       "fields": {
         "address": {
           "value": "50 Murray Street",
@@ -30,7 +32,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "50 Murray Street"
+              "quote": "50 Murray Street",
+              "start": 11,
+              "end": 27
             }
           ]
         },
@@ -40,7 +44,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "Apt 12F"
+              "quote": "Apt 12F",
+              "start": 0,
+              "end": 7
             }
           ]
         },
@@ -50,12 +56,14 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "Apt 12F"
+              "quote": "Apt 12F",
+              "start": 0,
+              "end": 7
             }
           ]
         },
         "side": {
-          "value": null,
+          "value": "unknown",
           "status": "cant_tell",
           "evidence": []
         }
@@ -186,13 +194,17 @@
           "borough": "Manhattan"
         }
       },
+      "score_engine": "v2",
+      "needs": [],
       "trace": [
         {
-          "turn": 1,
+          "n": 1,
+          "by": "model",
           "tool": "submit_listing",
           "ok": true
         }
-      ]
+      ],
+      "mode": "fixture"
     },
     "verdict": {
       "evidence": [

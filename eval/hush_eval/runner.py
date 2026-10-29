@@ -12,6 +12,9 @@ EVAL = Path(__file__).resolve().parents[1]
 CASES = EVAL / "cases"
 GATED_FIELDS = ("address", "floor", "side")   # the gold labels every case carries
 MIN_ACCURACY, MAX_WRONG = 0.85, 0.05          # the same rule as the photo test, README "The threshold rule"
+# Mock mode replays recorded model output through the services' own checks, which may only accept or refuse it.
+# So in mock mode a refusal (cant_tell) is allowed and a wrong or invented value is not; live mode, where a real
+# model answers, gets the full rule.
 
 
 def load_cases(cases_dir=CASES, only=None):
@@ -39,6 +42,7 @@ def run_case(case, services, cases_dir=CASES):
         reader, meta = services["reader"].call(case, **A.reader_inputs(case, cases_dir))
         rec["meta"]["reader"] = meta
         rec["outputs"]["reader"] = reader
+        _notes(rec, "reader", reader)
     except Exception as e:   # a service that crashes is a failed case, not a crashed run
         fail("reader", e)
     if reader is not None:
@@ -61,18 +65,25 @@ def run_case(case, services, cases_dir=CASES):
             fail("verdict", e)
 
     # 3. the permit reader, when the case carries a permit pull
-    rows = ((case.get("pull") or {}).get("permits")) or []
+    pull = case.get("pull") or {}
+    rows = pull.get("permits") or []
     if rows:
         try:
-            adj, meta = services["adjust"].call(case, rows=rows)
+            adj, meta = services["adjust"].call(case, rows=rows, as_of=pull.get("as_of"))
             rec["meta"]["adjust"] = meta
             rec["outputs"]["adjust"] = adj
+            _notes(rec, "adjust", adj)
             caps, caps_from = services["adjust"].caps()
             rec["meta"]["caps_from"] = caps_from
             rec["problems"] += C.adjustments(adj, rows, caps)
         except Exception as e:
             fail("adjust", e)
     return rec
+
+
+def _notes(rec, service, out):
+    for where, why in A.refusals(out):
+        rec["problems"].append(C.Problem("refused", f"{service} {where}", why, hard=False))
 
 
 def run(mode="mock", transport="auto", cases_dir=CASES, only=None, record=False):
@@ -96,7 +107,7 @@ def run(mode="mock", transport="auto", cases_dir=CASES, only=None, record=False)
         r["usage"] = usage
         r["cost_usd"] = A.cost_of(usage, prices) if usage else None
         r["latency_s"] = round(sum(m.get("latency_s", 0) for m in r["meta"].values() if isinstance(m, dict)), 3)
-    gate = _gate(table)
+    gate = _gate(table, mode)
     hard = [p for r in records for p in r["problems"] if p.hard]
     return {
         "mode": mode,
@@ -117,14 +128,14 @@ def _fields_seen(records):
     return seen
 
 
-def _gate(table):
+def _gate(table, mode="mock"):
     out = {}
     for name in GATED_FIELDS:
         row = table.get(name)
         if not row or not row["n"]:
             continue
         acc, wrong = row["accuracy"], row["wrong_rate"]
-        ok = (acc is None or acc >= MIN_ACCURACY) and wrong < MAX_WRONG
+        ok = wrong == 0 if mode == "mock" else (acc is None or acc >= MIN_ACCURACY) and wrong < MAX_WRONG
         out[name] = {"ok": ok, "accuracy": acc, "wrong_rate": wrong}
     return out
 
@@ -174,8 +185,8 @@ def text_report(res, live=False):
         lines.append(f"{'FAIL' if p.hard else 'note'} {cid}: {p.check} {p.where}: {p.message}")
     for name, g in res["gate"].items():
         if not g["ok"]:
-            lines.append(f"FAIL gate {name}: accuracy {_pct(g['accuracy'])}, wrong {_pct(g['wrong_rate'])}"
-                         f" (needs {MIN_ACCURACY:.0%} and under {MAX_WRONG:.0%})")
+            need = "no wrong values in mock mode" if res["mode"] == "mock" else f"{MIN_ACCURACY:.0%} and under {MAX_WRONG:.0%} wrong"
+            lines.append(f"FAIL gate {name}: accuracy {_pct(g['accuracy'])}, wrong {_pct(g['wrong_rate'])} (needs {need})")
     if live:
         costs = [r["cost_usd"] for r in res["records"]]
         lat = [r["latency_s"] for r in res["records"]]

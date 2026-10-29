@@ -23,6 +23,8 @@
   },
   "fixtures": {
     "reader": {
+      "status": "complete",
+      "stopped": "submitted",
       "fields": {
         "address": {
           "value": "32 Gramercy Park South",
@@ -30,7 +32,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "32 Gramercy Park South"
+              "quote": "32 Gramercy Park South",
+              "start": 6,
+              "end": 28
             }
           ]
         },
@@ -40,7 +44,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "PH at 32 Gramercy Park South"
+              "quote": "PH at 32 Gramercy Park South",
+              "start": 0,
+              "end": 28
             }
           ]
         },
@@ -50,12 +56,14 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "PH at 32 Gramercy Park South"
+              "quote": "PH at 32 Gramercy Park South",
+              "start": 0,
+              "end": 28
             }
           ]
         },
         "side": {
-          "value": null,
+          "value": "unknown",
           "status": "cant_tell",
           "evidence": []
         }
@@ -186,13 +194,17 @@
           "borough": "Manhattan"
         }
       },
+      "score_engine": "v2",
+      "needs": [],
       "trace": [
         {
-          "turn": 1,
+          "n": 1,
+          "by": "model",
           "tool": "submit_listing",
           "ok": true
         }
-      ]
+      ],
+      "mode": "fixture"
     },
     "verdict": {
       "evidence": [

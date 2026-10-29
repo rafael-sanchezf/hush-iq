@@ -24,6 +24,8 @@
   },
   "fixtures": {
     "reader": {
+      "status": "complete",
+      "stopped": "submitted",
       "fields": {
         "address": {
           "value": "2109 Broadway",
@@ -31,7 +33,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "2109 Broadway"
+              "quote": "2109 Broadway",
+              "start": 27,
+              "end": 40
             }
           ]
         },
@@ -41,7 +45,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "Apt 4B"
+              "quote": "Apt 4B",
+              "start": 19,
+              "end": 25
             }
           ]
         },
@@ -51,17 +57,21 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "on the fourth floor"
+              "quote": "on the fourth floor",
+              "start": 155,
+              "end": 174
             }
           ]
         },
         "side": {
-          "value": "front",
+          "value": "street",
           "status": "read",
           "evidence": [
             {
               "source": "text",
-              "quote": "the bedroom both face Broadway"
+              "quote": "the bedroom both face Broadway",
+              "start": 200,
+              "end": 230
             }
           ]
         }
@@ -181,13 +191,17 @@
           "borough": "Manhattan"
         }
       },
+      "score_engine": "v2",
+      "needs": [],
       "trace": [
         {
-          "turn": 1,
+          "n": 1,
+          "by": "model",
           "tool": "submit_listing",
           "ok": true
         }
-      ]
+      ],
+      "mode": "fixture"
     },
     "verdict": {
       "evidence": [

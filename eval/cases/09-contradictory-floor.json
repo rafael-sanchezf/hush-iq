@@ -35,8 +35,8 @@
     "permits": [
       {
         "work_permit": "M00000901-I1",
-        "work_type": "New Building",
-        "job_description": "Erect a new 20-story residential building with ground floor retail",
+        "work_type": "General Construction",
+        "job_description": "NEW BUILDING: erect a 20-story residential building with ground floor retail",
         "issued_date": "2026-03-20",
         "expired_date": "2027-03-20",
         "estimated_job_costs": "48000000",
@@ -53,10 +53,13 @@
         "house_no": "321",
         "street_name": "EAST 70 STREET"
       }
-    ]
+    ],
+    "as_of": "2026-10-28"
   },
   "fixtures": {
     "reader": {
+      "status": "complete",
+      "stopped": "submitted",
       "fields": {
         "address": {
           "value": "315 East 70th Street",
@@ -64,7 +67,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "315 East 70th Street"
+              "quote": "315 East 70th Street",
+              "start": 25,
+              "end": 45
             }
           ]
         },
@@ -76,19 +81,10 @@
         "floor": {
           "value": null,
           "status": "cant_tell",
-          "evidence": [
-            {
-              "source": "text",
-              "quote": "3rd floor"
-            },
-            {
-              "source": "text",
-              "quote": "sixth-floor"
-            }
-          ]
+          "evidence": []
         },
         "side": {
-          "value": null,
+          "value": "unknown",
           "status": "cant_tell",
           "evidence": []
         }
@@ -222,13 +218,17 @@
           "borough": "Manhattan"
         }
       },
+      "score_engine": "v2",
+      "needs": [],
       "trace": [
         {
-          "turn": 1,
+          "n": 1,
+          "by": "model",
           "tool": "submit_listing",
           "ok": true
         }
-      ]
+      ],
+      "mode": "fixture"
     },
     "verdict": {
       "evidence": [
@@ -284,17 +284,71 @@
       "writer": "template"
     },
     "adjust": {
-      "adjustments": [
+      "source": "construction",
+      "as_of": "2026-10-28",
+      "reader": "fixture",
+      "readings": [
         {
-          "ingredient": "construction",
-          "delta": -12,
-          "cites": [
-            "M00000901-I1",
-            "M00000902-I1"
-          ],
-          "why": "A new 20-story building two lots away is years of daytime work, not months."
+          "id": "M00000901-I1",
+          "work_type": "General Construction",
+          "kind": {
+            "value": "new_building",
+            "status": "read",
+            "evidence": [
+              {
+                "source": "permit:M00000901-I1",
+                "quote": "NEW BUILDING: erect a 20-story residential building"
+              }
+            ]
+          },
+          "duration": {
+            "value": "years",
+            "status": "read",
+            "evidence": [
+              {
+                "source": "permit:M00000901-I1",
+                "quote": "NEW BUILDING: erect a 20-story residential building"
+              }
+            ]
+          }
+        },
+        {
+          "id": "M00000902-I1",
+          "work_type": "Sidewalk Shed",
+          "kind": {
+            "value": "scaffold_shed",
+            "status": "read",
+            "evidence": [
+              {
+                "source": "permit:M00000902-I1",
+                "quote": "Install sidewalk shed"
+              }
+            ]
+          },
+          "duration": {
+            "value": "months",
+            "status": "read",
+            "evidence": [
+              {
+                "source": "permit:M00000902-I1",
+                "quote": "Install sidewalk shed"
+              }
+            ]
+          }
         }
-      ]
+      ],
+      "adjustment": {
+        "source": "construction",
+        "direction": "louder",
+        "size": 2,
+        "cap": 2,
+        "cites": [
+          "M00000901-I1"
+        ],
+        "reason": "A new 20-story building two lots away is years of daytime work, not months."
+      },
+      "why_none": null,
+      "refusals": []
     }
   }
 }

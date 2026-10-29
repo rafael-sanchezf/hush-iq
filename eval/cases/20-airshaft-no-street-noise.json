@@ -29,6 +29,8 @@
   },
   "fixtures": {
     "reader": {
+      "status": "complete",
+      "stopped": "submitted",
       "fields": {
         "address": {
           "value": "520 East 5th Street",
@@ -36,7 +38,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "520 East 5th Street"
+              "quote": "520 East 5th Street",
+              "start": 94,
+              "end": 113
             }
           ]
         },
@@ -51,7 +55,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "4th floor walk-up"
+              "quote": "4th floor walk-up",
+              "start": 73,
+              "end": 90
             }
           ]
         },
@@ -61,7 +67,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "The bedroom window faces the interior air shaft"
+              "quote": "The bedroom window faces the interior air shaft",
+              "start": 24,
+              "end": 71
             }
           ]
         }
@@ -69,12 +77,14 @@
       "position": "rear",
       "observed": {
         "view": {
-          "value": "wall",
+          "value": "airshaft",
           "status": "read",
           "evidence": [
             {
               "source": "text",
-              "quote": "faces the interior air shaft"
+              "quote": "faces the interior air shaft",
+              "start": 43,
+              "end": 71
             }
           ]
         },
@@ -186,13 +196,17 @@
           "borough": "Manhattan"
         }
       },
+      "score_engine": "v2",
+      "needs": [],
       "trace": [
         {
-          "turn": 1,
+          "n": 1,
+          "by": "model",
           "tool": "submit_listing",
           "ok": true
         }
-      ]
+      ],
+      "mode": "fixture"
     },
     "verdict": {
       "evidence": [

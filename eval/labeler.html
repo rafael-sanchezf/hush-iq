@@ -110,7 +110,7 @@ const FIELDS = [
   { key: "view", name: "View", opts: [["street", "A street"], ["courtyard", "Courtyard or yards"], ["open", "Open: river, park, skyline"], ["wall", "A wall close by"]] },
   { key: "windows", name: "Windows", opts: [["floor_to_ceiling", "Floor-to-ceiling"], ["standard", "Standard"]] },
   { key: "ac_units", name: "Window or wall AC unit", opts: [["yes", "Yes"], ["no", "No"]] },
-  { key: "wall_material", name: "Wall material", opts: [["brick", "Brick"], ["concrete", "Concrete"], ["drywall", "Plaster or drywall"]] },
+  { key: "wall_material", name: "Wall material", opts: [["brick", "Brick or stone"], ["concrete", "Concrete"], ["drywall", "Plaster, drywall or wood"], ["glass", "Glass"]] },
 ];
 const KEYS = FIELDS.map(f => f.key);
 const PHOTO_RE = /\.(jpe?g|png|webp|gif|heic|avif)$/i;
@@ -164,7 +164,7 @@ function prefill(text) {
   if (/floor[\s-]to[\s-]ceiling/i.test(t)) out.windows = "floor_to_ceiling";
   if (/central (?:air|a\/?c)|split[\s-]system|ductless/i.test(t)) out.ac_units = "no";
   else if (/(?:window|through[\s-]wall|wall)[\s-](?:a\/?c|air[\s-]?condition\w*)/i.test(t)) out.ac_units = "yes";
-  if (/exposed brick/i.test(t)) out.wall_material = "brick";
+  if (/exposed brick|exposed stone/i.test(t)) out.wall_material = "brick";
   else if (/exposed concrete|concrete ceilings?/i.test(t)) out.wall_material = "concrete";
   return out;
 }

@@ -40,10 +40,13 @@
         "house_no": "210",
         "street_name": "WATER STREET"
       }
-    ]
+    ],
+    "as_of": "2026-10-28"
   },
   "fixtures": {
     "reader": {
+      "status": "complete",
+      "stopped": "submitted",
       "fields": {
         "address": {
           "value": "200 Water Street",
@@ -51,7 +54,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "200 Water Street"
+              "quote": "200 Water Street",
+              "start": 33,
+              "end": 49
             }
           ]
         },
@@ -66,17 +71,21 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "on the 22nd floor"
+              "quote": "on the 22nd floor",
+              "start": 12,
+              "end": 29
             }
           ]
         },
         "side": {
-          "value": "front",
+          "value": "corner",
           "status": "read",
           "evidence": [
             {
               "source": "text",
-              "quote": "with windows on Fulton Street and Water Street"
+              "quote": "Corner unit",
+              "start": 0,
+              "end": 11
             }
           ]
         }
@@ -89,22 +98,29 @@
           "evidence": []
         },
         "windows": {
-          "value": "floor_to_ceiling",
+          "value": {
+            "floor_to_ceiling": true,
+            "operable": null
+          },
           "status": "read",
           "evidence": [
             {
               "source": "text",
-              "quote": "floor-to-ceiling windows"
+              "quote": "floor-to-ceiling windows",
+              "start": 128,
+              "end": 152
             }
           ]
         },
         "ac_units": {
-          "value": "no",
+          "value": "split",
           "status": "read",
           "evidence": [
             {
               "source": "text",
-              "quote": "split-system heating and cooling"
+              "quote": "split-system heating and cooling",
+              "start": 157,
+              "end": 189
             }
           ]
         },
@@ -206,13 +222,17 @@
           "borough": "Manhattan"
         }
       },
+      "score_engine": "v2",
+      "needs": [],
       "trace": [
         {
-          "turn": 1,
+          "n": 1,
+          "by": "model",
           "tool": "submit_listing",
           "ok": true
         }
-      ]
+      ],
+      "mode": "fixture"
     },
     "verdict": {
       "evidence": [
@@ -268,16 +288,47 @@
       "writer": "template"
     },
     "adjust": {
-      "adjustments": [
+      "source": "construction",
+      "as_of": "2026-10-28",
+      "reader": "fixture",
+      "readings": [
         {
-          "ingredient": "construction",
-          "delta": -10,
-          "cites": [
-            "M00001301-I1"
-          ],
-          "why": "A full demolition on the block is loud daytime work for about six months."
+          "id": "M00001301-I1",
+          "work_type": "Full Demolition",
+          "kind": {
+            "value": "demolition",
+            "status": "read",
+            "evidence": [
+              {
+                "source": "permit:M00001301-I1",
+                "quote": "Full demolition"
+              }
+            ]
+          },
+          "duration": {
+            "value": "months",
+            "status": "read",
+            "evidence": [
+              {
+                "source": "permit:M00001301-I1",
+                "quote": "Full demolition"
+              }
+            ]
+          }
         }
-      ]
+      ],
+      "adjustment": {
+        "source": "construction",
+        "direction": "louder",
+        "size": 2,
+        "cap": 2,
+        "cites": [
+          "M00001301-I1"
+        ],
+        "reason": "A full demolition on the block is loud daytime work for months."
+      },
+      "why_none": null,
+      "refusals": []
     }
   }
 }

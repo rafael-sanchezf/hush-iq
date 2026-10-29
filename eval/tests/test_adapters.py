@@ -1,7 +1,9 @@
-"""The seam: the scripted client, server-sent events, and a stand-in service reached in process and over HTTP."""
+"""The seam: the scripted clients, server-sent events, each binding, and the services on this branch."""
 import json
+import sys
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from types import SimpleNamespace
 
 import pytest
 
@@ -9,14 +11,15 @@ from hush_eval import adapters as A
 from hush_eval import runner
 
 CASE = runner.load_cases(only=["04"])[0]
+PHOTO_CASE = runner.load_cases(only=["18"])[0]
 
 
 def test_the_scripted_client_answers_with_a_tool_call():
     client = A.ScriptedClient({"floor": 3})
     resp = client.chat.completions.create(model="m", messages=[], tools=[
-        {"type": "function", "function": {"name": "lookup"}}, {"type": "function", "function": {"name": "submit_listing"}}])
+        {"type": "function", "function": {"name": "lookup"}}, {"type": "function", "function": {"name": "submit_verdict"}}])
     call = resp.choices[0].message.tool_calls[0]
-    assert call.function.name == "submit_listing" and json.loads(call.function.arguments) == {"floor": 3}
+    assert call.function.name == "submit_verdict" and json.loads(call.function.arguments) == {"floor": 3}
     plain = client.chat.completions.create(model="m", messages=[])
     assert json.loads(plain.choices[0].message.content) == {"floor": 3} and len(client.calls) == 2
 
@@ -27,41 +30,79 @@ def test_server_sent_events_parse():
     assert A.read_sse(lines) == [("turn", {"step": "read"}), ("result", {"ok": True, "n": 1})]
 
 
+# ---------------------------------------------------------------- the reader's responder, on a stand-in of its mock module
+def fake_mock():
+    def tool_call(name, arguments, n=1):
+        return {"output": [{"type": "function_call", "call_id": f"call-{n}", "name": name, "arguments": json.dumps(arguments)}]}
+
+    def history(body):
+        items = body["input"]
+        outs = {i["call_id"]: json.loads(i["output"]) for i in items if i.get("type") == "function_call_output"}
+        return [(i, outs.get(i["call_id"])) for i in items if i.get("type") == "function_call"]
+
+    def photo_index(body):
+        return body.get("photo")
+
+    return SimpleNamespace(tool_call=tool_call, history=history, photo_index=photo_index)
+
+
+def call_of(answer):
+    item = answer["output"][0]
+    return item["name"], json.loads(item["arguments"])
+
+
+def test_the_responder_reads_cited_photos_then_submits_and_backs_off_a_refused_field():
+    mock = fake_mock()
+    respond = A.reader_responder(mock, PHOTO_CASE["fixtures"]["reader"])
+    name, args = call_of(respond({"input": [{"role": "user", "content": "Read this listing."}]}))
+    assert name == "read_photo" and args == {"indexes": [0, 1]}
+    photo0 = json.loads(respond({"photo": 0, "input": []})["output_text"])["fields"]
+    assert photo0["ac_units"]["value"] == "window" and photo0["ac_units"]["what"]
+    first = {"type": "function_call", "call_id": "call-1", "name": "read_photo", "arguments": "{}"}
+    done = {"type": "function_call_output", "call_id": "call-1", "output": "{}"}
+    name, args = call_of(respond({"input": [first, done]}))
+    assert name == "submit_listing"
+    assert args["fields"]["floor"] == {"status": "read", "value": 3, "evidence": [{"source": "text", "quote": "Third-floor"}]}
+    assert args["observed"]["wall_material"]["evidence"] == [{"source": "photo:1"}]   # the reading supplies the what
+    sub = {"type": "function_call", "call_id": "call-2", "name": "submit_listing", "arguments": "{}"}
+    refused = {"type": "function_call_output", "call_id": "call-2", "output": json.dumps({"error": "x", "refused": {"floor": "no"}})}
+    _, again = call_of(respond({"input": [first, done, sub, refused]}))
+    assert again["fields"]["floor"]["status"] == "cant_tell" and again["fields"]["side"]["status"] == "read"
+
+
+def test_the_fixture_scorer_stands_in_for_the_city_data():
+    class ScoreError(RuntimeError):
+        pass
+    s = A.FixtureScorer(CASE, ScoreError)
+    loc = s.locate("45 Christopher Street")
+    assert loc["label"].startswith("45 CHRISTOPHER")
+    assert s.score(loc["label"], 3, "front", None)["body"] is CASE["fixtures"]["reader"]["score"]
+    with pytest.raises(ScoreError):
+        A.FixtureScorer(runner.load_cases(only=["19"])[0], ScoreError).locate("Bank Street")
+
+
+# ---------------------------------------------------------------- a stand-in verdict writer, in process
 @pytest.fixture
-def stand_in_reader(tmp_path, monkeypatch):
-    """A fake services/agent with the contract's entry point: read(text, photos, client=None, on_turn=None)."""
-    svc = tmp_path / "services" / "agent"
+def stand_in_verdict(tmp_path, monkeypatch):
+    svc = tmp_path / "services" / "verdict"
     svc.mkdir(parents=True)
-    (svc / "standin_reader.py").write_text(
+    (svc / "verdict.py").write_text(
         "import json\n"
-        "def read(text, photos, client=None, on_turn=None):\n"
-        "    resp = client.chat.completions.create(model='muse-spark-1.3', messages=[{'role': 'user', 'content': text}],\n"
-        "                                          tools=[{'type': 'function', 'function': {'name': 'submit_listing'}}])\n"
+        "def write(score, answers, fields, client=None):\n"
+        "    resp = client.chat.completions.create(model='meta-models/muse-spark-open-1026', messages=[],\n"
+        "                                          tools=[{'type': 'function', 'function': {'name': 'submit_verdict'}}])\n"
         "    out = json.loads(resp.choices[0].message.tool_calls[0].function.arguments)\n"
-        "    for name, f in out['fields'].items():\n"
-        "        for e in f['evidence']:\n"
-        "            if e['source'] == 'text' and e['quote'] not in text:\n"
-        "                raise ValueError('submit_listing refused: ' + name)\n"
-        "    if on_turn: on_turn({'tool': 'submit_listing', 'usage': {'model': 'muse-spark-1.3', 'prompt_tokens': 900, 'completion_tokens': 120}})\n"
-        "    return dict(out, score=None, trace=[])\n")
+        "    evidence = [{'id': 'E%d' % (i + 1), 'text': i_['label']} for i, i_ in enumerate(score['ingredients'])]\n"
+        "    return {'evidence': evidence, 'sentences': out['sentences'], 'writer': 'muse-spark-open'}\n")
     monkeypatch.setattr(A, "REPO", tmp_path)
-    monkeypatch.setitem(A.ENTRYPOINTS, "reader", ("services/agent", ["standin_reader:read"], "HIQ_READER_URL", "/read"))
     yield svc
 
 
-def test_in_process_mock_runs_the_service_on_the_recorded_model_output(stand_in_reader):
-    svc = A.Service("reader", "mock")
-    assert svc.transport == "inproc" and "standin_reader:read" in svc.why
-    out, meta = svc.call(CASE, **A.reader_inputs(CASE, runner.CASES))
-    assert out["fields"]["floor"]["value"] == 3
-    assert meta["turns"] == 1 and meta["usage"] == {"muse-spark-1.3": {"prompt_tokens": 900, "completion_tokens": 120}}
-
-
-def test_in_process_mock_surfaces_the_service_refusing(stand_in_reader):
-    bad = json.loads(json.dumps(CASE))
-    bad["fixtures"]["reader"]["fields"]["floor"]["evidence"][0]["quote"] = "fourth floor"
-    with pytest.raises(ValueError, match="refused: floor"):
-        A.Service("reader", "mock").call(bad, **A.reader_inputs(bad, runner.CASES))
+def test_in_process_mock_scripts_the_verdict_writer(stand_in_verdict):
+    svc = A.Service("verdict", "mock")
+    assert svc.transport == "inproc" and "verdict:write" in svc.why
+    out, meta = svc.call(CASE, score=CASE["fixtures"]["reader"]["score"], answers=CASE["answers"], fields={})
+    assert out["sentences"] == CASE["fixtures"]["verdict"]["sentences"] and meta["transport"] == "inproc"
 
 
 def test_without_the_service_mock_mode_replays_and_live_mode_refuses(tmp_path, monkeypatch):
@@ -74,6 +115,18 @@ def test_without_the_service_mock_mode_replays_and_live_mode_refuses(tmp_path, m
         live.call(CASE, text="x", photos=[])
 
 
+def test_a_service_that_does_not_import_says_why(tmp_path, monkeypatch):
+    (tmp_path / "services" / "adjust" / "adjust").mkdir(parents=True)
+    (tmp_path / "services" / "adjust" / "adjust" / "__init__.py").write_text("raise ImportError('no openai here')\n")
+    monkeypatch.setattr(A, "REPO", tmp_path)
+    for name in [m for m in sys.modules if m == "adjust" or m.startswith("adjust.")]:
+        monkeypatch.delitem(sys.modules, name)
+    monkeypatch.setattr(sys, "path", [p for p in sys.path if not p.endswith("services/adjust")])
+    svc = A.Service("adjust", "mock")
+    assert svc.transport == "fixture" and "does not import" in svc.why
+
+
+# ---------------------------------------------------------------- over HTTP
 class _Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
@@ -82,40 +135,53 @@ class _Handler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-Type", "text/event-stream")
             self.end_headers()
-            result = CASE["fixtures"]["reader"]
-            self.wfile.write(b'event: turn\ndata: {"step": "read the listing"}\n\n')
-            self.wfile.write(b"event: result\ndata: " + json.dumps(result).encode() + b"\n\n")
-        else:
-            payload = json.dumps(CASE["fixtures"]["verdict"]).encode()
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.send_header("Content-Length", str(len(payload)))
-            self.end_headers()
-            self.wfile.write(payload)
+            self.wfile.write(b'event: turn\ndata: {"n": 1, "tool": "submit_listing", "tokens": {"input": 900, "output": 100}}\n\n')
+            self.wfile.write(b"event: result\ndata: " + json.dumps(dict(CASE["fixtures"]["reader"], model="muse-spark-1.3")).encode() + b"\n\n")
+            return
+        payload = json.dumps(CASE["fixtures"]["verdict" if self.path == "/verdict" else "adjust"]).encode()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(payload)))
+        self.end_headers()
+        self.wfile.write(payload)
 
     def log_message(self, *a):
         pass
 
 
-def test_over_http_the_reader_streams_and_the_verdict_answers_json(tmp_path, monkeypatch):
+def test_over_http_the_reader_streams_and_the_others_answer_json(tmp_path, monkeypatch):
     server = HTTPServer(("127.0.0.1", 0), _Handler)
     server.seen = []
     threading.Thread(target=server.serve_forever, daemon=True).start()
     url = f"http://127.0.0.1:{server.server_port}"
     monkeypatch.setattr(A, "REPO", tmp_path)
-    monkeypatch.setenv("HIQ_READER_URL", url)
-    monkeypatch.setenv("HIQ_VERDICT_URL", url)
+    for env in ("HIQ_READER_URL", "HIQ_VERDICT_URL", "HIQ_ADJUST_URL"):
+        monkeypatch.setenv(env, url)
     try:
         reader = A.Service("reader", "live")
         assert reader.transport == "http"
         out, meta = reader.call(CASE, **A.reader_inputs(CASE, runner.CASES))
-        assert out == CASE["fixtures"]["reader"] and meta["turns"] == 1
+        assert out["fields"] == CASE["fixtures"]["reader"]["fields"] and meta["turns"] == 1
+        assert meta["usage"] == {"muse-spark-1.3": {"prompt_tokens": 900, "completion_tokens": 100}}
         verdict, _ = A.Service("verdict", "live").call(CASE, score={}, answers=CASE["answers"], fields={})
         assert verdict["writer"] == "template"
-        assert [p for p, _ in server.seen] == ["/read", "/verdict"]
-        assert set(server.seen[0][1]) == {"text", "photos"}
+        adj, _ = A.Service("adjust", "live").call(CASE, rows=CASE["pull"]["permits"], as_of="2026-10-28")
+        assert adj["adjustment"]["cites"] == ["M00000401-I1"]
+        assert [p for p, _ in server.seen] == ["/read", "/verdict", "/adjust/permits"]
+        assert set(server.seen[0][1]) == {"text", "photos", "answers"}
+        assert server.seen[2][1]["as_of"] == "2026-10-28" and len(server.seen[2][1]["permits"]) == 2
     finally:
         server.shutdown()
+
+
+# ---------------------------------------------------------------- the real services, once they are on this branch
+def test_the_services_on_this_branch_pass_the_mock_run():
+    present = [n for n in ("reader", "verdict", "adjust") if A.Service(n, "mock").transport == "inproc"]
+    if not present:
+        pytest.skip("no service imports on this branch yet; the run replays fixtures")
+    res = runner.run("mock")
+    hard = [(r["id"], p.where, p.message) for r in res["records"] for p in r["problems"] if p.hard]
+    assert hard == [] and res["ok"], hard
 
 
 def test_cost_needs_a_price_for_every_model():

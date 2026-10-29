@@ -32,6 +32,8 @@
   },
   "fixtures": {
     "reader": {
+      "status": "complete",
+      "stopped": "submitted",
       "fields": {
         "address": {
           "value": "1 Irving Place",
@@ -39,7 +41,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "1 Irving Place"
+              "quote": "1 Irving Place",
+              "start": 11,
+              "end": 25
             }
           ]
         },
@@ -49,7 +53,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "Apt 15K"
+              "quote": "Apt 15K",
+              "start": 0,
+              "end": 7
             }
           ]
         },
@@ -59,23 +65,16 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "floor 15"
+              "quote": "floor 15",
+              "start": 27,
+              "end": 35
             }
           ]
         },
         "side": {
-          "value": null,
+          "value": "unknown",
           "status": "cant_tell",
-          "evidence": [
-            {
-              "source": "text",
-              "quote": "The bedroom faces the quiet rear of the building"
-            },
-            {
-              "source": "text",
-              "quote": "All windows overlook 14th Street"
-            }
-          ]
+          "evidence": []
         }
       },
       "position": "unknown",
@@ -207,13 +206,17 @@
           "borough": "Manhattan"
         }
       },
+      "score_engine": "v2",
+      "needs": [],
       "trace": [
         {
-          "turn": 1,
+          "n": 1,
+          "by": "model",
           "tool": "submit_listing",
           "ok": true
         }
-      ]
+      ],
+      "mode": "fixture"
     },
     "verdict": {
       "evidence": [

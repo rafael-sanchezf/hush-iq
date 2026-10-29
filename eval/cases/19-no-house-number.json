@@ -22,16 +22,13 @@
   },
   "fixtures": {
     "reader": {
+      "status": "complete",
+      "stopped": "submitted",
       "fields": {
         "address": {
           "value": null,
           "status": "cant_tell",
-          "evidence": [
-            {
-              "source": "text",
-              "quote": "on Bank Street near Greenwich Street"
-            }
-          ]
+          "evidence": []
         },
         "unit": {
           "value": null,
@@ -44,12 +41,14 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "Second-floor"
+              "quote": "Second-floor",
+              "start": 66,
+              "end": 78
             }
           ]
         },
         "side": {
-          "value": null,
+          "value": "unknown",
           "status": "cant_tell",
           "evidence": []
         }
@@ -78,13 +77,19 @@
         }
       },
       "score": null,
+      "score_engine": null,
+      "needs": [
+        "address"
+      ],
       "trace": [
         {
-          "turn": 1,
+          "n": 1,
+          "by": "model",
           "tool": "submit_listing",
           "ok": true
         }
-      ]
+      ],
+      "mode": "fixture"
     },
     "verdict": null
   }

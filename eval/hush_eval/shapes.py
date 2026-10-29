@@ -27,9 +27,12 @@ OBSERVED_VALUES = {
     "view": ("street", "courtyard", "open", "wall"),
     "windows": ("floor_to_ceiling", "standard"),
     "ac_units": ("yes", "no"),
-    "wall_material": ("brick", "concrete", "drywall"),
+    "wall_material": ("brick", "concrete", "drywall", "glass"),
 }
 FLOOR_MIN, FLOOR_MAX = 1, 120
+
+# A cant_tell field carries no value; the listing reader spells a cant_tell side "unknown".
+CANT_TELL_VALUES = (None, "unknown")
 
 # What the photo test labels, in the order the labeler shows them.
 PHOTO_FIELDS = ("floor", "side") + OBSERVED_FIELDS
@@ -39,16 +42,16 @@ PHOTO_FIELDS = ("floor", "side") + OBSERVED_FIELDS
 ALIASES = {
     "side": {"street": "front", "street-facing": "front", "street_facing": "front", "corner": "front",
              "back": "rear", "courtyard": "rear", "courtyard-facing": "rear", "airshaft": "rear"},
-    "view": {"courtyard_or_yard": "courtyard", "yard": "courtyard", "rear_yard": "courtyard", "garden": "courtyard",
-             "skyline": "open", "river": "open", "park": "open", "open_view": "open",
+    "view": {"courtyard_or_yard": "courtyard", "yard": "courtyard", "rear_yard": "courtyard", "rear_yards": "courtyard",
+             "garden": "courtyard", "skyline": "open", "river": "open", "water": "open", "park": "open", "open_view": "open",
              "airshaft": "wall", "air_shaft": "wall", "brick_wall": "wall", "building": "wall"},
     "windows": {"floor-to-ceiling": "floor_to_ceiling", "floor_to_ceiling_glass": "floor_to_ceiling",
                 "regular": "standard", "double_hung": "standard", "casement": "standard"},
     "ac_units": {True: "yes", False: "no", "true": "yes", "false": "no", "window": "yes", "window_unit": "yes",
                  "through_wall": "yes", "sleeve": "yes", "none": "no", "central": "no", "split": "no",
                  "none_visible": "no"},
-    "wall_material": {"exposed_brick": "brick", "masonry": "brick", "plaster": "drywall",
-                      "plaster_or_drywall": "drywall", "painted": "drywall"},
+    "wall_material": {"exposed_brick": "brick", "masonry": "brick", "stone": "brick", "plaster": "drywall",
+                      "plaster_or_drywall": "drywall", "painted": "drywall", "wood": "drywall", "curtain_wall": "glass"},
 }
 
 # Words a listing uses to sell, which say nothing about floor or side. A quote made only of these is not evidence.
@@ -60,9 +63,14 @@ SALES_ADJECTIVES = {
 
 
 def canonical(field, value):
-    """The canonical spelling of a value, or the value unchanged."""
+    """The canonical spelling of a value, or the value unchanged. The listing reader's windows value is an object,
+    {"floor_to_ceiling": bool, "operable": bool or null}; only floor_to_ceiling is labeled."""
     if value is None:
         return None
+    if isinstance(value, dict):
+        if field == "windows" and isinstance(value.get("floor_to_ceiling"), bool):
+            return "floor_to_ceiling" if value["floor_to_ceiling"] else "standard"
+        return CANT_TELL if field == "windows" and value.get("floor_to_ceiling") is None else value
     if isinstance(value, str):
         v = value.strip()
         key = v.lower().replace(" ", "_")

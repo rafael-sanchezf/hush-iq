@@ -23,6 +23,8 @@
   },
   "fixtures": {
     "reader": {
+      "status": "complete",
+      "stopped": "submitted",
       "fields": {
         "address": {
           "value": "21 West 76th Street",
@@ -30,7 +32,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "21 West 76th Street"
+              "quote": "21 West 76th Street",
+              "start": 46,
+              "end": 65
             }
           ]
         },
@@ -45,23 +49,16 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "Garden-level floor-through"
+              "quote": "Garden-level floor-through",
+              "start": 0,
+              "end": 26
             }
           ]
         },
         "side": {
-          "value": null,
+          "value": "unknown",
           "status": "cant_tell",
-          "evidence": [
-            {
-              "source": "text",
-              "quote": "The front room faces the street"
-            },
-            {
-              "source": "text",
-              "quote": "the bedroom opens onto the garden"
-            }
-          ]
+          "evidence": []
         }
       },
       "position": "unknown",
@@ -190,13 +187,17 @@
           "borough": "Manhattan"
         }
       },
+      "score_engine": "v2",
+      "needs": [],
       "trace": [
         {
-          "turn": 1,
+          "n": 1,
+          "by": "model",
           "tool": "submit_listing",
           "ok": true
         }
-      ]
+      ],
+      "mode": "fixture"
     },
     "verdict": {
       "evidence": [

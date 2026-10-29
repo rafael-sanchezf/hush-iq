@@ -28,6 +28,8 @@
   },
   "fixtures": {
     "reader": {
+      "status": "complete",
+      "stopped": "submitted",
       "fields": {
         "address": {
           "value": "225 West 10th Street",
@@ -35,7 +37,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "225 West 10th Street"
+              "quote": "225 West 10th Street",
+              "start": 26,
+              "end": 46
             }
           ]
         },
@@ -50,7 +54,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "Second-floor"
+              "quote": "Second-floor",
+              "start": 0,
+              "end": 12
             }
           ]
         },
@@ -60,7 +66,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "rear unit"
+              "quote": "rear unit",
+              "start": 13,
+              "end": 22
             }
           ]
         }
@@ -68,12 +76,14 @@
       "position": "rear",
       "observed": {
         "view": {
-          "value": "courtyard",
+          "value": "rear_yards",
           "status": "read",
           "evidence": [
             {
               "source": "text",
-              "quote": "looks out over the back gardens"
+              "quote": "looks out over the back gardens",
+              "start": 60,
+              "end": 91
             }
           ]
         },
@@ -185,13 +195,17 @@
           "borough": "Manhattan"
         }
       },
+      "score_engine": "v2",
+      "needs": [],
       "trace": [
         {
-          "turn": 1,
+          "n": 1,
+          "by": "model",
           "tool": "submit_listing",
           "ok": true
         }
-      ]
+      ],
+      "mode": "fixture"
     },
     "verdict": {
       "evidence": [

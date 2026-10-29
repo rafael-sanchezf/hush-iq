@@ -27,6 +27,8 @@
   },
   "fixtures": {
     "reader": {
+      "status": "complete",
+      "stopped": "submitted",
       "fields": {
         "address": {
           "value": "75 West End Avenue",
@@ -34,7 +36,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "75 West End Avenue"
+              "quote": "75 West End Avenue",
+              "start": 104,
+              "end": 122
             }
           ]
         },
@@ -49,7 +53,7 @@
           "evidence": []
         },
         "side": {
-          "value": null,
+          "value": "unknown",
           "status": "cant_tell",
           "evidence": []
         }
@@ -183,13 +187,17 @@
           "borough": "Manhattan"
         }
       },
+      "score_engine": "v2",
+      "needs": [],
       "trace": [
         {
-          "turn": 1,
+          "n": 1,
+          "by": "model",
           "tool": "submit_listing",
           "ok": true
         }
-      ]
+      ],
+      "mode": "fixture"
     },
     "verdict": {
       "evidence": [

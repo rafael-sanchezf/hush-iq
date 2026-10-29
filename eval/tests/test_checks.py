@@ -95,6 +95,31 @@ def test_values_stay_in_range():
     assert "floor 0" in msgs and "side 'north'" in msgs
 
 
+def test_the_readers_spellings_pass():
+    r = good_reader()
+    r["fields"]["side"] = field("street", "The bedroom faces Broadway")
+    r["fields"]["unit"] = {"value": None, "status": "cant_tell", "evidence": []}
+    r["observed"]["windows"] = {"value": {"floor_to_ceiling": True, "operable": None}, "status": "read",
+                                "evidence": [{"source": "photo:0", "what": "glass to the floor"}]}
+    assert C.reader_grounding(r, LISTING) == []
+    r["fields"]["side"] = {"value": "unknown", "status": "cant_tell", "evidence": []}   # the reader's cant_tell side
+    r["position"] = "unknown"
+    assert C.reader_grounding(r, LISTING) == []
+    assert C.compare("windows", "floor_to_ceiling", {"floor_to_ceiling": True, "operable": None}) == C.CORRECT
+    assert C.compare("view", "open", "water") == C.CORRECT and C.compare("wall_material", "drywall", "plaster") == C.CORRECT
+
+
+def test_offsets_must_point_at_the_quote():
+    r = good_reader()
+    q = "on the fourth floor"
+    start = LISTING["text"].index(q)
+    r["fields"]["floor"]["evidence"][0].update(start=start, end=start + len(q))
+    assert C.reader_grounding(r, LISTING) == []
+    r["fields"]["floor"]["evidence"][0].update(start=start + 1, end=start + len(q) + 1)
+    [p] = hard(C.reader_grounding(r, LISTING))
+    assert "offsets" in p.message
+
+
 def test_unknown_sources_and_statuses_fail():
     r = good_reader()
     r["fields"]["floor"]["evidence"][0] = {"source": "pluto", "what": "6 floors"}
@@ -141,27 +166,46 @@ def test_uncited_sentences_and_stray_numbers_are_notes_not_failures():
 
 
 # ---------------------------------------------------------------- permit adjustments
-ROWS = [{"work_permit": "M1-I1", "work_type": "New Building"}, {"work_permit": "M2-I1", "work_type": "Plumbing"}]
-CAPS = {"construction": 15.0}
+ROWS = [{"work_permit": "M1-I1", "work_type": "General Construction", "job_description": "NEW BUILDING: erect 20 stories"},
+        {"work_permit": "M2-I1", "work_type": "Plumbing", "job_description": "Replace sink"}]
+CAPS = {"construction": 2.0}
+
+
+def adj(size=1, cites=("M1-I1",), **extra):
+    return {"adjustment": {"source": "construction", "direction": "louder", "size": size, "cap": 2, "cites": list(cites),
+                           "reason": "x", **extra}}
 
 
 def test_an_adjustment_within_cap_citing_pulled_rows_passes():
-    adj = {"adjustments": [{"ingredient": "construction", "delta": -12, "cites": ["M1-I1"]}]}
-    assert C.adjustments(adj, ROWS, CAPS) == []
-    assert C.adjustments({"adjustments": []}, ROWS, CAPS) == []
+    assert C.adjustments(adj(2), ROWS, CAPS) == []
+    assert C.adjustments({"adjustment": None, "why_none": "nothing moves"}, ROWS, CAPS) == []
+    assert C.adjustments({"adjustments": [{"ingredient": "construction", "delta": -1, "cites": ["M2-I1"]}]}, ROWS, CAPS) == []
 
 
-def test_over_cap_unpulled_rows_unknown_ingredient_and_no_cites_fail():
-    adj = {"adjustments": [{"ingredient": "construction", "delta": -16, "cites": ["M1-I1", "M9-I1"]},
-                           {"ingredient": "nightlife", "delta": 2, "cites": []}]}
-    msgs = [p.message for p in C.adjustments(adj, ROWS, CAPS)]
-    assert any("over its cap of 15" in m for m in msgs)
+def test_over_cap_unpulled_rows_unknown_source_bad_direction_and_no_cites_fail():
+    msgs = [p.message for p in C.adjustments(adj(3, ("M1-I1", "M9-I1"), direction="sideways"), ROWS, CAPS)]
+    assert any("over its cap of 2" in m for m in msgs)
     assert any("M9-I1" in m and "not in the pull" in m for m in msgs)
-    assert any("'nightlife' has no cap" in m for m in msgs)
-    assert "cites no rows" in msgs
+    assert any("direction 'sideways'" in m for m in msgs)
+    other = {"adjustment": {"source": "nightlife", "size": 1, "cites": []}}
+    msgs = [p.message for p in C.adjustments(other, ROWS, CAPS)]
+    assert "source 'nightlife' has no cap" in msgs and "cites no rows" in msgs
 
 
-def test_a_missing_adjustments_list_fails():
+def test_a_permit_reading_must_quote_its_own_row():
+    def reading(pid, quote):
+        ev = [{"source": f"permit:{pid}", "quote": quote}]
+        return {"id": pid, "kind": {"value": "new_building", "status": "read", "evidence": ev},
+                "duration": {"value": None, "status": "cant_tell", "evidence": []}}
+    ok = dict(adj(), readings=[reading("M1-I1", "new  building")])          # case and spaces are forgiven
+    assert C.adjustments(ok, ROWS, CAPS) == []
+    wrong_row = dict(adj(), readings=[reading("M2-I1", "NEW BUILDING")])   # a real quote, from another permit
+    other = dict(adj(), readings=[reading("M7-I1", "NEW BUILDING")])
+    assert "not in M2-I1's description" in C.adjustments(wrong_row, ROWS, CAPS)[0].message
+    assert "not a permit in the pull" in C.adjustments(other, ROWS, CAPS)[0].message
+
+
+def test_a_missing_adjustment_fails():
     assert C.adjustments({"adjust": []}, ROWS, CAPS)[0].message.startswith("the permit reader returned no")
 
 

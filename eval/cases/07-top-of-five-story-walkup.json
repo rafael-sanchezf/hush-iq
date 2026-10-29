@@ -29,6 +29,8 @@
   },
   "fixtures": {
     "reader": {
+      "status": "complete",
+      "stopped": "submitted",
       "fields": {
         "address": {
           "value": "51 St. Marks Place",
@@ -36,7 +38,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "51 St. Marks Place"
+              "quote": "51 St. Marks Place",
+              "start": 37,
+              "end": 55
             }
           ]
         },
@@ -51,17 +55,21 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "Top floor of a five-story walk-up"
+              "quote": "Top floor of a five-story walk-up",
+              "start": 0,
+              "end": 33
             }
           ]
         },
         "side": {
-          "value": "front",
+          "value": "street",
           "status": "read",
           "evidence": [
             {
               "source": "text",
-              "quote": "Bedroom windows face St. Marks Place"
+              "quote": "Bedroom windows face St. Marks Place",
+              "start": 140,
+              "end": 176
             }
           ]
         }
@@ -89,7 +97,9 @@
           "evidence": [
             {
               "source": "text",
-              "quote": "exposed brick"
+              "quote": "exposed brick",
+              "start": 74,
+              "end": 87
             }
           ]
         }
@@ -186,13 +196,17 @@
           "borough": "Manhattan"
         }
       },
+      "score_engine": "v2",
+      "needs": [],
       "trace": [
         {
-          "turn": 1,
+          "n": 1,
+          "by": "model",
           "tool": "submit_listing",
           "ok": true
         }
-      ]
+      ],
+      "mode": "fixture"
     },
     "verdict": {
       "evidence": [
