@@ -60,7 +60,12 @@
               "start": 0,
               "end": 28
             }
-          ]
+          ],
+          "derived": {
+            "from": "top",
+            "floors": 18,
+            "source": "NYC PLUTO numfloors"
+          }
         },
         "side": {
           "value": "unknown",

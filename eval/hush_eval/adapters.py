@@ -187,7 +187,8 @@ def reader_responder(mock, recorded):
             if not f or f.get("status") != "read" or name in drop:
                 return {"status": "cant_tell", "value": None, "evidence": []}
             ev = [{"source": e["source"], **({"quote": e["quote"]} if e.get("source") == "text" else {})} for e in f["evidence"]]
-            return {"status": "read", "value": f["value"], "evidence": ev}
+            value = (f.get("derived") or {}).get("from") or f["value"]   # the model says "top"; the reader adds the count
+            return {"status": "read", "value": value, "evidence": ev}
         return {"fields": {n: strip(f, n) for n, f in fields.items()}, "observed": {n: strip(f, n) for n, f in observed.items()}}
 
     def respond(body):
@@ -220,6 +221,10 @@ class FixtureScorer:
             raise self.error(f"no recorded location for {address!r}")
         return {"label": addr["label"], "lat": addr.get("lat"), "lng": addr.get("lng"), "bbl": addr.get("bbl"),
                 "bin": addr.get("bin"), "borough": addr.get("borough")}
+
+    def floors(self, bbl):
+        """The building's floor count, as the recorded score has it (PLUTO numfloors), for "PH" and "top floor"."""
+        return ((self.score_body or {}).get("unit") or {}).get("building_floors") or None
 
     def score(self, address, floor, position, answers):
         if not self.score_body:
