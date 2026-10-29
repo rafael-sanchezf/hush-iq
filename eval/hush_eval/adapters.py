@@ -372,7 +372,9 @@ def refusals(out):
 def usage_of(out, turns=()):
     """Token counts by model, from a result's `usage`, or from its turns' `usage` or `tokens` (the reader's)."""
     found = {}
-    model_default = out.get("model") if isinstance(out, dict) else None
+    model_default = None
+    if isinstance(out, dict):   # the permit reader names its model under "reader" ("rules" when no model ran)
+        model_default = out.get("model") or (out.get("reader") if out.get("reader") not in (None, "rules", "fixture") else None)
 
     def add(u, model=None):
         if not isinstance(u, dict):
