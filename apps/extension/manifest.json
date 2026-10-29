@@ -30,5 +30,11 @@
     "open_in_tab": true
   },
   "permissions": ["activeTab", "scripting", "sidePanel", "storage", "contextMenus"],
-  "host_permissions": ["https://hush-iq-api.vercel.app/*"]
+  "host_permissions": [
+    "https://*.streeteasy.com/*",
+    "https://*.zillow.com/*",
+    "https://*.apartments.com/*",
+    "https://*.craigslist.org/*",
+    "https://hush-iq-api.vercel.app/*"
+  ]
 }

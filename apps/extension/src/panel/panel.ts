@@ -1,6 +1,9 @@
 /**
- * The side panel: the three questions, one at a time, the first time only; then the verdict and the source ranks,
- * with what the reader took from the listing folded away. No written paragraph: Rafa cut it, 2026-10-29.
+ * The side panel: the three questions, one at a time, the first time only; then the score, and under it what
+ * informed it, grouped with icons. No written paragraph: Rafa cut it, 2026-10-29.
+ *
+ * One panel per listing tab: the service worker opens it as `panel.html?tab=<id>` and hands that tab's capture over
+ * under `capture:<id>`, so two listings in two tabs never share a panel.
  *
  * What the page gave stays out of sight. The renter sees it only when it falls short (no address, outside the city,
  * very little text), with a way to fix it (Rafa, 2026-10-29). Nothing leaves the browser until the renter clicks
@@ -21,10 +24,12 @@ import type { Answers, ReadInput, ReaderResult, ReaderTurn, Score } from '../lib
 import { DEFAULT_ANSWERS, addressLine, forWhom } from '../lib/words.ts';
 import { clear, glyph, h } from './dom.ts';
 import type { ResultView } from './views.ts';
-import { fineprint, informedCard, questionsCard, sourcesCard, turnItem, verdictCard } from './views.ts';
+import { fineprint, questionsCard, scoreCard, shapedCard, turnItem } from './views.ts';
 
 const app = document.getElementById('app')!;
 const modePill = document.getElementById('mode')!;
+const TAB = new URLSearchParams(location.search).get('tab');
+const KEY = TAB ? `capture:${TAB}` : 'capture';
 
 let answers: Answers | null = null;
 let capture: Capture | null = null;
@@ -32,6 +37,8 @@ let text = '';
 let photoOn: boolean[] = [];
 let run: AbortController | null = null;
 let lastCaptureId = '';
+/** Where the Hush IQ name in the header and every "Back" lead: the score once there is one, else the start. */
+let goHome: () => void = () => welcome();
 
 function show(...nodes: (Node | null)[]): void {
   clear(app);
@@ -67,14 +74,16 @@ async function refreshMode(): Promise<void> {
 
 // ---------------------------------------------------------------- welcome
 
-function welcome(error?: string): void {
+function welcome(error?: string, info?: string): void {
   stop();
+  goHome = () => welcome();
   const paste = h('textarea', { rows: 7, placeholder: 'Paste the listing: address, floor, description.' });
   show(
     h('section', { class: 'hero' },
       h('h1', null, 'How loud is this apartment, for the way you sleep?'),
       h('p', null, 'Hush IQ reads the listing you have open and ranks the building against Manhattan, source by source, from eight city datasets.')),
     error ? h('div', { class: 'note warn' }, glyph('refused'), h('span', null, error)) : null,
+    info ? h('div', { class: 'note' }, glyph('cant_tell'), h('span', null, info)) : null,
     h('section', { class: 'card' },
       h('ol', { class: 'how' },
         h('li', null, 'Open a listing on StreetEasy, Zillow, Apartments.com or Craigslist.'),
@@ -125,6 +134,7 @@ function gap(t: string, c: Capture): Gap | null {
 
 function start(c: Capture): void {
   stop();
+  goHome = () => welcome();
   capture = { ...c, text: redactContacts(c.text).text };
   text = capture.text;
   photoOn = capture.photos.map(() => true);
@@ -150,8 +160,9 @@ function ask(): void {
   );
 }
 
-/** The failsafe: what was read, shown only when it falls short or the renter asks to check it. */
-function fixCard(g: Gap | null): void {
+/** The failsafe: what was read, shown only when it falls short or the renter asks to fix it. `back` returns to
+ * where they came from. */
+function fixCard(g: Gap | null, back?: () => void): void {
   stop();
   const c = capture;
   if (!c) return welcome();
@@ -168,11 +179,13 @@ function fixCard(g: Gap | null): void {
   const source = c.site === 'paste' ? 'Your paste' : c.selection ? 'Your selection' : `Read from ${SITE_NAMES[c.site] === 'this page' ? c.host || 'this page' : SITE_NAMES[c.site]}`;
   show(
     h('section', { class: 'card' },
-      h('div', { class: 'block-head' }, h('span', { class: 'eyebrow' }, source), h('button', { type: 'button', class: 'link small', onclick: () => welcome() }, 'Start over')),
+      h('div', { class: 'block-head' },
+        back ? h('button', { type: 'button', class: 'link small', onclick: back }, '‹ Back to your score') : h('span', { class: 'eyebrow' }, source),
+        h('button', { type: 'button', class: 'link small', onclick: () => welcome() }, 'Start over')),
       g ? h('div', { class: `note${g.blocks ? ' warn' : ''}` }, glyph(g.blocks ? 'refused' : 'cant_tell'), h('span', null, h('b', null, `${g.title}. `), g.body)) : null,
       input,
       h('details', { class: 'paste', open: !g?.address }, h('summary', null, 'What was read'), area, h('p', { class: 'small' }, 'Trim anything not about this apartment.')),
-      g?.blocks ? null : h('button', { type: 'button', class: 'btn block', onclick: go }, g ? 'Continue' : 'Score this apartment')),
+      g?.blocks ? null : h('button', { type: 'button', class: 'btn block', onclick: go }, g ? 'Continue' : 'Score it again')),
   );
 }
 
@@ -185,7 +198,7 @@ function stopCard(title: string, body: (Node | string)[], extra?: HTMLElement | 
       h('p', { class: 'muted' }, ...body),
       extra ?? null,
       h('div', { class: 'actions' },
-        h('button', { type: 'button', class: 'btn ghost small', onclick: () => fixCard(null) }, 'Check what was read'),
+        h('button', { type: 'button', class: 'btn ghost small', onclick: () => fixCard(null, () => goHome()) }, 'Check what was read'),
         h('button', { type: 'button', class: 'btn ghost small', onclick: () => welcome() }, 'Start over'))),
     traceDetails(),
   );
@@ -297,13 +310,7 @@ async function showResult(result: ReaderResult, first: Score, reader: client.Liv
     score: first, fields: result.fields, observed: result.observed,
     answers: answers ?? DEFAULT_ANSWERS, reader, photos, readerAi: result.ai ?? null,
   };
-  const slot = { verdict: h('div'), sources: h('div'), fine: h('div') };
-  const draw = () => {
-    slot.verdict.replaceChildren(verdictCard(v));
-    slot.sources.replaceChildren(sourcesCard(v.score));
-    slot.fine.replaceChildren(fineprint(v.score));
-  };
-
+  const slot = { score: h('div'), shaped: h('div'), fine: h('div') };
   const tapsSlot = h('div');
   let rescoring = 0;
   const change = () => {
@@ -324,23 +331,20 @@ async function showResult(result: ReaderResult, first: Score, reader: client.Liv
       } finally {
         if (mine === rescoring) app.classList.remove('updating');
       }
-    }, 'Update the score'));
+    }, 'Update the score', () => tapsSlot.replaceChildren()));
     tapsSlot.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
-
-  draw();
+  const draw = () => {
+    slot.score.replaceChildren(scoreCard(v));
+    slot.shaped.replaceChildren(shapedCard(v, { answers: change, fix: () => fixCard(null, home) }));
+    slot.fine.replaceChildren(fineprint(v.score));
+  };
   const basic = result.ai?.mode === 'basic' && result.ai.message;
-  show(
-    basic ? h('div', { class: 'note' }, glyph('cant_tell'), h('span', null, result.ai!.message!)) : null,
-    tapsSlot,
-    slot.verdict,
-    slot.sources,
-    informedCard(v),
-    h('div', { class: 'actions' },
-      h('button', { type: 'button', class: 'btn ghost small', onclick: change }, 'Change my answers'),
-      h('button', { type: 'button', class: 'btn ghost small', onclick: () => fixCard(null) }, 'Check what was read')),
-    slot.fine,
-  );
+  const note = basic ? h('div', { class: 'note' }, glyph('cant_tell'), h('span', null, result.ai!.message!)) : null;
+  const home = () => show(note, tapsSlot, slot.score, slot.shaped, slot.fine);
+  draw();
+  goHome = home;
+  home();
 }
 
 // ---------------------------------------------------------------- what the service worker hands over
@@ -348,6 +352,10 @@ async function showResult(result: ReaderResult, first: Score, reader: client.Liv
 function handle(msg: CaptureMessage | undefined): void {
   if (!msg || msg.id === lastCaptureId) return;
   if (!msg.ok && msg.error === 'reading') return readingPage();
+  if (!msg.ok && msg.error === 'new_page') {
+    lastCaptureId = msg.id;
+    return welcome(undefined, 'This is a different page. Click Hush IQ in the toolbar to score it.');
+  }
   lastCaptureId = msg.id;
   if (!msg.ok) return welcome(msg.error);
   start(msg.capture);
@@ -358,15 +366,16 @@ async function init(): Promise<void> {
   if (__BYOK__) await loadKey();
   answers = await loadAnswers();
   document.getElementById('settings')!.addEventListener('click', () => chrome.runtime.openOptionsPage());
+  document.getElementById('home')!.addEventListener('click', () => goHome());
   (document.getElementById('repo') as HTMLAnchorElement).href = REPO_URL;
   void refreshMode();
 
-  const { capture: msg } = await chrome.storage.session.get('capture');
+  const { [KEY]: msg } = await chrome.storage.session.get(KEY);
   if (msg) handle(msg as CaptureMessage);
   else welcome();
 
   chrome.storage.session.onChanged.addListener((changes) => {
-    if (changes.capture?.newValue) handle(changes.capture.newValue as CaptureMessage);
+    if (changes[KEY]?.newValue) handle(changes[KEY].newValue as CaptureMessage);
   });
   chrome.storage.local.onChanged.addListener(async (changes) => {
     if (changes.apiBase || changes.mode || changes.ai || (__BYOK__ && keyChanged(changes))) {

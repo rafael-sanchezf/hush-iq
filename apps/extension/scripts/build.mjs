@@ -61,7 +61,8 @@ const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 const manifest = JSON.parse(readFileSync(join(root, 'manifest.json'), 'utf8'));
 manifest.version = pkg.version;
 if (byok) manifest.version_name = `${pkg.version} own key`;
-manifest.host_permissions = [`${origin}/*`];
+// The listing sites stay (lib/sites.ts); the API entry becomes the one this build calls.
+manifest.host_permissions = [...manifest.host_permissions.filter((p) => !p.startsWith('https://hush-iq-api.')), `${origin}/*`];
 writeFileSync(join(out, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
 
 console.log(`built ${out} (API ${api}${byok ? ', own-key settings in' : ''})`);
