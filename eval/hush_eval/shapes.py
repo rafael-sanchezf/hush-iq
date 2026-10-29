@@ -5,7 +5,7 @@ Reader result (services/agent, POST /read):
      observed: {view, windows, ac_units, wall_material}, score: <v2 or v1 response>, trace: [...]}
     each field: {value, status: "read"|"cant_tell", evidence: [{source: "text", quote} | {source: "photo:<i>", what}]}
 Verdict (services/verdict, POST /verdict):
-    {evidence: [{id: "E1", text}], sentences: [{text, cites: ["E1"]}], writer: "muse-spark-open"|"template"}
+    {evidence: [{id: "E1", text}], sentences: [{text, cites: ["E1"]}], writer: "muse-spark-open"|"muse-spark-1.3"|"template"}
 Answers (the three taps, v2 query names):
     {sleep_from: int hour, sleep_until: int hour, day_bothers: bool, bothers: [traffic|people|neighbors|sirens|construction]}
 """
@@ -16,7 +16,7 @@ STATUSES = ("read", CANT_TELL)
 POSITIONS = ("front", "rear", "unknown")
 BOTHERS = ("traffic", "people", "neighbors", "sirens", "construction")
 VERDICTS = ("Very loud", "Loud", "Typical", "Quiet", "Very quiet")
-WRITERS = ("muse-spark-open", "template")
+WRITERS = ("muse-spark-open", "muse-spark-1.3", "template")
 
 TEXT_FIELDS = ("address", "unit", "floor", "side")
 OBSERVED_FIELDS = ("view", "windows", "ac_units", "wall_material")

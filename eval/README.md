@@ -49,7 +49,7 @@ service's `CONTRACT.md`.
 | Service | In mock mode | In live mode |
 |---|---|---|
 | Listing reader, `services/agent` (HIQ-13) | Its own mock client, driven by the case's recorded model output, so `submit_listing` and `read_photo` check it for real. A stand-in scorer returns the recorded score, so nothing reaches the city's data. | `reader.client.make_client()` with `MODEL_API_KEY`; the hosted scorer |
-| Verdict writer, `services/verdict` (HIQ-20) | A scripted OpenAI-SDK client, when its entry point takes `client`. Until its branch lands: fixture replay | its own client with `BASETEN_API_KEY` |
+| Verdict writer, `services/verdict` (HIQ-20) | A scripted client playing Muse Spark Open. Its draft is built against the writer's own evidence ids, which `verdict.evidence.build` makes per score: a recorded live draft when its ids exist, otherwise one sentence restating each of the verdict line, a rank line and the floor or range line. The writer's checks then run on a real draft. | its own client with `BASETEN_API_KEY` |
 | Permit reader, `services/adjust` (HIQ-18) | Its rules reader (`client=None`), through the same checks | its Muse Spark client |
 
 A service that is not on the branch is reached over HTTP when `HIQ_READER_URL`, `HIQ_VERDICT_URL` or
@@ -105,7 +105,7 @@ case holds:
 
 ### What the first in-process run found (Oct 28)
 
-Run against the reader and permit-reader branches as pushed on Oct 28, in mock mode, offline: no fails.
+Run against the reader, verdict and permit-reader branches as pushed on Oct 28, in mock mode, offline: no fails.
 
 - **Floor**: the reader declines four floors the gold says are knowable: "PH" (06), "top floor" (08),
   "garden level" (15), and the unit number "12F" (03). Its rule is that a floor must be a number next to the
@@ -115,6 +115,9 @@ Run against the reader and permit-reader branches as pushed on Oct 28, in mock m
   only the text states them (07, 11 to 14, 16, 17). The photo-cited ones in 18 pass `read_photo`'s check.
 - **Permits**: the rules reader gives facade work +1 step (04), a new building +2 (09) and a demolition +2 (13),
   each within the cap of 2 and citing only its own permit. The sign permit gets nothing (17).
+- **Verdicts**: the writer builds 22 to 25 evidence lines per case. The scripted draft passes its checks in
+  all 19 cases that have a score, so the model's path is exercised, not only the template's. Case 19 has no
+  address, so it has no score and no verdict.
 
 These are policy choices in the reader, not bugs. The eval reports them as *can't tell*, which never counts
 as wrong.
@@ -202,4 +205,4 @@ reaches for the internet is **skipped**, with the host named in the reason, rath
 `@pytest.mark.network` skips a test up front, and the summary lists every skipped test.
 
 On Oct 28, none of the 18 model tests on main needed the network, nor the 30 with engine v2. The reader's 65
-tests and the permit reader's 38 also pass offline.
+tests, the verdict writer's 49 and the permit reader's 38 also pass offline.

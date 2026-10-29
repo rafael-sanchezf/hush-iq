@@ -83,7 +83,7 @@ jobs:
       - name: install what the services need to import in process
         run: |
           shopt -s nullglob
-          pip install pytest
+          pip install pytest -r packages/model/requirements.txt
           for r in services/*/requirements.txt; do pip install -r "$r"; done
       - name: run the eval
         working-directory: eval

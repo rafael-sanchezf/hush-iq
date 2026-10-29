@@ -10,12 +10,11 @@ Mock mode (the default) never reaches a model and never needs a key:
              unsupported field, read_photo refuses a photo that does not exist. A scorer stand-in returns the
              recorded score, so nothing reaches the city's data.
     adjust   the permit reader's rules reader (client=None), through the same checks as the model.
-    verdict  a scripted OpenAI-SDK client, when the writer takes `client`.
+    verdict  a scripted OpenAI-SDK client playing Muse Spark Open, its draft cut to the writer's own evidence ids.
 Live mode passes no stand-ins: each service builds its real client from MODEL_API_KEY or BASETEN_API_KEY.
 
 One Binding per service is the only place that knows its module names and call shape, taken from each service's
-CONTRACT.md: services/agent (HIQ-13) and services/adjust (HIQ-18). The verdict writer's (HIQ-20) is not pushed
-yet, so its binding guesses from the shared shape and falls back to fixture replay until it imports.
+CONTRACT.md: services/agent (HIQ-13), services/verdict (HIQ-20) and services/adjust (HIQ-18), as pushed on Oct 28.
 HIQ_EVAL_REPO points the eval at another checkout, to run it against a service's unmerged branch.
 """
 import base64
@@ -250,31 +249,36 @@ class AdjustBinding:
 
 
 class VerdictBinding:
-    """services/verdict: not pushed yet. Tries the names the shared shape suggests; fixture replay until one imports."""
+    """services/verdict: verdict.write(score, answers, fields, client=None) -> {evidence, sentences, writer, trace}.
+    Its evidence ids are built per score (verdict.evidence.build), so in mock mode the scripted draft is made against
+    them: a recorded model draft when its cites are among the ids built, else one sentence restating each of the
+    verdict line, the first rank line and the floor or range line. The writer's checks then run on a real draft."""
     name, folder, url_env, path = "verdict", "services/verdict", "HIQ_VERDICT_URL", "/verdict"
-    CANDIDATES = ("verdict:write", "writer:write", "verdict.writer:write", "app.verdict:write")
+    MODEL_WRITERS = ("muse-spark-open", "muse-spark-1.3")
 
     def load(self):
-        errors = []
-        for cand in self.CANDIDATES:
-            mod_name, fn = cand.split(":")
-            mods, why = _import_from(self.folder, {"m": mod_name})
-            if mods and callable(getattr(mods.m, fn, None)):
-                self.fn = getattr(mods.m, fn)
-                return mods, f"in process, {self.folder} {cand}"
-            errors.append(why or f"{cand}: no {fn}")
-            if why and "does not exist" in why:
-                return None, why
-        return None, f"{self.folder} has no entry point ({'; '.join(errors)})"
+        mods, why = _import_from(self.folder, {"verdict": "verdict", "evidence": "verdict.evidence"})
+        return mods, why or f"in process, {self.folder} verdict.write"
 
     def call(self, mods, case, inputs, mode, on_turn):
         kw = dict(inputs)
         if mode == "mock":
-            if not _accepts(self.fn, "client"):
-                raise Unreachable(f"{self.folder} takes no client, so mock mode cannot script it")
-            recorded = (case.get("fixtures") or {}).get("verdict") or {}
-            kw["client"] = ScriptedClient({"sentences": recorded.get("sentences", [])})
-        return self.fn(**kw)
+            lines = mods.evidence.build(inputs["score"], inputs.get("answers"), inputs.get("fields"))
+            kw["client"] = ScriptedClient({"sentences": self.draft(lines, (case.get("fixtures") or {}).get("verdict"))},
+                                          model="meta-models/muse-spark-open-1026")
+        return mods.verdict.write(**kw)
+
+    def draft(self, lines, recorded):
+        ids = {l.id for l in lines}
+        if recorded and recorded.get("writer") in self.MODEL_WRITERS and all(
+                c in ids for s in recorded.get("sentences", []) for c in s.get("cites", [])):
+            return recorded["sentences"]
+        picked = []
+        for kinds in (("verdict",), ("rank",), ("range", "floor")):
+            line = next((l for l in lines if l.kind in kinds), None)
+            if line and line not in picked:
+                picked.append(line)
+        return [{"text": l.text, "cites": [l.id]} for l in picked]
 
     def http_body(self, inputs):
         return inputs

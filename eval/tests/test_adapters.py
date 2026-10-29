@@ -82,27 +82,60 @@ def test_the_fixture_scorer_stands_in_for_the_city_data():
 
 
 # ---------------------------------------------------------------- a stand-in verdict writer, in process
+def isolate(monkeypatch, package):
+    """Hide an already imported package for one test; the test's own copy is dropped afterwards."""
+    for name in [m for m in sys.modules if m == package or m.startswith(package + ".")]:
+        monkeypatch.delitem(sys.modules, name)
+
+    def drop():
+        for name in [m for m in sys.modules if m == package or m.startswith(package + ".")]:
+            del sys.modules[name]
+    return drop
+
+
 @pytest.fixture
 def stand_in_verdict(tmp_path, monkeypatch):
-    svc = tmp_path / "services" / "verdict"
-    svc.mkdir(parents=True)
-    (svc / "verdict.py").write_text(
+    """services/verdict's interface: verdict.write(score, answers, fields, client=None) and verdict.evidence.build."""
+    pkg = tmp_path / "services" / "verdict" / "verdict"
+    pkg.mkdir(parents=True)
+    (pkg / "evidence.py").write_text(
+        "from types import SimpleNamespace\n"
+        "def build(score, answers=None, fields=None):\n"
+        "    return [SimpleNamespace(id='E%d' % (i + 1), text=t, kind=k) for i, (t, k) in enumerate(\n"
+        "        [('Verdict for you: %s.' % score['verdict'], 'verdict')] + [(i_['label'], 'rank') for i_ in score['ingredients']])]\n")
+    (pkg / "__init__.py").write_text(
         "import json\n"
-        "def write(score, answers, fields, client=None):\n"
+        "def write(score, answers=None, fields=None, client=None, writer_choice='auto'):\n"
+        "    from . import evidence\n"
+        "    lines = evidence.build(score, answers, fields)\n"
         "    resp = client.chat.completions.create(model='meta-models/muse-spark-open-1026', messages=[],\n"
         "                                          tools=[{'type': 'function', 'function': {'name': 'submit_verdict'}}])\n"
         "    out = json.loads(resp.choices[0].message.tool_calls[0].function.arguments)\n"
-        "    evidence = [{'id': 'E%d' % (i + 1), 'text': i_['label']} for i, i_ in enumerate(score['ingredients'])]\n"
-        "    return {'evidence': evidence, 'sentences': out['sentences'], 'writer': 'muse-spark-open'}\n")
+        "    ids = {l.id for l in lines}\n"
+        "    ok = all(c in ids for s in out['sentences'] for c in s['cites'])\n"
+        "    return {'evidence': [{'id': l.id, 'text': l.text} for l in lines], 'sentences': out['sentences'] if ok else [],\n"
+        "            'writer': 'muse-spark-open' if ok else 'template'}\n")
+    drop = isolate(monkeypatch, "verdict")
     monkeypatch.setattr(A, "REPO", tmp_path)
-    yield svc
+    yield pkg
+    drop()
 
 
-def test_in_process_mock_scripts_the_verdict_writer(stand_in_verdict):
+def test_in_process_mock_drafts_against_the_writers_own_evidence(stand_in_verdict):
     svc = A.Service("verdict", "mock")
-    assert svc.transport == "inproc" and "verdict:write" in svc.why
-    out, meta = svc.call(CASE, score=CASE["fixtures"]["reader"]["score"], answers=CASE["answers"], fields={})
-    assert out["sentences"] == CASE["fixtures"]["verdict"]["sentences"] and meta["transport"] == "inproc"
+    assert svc.transport == "inproc" and "verdict.write" in svc.why
+    score = CASE["fixtures"]["reader"]["score"]
+    out, meta = svc.call(CASE, score=score, answers=CASE["answers"], fields={})
+    assert out["writer"] == "muse-spark-open" and meta["transport"] == "inproc"
+    assert out["sentences"][0] == {"text": f"Verdict for you: {score['verdict']}.", "cites": ["E1"]}
+    assert [s["cites"] for s in out["sentences"]] == [["E1"], ["E2"]]
+
+
+def test_a_recorded_model_draft_is_replayed_when_its_ids_exist(stand_in_verdict):
+    case = json.loads(json.dumps(CASE))
+    case["fixtures"]["verdict"] = {"writer": "muse-spark-open", "sentences": [{"text": "Street first.", "cites": ["E2"]}]}
+    out, _ = A.Service("verdict", "mock").call(case, score=case["fixtures"]["reader"]["score"], answers={}, fields={})
+    assert out["sentences"] == [{"text": "Street first.", "cites": ["E2"]}]
 
 
 def test_without_the_service_mock_mode_replays_and_live_mode_refuses(tmp_path, monkeypatch):
@@ -119,10 +152,10 @@ def test_a_service_that_does_not_import_says_why(tmp_path, monkeypatch):
     (tmp_path / "services" / "adjust" / "adjust").mkdir(parents=True)
     (tmp_path / "services" / "adjust" / "adjust" / "__init__.py").write_text("raise ImportError('no openai here')\n")
     monkeypatch.setattr(A, "REPO", tmp_path)
-    for name in [m for m in sys.modules if m == "adjust" or m.startswith("adjust.")]:
-        monkeypatch.delitem(sys.modules, name)
+    drop = isolate(monkeypatch, "adjust")
     monkeypatch.setattr(sys, "path", [p for p in sys.path if not p.endswith("services/adjust")])
     svc = A.Service("adjust", "mock")
+    drop()
     assert svc.transport == "fixture" and "does not import" in svc.why
 
 
