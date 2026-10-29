@@ -4,8 +4,10 @@ Each check returns a list of Problem. A hard problem fails the run; a soft one i
     reader_grounding   every field marked read has a quote that is in the listing, or a photo that exists
     verdict_citations  every citation points at an evidence line that exists; no decibels
     adjustments        every permit adjustment is within its cap and cites rows that are in the pull
+    ai_switch          with AI off no model wrote anything; a result's `ai` object answers what the run asked for
     extraction         the reader's fields against the gold labels, one outcome per field
 """
+import json
 import re
 from dataclasses import asdict, dataclass
 
@@ -250,6 +252,59 @@ def adjustments(adj, rows, caps):
                 if _norm_text(ev.get("quote") or "").lower() not in desc or not str(ev.get("quote") or "").strip():
                     out.append(Problem("adjustments", where, f"quote {ev.get('quote')!r} is not in {m.group(1)}'s description"))
     return out
+
+
+# ---------------------------------------------------------------- the AI switch (AI_SWITCH.md)
+AI_MODES = ("model", "basic")
+AI_PROVIDERS = ("meta", "openai", "anthropic", None)
+AI_KEYS = ("house", "caller", None)
+AI_REASONS = (None, "switched_off", "house_off", "no_key", "key_rejected", "provider_busy", "provider_error")
+
+
+def ai_switch(out, service, switch="on", provider=None, caller_key=False):
+    """A result against the AI setting the run asked for. With AI off no model may have written any of it, whatever
+    the service says. Its `ai` object, once the service sends one, must have the contract's shape and answer what
+    was asked: a provider run that ran basic, or on the house key, did not measure that provider."""
+    if not isinstance(out, dict):
+        return []
+    found = []
+    if switch == "off":
+        if service == "verdict" and out.get("writer") != "template":
+            found.append(Problem("ai_switch", service, f"AI off, but the verdict was written by {out.get('writer')!r}"))
+        if service == "adjust" and adjustment_list(out):
+            found.append(Problem("ai_switch", service, "AI off, but the permit reader adjusted the score"))
+        if service == "reader" and out.get("mode") not in ("mock", "basic", "rules") and (out.get("ai") or {}).get("mode") != "basic":
+            found.append(Problem("ai_switch", service, f"AI off, but the reader ran in mode {out.get('mode')!r}"))
+    ai = out.get("ai")
+    if ai is None:
+        return found
+    if not isinstance(ai, dict):
+        return found + [Problem("ai_switch", service, f"`ai` is not an object: {ai!r}")]
+    for name, allowed in (("mode", AI_MODES), ("provider", AI_PROVIDERS), ("key", AI_KEYS), ("reason", AI_REASONS)):
+        if ai.get(name) not in allowed:
+            found.append(Problem("ai_switch", service, f"ai.{name} is {ai.get(name)!r}, not one of {allowed}"))
+    if (ai.get("mode") == "basic") != (ai.get("reason") is not None):
+        found.append(Problem("ai_switch", service, f"ai.reason {ai.get('reason')!r} with mode {ai.get('mode')!r}: "
+                                                   "a reason is set exactly when the mode is basic"))
+    if switch == "off":
+        if ai.get("mode") != "basic" or ai.get("reason") != "switched_off":
+            found.append(Problem("ai_switch", service, f"AI off, but ai says mode {ai.get('mode')!r}, reason {ai.get('reason')!r}"))
+        return found
+    if provider and ai.get("mode") == "basic":
+        found.append(Problem("ai_switch", service, f"ran basic ({ai.get('reason')}): {provider} was not measured"))
+    elif provider and ai.get("provider") != provider:
+        found.append(Problem("ai_switch", service, f"asked for {provider}, ran {ai.get('provider')!r}"))
+    if caller_key and ai.get("key") == "house":
+        found.append(Problem("ai_switch", service, "a caller's key was sent, and the house key was spent"))
+    return found
+
+
+def key_absent(out, key, service):
+    """The caller's key appears nowhere in a result. The message never contains the key."""
+    if not key:
+        return []
+    blob = out if isinstance(out, str) else json.dumps(out, default=str)
+    return [Problem("ai_switch", service, "the caller's key is in the result")] if key in blob else []
 
 
 # ---------------------------------------------------------------- extraction against gold

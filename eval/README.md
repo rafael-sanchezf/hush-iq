@@ -11,6 +11,7 @@ Stdlib Python 3.12, no install. Run everything from `eval/`.
 
 ```bash
 python -m hush_eval run                  # mock mode: no model, no key, no cost; exits 1 on a failure
+python -m hush_eval run --ai off         # the product with AI off: the reader's rules, the template verdict (free)
 python -m pytest tests                   # the eval's own tests
 ```
 
@@ -27,6 +28,7 @@ the permit reader. A **fail** stops CI. A **note** is reported and does not stop
 | Verdict citations | A sentence cites an evidence id that was not sent, ids repeat, there are no sentences, or a sentence gives decibels (no decibels leave the engine). Notes: a sentence with no citation, a number that none of its cited lines contains. |
 | Permit adjustments | A source has no cap, or the size is over the cap. The cap comes from `services/adjust` `config.CAPS`, never from the model. Also fails on a cited row that is not in the pull, a direction other than louder or quieter, or a permit reading whose quote is not in that permit's own description. |
 | Extraction against gold | Address, floor and side, field by field, against the case's gold labels. Observed fields too, where a case has gold for them. |
+| AI switch (`AI_SWITCH.md`) | With AI off: a model wrote the verdict, the permit reader adjusted the score, or the reader ran a model. A result's `ai` object, once a service sends one, is off the contract's shape. A provider run came back basic, ran another provider, or spent the house key when a caller's key was sent. The caller's key appears anywhere in a result. |
 
 Extraction has four outcomes, and *can't tell* is counted apart from wrong:
 
@@ -40,17 +42,19 @@ The gate on address, floor and side depends on the mode:
 - **Mock mode**: no wrong or invented values. A service's own checks may refuse a recorded output; that
   shows as *cant_tell* and a note.
 - **Live mode**: the photo test's rule. At least 85% correct where the listing says it, and under 5% wrong.
+- **AI off**: measured against the same rule and reported, but a miss does not fail the run. AI off is the
+  fallback for when the credits end, and CI holds it to the checks, not to the threshold.
 
 ### Modes and how each service is reached
 
 `hush_eval/adapters.py` is the one place that knows each service's module and call shape. Each comes from that
 service's `CONTRACT.md`.
 
-| Service | In mock mode | In live mode |
-|---|---|---|
-| Listing reader, `services/agent` (HIQ-13) | Its own mock client, driven by the case's recorded model output, so `submit_listing` and `read_photo` check it for real. A stand-in scorer returns the recorded score, so nothing reaches the city's data. | `reader.client.make_client()` with `MODEL_API_KEY`; the hosted scorer |
-| Verdict writer, `services/verdict` (HIQ-20) | A scripted client playing Muse Spark Open. Its draft is built against the writer's own evidence ids, which `verdict.evidence.build` makes per score: a recorded live draft when its ids exist, otherwise one sentence restating each of the verdict line, a rank line and the floor or range line. The writer's checks then run on a real draft. | its own client with `BASETEN_API_KEY` |
-| Permit reader, `services/adjust` (HIQ-18) | Its rules reader (`client=None`), through the same checks | its Muse Spark client |
+| Service | In mock mode | In live mode | With AI off |
+|---|---|---|---|
+| Listing reader, `services/agent` (HIQ-13) | Its own mock client, driven by the case's recorded model output, so `submit_listing` and `read_photo` check it for real. A stand-in scorer returns the recorded score, so nothing reaches the city's data. | `reader.client.make_client()` with `MODEL_API_KEY`; the hosted scorer | Its rules (`HeuristicModel`, what it runs without a key), the stand-in scorer |
+| Verdict writer, `services/verdict` (HIQ-20) | A scripted client playing Muse Spark Open. Its draft is built against the writer's own evidence ids, which `verdict.evidence.build` makes per score: a recorded live draft when its ids exist, otherwise one sentence restating each of the verdict line, a rank line and the floor or range line. The writer's checks then run on a real draft. | its own client with `BASETEN_API_KEY` | The template writer |
+| Permit reader, `services/adjust` (HIQ-18) | Its rules reader (`client=None`), through the same checks | its Muse Spark client | Not called: no adjustment, the score stands |
 
 A service that is not on the branch is reached over HTTP when `HIQ_READER_URL`, `HIQ_VERDICT_URL` or
 `HIQ_ADJUST_URL` is set. Otherwise mock mode replays the output recorded in the case file. The first lines of
@@ -63,9 +67,24 @@ HIQ_EVAL_REPO=/path/to/checkout python -m hush_eval run  # against a service's u
 python -m hush_eval run --only 06 08 --json report.json --markdown summary.md
 ```
 
-Live mode prints the per-field accuracy table, then latency, tokens and cost per case. Cost needs the prices
-in `prices.json`, which are blank until someone fills them in from the Meta Model API and Baseten price
-pages. Until then the cost column says n/a and tokens still print.
+Live mode prints the per-field accuracy table, then latency, tokens and cost per case. Cost comes from
+`prices.json`; a model with no price there shows n/a, and its tokens still print.
+
+**Provider runs** (`AI_SWITCH.md`) send the same cases through someone's own Claude or OpenAI key:
+
+```bash
+python -m hush_eval run --provider anthropic                    # ANTHROPIC_API_KEY, from the environment or eval/.env
+python -m hush_eval run --provider openai --model gpt-6-luna    # OPENAI_API_KEY; --model picks from that provider's list
+python -m hush_eval run --provider meta --model muse-spark-1.3  # the house key, as --live
+```
+
+- The key is read from the environment, else from `eval/.env`, which git ignores and `set-key.sh` writes.
+  It never goes on the command line, into a report or into CI.
+- It reaches the services in the `X-HushIQ-AI`, `-Provider`, `-Key` and `-Model` headers, over HTTP. Until the
+  services take a caller's provider in process (HIQ-75 to 77), set `HIQ_READER_URL`, `HIQ_VERDICT_URL` and
+  `HIQ_ADJUST_URL` to running servers.
+- A provider run fails a case that came back basic or spent the house key, since it measured nothing.
+- `prices.json` has each provider's cheap tier and one or two steps up, from the providers' own price pages.
 
 ### The cases
 
@@ -121,6 +140,25 @@ What both passes showed:
 - The reader takes observed facts from photos only, so text-only ones are can't tell.
 - On the photo case (18), pass 2 read the living room's painted wall as plaster where gold says the bedroom's
   brick. The photo-test labels should say which room counts. For sleep, it is the bedroom.
+
+### With AI off (Oct 29)
+
+The same 20 cases with no model call: the reader's rules, the template verdict, no permit adjustment. Services
+at the pass 2 heads. Every check held. Floor and side fall below the rule.
+
+| | Muse Spark 1.3 (pass 2) | AI off |
+|---|---|---|
+| Address (19 listings say it) | 100% | 89%. Misses "32 Gramercy Park South" (no Street or Avenue) and the dotted "St." of "51 St. Marks Place". |
+| Unit (5) | 80% | 60%. Also misses the lowercase "unit 3C". |
+| Floor (16) | 94% | 75%, 1 invented. With no address there is no floor count for "PH" or "top floor"; "floor 15" is not a pattern; of "3rd floor" and "sixth-floor home" it takes the first. |
+| Side (8) | 88%, 0 wrong | 88%, 2 invented. It takes "rear" from a listing that contradicts itself (10) and from the floor-through's garden bedroom (15). |
+| Observed facts (view, windows, AC, walls) | 3 of 17 | 0: the rules cannot see a photo |
+| Verdict | Model-written, 19 cases | The template, 17 cases (3 have no address, so no score) |
+| Permit adjustment | 4 cases read | None: the score stands |
+| Cost, latency | $0.426, 17.8 s a case | $0, under 0.1 s |
+
+The rules are `heuristic_fields` in the reader's `mock.py`. The verdict is written on the recorded score, since
+the stand-in scorer does not rescore.
 
 ## The photo test
 
@@ -196,9 +234,10 @@ uses the same 85% and 5% in live mode.
 
 - `packages/model` tests;
 - the tests of every `services/*` folder that has them;
-- this eval in mock mode, plus its own tests.
+- this eval in mock mode and with AI off, plus its own tests. The AI-off run needs the reader and the verdict
+  writer on the branch, so it is skipped until they are; it fails only when a check breaks.
 
-The eval's table goes to the run's summary page and its JSON report to an artifact.
+The eval's tables go to the run's summary page and its JSON reports to an artifact.
 
 `ci/pytest_offline.py` is a pytest plugin that blocks the internet but leaves loopback open. A test that
 reaches for the internet is **skipped**, with the host named in the reason, rather than failed or deleted.

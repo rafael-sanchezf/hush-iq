@@ -12,6 +12,8 @@ Mock mode (the default) never reaches a model and never needs a key:
     adjust   the permit reader's rules reader (client=None), through the same checks as the model.
     verdict  a scripted OpenAI-SDK client playing Muse Spark Open, its draft cut to the writer's own evidence ids.
 Live mode passes no stand-ins: each service builds its real client from MODEL_API_KEY or BASETEN_API_KEY.
+AI off (AI_SWITCH.md) makes no model call at all: the reader's rules (its HeuristicModel), the template verdict, no
+permit adjustment. A provider run (--provider) sends the caller's key per request, over HTTP in the X-HushIQ headers.
 
 One Binding per service is the only place that knows its module names and call shape, taken from each service's
 CONTRACT.md: services/agent (HIQ-13), services/verdict (HIQ-20) and services/adjust (HIQ-18), as pushed on Oct 28.
@@ -23,6 +25,7 @@ import inspect
 import json
 import mimetypes
 import os
+import re
 import sys
 import time
 import urllib.request
@@ -30,10 +33,75 @@ from pathlib import Path
 
 REPO = Path(os.environ.get("HIQ_EVAL_REPO") or Path(__file__).resolve().parents[2])
 DEFAULT_ADJUST_CAPS = {"construction": 2.0}   # steps, as services/adjust config.CAPS; its own table wins when importable
+EVAL_ENV = Path(__file__).resolve().parents[1] / ".env"   # gitignored; set-key.sh writes the caller keys here
+PROVIDERS = {"meta": "MODEL_API_KEY", "openai": "OPENAI_API_KEY", "anthropic": "ANTHROPIC_API_KEY"}
 
 
 class Unreachable(RuntimeError):
     pass
+
+
+class Skipped(RuntimeError):
+    """A step the run's AI setting leaves out on purpose: a note, not a failure."""
+
+
+def env_value(name, path=EVAL_ENV):
+    """A variable from the environment, else from eval/.env. The value is returned, never printed."""
+    if os.environ.get(name, "").strip():
+        return os.environ[name].strip()
+    try:
+        lines = Path(path).read_text().splitlines()
+    except OSError:
+        return None
+    for line in lines:
+        k, sep, v = line.strip().partition("=")
+        if sep and k.strip() == name and not k.strip().startswith("#"):
+            return v.strip().strip("\"'") or None
+    return None
+
+
+class AI:
+    """What a run asks of the services, as AI_SWITCH.md has it: the switch, and for a provider run the provider,
+    the model and the caller's key. The key stays on this object: repr() and every report say only whose it is."""
+
+    def __init__(self, switch="on", provider=None, model=None, key=None):
+        self.switch, self.provider, self.model, self._key = switch, provider, model, key
+
+    @classmethod
+    def for_provider(cls, provider, model=None):
+        """Meta runs on the house key (MODEL_API_KEY, read by the services themselves); openai and anthropic need
+        the caller's key, from the environment or eval/.env."""
+        if provider in (None, "meta"):
+            return cls("on", "meta", model)
+        key = env_value(PROVIDERS[provider])
+        if not key:
+            raise SystemExit(f"--provider {provider} needs {PROVIDERS[provider]} in the environment or eval/.env "
+                             f"(set-key.sh {provider} writes it there)")
+        return cls("on", provider, model, key)
+
+    @property
+    def key(self):
+        return self._key
+
+    @property
+    def whose(self):
+        return None if self.switch == "off" else ("caller" if self._key else "house")
+
+    def headers(self):
+        """The contract's request headers. Headers, never the body or the URL, so the key is not logged."""
+        h = {"X-HushIQ-AI": self.switch}
+        if self.switch == "on":
+            h.update({k: v for k, v in (("X-HushIQ-Provider", self.provider), ("X-HushIQ-Key", self._key),
+                                        ("X-HushIQ-Model", self.model)) if v})
+        return h
+
+    def label(self):
+        if self.switch == "off":
+            return "AI off"
+        return f"{self.provider or 'meta'}, {self.model or 'its default model'}, {self.whose} key"
+
+    def __repr__(self):
+        return f"AI({self.label()})"
 
 
 # ---------------------------------------------------------------- a scripted OpenAI-SDK-shaped client (chat API)
@@ -84,10 +152,10 @@ def _photo_payload(path):
     return f"data:{mime};base64,{base64.b64encode(p.read_bytes()).decode()}"
 
 
-def _post(url, body, timeout=180):
+def _post(url, body, timeout=180, headers=None):
     req = urllib.request.Request(url, data=json.dumps(body).encode(), method="POST",
                                  headers={"Content-Type": "application/json", "Accept": "text/event-stream, application/json",
-                                          "User-Agent": "hush-iq-eval"})
+                                          "User-Agent": "hush-iq-eval", **(headers or {})})
     return urllib.request.urlopen(req, timeout=timeout)
 
 
@@ -136,6 +204,14 @@ def _import_from(folder, modules):
     return _Obj(**got), None
 
 
+def _house_only(binding, ai):
+    """In process, the services build their own client from the house key (MODEL_API_KEY). A caller's provider, key
+    or model reaches them per request only over HTTP for now; the in-process seam waits for HIQ-75 to 77."""
+    if ai is not None and (ai.provider not in (None, "meta") or ai.model or ai.key):
+        raise Unreachable(f"{binding.folder} takes a caller's provider, key or model per request only over HTTP on this "
+                          f"branch: set {binding.url_env} to a running server")
+
+
 # ---------------------------------------------------------------- the bindings
 class ReaderBinding:
     """services/agent: reader.loop.read_listing(Listing, client=, scorer=, mode=) -> ("turn", t)..., ("result", r)."""
@@ -146,14 +222,17 @@ class ReaderBinding:
                                                "client": "reader.client", "scoring": "reader.scoring"})
         return mods, why or f"in process, {self.folder} reader.loop.read_listing"
 
-    def call(self, mods, case, inputs, mode, on_turn):
+    def call(self, mods, case, inputs, mode, on_turn, ai):
         L = mods.listing
         listing = L.Listing(text=inputs["text"], photos=[L.Photo.from_data_url(p, str(i)) for i, p in enumerate(inputs["photos"])],
                             answers=L.Answers.parse(inputs.get("answers") or {}))
         if mode == "mock":
             client, scorer, label = mods.mock.client(reader_responder(mods.mock, (case.get("fixtures") or {}).get("reader") or {})), \
                 FixtureScorer(case, mods.scoring.ScoreError), "mock"
+        elif mode == "off":   # the reader's rules, what it runs today without a key (READER_MODE=mock); the recorded score
+            client, scorer, label = mods.mock.client(mods.mock.HeuristicModel()), FixtureScorer(case, mods.scoring.ScoreError), "mock"
         else:
+            _house_only(self, ai)
             client, label = mods.client.make_client()
             if label != "live":
                 raise Unreachable("live mode, but the reader built its mock client: no MODEL_API_KEY reached it")
@@ -240,9 +319,12 @@ class AdjustBinding:
         mods, why = _import_from(self.folder, {"permits": "adjust.permits", "config": "adjust.config"})
         return mods, why or f"in process, {self.folder} adjust.permits.read_permits"
 
-    def call(self, mods, case, inputs, mode, on_turn):
+    def call(self, mods, case, inputs, mode, on_turn, ai):
         client = None
+        if mode == "off":
+            raise Skipped("AI off: no permit adjustment, the score stands (not called; the permit reader's switch is HIQ-77)")
         if mode == "live":
+            _house_only(self, ai)
             client = importlib.import_module("adjust.llm").client_from_env()
             if client is None:
                 raise Unreachable("live mode, but adjust.llm.client_from_env() found no MODEL_API_KEY")
@@ -268,12 +350,16 @@ class VerdictBinding:
         mods, why = _import_from(self.folder, {"verdict": "verdict", "evidence": "verdict.evidence"})
         return mods, why or f"in process, {self.folder} verdict.write"
 
-    def call(self, mods, case, inputs, mode, on_turn):
+    def call(self, mods, case, inputs, mode, on_turn, ai):
         kw = dict(inputs)
         if mode == "mock":
             lines = mods.evidence.build(inputs["score"], inputs.get("answers"), inputs.get("fields"))
             kw["client"] = ScriptedClient({"sentences": self.draft(lines, (case.get("fixtures") or {}).get("verdict"))},
                                           model="meta-models/muse-spark-open-1026")
+        elif mode == "off":
+            kw["writer_choice"] = "template"
+        else:
+            _house_only(self, ai)
         return mods.verdict.write(**kw)
 
     def draft(self, lines, recorded):
@@ -298,8 +384,9 @@ BINDINGS = {"reader": ReaderBinding, "verdict": VerdictBinding, "adjust": Adjust
 class Service:
     """One service, resolved once per run. `call(case, **inputs)` returns (output, meta)."""
 
-    def __init__(self, name, mode="mock", transport="auto"):
+    def __init__(self, name, mode="mock", transport="auto", ai=None):
         self.name, self.mode = name, mode
+        self.ai = ai or AI("off" if mode == "off" else "on")
         self.binding = BINDINGS[name]()
         self.mods, why = None, "not tried"
         self.url = os.environ.get(self.binding.url_env)
@@ -309,7 +396,7 @@ class Service:
             self.transport, self.why = "inproc", why
         elif transport in ("auto", "http") and self.url:
             self.transport, self.why = "http", f"over HTTP, {self.url}{self.binding.path}"
-        elif transport in ("auto", "fixture") and mode == "mock":
+        elif transport in ("auto", "fixture") and mode == "mock":   # a recording is model output: never AI off
             self.transport = "fixture"
             self.why = (f"fixture replay ({why}; {self.binding.url_env} not set)" if transport == "auto"
                         else "fixture replay (forced)")
@@ -331,9 +418,10 @@ class Service:
         if self.transport == "fixture":
             out = (case.get("fixtures") or {}).get(self.name)
         elif self.transport == "inproc":
-            out = self.binding.call(self.mods, case, inputs, self.mode, turns.append)
+            out = self.binding.call(self.mods, case, inputs, self.mode, turns.append, self.ai)
         else:
-            resp = _post(self.url.rstrip("/") + self.binding.path, self.binding.http_body(inputs))
+            headers = self.ai.headers() if self.mode != "mock" else {}
+            resp = _post(self.url.rstrip("/") + self.binding.path, self.binding.http_body(inputs), headers=headers)
             if "event-stream" in resp.headers.get("Content-Type", ""):
                 events = read_sse(resp)
                 turns = [d for e, d in events if e == "turn"]
@@ -345,8 +433,10 @@ class Service:
             else:
                 out = json.loads(resp.read().decode())
         latency = time.perf_counter() - t0
-        return out, {"transport": self.transport, "latency_s": round(latency, 3), "turns": len(turns),
-                     "usage": usage_of(out, turns)}
+        # AI off in process: the reader's mock transport answers inside this process, and its token counts are
+        # placeholders, so nothing is counted. Over HTTP the server's own counts stand, and must be zero.
+        usage = {} if self.mode == "off" and self.transport == "inproc" else usage_of(out, turns)
+        return out, {"transport": self.transport, "latency_s": round(latency, 3), "turns": len(turns), "usage": usage}
 
 
 def reader_inputs(case, cases_dir):
@@ -413,7 +503,7 @@ def cost_of(usage, prices):
     """Dollars for a usage dict, or None when any model in it has no price on file."""
     total = 0.0
     for model, u in usage.items():
-        p = prices.get(model) or {}
+        p = prices.get(model) or prices.get(re.sub(r"-\d{4}-\d{2}-\d{2}$", "", model)) or {}   # a dated snapshot id
         pin, pout = p.get("input_per_mtok"), p.get("output_per_mtok")
         if pin is None or pout is None:
             return None

@@ -1,5 +1,8 @@
 """The 20-case run: read each listing, check the reader's grounding and its fields against gold, write the
-verdict and check its citations, read the permit pull and check the adjustments. Mock mode by default."""
+verdict and check its citations, read the permit pull and check the adjustments. Mock mode by default.
+
+Three modes: mock (recorded model output through the services' checks), live (a real model, the house key or a
+caller's provider key) and off (AI_SWITCH.md: no model call at all, the product as it runs with AI off)."""
 import json
 import os
 from pathlib import Path
@@ -32,9 +35,20 @@ def run_case(case, services, cases_dir=CASES):
     """One case through the three services. Returns a record with problems, outcomes and meta."""
     rec = {"id": case["id"], "problems": [], "extraction": {}, "meta": {}, "outputs": {}}
     listing = case["listing"]
+    ai = services["reader"].ai
 
     def fail(where, e):
-        rec["problems"].append(C.Problem("service", where, f"{type(e).__name__}: {e}"))
+        if isinstance(e, A.Skipped):
+            rec["problems"].append(C.Problem("ai_switch", where, str(e), hard=False))
+            return
+        message = f"{type(e).__name__}: {e}"
+        if ai.key:
+            message = message.replace(ai.key, "[the caller's key]")
+        rec["problems"].append(C.Problem("service", where, message))
+
+    def switch(name, out):
+        rec["problems"].extend(C.ai_switch(out, name, ai.switch, ai.provider if ai.key or ai.model else None, bool(ai.key))
+                               + C.key_absent(out, ai.key, name))
 
     # 1. the listing reader
     reader = None
@@ -43,14 +57,15 @@ def run_case(case, services, cases_dir=CASES):
         rec["meta"]["reader"] = meta
         rec["outputs"]["reader"] = reader
         _notes(rec, "reader", reader)
+        switch("reader", reader)
     except Exception as e:   # a service that crashes is a failed case, not a crashed run
         fail("reader", e)
     if reader is not None:
         rec["problems"] += C.reader_grounding(reader, listing)
         rec["extraction"] = C.extraction(reader, case["gold"])
 
-    # 2. the verdict writer, on the score the reader produced (or the recorded one)
-    score = (reader or {}).get("score") or (case.get("fixtures") or {}).get("score")
+    # 2. the verdict writer, on the score the reader produced (or the recorded one; with AI off, only the reader's)
+    score = (reader or {}).get("score") or (None if ai.switch == "off" else (case.get("fixtures") or {}).get("score"))
     fields = (reader or {}).get("fields") or {}
     if score is None:
         rec["problems"].append(C.Problem("verdict_citations", "verdict",
@@ -61,6 +76,7 @@ def run_case(case, services, cases_dir=CASES):
             rec["meta"]["verdict"] = meta
             rec["outputs"]["verdict"] = verdict
             rec["problems"] += C.verdict_citations(verdict, score)
+            switch("verdict", verdict)
         except Exception as e:
             fail("verdict", e)
 
@@ -73,6 +89,7 @@ def run_case(case, services, cases_dir=CASES):
             rec["meta"]["adjust"] = meta
             rec["outputs"]["adjust"] = adj
             _notes(rec, "adjust", adj)
+            switch("adjust", adj)
             caps, caps_from = services["adjust"].caps()
             rec["meta"]["caps_from"] = caps_from
             rec["problems"] += C.adjustments(adj, rows, caps)
@@ -86,10 +103,11 @@ def _notes(rec, service, out):
         rec["problems"].append(C.Problem("refused", f"{service} {where}", why, hard=False))
 
 
-def run(mode="mock", transport="auto", cases_dir=CASES, only=None, record=False):
-    if mode == "live" and not (os.environ.get("MODEL_API_KEY") or os.environ.get("BASETEN_API_KEY")):
+def run(mode="mock", transport="auto", cases_dir=CASES, only=None, record=False, ai=None):
+    ai = ai or A.AI("off" if mode == "off" else "on", "meta" if mode == "live" else None)
+    if mode == "live" and not ai.key and not (os.environ.get("MODEL_API_KEY") or os.environ.get("BASETEN_API_KEY")):
         raise SystemExit("live mode needs MODEL_API_KEY or BASETEN_API_KEY in the environment")
-    services = {n: A.Service(n, mode, transport) for n in ("reader", "verdict", "adjust")}
+    services = {n: A.Service(n, mode, transport, ai) for n in ("reader", "verdict", "adjust")}
     cases = load_cases(cases_dir, only)
     records = [run_case(c, services, cases_dir) for c in cases]
     if record:
@@ -105,18 +123,20 @@ def run(mode="mock", transport="auto", cases_dir=CASES, only=None, record=False)
                     d["prompt_tokens"] += u["prompt_tokens"]
                     d["completion_tokens"] += u["completion_tokens"]
         r["usage"] = usage
-        r["cost_usd"] = A.cost_of(usage, prices) if usage else None
+        r["cost_usd"] = A.cost_of(usage, prices) if usage else (0.0 if mode == "off" else None)
         r["latency_s"] = round(sum(m.get("latency_s", 0) for m in r["meta"].values() if isinstance(m, dict)), 3)
     gate = _gate(table, mode)
     hard = [p for r in records for p in r["problems"] if p.hard]
     return {
         "mode": mode,
+        "ai": {"switch": ai.switch, "provider": ai.provider, "model": ai.model, "key": ai.whose, "label": ai.label()},
         "transports": {n: s.why for n, s in services.items()},
         "cases": len(records),
         "records": records,
         "accuracy": table,
         "gate": gate,
-        "ok": not hard and all(g["ok"] for g in gate.values()),
+        # AI off is the fallback when the credits end: measured against the rule, not held to it (AI_SWITCH.md)
+        "ok": not hard and (mode == "off" or all(g["ok"] for g in gate.values())),
     }
 
 
@@ -129,6 +149,8 @@ def _fields_seen(records):
 
 
 def _gate(table, mode="mock"):
+    """Mock mode: no wrong value. Live and AI off: the threshold rule, since both are what a renter would get.
+    With AI off a miss is reported and does not fail the run."""
     out = {}
     for name in GATED_FIELDS:
         row = table.get(name)
@@ -158,8 +180,12 @@ def _pct(x):
     return "  n/a" if x is None else f"{100 * x:4.0f}%"
 
 
+def _title(res):
+    return "AI off" if res["mode"] == "off" else f"{res['mode']} mode" + (f", {res['ai']['label']}" if res["mode"] == "live" else "")
+
+
 def text_report(res, live=False):
-    lines = [f"Hush IQ eval, {res['mode']} mode, {res['cases']} cases"]
+    lines = [f"Hush IQ eval, {_title(res)}, {res['cases']} cases"]
     for n, why in res["transports"].items():
         lines.append(f"  {n:8} {why}")
     lines.append("")
@@ -186,7 +212,8 @@ def text_report(res, live=False):
     for name, g in res["gate"].items():
         if not g["ok"]:
             need = "no wrong values in mock mode" if res["mode"] == "mock" else f"{MIN_ACCURACY:.0%} and under {MAX_WRONG:.0%} wrong"
-            lines.append(f"FAIL gate {name}: accuracy {_pct(g['accuracy'])}, wrong {_pct(g['wrong_rate'])} (needs {need})")
+            kind = "below the rule with AI off (reported, not gated)" if res["mode"] == "off" else "FAIL gate"
+            lines.append(f"{kind} {name}: accuracy {_pct(g['accuracy'])}, wrong {_pct(g['wrong_rate'])} (needs {need})")
     if live:
         costs = [r["cost_usd"] for r in res["records"]]
         lat = [r["latency_s"] for r in res["records"]]
@@ -199,7 +226,7 @@ def text_report(res, live=False):
 def markdown_report(res):
     hard = sum(1 for r in res["records"] for p in r["problems"] if p.hard)
     soft = sum(1 for r in res["records"] for p in r["problems"] if not p.hard)
-    out = [f"### Hush IQ eval: {'PASS' if res['ok'] else 'FAIL'} ({res['mode']} mode, {res['cases']} cases)", ""]
+    out = [f"### Hush IQ eval: {'PASS' if res['ok'] else 'FAIL'} ({_title(res)}, {res['cases']} cases)", ""]
     out.append(f"{hard} hard problems, {soft} notes.")
     out.append("")
     out += ["| service | reached |", "|---|---|"] + [f"| {n} | {w} |" for n, w in res["transports"].items()]
@@ -207,6 +234,10 @@ def markdown_report(res):
     for name, row in res["accuracy"].items():
         out.append(f"| {name} | {row['n']} | {row['correct']} | {row['wrong']} | {row['cant_tell']} | {row['invented']}"
                    f" | {_pct(row['accuracy']).strip()} | {_pct(row['wrong_rate']).strip()} |")
+    misses = [n for n, g in res["gate"].items() if not g["ok"]]
+    if misses:
+        kind = "Below the rule with AI off (reported, not gated)" if res["mode"] == "off" else "Gate failed"
+        out += ["", f"{kind}: {', '.join(misses)} (needs {MIN_ACCURACY:.0%} and under {MAX_WRONG:.0%} wrong)."]
     problems = [(r["id"], p) for r in res["records"] for p in r["problems"]]
     if problems:
         out += ["", "| case | kind | check | where | problem |", "|---|---|---|---|---|"]

@@ -247,3 +247,45 @@ def test_tally_rates():
                     {"floor": {"outcome": C.CORRECT, "gold": None}}, {"floor": {"outcome": C.INVENTED, "gold": None}}],
                    ["floor"])["floor"]
     assert rows["answerable"] == 2 and rows["accuracy"] == 0.5 and rows["wrong_rate"] == 0.25
+
+
+# ---------------------------------------------------------------- the AI switch
+def ai(mode="model", provider="meta", key="house", reason=None):
+    return {"mode": mode, "provider": provider, "model": "m" if mode == "model" else None, "key": key, "reason": reason,
+            "message": None}
+
+
+def test_ai_off_means_no_model_wrote_anything():
+    assert C.ai_switch({"writer": "template", "sentences": []}, "verdict", "off") == []
+    assert hard(C.ai_switch({"writer": "muse-spark-1.3"}, "verdict", "off"))
+    assert hard(C.ai_switch({"adjustment": {"source": "construction", "size": 1}}, "adjust", "off"))
+    assert C.ai_switch({"adjustment": None}, "adjust", "off") == []
+    assert C.ai_switch({"mode": "mock", "fields": {}}, "reader", "off") == []
+    assert hard(C.ai_switch({"mode": "live", "fields": {}}, "reader", "off"))
+    off = ai("basic", None, None, "switched_off")
+    assert C.ai_switch({"mode": "live", "ai": off}, "reader", "off") == []
+    assert hard(C.ai_switch({"writer": "template", "ai": ai("basic", None, None, "house_off")}, "verdict", "off"))
+
+
+def test_the_ai_object_has_the_contracts_shape():
+    assert C.ai_switch({"ai": ai()}, "reader") == []
+    assert hard(C.ai_switch({"ai": ai(provider="gemini")}, "reader"))
+    assert hard(C.ai_switch({"ai": ai("basic", reason=None)}, "reader"))       # basic says why
+    assert hard(C.ai_switch({"ai": ai("model", reason="no_key")}, "reader"))   # and only basic does
+    assert C.ai_switch({"fields": {}}, "reader", "on", "openai", True) == []    # no object yet: allowed until each switch ships
+
+
+def test_a_provider_run_that_ran_basic_or_spent_the_house_key_measured_nothing():
+    asked = dict(switch="on", provider="anthropic", caller_key=True)
+    assert C.ai_switch({"ai": ai(provider="anthropic", key="caller")}, "verdict", **asked) == []
+    assert hard(C.ai_switch({"ai": ai("basic", "anthropic", "caller", "key_rejected")}, "verdict", **asked))
+    assert hard(C.ai_switch({"ai": ai(provider="meta", key="caller")}, "verdict", **asked))
+    assert hard(C.ai_switch({"ai": ai(provider="anthropic", key="house")}, "verdict", **asked))
+
+
+def test_the_callers_key_never_comes_back():
+    key = "sk-fake-not-a-key-0123"
+    assert C.key_absent({"trace": [{"error": "401 for key ****"}]}, key, "reader") == []
+    found = C.key_absent({"trace": [{"error": f"401 for key {key}"}]}, key, "reader")
+    assert hard(found) and key not in found[0].message
+    assert C.key_absent({"anything": key}, None, "reader") == []

@@ -1,4 +1,4 @@
-# Every change: the model's tests, every service's tests, and the 20-case eval in mock mode.
+# Every change: the model's tests, every service's tests, and the 20-case eval in mock mode and with AI off.
 # No secrets: nothing here reads a key, and the offline plugin (eval/ci/pytest_offline.py) skips any test that
 # reaches for the internet instead of failing or deleting it. Hackathon work (HIQ-25).
 name: CI
@@ -88,6 +88,15 @@ jobs:
       - name: run the eval
         working-directory: eval
         run: python -m hush_eval run --markdown "$GITHUB_STEP_SUMMARY" --json eval-report.json
+      - name: run the eval with AI off (no model call; fails only if a check breaks)
+        working-directory: eval
+        run: |
+          # AI off has no recording to replay: it needs the reader and the verdict writer themselves
+          if [ -d ../services/agent ] && [ -d ../services/verdict ]; then
+            python -m hush_eval run --ai off --markdown "$GITHUB_STEP_SUMMARY" --json eval-ai-off.json
+          else
+            echo "AI off: skipped, services/agent and services/verdict are not both on this branch yet" | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
       - name: the eval's own tests
         working-directory: eval
         env:
@@ -97,5 +106,7 @@ jobs:
         if: always()
         with:
           name: eval-report
-          path: eval/eval-report.json
+          path: |
+            eval/eval-report.json
+            eval/eval-ai-off.json
           if-no-files-found: ignore

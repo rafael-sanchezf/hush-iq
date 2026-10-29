@@ -3,6 +3,8 @@
     run                    the 20 cases, mock mode (no model, no key, no cost)
     run --live             the same against the real models; per-field accuracy, cost and latency per case
     run --live --record    and save the real outputs into the cases, so mock mode replays them
+    run --ai off           the product with AI off: the reader's rules, the template verdict, no permit adjustment (free)
+    run --provider openai  live through a caller's key (OPENAI_API_KEY or ANTHROPIC_API_KEY, environment or eval/.env)
     photo new [--link URL] make the next photo_test/<nn>/ folder from the template
     photo check            is every listing saved and labeled
     photo run              the reader on every listing, model.json beside labels.json (live by default)
@@ -14,6 +16,7 @@ import json
 import sys
 from pathlib import Path
 
+from . import adapters as A
 from . import photo, runner
 
 
@@ -23,6 +26,11 @@ def main(argv=None):
 
     r = sub.add_parser("run", help="the 20-case eval")
     r.add_argument("--live", action="store_true", help="real models; needs MODEL_API_KEY or BASETEN_API_KEY")
+    r.add_argument("--ai", choices=["on", "off"], default="on",
+                   help="off: no model call at all (AI_SWITCH.md): the reader's rules, the template verdict, no adjustment")
+    r.add_argument("--provider", choices=["meta", "openai", "anthropic"],
+                   help="a live run through this provider; meta uses the house key, the others the caller's key")
+    r.add_argument("--model", help="that provider's model id (default: the service's default for it)")
     r.add_argument("--transport", default="auto", choices=["auto", "inproc", "http", "fixture"])
     r.add_argument("--cases", default=str(runner.CASES))
     r.add_argument("--only", nargs="*", help="case ids or prefixes, e.g. 04 11")
@@ -44,11 +52,16 @@ def main(argv=None):
 
     a = ap.parse_args(argv)
     if a.cmd == "run":
-        if a.record and not a.live:
-            ap.error("--record needs --live: mock outputs are already the recorded ones")
-        res = runner.run("live" if a.live else "mock", a.transport, a.cases, a.only, a.record)
+        if a.ai == "off" and (a.live or a.provider or a.model or a.record):
+            ap.error("--ai off makes no model call: it takes none of --live, --provider, --model or --record")
+        live = a.live or bool(a.provider) or bool(a.model)
+        if a.record and (not live or a.provider not in (None, "meta") or a.model):
+            ap.error("--record needs --live on the house model: the recordings are what mock mode replays")
+        mode = "off" if a.ai == "off" else "live" if live else "mock"
+        ai = A.AI("off") if mode == "off" else A.AI.for_provider(a.provider, a.model) if mode == "live" else None
+        res = runner.run(mode, a.transport, a.cases, a.only, a.record, ai)
         if not a.quiet:
-            print(runner.text_report(res, live=a.live))
+            print(runner.text_report(res, live=mode != "mock"))
         if a.json:
             Path(a.json).write_text(runner.json_report(res))
         if a.markdown:

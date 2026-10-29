@@ -207,6 +207,77 @@ def test_over_http_the_reader_streams_and_the_others_answer_json(tmp_path, monke
         server.shutdown()
 
 
+# ---------------------------------------------------------------- the AI setting: the switch, the provider, the key
+def test_the_ai_setting_sends_the_contracts_headers_and_never_shows_the_key():
+    key = "sk-fake-not-a-key-0123"
+    on = A.AI("on", "openai", "some-model", key)
+    assert on.headers() == {"X-HushIQ-AI": "on", "X-HushIQ-Provider": "openai", "X-HushIQ-Key": key, "X-HushIQ-Model": "some-model"}
+    assert key not in repr(on) and key not in on.label() and on.whose == "caller"
+    assert A.AI("off", "openai", "m", key).headers() == {"X-HushIQ-AI": "off"}
+    assert A.AI.for_provider("meta").whose == "house" and A.AI.for_provider(None).headers() == {"X-HushIQ-AI": "on", "X-HushIQ-Provider": "meta"}
+
+
+def test_a_callers_key_comes_from_the_environment_or_eval_env(tmp_path, monkeypatch):
+    env = tmp_path / ".env"
+    env.write_text("# set-key.sh\nANTHROPIC_API_KEY='sk-ant-fake-from-file'\n")
+    monkeypatch.setattr(A, "EVAL_ENV", env)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    assert A.env_value("ANTHROPIC_API_KEY", env) == "sk-ant-fake-from-file"
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-fake-from-env")
+    assert A.env_value("ANTHROPIC_API_KEY", env) == "sk-ant-fake-from-env"
+    with pytest.raises(SystemExit) as e:
+        A.AI.for_provider("openai")
+    assert "OPENAI_API_KEY" in str(e.value)
+
+
+def test_in_process_a_callers_provider_is_refused_until_the_services_take_one(stand_in_verdict):
+    svc = A.Service("verdict", "live", ai=A.AI("on", "anthropic", None, "sk-ant-fake-not-a-key"))
+    with pytest.raises(A.Unreachable) as e:
+        svc.call(CASE, score=CASE["fixtures"]["reader"]["score"], answers={}, fields={})
+    assert "HIQ_VERDICT_URL" in str(e.value) and "sk-ant" not in str(e.value)
+
+
+class _Echo(BaseHTTPRequestHandler):
+    """A permit reader that answers with the headers it was sent, the key among them: the eval must catch it."""
+    def do_POST(self):
+        self.rfile.read(int(self.headers["Content-Length"]))
+        self.server.seen.append({k.lower(): v for k, v in self.headers.items()})   # header names are case-blind
+        body = {"adjustment": None, "readings": [], "echo": self.headers.get("X-HushIQ-Key"),
+                "ai": {"mode": "model", "provider": self.headers.get("X-HushIQ-Provider"), "model": "m", "key": "caller",
+                       "reason": None, "message": None}}
+        payload = json.dumps(body).encode()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(payload)))
+        self.end_headers()
+        self.wfile.write(payload)
+
+    def log_message(self, *a):
+        pass
+
+
+def test_over_http_a_provider_run_sends_the_headers_and_a_leaked_key_fails_the_case(tmp_path, monkeypatch):
+    server = HTTPServer(("127.0.0.1", 0), _Echo)
+    server.seen = []
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    monkeypatch.setattr(A, "REPO", tmp_path)
+    for env in ("HIQ_READER_URL", "HIQ_VERDICT_URL"):
+        monkeypatch.delenv(env, raising=False)
+    monkeypatch.setenv("HIQ_ADJUST_URL", f"http://127.0.0.1:{server.server_port}")
+    key = "sk-fake-not-a-key-0123"
+    try:
+        ai = A.AI("on", "openai", None, key)
+        services = {n: A.Service(n, "live", "auto", ai) for n in ("reader", "verdict", "adjust")}
+        rec = runner.run_case(CASE, services)
+    finally:
+        server.shutdown()
+    seen = server.seen[0]
+    assert seen["x-hushiq-key"] == key and seen["x-hushiq-provider"] == "openai" and seen["x-hushiq-ai"] == "on"
+    leaks = [p for p in rec["problems"] if p.check == "ai_switch" and p.hard]
+    assert leaks and all(key not in p.message for p in rec["problems"])
+
+
 # ---------------------------------------------------------------- the real services, once they are on this branch
 def test_the_services_on_this_branch_pass_the_mock_run():
     present = [n for n in ("reader", "verdict", "adjust") if A.Service(n, "mock").transport == "inproc"]
@@ -221,3 +292,23 @@ def test_cost_needs_a_price_for_every_model():
     usage = {"muse-spark-1.3": {"prompt_tokens": 1_000_000, "completion_tokens": 500_000}}
     assert A.cost_of(usage, {"muse-spark-1.3": {"input_per_mtok": 1.0, "output_per_mtok": 4.0}}) == 3.0
     assert A.cost_of(usage, {}) is None
+
+
+def test_the_services_on_this_branch_run_with_ai_off():
+    present = [n for n in ("reader", "verdict") if A.Service(n, "off").transport == "inproc"]
+    if len(present) < 2:
+        pytest.skip("the reader and the verdict writer are not both on this branch yet")
+    res = runner.run("off")
+    hard = [(r["id"], p.where, p.message) for r in res["records"] for p in r["problems"] if p.hard]
+    assert hard == [] and res["ok"], hard
+    assert all(r["cost_usd"] == 0.0 for r in res["records"])
+    assert all(r["outputs"]["verdict"]["writer"] == "template" for r in res["records"] if "verdict" in r["outputs"])
+
+
+def test_every_priced_model_has_both_rates_and_a_dated_id_finds_its_price():
+    prices = A.load_prices()
+    priced = {m: p for m, p in prices.items() if not m.startswith("_") and p["input_per_mtok"] is not None}
+    assert {"muse-spark-1.3", "claude-haiku-5-5", "gpt-6-luna"} <= set(priced)
+    assert all(isinstance(p["output_per_mtok"], (int, float)) for p in priced.values())
+    usage = {"gpt-6-luna-2026-09-30": {"prompt_tokens": 1_000_000, "completion_tokens": 1_000_000}}
+    assert A.cost_of(usage, prices) == 0.6
