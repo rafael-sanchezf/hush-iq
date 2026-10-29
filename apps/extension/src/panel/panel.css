@@ -396,27 +396,32 @@ input:focus {
   margin: 0 2px;
 }
 
-details.paste > summary {
+details.paste > summary,
+details.informed > summary {
   cursor: pointer;
   font-weight: 650;
   list-style: none;
 }
 
-details.paste > summary::-webkit-details-marker {
+details.paste > summary::-webkit-details-marker,
+details.informed > summary::-webkit-details-marker {
   display: none;
 }
 
-details.paste > summary::before {
+details.paste > summary::before,
+details.informed > summary::before {
   content: '+ ';
   font-family: var(--mono);
   color: var(--ink-2);
 }
 
-details.paste[open] > summary::before {
+details.paste[open] > summary::before,
+details.informed[open] > summary::before {
   content: '− ';
 }
 
-details.paste > * + * {
+details.paste > * + *,
+details.informed > * + * {
   margin-top: 10px;
 }
 
