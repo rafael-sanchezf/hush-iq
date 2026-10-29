@@ -29,13 +29,14 @@ reader/
   tools.py         read_photo and submit_listing: definitions and what they do
   evidence.py      every check on a field
   photos.py        one photo, one Muse Spark multimodal call
-  scoring.py       GeoSearch and the score API (v2, falling back to v1)
+  scoring.py       GeoSearch (house number, street, borough) and the score API (v2, falling back to v1)
   client.py        the Meta Model API client, or the offline mock when there is no key
   mock.py          the offline Model API: a real OpenAI client answered locally
   app.py           FastAPI, POST /read as server-sent events
   instructions.md  the system prompt
-fixtures/          five synthetic listings for real Manhattan buildings, and what a correct reading returns
-scripts/           run_fixtures.py: the five fixtures, live or mock, against expected.json
+fixtures/          seven synthetic listings for real Manhattan buildings (one with two photos made with
+                   muse-image-1.0), and what a correct reading returns
+scripts/           run_fixtures.py: the fixtures, live or mock, against expected.json
 tests/             mock mode, offline, about a second
 ```
 
@@ -47,7 +48,7 @@ uv venv --python 3.14 .venv && uv pip install --python .venv/bin/python -r requi
 cp .env.example .env              # add MODEL_API_KEY for live; leave it empty for mock
 .venv/bin/python -m pytest -q     # offline
 .venv/bin/python -m reader fixtures/01-stated-rear.txt          # one listing, turn by turn
-.venv/bin/python scripts/run_fixtures.py                        # all five against expected.json
+.venv/bin/python scripts/run_fixtures.py                        # every fixture against expected.json
 .venv/bin/uvicorn reader.app:app --port 8100                    # POST /read
 ```
 

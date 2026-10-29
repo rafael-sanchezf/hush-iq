@@ -65,15 +65,17 @@ data: {"status": "complete", "fields": {...}, ...}
 - `error`: only on a server bug, instead of `result`: `{"error": "<type>: <message>"}`. Refusals, a model that
   runs out of turns and a Model API outage are not errors; they end in a `result`.
 
-A read takes 1 to 8 model turns, then about 0.2 s to locate and up to 8 s to score (the first score of an
-address pulls eight datasets; repeats are cached). Live turn times are not measured yet: no Meta key has been
-on the build machine.
+Measured live (Oct 28, seven fixtures): a model turn takes 4 to 7 s, mostly reasoning; reading two photos in
+parallel takes 8 to 10 s; text-only listings finished in one turn and the photo listing in two. Then about
+0.2 s to locate and up to 8 s to score (the first score of an address pulls eight datasets; repeats are cached).
+End to end: 7 to 11 s for text, about 20 s with two photos.
 
 ### A turn
 
 ```json
 {"n": 2, "by": "model", "tool": "submit_listing", "args": {...}, "result": {...}, "ok": false,
- "ms": 2140, "model_ms": 2100, "tool_ms": 40, "tokens": {"input": 1830, "output": 210}}
+ "ms": 6320, "model_ms": 6316, "tool_ms": 4, "tokens": {"input": 3268, "output": 1795, "reasoning": 1466},
+ "retries": 0}
 ```
 
 | Key | Meaning |
@@ -84,7 +86,8 @@ on the build machine.
 | `args` | what the tool was called with. Never photo bytes: `read_photo` args are `{"indexes": [0, 1]}` |
 | `result` | what the tool returned. A refusal has `error`; a refused `submit_listing` also has `refused: {field: why}` and `accepted: [field names]` |
 | `ok` | false when `result` has `error` |
-| `ms` | the whole turn; `model_ms` the model's decision; `tool_ms` the tool. `tokens` from the Model API (mock: fixed numbers) |
+| `ms` | the whole turn; `model_ms` the model's decision; `tool_ms` the tool. `tokens` from the Model API, reasoning included in output (mock: fixed numbers) |
+| `retries` | times the model was asked again in this turn because its reply was empty (cut off at the token cap) |
 | `said` | only when the model replied in plain text instead of calling a tool: the first 500 characters |
 
 For `score`, `result` is `{"engine", "verdict", "quieter_than", "range"}`; the full score is in the final
@@ -115,7 +118,8 @@ result.
   },
   "photo_readings": [],
   "location": {"label": "155 LUDLOW STREET, New York, NY, USA", "lat": 40.720952, "lng": -73.988157,
-               "bbl": "1004110021", "bin": "1005354", "borough": "Manhattan"},
+               "bbl": "1004110021", "bin": "1005354", "borough": "Manhattan",
+               "borough_from": {"how": "only match"}, "alternatives": []},
   "score": {"engine": "v2", "verdict": "Very loud", "quieter_than": 0.0, "range": null, "...": "the full v2 response"},
   "score_engine": "v2",
   "answers": {"sleep_from": 23, "sleep_until": 7, "day_bothers": true, "bothers": []},
@@ -166,7 +170,7 @@ yet.
 | `stopped` | `submitted`, `budget` (turns ran out), or `model_error` (the Model API kept failing) |
 | `position` | what the engine gets from `side`: `street` and `corner` are `front`, `rear` and `courtyard` are `rear`, otherwise `unknown` |
 | `photo_readings` | one per photo read, by index: `{"index", "fields": {floor, side, view, windows, ac_units, wall_material}, "note", "dropped": [why]}`; each field is `{value, status, what}`. `dropped` lists what the photo model said that failed its type and became cant_tell |
-| `location` | GeoSearch's match for the address, or `null`. Refused unless its house number is the listing's |
+| `location` | the building GeoSearch has at that house number on that street, or `null`. `borough_from` says how the borough was chosen when the address exists in more than one: `{"how": "only match"}`, `{"how": "text", "borough", "said"}` (a borough, ZIP or neighborhood in the listing), or `{"how": "default", "borough": "Manhattan"}` with a note. `alternatives` lists the other boroughs' labels |
 | `score` | the score API's response, untouched: engine v2 (`/v2/score`), or v1 (`/v1/score`) until v2 is deployed. `null` when there is no address, it could not be placed, or scoring failed (`notes` says which) |
 | `score_engine` | `v2`, `v1` or `null`. v2 has `verdict` and `quieter_than` at the top level and a `range` when floor or side is unknown; v1 has them under `manhattan` |
 | `answers` | the answers the score used, defaults filled in |
