@@ -94,6 +94,8 @@ _PLACE_NORM = {"street": "st", "streets": "st", "avenue": "ave", "avenues": "ave
                "place": "pl", "drive": "dr", "road": "rd", "parkway": "pkwy", "expressway": "expy", "square": "sq",
                "west": "w", "east": "e", "north": "n", "south": "s", "saint": "st", "mt": "mount", "ft": "fort",
                "centre": "center", "ctr": "center", "hosp": "hospital", "lane": "ln"}
+# The baseline every rank is stated against: fine in any sentence, as long as some line says it.
+_CONTEXT_NAMES = {"manhattan", "nyc", "new", "york", "ny"}
 _WORD = re.compile(r"[A-Za-z][A-Za-z'’]*")
 
 
@@ -178,6 +180,7 @@ def check(reply, lines):
     sentences = reply["sentences"]
     if not sentences:
         return ["the reply has no sentences"]
+    context = _CONTEXT_NAMES & set().union(*(_tokens(l.text) for l in lines)) if lines else set()
     errs = []
     if len(sentences) > MAX_SENTENCES:
         errs.append(f"the reply has {len(sentences)} sentences; at most {MAX_SENTENCES}")
@@ -209,7 +212,7 @@ def check(reply, lines):
             if extra:
                 errs.append(f"{where}: the number{'s' if len(extra) > 1 else ''} {', '.join(extra)} "
                             f"{'are' if len(extra) > 1 else 'is'} not in the lines it cites ({label})")
-            known = set().union(*(_tokens(l.text) for l in cited))        # C4
+            known = set().union(*(_tokens(l.text) for l in cited)) | context   # C4
             missing = []
             for w in names(re.sub(r"\bE\d+\b", "", text)):
                 if _norm(w) not in known and w not in missing:

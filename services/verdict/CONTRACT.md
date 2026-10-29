@@ -111,13 +111,14 @@ on every fixture).
 | C6 | no evidence id in the text, at most 6 sentences, each under 320 characters |
 
 Names and numbers are checked against the sentence's own cited lines, not the whole evidence: a citation has to back
-the sentence it sits on.
+the sentence it sits on. The one exception is the baseline itself ("Manhattan", "NYC"), which may appear in any
+sentence once a line says it.
 
 ## Backends
 
 | `writer` | Model | Host | Key | How the shape is held |
 |---|---|---|---|---|
-| `muse-spark-open` | `meta-models/muse-spark-open-1026` | `https://inference.baseten.co/v1` | `BASETEN_API_KEY` | one forced tool call, `write_verdict`, whose parameters are the schema. Baseten's docs say this model accepts a `json_schema` response format but does not enforce it, so the tool call is used instead. |
+| `muse-spark-open` | `meta-models/muse-spark-open-1026` | `https://inference.baseten.co/v1` | `BASETEN_API_KEY` | one forced tool call, `submit_verdict`, whose parameters are the schema. Baseten's docs say this model accepts a `json_schema` response format but does not enforce it, so the tool call is used instead. |
 | `muse-spark-1.3` | `muse-spark-1.3` | `https://api.meta.ai/v1` | `MODEL_API_KEY` | `response_format: {type: "json_schema", json_schema: {strict: true}}` |
 
 Both go through the OpenAI Python SDK, and in both `cites` is an enum of the ids sent. `VERDICT_BACKEND` picks

@@ -24,7 +24,7 @@ from pathlib import Path
 
 from . import template, validate
 
-TOOL_NAME = "write_verdict"
+TOOL_NAME = "submit_verdict"
 ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
 
 SYSTEM = """You write the "what you'll hear" paragraph for one renter looking at one New York City apartment.

@@ -50,6 +50,9 @@ def test_names_must_be_in_the_cited_lines(lines):
     ls = lines("ludlow")
     errs = validate.check({"sentences": [{"text": "Broadway traffic is loud here.", "cites": ["E9"]}]}, ls)
     assert errs == ["sentence 1: 'Broadway' is not in the lines it cites (E9)"]
+    # the baseline may be named without citing a rank line; a street may not
+    assert validate.check({"sentences": [{"text": "By Manhattan standards the nearest road, Ludlow St, is close.",
+                                          "cites": ["E11"]}]}, ls) == []
     # "Ludlow Street" matches "Ludlow St"
     assert validate.check({"sentences": [{"text": "The nearest road is Ludlow Street, 14 m away.", "cites": ["E11"]}]}, ls) == []
 

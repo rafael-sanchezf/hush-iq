@@ -3,7 +3,7 @@ import httpx
 import openai
 
 from conftest import ids
-from verdict import writer
+from verdict import mock, writer
 
 GOOD = {"sentences": [
     {"text": "For the way you sleep, this apartment is very loud: quieter than 5% of Manhattan apartments.",
@@ -26,7 +26,7 @@ def test_a_valid_reply_is_used_as_is(lines, backend):
     assert [t["ok"] for t in out["trace"]] == [True]
     call = b.client.calls[0]
     assert call["model"] == "meta-models/muse-spark-open-1026"
-    assert call["tool_choice"] == {"type": "function", "function": {"name": "write_verdict"}}
+    assert call["tool_choice"] == {"type": "function", "function": {"name": "submit_verdict"}}
     enum = call["tools"][0]["function"]["parameters"]["properties"]["sentences"]["items"]["properties"]["cites"]["items"]["enum"]
     assert enum == [l.id for l in ls]
     assert "E8: Nightlife: 1670 party" in call["messages"][1]["content"]
@@ -123,3 +123,13 @@ def test_no_key_means_the_template(lines):
     assert writer.from_env({"VERDICT_BACKEND": "muse-spark-1.3"}) is None   # chosen, but no key
     out = writer.write(lines("claremont"), None)
     assert out["writer"] == "template" and out["trace"] == [{"writer": "template", "ok": True, "why": "no model configured"}]
+
+
+def test_the_one_call_entry_the_eval_uses(lines):
+    import verdict
+    from conftest import FIELDS, load
+    out = verdict.write(score=load("ludlow"), answers=None, fields=FIELDS["ludlow"], client=mock.ScriptedClient(GOOD))
+    assert out["writer"] == "muse-spark-open" and out["sentences"] == GOOD["sentences"]
+    assert [e["id"] for e in out["evidence"]] == [l.id for l in lines("ludlow")]
+    assert writer.TOOL_NAME.startswith("submit")   # the eval's scripted client answers the first submit_* tool
+    assert verdict.write(score=load("ludlow"), writer_choice="template")["writer"] == "template"
