@@ -214,7 +214,7 @@ class FixtureScorer:
         self.score_body = ((case.get("fixtures") or {}).get("reader") or {}).get("score") or (case.get("fixtures") or {}).get("score")
         self.error = error
 
-    def locate(self, address):
+    def locate(self, address, text=""):
         addr = (self.score_body or {}).get("address") or {}
         if not addr.get("label"):
             raise self.error(f"no recorded location for {address!r}")
