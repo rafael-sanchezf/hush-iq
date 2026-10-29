@@ -201,7 +201,7 @@ def test_api_error_gives_no_adjustment():
     err = openai.APIConnectionError(request=httpx.Request("POST", "https://api.meta.ai/v1/chat/completions"))
     out = read_permits(BETHUNE["permits"], BETHUNE["as_of"], client=ScriptedClient([err]))
     assert out["adjustment"] is None and out["why_none"] == "the model call failed"
-    assert out["trace"][0]["error"].startswith("APIConnectionError")
+    assert out["trace"][0]["error"] == out["failure"] == "provider_error"   # the kind only, never the SDK's text
 
 
 # ---------------------------------------------------------------- live Muse Spark runs, replayed

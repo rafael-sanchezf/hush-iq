@@ -69,3 +69,25 @@ MODEL_TEMPERATURE = 0.0
 # every call gets room: twelve readings with quotes are about 1,500 tokens before any reasoning.
 MODEL_MAX_TOKENS = 6000
 MODEL_EMPTY_RETRIES = 2    # an empty reply (no text, no tool call) is sent again, at most this many times per pull
+
+# ---------------------------------------------------------------- the AI switch and caller keys [S1 to S5]
+# Hackathon work, Oct 29 (HIQ-77). The contract is the shared AI_SWITCH page, copied into CONTRACT.md.
+# Base URLs are fixed here, so a caller's key can only go to its own provider. A model id outside a provider's
+# list is a 400. The defaults are a first pick: the eval decides and Rafa confirms.
+PROVIDERS = {
+    "meta": {"base_url": MODEL_BASE_URL, "api": "chat",
+             "models": ("muse-spark-1.3",), "default": MODEL_DEFAULT},
+    # Tool calls on these models need the Responses API: Chat Completions takes tools only at reasoning effort none.
+    "openai": {"base_url": "https://api.openai.com/v1", "api": "responses",
+               "models": ("gpt-6.1-sol", "gpt-6-luna", "gpt-6.1-terra", "gpt-6-astra"), "default": "gpt-6.1-sol"},
+    "anthropic": {"base_url": "https://api.anthropic.com", "api": "messages",
+                  "models": ("claude-opus-5-5", "claude-sonnet-5-5", "claude-haiku-5-5"), "default": "claude-opus-5-5"},
+}
+HOUSE_PROVIDER = "meta"            # the only provider with a house key (MODEL_API_KEY)
+HOUSE_AI_DEFAULT = "on"            # HOUSE_AI=off in the environment turns the house key off when the credits end
+CALLER_TIMEOUT = 50.0              # seconds per call with a caller's key
+CALLER_RETRIES = 0                 # a rate-limited caller key gives no adjustment at once, never a slow retry
+OPENAI_EFFORT = "medium"           # reasoning effort on the Responses API
+ANTHROPIC_EFFORT = "medium"        # output_config.effort; thinking is adaptive and always on for these models
+ANTHROPIC_MAX_TOKENS = 16000       # thinking counts against it, as reasoning does on the other two
+ANTHROPIC_FALLBACK = {"claude-opus-5-5", "claude-sonnet-5-5"}   # server-side refusal fallback; Haiku has none

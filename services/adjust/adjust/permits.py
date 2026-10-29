@@ -7,16 +7,16 @@ kind of job and its duration, quoting the words behind each; code refuses a quot
 description, then bounds the adjustment the model asks for. Rules P1 to P5 in CONTRACT.md.
 
     read_permits(rows, as_of)              rows as sources.dob_permits returns them
-    read_permits(rows, as_of, client=c)    c: an OpenAI-SDK client (live, or the scripted mock in tests)
+    read_permits(rows, as_of, client=c)    c: an OpenAI-SDK client (live, or the scripted mock in tests), or a
+                                           backend from llm.client_for for any of the three providers
 """
 import datetime as dt
 import json
 import re
 
-import openai
-
 from . import config as A
 from .adjustment import Refused, submit_adjustment
+from .backends import ProviderFailure, as_backend
 
 SOURCE = "construction"
 SCAFFOLD_WORK_TYPES = {"Sidewalk Shed", "Supported Scaffold", "Suspended Scaffold"}
@@ -288,62 +288,46 @@ def _for_model(row):
             "estimated_job_costs": row.get("estimated_job_costs")}
 
 
-def _call_dict(c):
-    return {"id": c.id, "type": "function", "function": {"name": c.function.name, "arguments": c.function.arguments}}
-
-
-def _usage(resp):
-    u = getattr(resp, "usage", None)
-    if u is None:
-        return None
-    details = getattr(u, "completion_tokens_details", None)
-    return {"prompt_tokens": getattr(u, "prompt_tokens", None), "completion_tokens": getattr(u, "completion_tokens", None),
-            "reasoning_tokens": getattr(details, "reasoning_tokens", None) if details is not None else None}
-
-
 def model_read(sent_rows, as_of, client, model):
     """[P5] The agent loop: the model calls read_permits, then submit_adjustment or no_adjustment; every call is
     checked here and a refusal goes back as the tool result. An empty reply (the token budget spent on reasoning)
-    is sent again, and an API error ends the read with no adjustment.
-    Returns (readings by id, adjustment, why_none, trace, usage per call)."""
+    is sent again, and a failed call ends the read with no adjustment. `client` is a backend from adjust.backends,
+    or an OpenAI-SDK client for Chat Completions; the checks are the same for every provider [S4].
+    Returns (readings by id, adjustment, why_none, trace, usage per call, failure kind or None)."""
+    backend = as_backend(client, model)
     sent = {r["work_permit"]: r for r in sent_rows}
     read, trace, usage = {}, [], []
-    messages = [{"role": "system", "content": SYSTEM},
-                {"role": "user", "content": json.dumps({"as_of": as_of, "permits": [_for_model(r) for r in sent_rows]})}]
+    backend.start(SYSTEM, json.dumps({"as_of": as_of, "permits": [_for_model(r) for r in sent_rows]}), TOOLS)
     nudged, empties, turn = False, 0, 0
     while turn < A.MODEL_MAX_TURNS:
         try:
-            resp = client.chat.completions.create(model=model, messages=messages, tools=TOOLS, tool_choice="auto",
-                                                  temperature=A.MODEL_TEMPERATURE, max_tokens=A.MODEL_MAX_TOKENS)
-        except openai.APIError as e:
-            trace.append({"turn": turn + 1, "tool": None, "error": f"{type(e).__name__}: {e}"[:300]})
-            return read, None, "the model call failed", trace, usage
-        choice = resp.choices[0]
-        msg = choice.message
-        calls = msg.tool_calls or []
-        usage.append(_usage(resp))
-        if not calls and not (msg.content or "").strip():
+            reply = backend.call()
+        except ProviderFailure as e:   # the kind and status only: a provider's error text can quote the key
+            trace.append({"turn": turn + 1, "tool": None, "error": e.kind, "status": e.status})
+            return read, None, "the model call failed", trace, usage, e.kind
+        usage.append(reply.usage)
+        if reply.declined:
+            trace.append({"turn": turn + 1, "tool": None, "declined": True, "finish_reason": reply.finish})
+            return read, None, "the model declined to read these permits", trace, usage, None
+        if not reply.calls and not reply.text.strip():
             empties += 1
-            trace.append({"turn": turn + 1, "tool": None, "empty": True,
-                          "finish_reason": getattr(choice, "finish_reason", None)})
+            trace.append({"turn": turn + 1, "tool": None, "empty": True, "finish_reason": reply.finish})
             if empties > A.MODEL_EMPTY_RETRIES:
-                return read, None, "the model sent only empty replies", trace, usage
+                return read, None, "the model sent only empty replies", trace, usage, "provider_error"
             continue
         turn += 1
-        messages.append({"role": "assistant", "content": msg.content or "", "tool_calls": [_call_dict(c) for c in calls]}
-                        if calls else {"role": "assistant", "content": msg.content or ""})
-        if not calls:
-            trace.append({"turn": turn, "tool": None, "said": (msg.content or "")[:300]})
+        backend.keep(reply)
+        if not reply.calls:
+            trace.append({"turn": turn, "tool": None, "said": reply.text[:300]})
             if nudged:
-                return read, None, "the model stopped without submitting an adjustment", trace, usage
+                return read, None, "the model stopped without submitting an adjustment", trace, usage, None
             nudged = True
-            messages.append({"role": "user", "content": "Call read_permits, then submit_adjustment or no_adjustment."})
+            backend.say("Call read_permits, then submit_adjustment or no_adjustment.")
             continue
-        done = None
-        for c in calls:
-            name = c.function.name
+        done, results = None, []
+        for call_id, name, arguments in reply.calls:
             try:
-                args = json.loads(c.function.arguments or "{}")
+                args = json.loads(arguments or "{}")
             except json.JSONDecodeError:
                 args = None
             if not isinstance(args, dict):
@@ -380,11 +364,12 @@ def model_read(sent_rows, as_of, client, model):
             else:
                 result = {"ok": False, "refused": f"no tool named {name!r}"}
                 trace.append({"turn": turn, "tool": name, "ok": False, "refused": result["refused"]})
-            messages.append({"role": "tool", "tool_call_id": c.id, "content": json.dumps(result)})
+            results.append((call_id, json.dumps(result)))
+        backend.answer(results)
         if done:
             adj = done[1] if done[0] == "adjustment" else None
-            return read, adj, (done[1] if done[0] == "none" else None), trace, usage
-    return read, None, f"no accepted adjustment after {A.MODEL_MAX_TURNS} model turns", trace, usage
+            return read, adj, (done[1] if done[0] == "none" else None), trace, usage, None
+    return read, None, f"no accepted adjustment after {A.MODEL_MAX_TURNS} model turns", trace, usage, None
 
 
 def _total(usage):
@@ -396,18 +381,34 @@ def _total(usage):
 
 
 # ---------------------------------------------------------------- the whole read
+def _unread(rows, as_of):
+    as_of = as_of or dt.date.today().isoformat()
+    as_of = as_of if isinstance(as_of, str) else as_of.isoformat()
+    sent_rows = permits_to_read(rows, as_of)
+    out = {"source": SOURCE, "as_of": as_of, "reader": None, "permits": [_for_model(r) for r in sent_rows],
+           "readings": [], "not_read": [], "adjustment": None, "why_none": None, "refusals": [], "trace": []}
+    return as_of, sent_rows, out
+
+
+def skip_permits(rows, as_of=None, why=None):
+    """The reply when AI reading is off or cannot run [S2]: the permits listed, none read, no adjustment, so the
+    permit count stands. No model call and no rules."""
+    _, sent_rows, out = _unread(rows, as_of)
+    out["not_read"] = [r["work_permit"] for r in sent_rows]
+    out["why_none"] = why
+    return out
+
+
 def read_permits(rows, as_of=None, client=None, model=None):
     """The permits on the block, read, and at most one adjustment for the construction source.
 
     rows    permit rows as sources.dob_permits returns them; filtered and scrubbed here [P1]
-    client  an OpenAI-SDK client for the Meta Model API; None reads with the rules [P4]
+    client  a backend from llm.client_for (Meta, OpenAI or Anthropic), or an OpenAI-SDK client for the Meta Model
+            API; None reads with the rules [P4]
+    The model path adds `usage` and `failure` (null, or key_rejected, provider_busy, provider_error).
     """
-    as_of = as_of or dt.date.today().isoformat()
-    as_of = as_of if isinstance(as_of, str) else as_of.isoformat()
-    sent_rows = permits_to_read(rows, as_of)
+    as_of, sent_rows, out = _unread(rows, as_of)
     sent = {r["work_permit"]: r for r in sent_rows}
-    out = {"source": SOURCE, "as_of": as_of, "reader": None, "permits": [_for_model(r) for r in sent_rows],
-           "readings": [], "not_read": [], "adjustment": None, "why_none": None, "refusals": [], "trace": []}
     if not sent_rows:
         out["why_none"] = "no unexpired loud-work or scaffold permit on this tax block"
         return out
@@ -424,8 +425,9 @@ def read_permits(rows, as_of=None, client=None, model=None):
         adj, why = rules_adjustment(read, sent)
         trace = [{"turn": 0, "tool": "rules", "accepted": list(read)}]
     else:
-        out["reader"] = model or A.MODEL_DEFAULT
-        read, adj, why, trace, usage = model_read(sent_rows, as_of, client, out["reader"])
+        backend = as_backend(client, model or A.MODEL_DEFAULT)
+        out["reader"] = backend.model
+        read, adj, why, trace, usage, out["failure"] = model_read(sent_rows, as_of, backend, backend.model)
         out["usage"] = _total(usage)
         for t in trace:
             if isinstance(t.get("refused"), list):
