@@ -278,6 +278,78 @@ def test_over_http_a_provider_run_sends_the_headers_and_a_leaked_key_fails_the_c
     assert leaks and all(key not in p.message for p in rec["problems"])
 
 
+class _Provider(BaseHTTPRequestHandler):
+    """The three services as a caller's provider run would find them: each answers from the case's recordings,
+    with the `ai` object built from the headers it was sent. No model and no provider is reached."""
+    def do_POST(self):
+        self.rfile.read(int(self.headers["Content-Length"]))
+        h = {k.lower(): v for k, v in self.headers.items()}
+        self.server.seen.append((self.path, h))
+        ai = {"mode": "model", "provider": h.get("x-hushiq-provider"), "model": h.get("x-hushiq-model") or "claude-haiku-5-5",
+              "key": "caller" if h.get("x-hushiq-key") else "house", "reason": None, "message": None}
+        usage = {"model": ai["model"], "input_tokens": 1000, "output_tokens": 100}
+        if self.path == "/read":
+            body = dict(CASE["fixtures"]["reader"], ai=ai, model=ai["model"], usage=usage)
+            self.send_response(200)
+            self.send_header("Content-Type", "text/event-stream")
+            self.end_headers()
+            self.wfile.write(b"event: result\ndata: " + json.dumps(body).encode() + b"\n\n")
+            return
+        body = dict(CASE["fixtures"]["verdict" if self.path == "/verdict" else "adjust"], ai=ai, usage=usage)
+        payload = json.dumps(body).encode()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(payload)))
+        self.end_headers()
+        self.wfile.write(payload)
+
+    def log_message(self, *a):
+        pass
+
+
+def test_the_provider_flags_end_to_end_against_mock_services(tmp_path, monkeypatch, capsys):
+    from hush_eval.__main__ import main
+    server = HTTPServer(("127.0.0.1", 0), _Provider)
+    server.seen = []
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    url = f"http://127.0.0.1:{server.server_port}"
+    monkeypatch.setattr(A, "REPO", tmp_path)                   # no service in process: every call goes to the mock
+    for env in ("HIQ_READER_URL", "HIQ_VERDICT_URL", "HIQ_ADJUST_URL"):
+        monkeypatch.setenv(env, url)
+    for env in ("MODEL_API_KEY", "BASETEN_API_KEY", "OPENAI_API_KEY"):
+        monkeypatch.delenv(env, raising=False)
+    key = "sk-ant-fake-not-a-key"
+    monkeypatch.setenv("ANTHROPIC_API_KEY", key)
+    report = tmp_path / "report.json"
+    try:
+        code = main(["run", "--provider", "anthropic", "--model", "claude-haiku-5-5", "--only", "04", "--json", str(report)])
+    finally:
+        server.shutdown()
+    out = capsys.readouterr().out
+    assert code == 0, out
+    assert [p for p, _ in server.seen] == ["/read", "/verdict", "/adjust/permits"]
+    assert all(h["x-hushiq-key"] == key and h["x-hushiq-provider"] == "anthropic" and h["x-hushiq-model"] == "claude-haiku-5-5"
+               for _, h in server.seen)
+    assert "anthropic, claude-haiku-5-5, caller key" in out
+    rec = json.loads(report.read_text())["records"][0]
+    assert rec["usage"] == {"claude-haiku-5-5": {"prompt_tokens": 3000, "completion_tokens": 300}}
+    assert rec["cost_usd"] == 0.00045                       # 3,000 in at $0.10 and 300 out at $0.50 a million
+    assert key not in out and key not in report.read_text()
+
+
+def test_the_cli_refuses_flag_mixes_that_would_spend_or_mislabel(monkeypatch):
+    from hush_eval.__main__ import main
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.setattr(A, "EVAL_ENV", A.EVAL_ENV.parent / "no-such.env")
+    for argv in (["run", "--ai", "off", "--provider", "openai"], ["run", "--ai", "off", "--live"],
+                 ["run", "--provider", "openai", "--record"]):
+        with pytest.raises(SystemExit):
+            main(argv)
+    with pytest.raises(SystemExit) as e:   # no key anywhere: stops before any call
+        main(["run", "--provider", "openai"])
+    assert "OPENAI_API_KEY" in str(e.value)
+
+
 # ---------------------------------------------------------------- the real services, once they are on this branch
 def test_the_services_on_this_branch_pass_the_mock_run():
     present = [n for n in ("reader", "verdict", "adjust") if A.Service(n, "mock").transport == "inproc"]
