@@ -66,13 +66,19 @@ def borough_hint(text):
 
 _STREET_WORDS = {"E": "EAST", "W": "WEST", "N": "NORTH", "S": "SOUTH", "ST": "STREET", "AVE": "AVENUE", "AV": "AVENUE",
                  "PL": "PLACE", "RD": "ROAD", "BLVD": "BOULEVARD", "DR": "DRIVE", "LN": "LANE", "SQ": "SQUARE",
-                 "TER": "TERRACE", "PKWY": "PARKWAY", "B'WAY": "BROADWAY", "BWAY": "BROADWAY"}
+                 "TER": "TERRACE", "PKWY": "PARKWAY", "B'WAY": "BROADWAY", "BWAY": "BROADWAY",
+                 # GeoSearch numbers the avenues: Fifth Avenue is "5 AVENUE"
+                 **{w: str(i) for i, w in enumerate(("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH",
+                                                     "EIGHTH", "NINTH", "TENTH", "ELEVENTH", "TWELFTH"), 1)}}
 
 
-def street_key(address):
+def street_key(address, numbered=True):
     """The street of an address, comparable with GeoSearch's: no house number, no ordinal suffix, words spelled
-    out. "315 W. 86th St." and "WEST 86 STREET" give the same key."""
-    words = re.findall(r"[A-Za-z0-9']+", re.sub(r"^\s*\d+(?:-\d+)?[A-Za-z]?\b", "", address or "").upper())
+    out. "315 W. 86th St." and "WEST 86 STREET" give the same key. GeoSearch's own street field has no house
+    number (numbered=False), so its leading number is the street's: "2 AVENUE" stays "2 AVENUE"."""
+    if numbered:
+        address = re.sub(r"^\s*\d+(?:-\d+)?[A-Za-z]?\b", "", address or "")
+    words = re.findall(r"[A-Za-z0-9']+", (address or "").upper())
     words = [_STREET_WORDS.get(w, w) for w in words]
     return " ".join(re.sub(r"(?<=\d)(ST|ND|RD|TH)$", "", w) for w in words)
 
@@ -102,7 +108,7 @@ class HostedScorer:
             raise ScoreError(f"GeoSearch failed: {e}")
         street = street_key(address)
         same = [f for f in feats if str((f.get("properties") or {}).get("housenumber") or "").upper() == house
-                and street_key(f["properties"].get("street") or "") == street]
+                and street_key(f["properties"].get("street") or "", numbered=False) == street]
         if not same:
             best = (feats[0].get("properties") or {}).get("label") if feats else None
             raise ScoreError(f"GeoSearch has no building at {address!r}" + (f"; its best match is {best!r}" if best else ""))

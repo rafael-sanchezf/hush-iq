@@ -102,3 +102,12 @@ def test_floors_counts_whole_floors_like_the_engine():
     assert s.floors(None) is None
     with pytest.raises(ScoreError, match="PLUTO failed"):
         scorer(lambda r: httpx.Response(503))[0].floors("1")
+
+
+def test_numbered_avenues_match_geosearch():
+    """GeoSearch writes Second Avenue as "2 AVENUE": its leading number is the street's, not a house number
+    (520 2nd Avenue #3E failed to place, Rafa's test, 2026-10-29)."""
+    from reader.scoring import street_key
+    for listing, city in (("520 2nd Avenue", "2 AVENUE"), ("1 Fifth Ave", "5 AVENUE"), ("315 W. 86th St.", "WEST 86 STREET"),
+                          ("200 E 14th St", "EAST 14 STREET")):
+        assert street_key(listing) == street_key(city, numbered=False), listing
