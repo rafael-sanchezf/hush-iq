@@ -20,7 +20,9 @@ def test_quotes_match_with_whitespace_normalized_only():
 @pytest.mark.parametrize("floor, quote", [
     (11, "on the eleventh floor"), (11, "11th floor"), (11, "11th-floor unit"), (4, "Floor 4"),
     (4, "fourth-floor walk-up"), (5, "top floor of a five-story walk-up"), (24, "twenty-fourth floor"),
-    (1, "ground floor"), (2, "2nd fl"),
+    (1, "ground floor"), (2, "2nd fl"), (1, "Garden-level floor-through"), (1, "garden floor"),
+    ("top", "PH at 18 Hudson Place"), ("top", "Unit PH-B"), ("top", "Penthouse one-bedroom"), ("top", "Top floor unit"),
+    ("top", "top-floor walk-up"),
 ])
 def test_floor_stated(floor, quote):
     assert stated("floor", floor, quote) is None
@@ -29,6 +31,10 @@ def test_floor_stated(floor, quote):
 @pytest.mark.parametrize("floor, quote", [
     (3, "Apt 3F"), (3, "Unit 3F in a five-story walk-up"), (11, "an 11 floors elevator building"),
     (4, "fourteenth floor"), (5, "a five-story walk-up"), (11, "Apartment 11C"),
+    (12, "Apt 12F at 50 Murray Street"),            # a unit number is not a floor (HIQ-57, default kept)
+    (18, "PH at 18 Hudson Place"),                 # PH is "top"; the number comes from the city, not the model
+    ("top", "high-floor light"), ("top", "PHONE 212-555"), ("top", "a Ph.D. student"),
+    (1, "the bedroom opens onto the garden"),
 ])
 def test_floor_not_stated(floor, quote):
     assert stated("floor", floor, quote)
@@ -95,3 +101,17 @@ def test_a_photo_citation_takes_the_readings_description():
                                  "evidence": [{"source": "photo:0", "what": "a very quiet street"}]},
                         "", {0: reading}, 1)
     assert field["evidence"] == [{"source": "photo:0", "what": "cars parked on the street below"}]
+
+
+def test_a_short_quote_says_it_is_too_short():
+    with pytest.raises(Refused, match=r"floor: quote too short \(2 chars, minimum 4\)"):
+        check_field("floor", {"status": "read", "value": "top", "evidence": [{"source": "text", "quote": "PH"}]},
+                    "PH at 18 Hudson Place", {}, 0)
+    with pytest.raises(Refused, match=r"quote too short \(3 chars, minimum 4\)"):
+        check_field("unit", {"status": "read", "value": "4B", "evidence": [{"source": "text", "quote": " #4B "}]},
+                    "Apt #4B", {}, 0)                  # whitespace is not counted
+
+
+def test_top_and_a_wrong_number_hint_at_each_other():
+    assert evidence.coerce("floor", " Top ") == "top"
+    assert 'send "top"' in stated("floor", 18, "PH at 18 Hudson Place")

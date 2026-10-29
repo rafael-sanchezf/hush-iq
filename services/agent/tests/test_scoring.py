@@ -90,3 +90,15 @@ def test_a_score_error_is_a_score_error():
     s, _ = scorer(lambda r: httpx.Response(502, json={"detail": "311: timed out"}))
     with pytest.raises(ScoreError, match="v2 score failed, HTTP 502: 311: timed out"):
         s.score("315 WEST 86 STREET", 11, "rear", Answers())
+
+
+def test_floors_counts_whole_floors_like_the_engine():
+    s, seen = scorer(lambda r: httpx.Response(200, json=[{"numfloors": "9.5000000"}]))
+    assert s.floors("1011250025") == 9
+    assert seen[0].url.params["bbl"] == "1011250025" and seen[0].url.path.endswith("64uk-42ks.json")
+    assert scorer(lambda r: httpx.Response(200, json=[]))[0].floors("1") is None
+    assert scorer(lambda r: httpx.Response(200, json=[{}]))[0].floors("1") is None
+    assert scorer(lambda r: httpx.Response(200, json=[{"numfloors": "0"}]))[0].floors("1") is None
+    assert s.floors(None) is None
+    with pytest.raises(ScoreError, match="PLUTO failed"):
+        scorer(lambda r: httpx.Response(503))[0].floors("1")

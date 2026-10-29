@@ -69,8 +69,11 @@ class FakeScorer:
     """Places any address with a house number, and answers like engine v2 (a range when floor or side is
     unknown). Records what it was asked."""
 
-    def __init__(self):
-        self.located, self.scored = [], []
+    def __init__(self, floors=18):
+        self.located, self.scored, self.floor_counts = [], [], floors
+
+    def floors(self, bbl):
+        return self.floor_counts
 
     def locate(self, address, text=""):
         self.located.append(address)

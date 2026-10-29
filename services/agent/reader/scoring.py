@@ -10,6 +10,7 @@ import httpx
 from . import settings
 
 GEOSEARCH = "https://geosearch.planninglabs.nyc/v2/search"
+PLUTO = "https://data.cityofnewyork.us/resource/64uk-42ks.json"
 HEADERS = {"User-Agent": "hush-iq-reader/0.1 (https://github.com/rafael-sanchezf/hush-iq)"}   # on every request
 TIMEOUT_S = 60        # a cold score pulls eight datasets: 6 to 8 s, more on a bad day
 
@@ -119,6 +120,21 @@ class HostedScorer:
         return {"label": p.get("label"), "lat": lat, "lng": lng, "bbl": pad.get("bbl"), "bin": pad.get("bin"),
                 "borough": p.get("borough"), "borough_from": how,
                 "alternatives": [f["properties"].get("label") for f in same if f is not chosen]}
+
+    def floors(self, bbl):
+        """The building's floor count as the score engine counts it (whole floors of PLUTO numfloors), or None."""
+        if not bbl:
+            return None
+        try:
+            r = self.http.get(PLUTO, params={"bbl": bbl, "$select": "numfloors"}, headers=HEADERS)
+            r.raise_for_status()
+            rows = r.json()
+        except (httpx.HTTPError, ValueError) as e:
+            raise ScoreError(f"PLUTO failed: {e}")
+        try:
+            return int(float(rows[0]["numfloors"])) or None
+        except (IndexError, KeyError, TypeError, ValueError):
+            return None
 
     def score(self, address, floor, position, answers):
         """{"engine": "v2"|"v1", "url", "body"}. v1 has no sleep hours: day_bothers goes in as wfh."""

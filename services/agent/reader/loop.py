@@ -120,6 +120,24 @@ def read_listing(listing, *, client, scorer=None, model=None, turns=None, mode="
         trace.append(entry)
         yield "turn", entry
 
+    if fields["floor"]["value"] == evidence.TOP:   # "PH", "penthouse", "top floor": the building's floor count
+        quote = fields["floor"]["evidence"][0].get("quote") or fields["floor"]["evidence"][0].get("what")
+        top = None
+        if location:
+            n += 1
+            started = time.perf_counter()
+            try:
+                top = scorer.floors(location["bbl"])
+                entry = {"n": n, "by": "code", "tool": "floors", "args": {"bbl": location["bbl"]},
+                         "result": {"floors": top}, "ok": True, "ms": _ms(started)}
+            except ScoreError as e:
+                entry = {"n": n, "by": "code", "tool": "floors", "args": {"bbl": location["bbl"]},
+                         "result": {"error": str(e)}, "ok": False, "ms": _ms(started)}
+            trace.append(entry)
+            yield "turn", entry
+        fields["floor"] = top_floor(fields["floor"], top, quote)
+        notes.append(fields["floor"]["note"])
+
     if location:
         n += 1
         args = {"address": location["label"], "floor": fields["floor"]["value"], "position": position,
@@ -155,6 +173,17 @@ def read_listing(listing, *, client, scorer=None, model=None, turns=None, mode="
         "model": model,
         "mode": mode,
     }
+
+
+def top_floor(field, floors, quote):
+    """A floor read as "top", made a number from the city's floor count, or cant_tell when there is none."""
+    if floors:
+        return dict(field, value=floors, derived={"from": evidence.TOP, "floors": floors, "source": "NYC PLUTO numfloors"},
+                    note=f"The listing says {quote!r}: floor {floors}, the top floor by the city's floor count for "
+                         f"this building (PLUTO).")
+    return dict(evidence.cant_tell("floor"),
+                note=f"The listing says {quote!r}, but the city has no floor count for this building, so the floor "
+                     f"is unknown.")
 
 
 def read(listing, **kwargs):

@@ -22,6 +22,8 @@ AC_UNITS = ("window", "through_wall", "split", "central")
 WALLS = ("brick", "concrete", "plaster", "glass", "wood", "stone")
 MAX_FLOOR = 120      # the engine's own bound
 MIN_QUOTE = 4        # shorter spans are found in any text
+TOP = "top"          # floor value for "PH", "penthouse", "top floor" with no number; the loop resolves it from the
+                     # building's floor count in PLUTO, after the address is placed
 MAX_WHAT = 240
 
 PUFFERY = {"quiet", "quieter", "quietest", "peaceful", "serene", "tranquil", "calm", "silent", "hushed",
@@ -82,14 +84,20 @@ def _number_words(n):
     return [rf"{_TENS[tens][0]}[\s-]{_UNITS[unit]}", rf"{_TENS[tens][0]}[\s-]{_UNITS_TH[unit]}"]
 
 
+_TOP_STATED = r"(?<![A-Za-z])PH(?:[\s-]?[A-Z0-9])?(?![A-Za-z])|(?i:\bpenthouse\b|\btop[\s-]floor\b)"
+
+
 def _floor_stated(n, quote):
     """The number sits next to the word floor ("11th floor", "floor 11", "eleventh-floor"), or the quote says
-    top floor or penthouse of an N-story building. "Apt 3F" alone is a unit, not a floor."""
+    top floor or penthouse of an N-story building. Garden level is floor 1. "top" needs PH, penthouse or top
+    floor. "Apt 3F" alone is a unit, not a floor."""
+    if n == TOP:
+        return re.search(_TOP_STATED, quote) is not None
     q = quote.lower()
     num = "(?:" + "|".join([rf"{n}(?:st|nd|rd|th)?"] + _number_words(n)) + ")"
     patterns = [rf"(?<![\w-]){num}[\s-]*(?:floor|fl)\b", rf"\b(?:floor|level)\s*(?:#|no\.?\s*)?{num}\b"]
     if n == 1:
-        patterns.append(r"\b(?:ground|street)[\s-]*(?:floor|level)\b")
+        patterns.append(r"\b(?:ground|street|garden)[\s-]*(?:floor|level)\b")
     if re.search(r"\b(?:top floor|penthouse)\b", q):
         patterns.append(rf"(?<![\w-]){num}[\s-]*(?:story|stories|storey)")
     return any(re.search(p, q) for p in patterns)
@@ -149,7 +157,9 @@ def stated(name, value, quote):
     hints = {
         "address": "the quote must contain the house number and street exactly as in the value",
         "unit": "the quote must contain the unit as written in the value",
-        "floor": "the quote must put the floor number next to the word floor; a unit number like 4B is not a floor",
+        "floor": "the quote must put the floor number next to the word floor; a unit number like 4B is not a floor. "
+                 "For PH, penthouse or top floor with no number, send \"top\": the building's floor count is "
+                 "looked up after the address is placed",
         "side": f"the quote must say the unit is on the {value} side (for example rear, courtyard, corner unit, "
                 f"or faces <street name>)",
     }
@@ -165,10 +175,12 @@ def coerce(name, value):
             raise Refused(f"{name} is read but has no value")
         return v
     if name == "floor":
+        if str(value).strip().lower() == TOP:
+            return TOP
         try:
             v = int(str(value).strip())
         except (TypeError, ValueError):
-            raise Refused(f"floor must be a whole number, got {value!r}")
+            raise Refused(f"floor must be a whole number or \"top\", got {value!r}")
         if not 1 <= v <= MAX_FLOOR:
             raise Refused(f"floor must be between 1 and {MAX_FLOOR}, got {v}")
         return v
@@ -231,6 +243,9 @@ def check_field(name, raw, text, photo_reads, n_photos):
 def _check_quote(name, value, quote, text):
     if name in OBSERVED_FIELDS:
         raise Refused(f"{name} is read from photos only; cite photo:<index>")
+    short = len(normalize(quote))
+    if short < MIN_QUOTE:
+        raise Refused(f"{name}: quote too short ({short} chars, minimum {MIN_QUOTE}): quote the words around it too")
     span = find_quote(quote, text)
     if span is None:
         raise Refused(f"{name}: quote not found in the listing text: {normalize(quote)!r}. Copy the exact words, "

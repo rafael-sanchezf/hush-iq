@@ -73,7 +73,9 @@ SUBMIT_LISTING = {
                 "properties": {
                     "address": _field({"type": ["string", "null"]}, "house number and street, as written"),
                     "unit": _field({"type": ["string", "null"]}, "apartment number, as written"),
-                    "floor": _field({"type": ["integer", "null"]}, "the apartment's floor"),
+                    "floor": _field({"type": ["integer", "string", "null"]},
+                                    'the floor as a whole number, or "top" for PH, penthouse or top floor with no '
+                                    'number'),
                     "side": _field(_ENUM_OR_NULL(evidence.SIDES), "which side of the building the unit faces"),
                 },
                 "required": list(SCORE_FIELDS),

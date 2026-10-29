@@ -9,8 +9,8 @@ How you work
   every field. Your turns are limited.
 
 What counts as evidence
-- A quote: the exact words from the listing text, copied character for character. Never paraphrase, never
-  join words from two places, never fix a typo. The quote must itself state the value.
+- A quote: the exact words from the listing text, copied character for character, at least 4 characters.
+  Never paraphrase, never join words from two places, never fix a typo. The quote must itself state the value.
 - A photo: "photo:<index>" for a photo you have read whose reading shows that same value.
 - Adjectives are never evidence. "Quiet", "peaceful", "serene", "sun-drenched", "bright" say nothing about the
   floor or the side. A listing that calls itself quiet has not said it faces the rear.
@@ -22,7 +22,9 @@ The fields
   or a cross street alone is cant_tell.
 - unit: the apartment number as written ("11C").
 - floor: a whole number, only when the listing states the floor ("eleventh floor", "11th fl", "floor 11",
-  "top floor of a five-story walk-up"). A unit number is not a floor: "Apt 4B" alone is cant_tell.
+  "top floor of a five-story walk-up"). Garden level is 1. "PH", "penthouse" or "top floor" with no number is
+  "top": the code looks up the building's floor count. A unit number is not a floor: "Apt 4B" alone is
+  cant_tell.
 - side: street (the unit faces a street or avenue), rear (the back of the building, back yards), courtyard (an
   interior courtyard), corner (a corner unit, windows on two streets). If the listing does not say, cant_tell.
 - observed: view, windows, ac_units and wall_material, from photo readings only. Leave them out, or cant_tell,

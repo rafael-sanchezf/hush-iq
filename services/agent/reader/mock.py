@@ -130,6 +130,10 @@ def heuristic_fields(text):
     if m := _FLOOR.search(text):
         floor = int(m.group(1)) if m.group(1) else _FLOOR_WORDS[m.group(2).lower()]
         fields["floor"] = _read(floor, m.group(0))
+    elif m := re.search(r"\bgarden[\s-]*(?:level|floor)\b", text, re.I):
+        fields["floor"] = _read(1, m.group(0))
+    elif m := re.search(evidence._TOP_STATED, text):
+        fields["floor"] = _read(evidence.TOP, _clause(text, m))
     for side in _SIDE_ORDER:
         if m := re.search(evidence._SIDE_STATED[side], text, re.I):
             fields["side"] = _read(side, _clause(text, m))

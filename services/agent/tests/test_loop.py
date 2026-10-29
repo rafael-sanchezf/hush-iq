@@ -1,7 +1,9 @@
 """The agent loop in mock mode: the five cases of HIQ-13 to HIQ-15, plus the ways a run can go wrong."""
 import json
 
-from conftest import CANT, Scripted, fixture_text, listing, read
+import pytest
+
+from conftest import CANT, FakeScorer, Scripted, fixture_text, listing, read
 from reader import loop, mock
 
 FIELDS_01 = {
@@ -231,3 +233,71 @@ def test_an_address_in_two_boroughs_gets_a_note(scorer):
     result = loop.read(listing("520 East 81st Street, one-bedroom."), client=model.client, scorer=scorer)
     assert ("520 East 81st Street is also in 520 EAST 81 STREET, Brooklyn, NY, USA. The listing does not say which "
             "borough, so this is the Manhattan one.") in result["notes"]
+
+
+PH_TEXT = "PH at 18 Hudson Place. Penthouse one-bedroom with a terrace. Doorman building, board approval required."
+PH_FIELDS = {"address": read("18 Hudson Place", "18 Hudson Place"), "unit": read("PH", "PH at 18 Hudson Place"),
+             "floor": read("top", "PH at 18 Hudson Place"), "side": CANT}
+
+
+def test_ph_reads_as_the_top_floor_from_the_citys_floor_count():
+    scorer = FakeScorer(floors=18)
+    model = Scripted([("submit_listing", {"fields": PH_FIELDS})])
+    result = loop.read(listing(PH_TEXT), client=model.client, scorer=scorer)
+
+    floor = result["fields"]["floor"]
+    assert floor["value"] == 18 and floor["status"] == "read"
+    assert floor["evidence"][0]["quote"] == "PH at 18 Hudson Place"            # the listing's own words
+    assert floor["derived"] == {"from": "top", "floors": 18, "source": "NYC PLUTO numfloors"}
+    assert "floor 18, the top floor by the city's floor count" in floor["note"] and floor["note"] in result["notes"]
+    assert [t["tool"] for t in result["trace"]] == ["submit_listing", "locate", "floors", "score"]
+    assert scorer.scored[0]["floor"] == 18
+
+
+def test_top_floor_without_a_floor_count_stays_cant_tell():
+    scorer = FakeScorer(floors=None)
+    fields = dict(PH_FIELDS, floor=read("top", "Penthouse one-bedroom"))
+    result = loop.read(listing(PH_TEXT), client=Scripted([("submit_listing", {"fields": fields})]).client,
+                       scorer=scorer)
+    floor = result["fields"]["floor"]
+    assert floor["status"] == "cant_tell" and floor["value"] is None and floor["evidence"] == []
+    assert "no floor count for this building" in floor["note"]
+    assert scorer.scored[0]["floor"] is None
+
+
+def test_top_floor_without_an_address_stays_cant_tell():
+    scorer = FakeScorer(floors=18)
+    fields = dict(PH_FIELDS, address=CANT)
+    result = loop.read(listing(PH_TEXT), client=Scripted([("submit_listing", {"fields": fields})]).client,
+                       scorer=scorer)
+    assert result["fields"]["floor"]["status"] == "cant_tell" and result["needs"] == ["address"]
+    assert [t["tool"] for t in result["trace"]] == ["submit_listing"]
+
+
+def test_a_too_short_quote_is_refused_as_too_short_then_fixed(scorer):
+    model = Scripted([("submit_listing", {"fields": dict(PH_FIELDS, floor=read("top", "PH"))}),
+                      ("submit_listing", {"fields": PH_FIELDS})])
+    result = loop.read(listing(PH_TEXT), client=model.client, scorer=scorer)
+    assert result["trace"][0]["result"]["refused"]["floor"].startswith("floor: quote too short (2 chars, minimum 4)")
+    assert result["status"] == "complete" and result["fields"]["floor"]["value"] == 18
+
+
+def test_a_unit_number_alone_is_not_a_floor(scorer):
+    text = "Apt 12F at 50 Murray Street. Alcove studio with a gym and a roof deck."
+    fields = {"address": read("50 Murray Street", "50 Murray Street"), "unit": read("12F", "Apt 12F"),
+              "floor": read(12, "Apt 12F"), "side": CANT}
+    model = Scripted([("submit_listing", {"fields": fields}),
+                      ("submit_listing", {"fields": dict(fields, floor=CANT)})])
+    result = loop.read(listing(text), client=model.client, scorer=scorer)
+    assert "a unit number like 4B is not a floor" in result["trace"][0]["result"]["refused"]["floor"]
+    assert result["fields"]["floor"]["status"] == "cant_tell" and scorer.scored[0]["floor"] is None
+
+
+@pytest.mark.parametrize("text, floor", [
+    ("Garden-level floor-through in a brownstone at 21 West 76th Street.", 1),
+    ("Top floor unit at 437 East 12th Street, nobody above you.", 18),
+    (PH_TEXT, 18),
+])
+def test_the_offline_model_reads_garden_and_top_too(text, floor):
+    result = loop.read(listing(text), client=mock.client(mock.HeuristicModel()), scorer=FakeScorer(floors=18))
+    assert result["fields"]["floor"]["value"] == floor
