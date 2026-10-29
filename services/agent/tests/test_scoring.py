@@ -5,9 +5,18 @@ import pytest
 from reader.listing import Answers
 from reader.scoring import GEOSEARCH, HostedScorer, ScoreError
 
-GEO = {"features": [{"geometry": {"coordinates": [-73.98, 40.79]},
-                     "properties": {"label": "315 WEST 86 STREET, New York, NY, USA", "housenumber": "315",
-                                    "borough": "Manhattan", "addendum": {"pad": {"bbl": "1012480022", "bin": "1033000"}}}}]}
+def feature(label, house, street, borough, bbl):
+    return {"geometry": {"coordinates": [-73.98, 40.79]},
+            "properties": {"label": label, "housenumber": house, "street": street, "borough": borough,
+                           "addendum": {"pad": {"bbl": bbl, "bin": "1"}}}}
+
+
+GEO = {"features": [feature("315 WEST 86 STREET, New York, NY, USA", "315", "WEST 86 STREET", "Manhattan", "1012480022")]}
+# GeoSearch's real top three for "520 East 81st Street": Brooklyn first.
+TWO_BOROUGHS = {"features": [
+    feature("520 EAST 81 STREET, Brooklyn, NY, USA", "520", "EAST 81 STREET", "Brooklyn", "3079590057"),
+    feature("520 EAST 81 STREET, New York, NY, USA", "520", "EAST 81 STREET", "Manhattan", "1015777501"),
+    feature("520 81 STREET, Brooklyn, NY, USA", "520", "81 STREET", "Brooklyn", "3060050001")]}
 
 
 def scorer(handler):
@@ -31,10 +40,28 @@ def test_locate_takes_geosearchs_match_for_the_same_house_number():
 
 def test_locate_refuses_another_building_or_no_house_number():
     s, _ = scorer(lambda r: httpx.Response(200, json=GEO))
-    with pytest.raises(ScoreError, match="best match is '315 WEST 86 STREET"):
+    with pytest.raises(ScoreError, match="no building at '317 West 86th Street'; its best match is '315 WEST 86"):
         s.locate("317 West 86th Street")
+    with pytest.raises(ScoreError, match="no building at '315 East 86th Street'"):     # same number, other street
+        s.locate("315 East 86th Street")
     with pytest.raises(ScoreError, match="has no house number"):
         s.locate("Upper West Side")
+
+
+def test_the_listing_picks_the_borough_when_the_address_is_in_two():
+    s, _ = scorer(lambda r: httpx.Response(200, json=TWO_BOROUGHS))
+    loc = s.locate("520 East 81st Street", "Upper East Side one-bedroom. 520 East 81st Street, Apt 3D.")
+    assert loc["borough"] == "Manhattan" and loc["bbl"] == "1015777501"
+    assert loc["borough_from"] == {"how": "text", "borough": "Manhattan", "said": "Upper East Side"}
+    assert loc["alternatives"] == ["520 EAST 81 STREET, Brooklyn, NY, USA"]      # "520 81 STREET" is another street
+    assert s.locate("520 East 81st Street", "Canarsie two-bedroom")["borough"] == "Brooklyn"
+    assert s.locate("520 E. 81st St.", "New York, NY 10028")["borough"] == "Manhattan"
+
+
+def test_a_silent_listing_defaults_to_manhattan_and_says_so():
+    s, _ = scorer(lambda r: httpx.Response(200, json=TWO_BOROUGHS))
+    loc = s.locate("520 East 81st Street", "One-bedroom, $3,100.")
+    assert loc["borough"] == "Manhattan" and loc["borough_from"] == {"how": "default", "borough": "Manhattan"}
 
 
 def test_v2_first_with_the_renters_answers():

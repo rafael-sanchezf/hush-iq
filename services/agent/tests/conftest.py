@@ -72,7 +72,7 @@ class FakeScorer:
     def __init__(self):
         self.located, self.scored = [], []
 
-    def locate(self, address):
+    def locate(self, address, text=""):
         self.located.append(address)
         return {"label": address.upper() + ", New York, NY, USA", "lat": 40.78, "lng": -73.98, "bbl": "1012480022",
                 "bin": "1033000", "borough": "Manhattan"}

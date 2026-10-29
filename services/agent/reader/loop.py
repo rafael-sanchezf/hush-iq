@@ -25,6 +25,10 @@ LAST_TURN = ("This is your last turn. Call submit_listing now: keep every field 
              "rest cant_tell.")
 PLAIN_TEXT = "Plain text is not accepted. Call exactly one tool."
 ONE_TOOL = "Not run: one tool per turn."
+# Reasoning tokens count against the cap: one live turn used 1,107 of its 1,342 output tokens reasoning. A reply
+# cut off at the cap comes back with no tool call and no text, and no error.
+MAX_OUTPUT_TOKENS = 4096
+EMPTY_RETRIES = 1
 
 
 def first_message(listing):
@@ -50,8 +54,7 @@ def read_listing(listing, *, client, scorer=None, model=None, turns=None, mode="
             messages.append(_user(LAST_TURN))
         started = time.perf_counter()
         try:
-            response = client.responses.create(model=model, instructions=INSTRUCTIONS, input=messages,
-                                               tools=tools.DEFINITIONS, parallel_tool_calls=False, store=False)
+            response, retries = _decide(client, model, messages)
         except openai.APIError as e:   # still failing after the SDK's own retries
             entry = {"n": n, "by": "model", "tool": None, "args": None,
                      "result": {"error": f"the Model API failed: {e}"}, "ok": False, "ms": _ms(started)}
@@ -70,12 +73,12 @@ def read_listing(listing, *, client, scorer=None, model=None, turns=None, mode="
                 messages.append(_output(extra.call_id, {"error": ONE_TOOL}))
             entry = {"n": n, "by": "model", "tool": calls[0].name, "args": tools.args_of(calls[0]), "result": result,
                      "ok": "error" not in result, "ms": _ms(started), "model_ms": model_ms, "tool_ms": _ms(ran),
-                     "tokens": _usage(response)}
+                     "tokens": _usage(response), "retries": retries}
         else:
             messages.append(_user(PLAIN_TEXT))
             entry = {"n": n, "by": "model", "tool": None, "args": None, "result": {"error": PLAIN_TEXT},
                      "said": (response.output_text or "")[:500], "ok": False, "ms": _ms(started),
-                     "model_ms": model_ms, "tokens": _usage(response)}
+                     "model_ms": model_ms, "tokens": _usage(response), "retries": retries}
         trace.append(entry)
         yield "turn", entry
         if record.submitted:
@@ -104,9 +107,12 @@ def read_listing(listing, *, client, scorer=None, model=None, turns=None, mode="
         address = fields["address"]["value"]
         started = time.perf_counter()
         try:
-            location = scorer.locate(address)
+            location = scorer.locate(address, listing.text)
             entry = {"n": n, "by": "code", "tool": "locate", "args": {"address": address}, "result": location,
                      "ok": True, "ms": _ms(started)}
+            if location.get("alternatives") and location.get("borough_from", {}).get("how") == "default":
+                notes.append(f"{address} is also in {', '.join(location['alternatives'])}. The listing does not say "
+                             f"which borough, so this is the {location['borough']} one.")
         except ScoreError as e:
             entry = {"n": n, "by": "code", "tool": "locate", "args": {"address": address},
                      "result": {"error": str(e)}, "ok": False, "ms": _ms(started)}
@@ -165,6 +171,18 @@ def headline(body):
     return {"verdict": src.get("verdict"), "quieter_than": src.get("quieter_than")}
 
 
+def _decide(client, model, messages):
+    """One agent decision, and how many times it was asked again: a reply with neither a tool call nor text (cut
+    off at the token cap) is not an answer, so it is asked once more before the turn counts it."""
+    for retries in range(EMPTY_RETRIES + 1):
+        response = client.responses.create(model=model, instructions=INSTRUCTIONS, input=messages,
+                                           tools=tools.DEFINITIONS, parallel_tool_calls=False, store=False,
+                                           max_output_tokens=MAX_OUTPUT_TOKENS)
+        if any(i.type == "function_call" for i in response.output) or (response.output_text or "").strip():
+            break
+    return response, retries
+
+
 def _user(text):
     return {"role": "user", "content": text}
 
@@ -179,4 +197,7 @@ def _ms(since):
 
 def _usage(response):
     u = getattr(response, "usage", None)
-    return {"input": getattr(u, "input_tokens", None), "output": getattr(u, "output_tokens", None)} if u else None
+    if not u:
+        return None
+    details = getattr(u, "output_tokens_details", None)
+    return {"input": u.input_tokens, "output": u.output_tokens, "reasoning": getattr(details, "reasoning_tokens", None)}

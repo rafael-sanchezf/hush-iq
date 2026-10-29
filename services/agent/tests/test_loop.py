@@ -193,3 +193,41 @@ def test_no_scorer_means_no_network(scorer):
     result = loop.read(listing(fixture_text("01-stated-rear.txt")), client=model.client, scorer=None)
     assert result["score"] is None and result["location"] is None
     assert [t["tool"] for t in result["trace"]] == ["submit_listing"]
+
+
+def test_an_empty_reply_is_asked_again_within_the_same_turn(scorer):
+    """Live, a reply cut off at the token cap has no tool call and no text, and no error."""
+    model = Scripted([lambda body: {"output": []}, ("submit_listing", {"fields": FIELDS_01})])
+    result = loop.read(listing(fixture_text("01-stated-rear.txt")), client=model.client, scorer=scorer)
+
+    assert result["status"] == "complete" and result["turns"]["used"] == 1
+    assert result["trace"][0]["retries"] == 1
+    assert all(r["max_output_tokens"] == loop.MAX_OUTPUT_TOKENS for r in model.agent_requests)
+
+
+def test_an_empty_photo_reply_is_asked_again(scorer):
+    replies = iter([{"output_text": ""}, {"output_text": '{"fields": {"view": {"status": "read", "value": "street", '
+                                                         '"what": "cars parked along the street below"}}}'}])
+    model = Scripted([("read_photo", {"indexes": [0]})])
+    model.photos = None
+    script = model.__call__
+
+    def respond(body):
+        return next(replies) if "tools" not in body else script(body)
+
+    result = loop.read(listing(photos=1), client=mock.client(respond), scorer=scorer, turns=1)
+    assert result["photo_readings"][0]["fields"]["view"]["value"] == "street"
+
+
+def test_an_address_in_two_boroughs_gets_a_note(scorer):
+    def locate(address, text=""):
+        return {"label": "520 EAST 81 STREET, New York, NY, USA", "lat": 40.77, "lng": -73.95, "bbl": "1015777501",
+                "bin": "1", "borough": "Manhattan", "borough_from": {"how": "default", "borough": "Manhattan"},
+                "alternatives": ["520 EAST 81 STREET, Brooklyn, NY, USA"]}
+
+    scorer.locate = locate
+    fields = {"address": read("520 East 81st Street", "520 East 81st Street"), "unit": CANT, "floor": CANT, "side": CANT}
+    model = Scripted([("submit_listing", {"fields": fields})])
+    result = loop.read(listing("520 East 81st Street, one-bedroom."), client=model.client, scorer=scorer)
+    assert ("520 East 81st Street is also in 520 EAST 81 STREET, Brooklyn, NY, USA. The listing does not say which "
+            "borough, so this is the Manhattan one.") in result["notes"]

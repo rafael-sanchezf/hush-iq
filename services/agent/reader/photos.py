@@ -11,7 +11,8 @@ import openai
 from . import evidence
 
 FIELDS = ("floor", "side") + evidence.OBSERVED_FIELDS
-MAX_ATTEMPTS = 2
+MAX_ATTEMPTS = 2           # an empty or cut-off reply is not valid JSON, so it is asked again
+MAX_OUTPUT_TOKENS = 4096   # reasoning tokens count against it
 
 PROMPT = """You are looking at photo {index} of a New York City apartment listing. Report only what this photo
 shows. For each field, either read it, saying in "what" the thing in the photo that shows it, or answer
@@ -48,6 +49,7 @@ def read(client, model, photo, index):
                                                 {"type": "input_image", "image_url": photo.data_url}]}],
             text={"format": {"type": "json_object"}},
             store=False,
+            max_output_tokens=MAX_OUTPUT_TOKENS,
         )
         try:
             parsed = json.loads(response.output_text)
