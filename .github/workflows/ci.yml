@@ -1,0 +1,101 @@
+# Every change: the model's tests, every service's tests, and the 20-case eval in mock mode.
+# No secrets: nothing here reads a key, and the offline plugin (eval/ci/pytest_offline.py) skips any test that
+# reaches for the internet instead of failing or deleting it. Hackathon work (HIQ-25).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+
+jobs:
+  model:
+    name: Model tests (packages/model)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: packages/model/requirements.txt
+      - run: pip install -r packages/model/requirements.txt pytest
+      - name: pytest, offline
+        working-directory: packages/model
+        env:
+          PYTHONPATH: ${{ github.workspace }}/eval/ci
+          NOISE_SCORE_CACHE: ${{ runner.temp }}/noise-cache
+        run: python -m pytest -p pytest_offline -ra tests
+
+  services:
+    name: Service tests (services/*)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: pytest every service that has tests, offline
+        env:
+          PYTHONPATH: ${{ github.workspace }}/eval/ci
+        run: |
+          shopt -s nullglob
+          ran=0; failed=()
+          for d in services/*/; do
+            d=${d%/}
+            if ! find "$d" -name 'test_*.py' -o -name '*_test.py' | grep -q .; then
+              echo "$d: no tests"; continue
+            fi
+            echo "::group::$d"
+            [ -f "$d/requirements.txt" ] && pip install -r "$d/requirements.txt"
+            [ -f "$d/requirements-dev.txt" ] && pip install -r "$d/requirements-dev.txt"
+            [ ! -f "$d/requirements.txt" ] && [ -f "$d/pyproject.toml" ] && pip install -e "$d"
+            pip install pytest
+            status=0
+            (cd "$d" && python -m pytest -p pytest_offline -ra) || status=$?
+            echo "::endgroup::"
+            ran=$((ran + 1))
+            if [ $status -ne 0 ] && [ $status -ne 5 ]; then failed+=("$d"); fi
+          done
+          echo "services tested: $ran"
+          if [ ${#failed[@]} -gt 0 ]; then echo "::error::failed: ${failed[*]}"; exit 1; fi
+
+  eval:
+    name: Eval, 20 cases, mock mode
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: install what the services need to import in process
+        run: |
+          shopt -s nullglob
+          pip install pytest
+          for r in services/*/requirements.txt; do pip install -r "$r"; done
+      - name: run the eval
+        working-directory: eval
+        run: python -m hush_eval run --markdown "$GITHUB_STEP_SUMMARY" --json eval-report.json
+      - name: the eval's own tests
+        working-directory: eval
+        env:
+          PYTHONPATH: ${{ github.workspace }}/eval/ci
+        run: python -m pytest -p pytest_offline -ra tests
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-report
+          path: eval/eval-report.json
+          if-no-files-found: ignore
