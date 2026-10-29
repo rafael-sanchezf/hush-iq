@@ -1,0 +1,139 @@
+{
+ "address": {
+  "query": "158 Bedford Ave, Brooklyn",
+  "label": "158 BEDFORD AVENUE, Brooklyn, NY, USA",
+  "lat": 40.718692,
+  "lng": -73.95707,
+  "bbl": "3023110027",
+  "bin": "3061791",
+  "borough": "Brooklyn"
+ },
+ "unit": {
+  "floor": null,
+  "position": "front",
+  "top_floor": false,
+  "building_floors": 3,
+  "ground_floor_commercial": true
+ },
+ "building_facts": {
+  "address": "158 BEDFORD AVENUE",
+  "yearbuilt": "1910",
+  "numfloors": "3.0000000",
+  "bldgclass": "C4",
+  "unitsres": "4",
+  "unitstotal": "6"
+ },
+ "ingredients": [
+  {
+   "name": "street",
+   "label": "Street",
+   "levels": {
+    "night": 56.5,
+    "early": 56.3,
+    "day": 60.8
+   },
+   "evidence": [
+    "BEDFORD AVE: one lane, 1 travel lane, 25 mph, bus or truck route, 16 m away",
+    "N  8 ST: one lane, 1 travel lane, 25 mph, 28 m away",
+    "N  9 ST: one lane, 1 travel lane, 25 mph, 50 m away",
+    "20 vehicle noise complaints to 311 within 100 m in 24 months (engine idling 12, car/truck music 7)"
+   ],
+   "temporary": false
+  },
+  {
+   "name": "nightlife",
+   "label": "Nightlife",
+   "levels": {
+    "night": 65.6,
+    "early": 48.9,
+    "day": 57.6
+   },
+   "evidence": [
+    "21 licensed venues within 150 m: 2 bars, 15 restaurants, 4 venues",
+    "nearest loud: PEBBLE CORP (restaurant), 164 BEDFORD AVE, 46 m",
+    "nearest loud: 174 Bedford Tavern LLC (venue), 174 Bedford Ave, 79 m",
+    "nearest loud: RUBY'S WILLIAMSBURG LLC (bar), 98 Berry St, 128 m",
+    "257 party, music or loud-talking complaints within 150 m in 24 months; 133 of them 10 pm to 5 am"
+   ],
+   "temporary": false
+  },
+  {
+   "name": "building",
+   "label": "Building",
+   "levels": {
+    "night": 47.8,
+    "early": 43.0,
+    "day": 45.5
+   },
+   "evidence": [
+    "0 residential noise complaints to 311 at this building in 24 months, 4 units: 0.00 per unit-year vs 0.11 for Brooklyn (0.7x after shrinkage)",
+    "built 1910: pre-war walk-up, wood joists and plaster carry footsteps",
+    "class C4: walk-up, stairs pass every door"
+   ],
+   "temporary": false
+  },
+  {
+   "name": "sirens",
+   "label": "Sirens",
+   "levels": {
+    "night": 45.7,
+    "early": 46.7,
+    "day": 48.7
+   },
+   "evidence": [
+    "1 emergency facilities within 600 m: 1 firehouse",
+    "EMS STATION 35 (firehouse), 332 METROPOLITAN AVENUE, 504 m"
+   ],
+   "temporary": false
+  },
+  {
+   "name": "construction",
+   "label": "Construction",
+   "levels": {
+    "night": 40.4,
+    "early": 52.4,
+    "day": 55.4
+   },
+   "evidence": [
+    "27 construction noise complaints within 100 m in 24 months (noise: construction equipment (nc1) 12, noise: construction before/after hours (nm1) 9)"
+   ],
+   "temporary": true
+  }
+ ],
+ "as_of": "2026-10-29",
+ "lookback_months": 24,
+ "sources": [
+  {
+   "name": "NYC GeoSearch (address, BBL, BIN)",
+   "url": "https://geosearch.planninglabs.nyc/v2/search"
+  },
+  {
+   "name": "NYC 311 Service Requests",
+   "url": "https://data.cityofnewyork.us/resource/erm2-nwe9.json"
+  },
+  {
+   "name": "NYC PLUTO (year built, floors, units, class)",
+   "url": "https://data.cityofnewyork.us/resource/64uk-42ks.json"
+  },
+  {
+   "name": "NYC Street Centerline (road class, lanes, speed)",
+   "url": "https://data.cityofnewyork.us/resource/inkn-q76z.json"
+  },
+  {
+   "name": "DOB NOW approved permits (same tax block)",
+   "url": "https://data.cityofnewyork.us/resource/rbx6-tga4.json"
+  },
+  {
+   "name": "NYS Liquor Authority active licenses",
+   "url": "https://data.ny.gov/resource/9s3h-dpkz.json"
+  },
+  {
+   "name": "MTA subway stations (elevated structures)",
+   "url": "https://data.ny.gov/resource/39hk-dx4f.json"
+  },
+  {
+   "name": "NYC Facilities Database (hospitals, firehouses, police)",
+   "url": "https://data.cityofnewyork.us/resource/67g2-p84d.json"
+  }
+ ]
+}

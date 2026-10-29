@@ -1,0 +1,141 @@
+{
+ "address": {
+  "query": "140 Ludlow St, Manhattan",
+  "label": "140 LUDLOW STREET, New York, NY, USA",
+  "lat": 40.72041,
+  "lng": -73.98795,
+  "bbl": "1004110042",
+  "bin": "1005369",
+  "borough": "Manhattan"
+ },
+ "unit": {
+  "floor": null,
+  "position": "front",
+  "top_floor": false,
+  "building_floors": 6,
+  "ground_floor_commercial": true
+ },
+ "building_facts": {
+  "address": "138 LUDLOW STREET",
+  "yearbuilt": "1920",
+  "numfloors": "6.0000000",
+  "bldgclass": "C7",
+  "unitsres": "27",
+  "unitstotal": "29"
+ },
+ "ingredients": [
+  {
+   "name": "street",
+   "label": "Street",
+   "levels": {
+    "night": 67.4,
+    "early": 62.9,
+    "day": 68.2
+   },
+   "evidence": [
+    "ESSEX ST: arterial, 4 travel lanes, 25 mph, bus or truck route, 54 m away",
+    "LUDLOW ST: one lane, 1 travel lane, 25 mph, 18 m away",
+    "RIVINGTON ST: one lane, 1 travel lane, 25 mph, 46 m away",
+    "116 vehicle noise complaints to 311 within 100 m in 24 months (car/truck music 97, engine idling 14)"
+   ],
+   "temporary": false
+  },
+  {
+   "name": "nightlife",
+   "label": "Nightlife",
+   "levels": {
+    "night": 79.4,
+    "early": 66.9,
+    "day": 71.4
+   },
+   "evidence": [
+    "80 licensed venues within 150 m: 22 bars, 34 restaurants, 24 venues",
+    "nearest loud: SOHO-LUDLOW INC (bar), 139 LUDLOW ST, 18 m",
+    "nearest loud: SOHO-LUDLOW INC (bar), 139 LUDLOW ST, 18 m",
+    "nearest loud: SOHO-LUDLOW INC (bar), 139 LUDLOW ST, 18 m",
+    "1308 party, music or loud-talking complaints within 150 m in 24 months; 727 of them 10 pm to 5 am"
+   ],
+   "temporary": false
+  },
+  {
+   "name": "building",
+   "label": "Building",
+   "levels": {
+    "night": 46.7,
+    "early": 41.9,
+    "day": 44.4
+   },
+   "evidence": [
+    "2 residential noise complaints to 311 at this building in 24 months, 27 units: 0.04 per unit-year vs 0.07 for Manhattan (0.6x after shrinkage) (loud music/party 2)",
+    "built 1920: pre-war walk-up, wood joists and plaster carry footsteps",
+    "class C7: walk-up, stairs pass every door"
+   ],
+   "temporary": false
+  },
+  {
+   "name": "sirens",
+   "label": "Sirens",
+   "levels": {
+    "night": 53.2,
+    "early": 54.2,
+    "day": 56.2
+   },
+   "evidence": [
+    "4 emergency facilities within 600 m: 1 hospital, 2 firehouses, 1 police station",
+    "MOUNT SINAI -  BEHAVIORAL HEALTH CENTER (hospital), 45 RIVINGTON STREET, 275 m",
+    "ENGINE 28/LADDER 11 (firehouse), 222 EAST 2 STREET, 484 m",
+    "ENG 15  LAD 18  BAT 4 (police station), 19 1/2 PITT STREET, 550 m"
+   ],
+   "temporary": false
+  },
+  {
+   "name": "construction",
+   "label": "Construction",
+   "levels": {
+    "night": 39.8,
+    "early": 51.8,
+    "day": 54.8
+   },
+   "evidence": [
+    "24 construction noise complaints within 100 m in 24 months (noise: construction before/after hours (nm1) 16, noise: construction equipment (nc1) 5)"
+   ],
+   "temporary": true
+  }
+ ],
+ "as_of": "2026-10-29",
+ "lookback_months": 24,
+ "sources": [
+  {
+   "name": "NYC GeoSearch (address, BBL, BIN)",
+   "url": "https://geosearch.planninglabs.nyc/v2/search"
+  },
+  {
+   "name": "NYC 311 Service Requests",
+   "url": "https://data.cityofnewyork.us/resource/erm2-nwe9.json"
+  },
+  {
+   "name": "NYC PLUTO (year built, floors, units, class)",
+   "url": "https://data.cityofnewyork.us/resource/64uk-42ks.json"
+  },
+  {
+   "name": "NYC Street Centerline (road class, lanes, speed)",
+   "url": "https://data.cityofnewyork.us/resource/inkn-q76z.json"
+  },
+  {
+   "name": "DOB NOW approved permits (same tax block)",
+   "url": "https://data.cityofnewyork.us/resource/rbx6-tga4.json"
+  },
+  {
+   "name": "NYS Liquor Authority active licenses",
+   "url": "https://data.ny.gov/resource/9s3h-dpkz.json"
+  },
+  {
+   "name": "MTA subway stations (elevated structures)",
+   "url": "https://data.ny.gov/resource/39hk-dx4f.json"
+  },
+  {
+   "name": "NYC Facilities Database (hospitals, firehouses, police)",
+   "url": "https://data.cityofnewyork.us/resource/67g2-p84d.json"
+  }
+ ]
+}
