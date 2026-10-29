@@ -30,6 +30,10 @@
       .radio input {
         margin-top: 4px;
       }
+      .radio input[type='checkbox'] {
+        width: 18px;
+        height: 18px;
+      }
       .radio small {
         display: block;
         color: var(--ink-2);
@@ -53,9 +57,15 @@
         </label>
         <p class="small">
           Every call goes here: the listing reader (<code>POST /read</code>), the verdict writer (<code>POST /verdict</code>) and the
-          score (<code>/v2/score</code>, or <code>/v1/score</code> until v2 is deployed). The extension holds no model key; the API does.
+          score (<code>/v2/score</code>, or <code>/v1/score</code> until v2 is deployed). The API holds the model key.
           Another address works when its server allows cross-origin calls, as Hush IQ's services do.
         </p>
+      </section>
+      <section class="card" id="ai-card">
+        <label class="radio">
+          <input type="checkbox" id="ai" />
+          <span>AI reading<small>On: a model reads the listing and writes the verdict, through the Hush IQ API, and the code checks every line it cites. Off: fixed rules read the listing and a template writes the verdict, and no model is called. The score is the same either way.</small></span>
+        </label>
       </section>
       <section class="card">
         <div class="q-title"><span>The reader and the verdict writer</span></div>

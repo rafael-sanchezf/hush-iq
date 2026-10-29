@@ -2,8 +2,10 @@
  * The side panel: what was read, the three taps, the reader's turns live, then the verdict.
  *
  * Nothing leaves the browser until the renter presses "Score this apartment". Then the text they kept and the
- * photos they kept go to the Hush IQ API (lib/client.ts), never to a model directly; the API holds the keys.
+ * photos they kept go to the Hush IQ API (lib/client.ts), never to a model directly; the API holds the keys. In the
+ * classmates' build a renter may add their own key, which goes to the same API in a header (lib/byok.ts).
  */
+import { keyChanged, loadKey, readerName } from '../lib/byok.ts';
 import type { Capture, CaptureMessage } from '../lib/capture-types.ts';
 import { SITE_NAMES } from '../lib/capture-types.ts';
 import * as client from '../lib/client.ts';
@@ -41,13 +43,22 @@ function stop(): void {
 
 // ---------------------------------------------------------------- the header's one status
 
+/** Whose model reads when AI reading is on: Muse Spark, or the provider of the renter's own key. */
+const modelName = () => (__BYOK__ && readerName()) || 'Muse Spark';
+
 async function refreshMode(): Promise<void> {
+  if (!CONFIG.ai) {
+    modePill.textContent = 'AI off';
+    modePill.className = 'pill';
+    modePill.title = 'AI reading is off in settings: fixed rules read the listing and a template writes the verdict. The scores are the same.';
+    return;
+  }
   const s = await client.services();
   const live = s.reader === 'live';
   modePill.textContent = live ? 'Live' : 'Replay';
   modePill.className = `pill${live ? ' ink' : ''}`;
   modePill.title = live
-    ? `The listing reader and verdict writer answer at ${CONFIG.apiBase}.`
+    ? `${modelName()} reads the listing and writes the verdict through ${CONFIG.apiBase}.`
     : 'The live reader is not hosted yet, so fixed rules stand in for the model. The scores are real, from the hosted engine.';
 }
 
@@ -181,7 +192,7 @@ function review(c: Capture): void {
       photos),
     you,
     go,
-    h('p', { class: 'small' }, `Pressing it sends this text${c.photos.length ? ' and the photos you kept' : ''} to the Hush IQ API to score. Nothing is stored.`),
+    h('p', { class: 'small' }, `Pressing it sends this text${c.photos.length && CONFIG.ai ? ' and the photos you kept' : ''} to the Hush IQ API to score. Nothing is stored.`),
   );
   area.id = 'listing-text';
 }
@@ -254,12 +265,17 @@ async function score(): Promise<void> {
 
   const kept = (capture?.photos ?? []).filter((_, i) => photoOn[i]);
   const svc = await client.services();
-  sub.textContent = svc.reader === 'live'
-    ? 'Muse Spark reads the listing through the Hush IQ API. Each step shows as it happens.'
-    : 'Replay: fixed rules stand in for Muse Spark until the live reader is hosted. The score is real.';
+  sub.textContent = !CONFIG.ai
+    ? 'AI reading is off: fixed rules read the listing, without the photos. The score is the same.'
+    : svc.reader === 'live'
+      ? `${modelName()} reads the listing through the Hush IQ API. Each step shows as it happens.`
+      : 'Replay: fixed rules stand in for Muse Spark until the live reader is hosted. The score is real.';
   const input: ReadInput = { text, photos: [], answers: a };
   let sent: string[] = kept;
-  if (svc.reader === 'live' && kept.length) {
+  // The rules reader reads text only, so with AI reading off the photos stay in the browser.
+  if (!CONFIG.ai) {
+    sent = [];
+  } else if (svc.reader === 'live' && kept.length) {
     working.querySelector('.turn-title')!.textContent = 'Getting the photos…';
     const got = await inlinePhotos(kept, signal);
     input.photos = got.photos;
@@ -311,7 +327,7 @@ async function score(): Promise<void> {
 async function showResult(result: ReaderResult, first: Score, reader: client.Live, photos: string[], signal: AbortSignal): Promise<void> {
   const v: ResultView = {
     score: first, verdict: null, dropped: 0, fields: result.fields, observed: result.observed,
-    answers: answers ?? DEFAULT_ANSWERS, reader, writer: 'replay', photos,
+    answers: answers ?? DEFAULT_ANSWERS, reader, writer: 'replay', photos, readerAi: result.ai ?? null,
   };
   const slot = { verdict: h('div'), hear: h('div'), sources: h('div'), fine: h('div') };
   const draw = () => {
@@ -362,7 +378,9 @@ async function showResult(result: ReaderResult, first: Score, reader: client.Liv
   };
 
   draw();
+  const basic = result.ai?.mode === 'basic' && result.ai.message;
   show(
+    basic ? h('div', { class: 'note' }, glyph('cant_tell'), h('span', null, result.ai!.message!)) : null,
     tapsSlot,
     slot.verdict,
     slot.hear,
@@ -389,6 +407,7 @@ function handle(msg: CaptureMessage | undefined): void {
 
 async function init(): Promise<void> {
   await load();
+  if (__BYOK__) await loadKey();
   answers = await loadAnswers();
   document.getElementById('settings')!.addEventListener('click', () => chrome.runtime.openOptionsPage());
   (document.getElementById('repo') as HTMLAnchorElement).href = REPO_URL;
@@ -402,8 +421,9 @@ async function init(): Promise<void> {
     if (changes.capture?.newValue) handle(changes.capture.newValue as CaptureMessage);
   });
   chrome.storage.local.onChanged.addListener(async (changes) => {
-    if (changes.apiBase || changes.mode) {
+    if (changes.apiBase || changes.mode || changes.ai || (__BYOK__ && keyChanged(changes))) {
       await load();
+      if (__BYOK__) await loadKey();
       client.forget();
       void refreshMode();
     }

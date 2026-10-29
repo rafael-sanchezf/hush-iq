@@ -5,7 +5,11 @@
  * In `auto` mode each service is live when the API has it and replayed when it does not: a `HEAD` on the route
  * answers 404 while it is missing and 405 once it exists (FastAPI), so nothing is sent to a route that is not
  * there. The replay is labelled as such wherever it shows.
+ *
+ * `/read` and `/verdict` go through lib/ai.ts, which adds the AI switch header. With AI reading off the services run
+ * their rules reader and template; when they cannot be reached, the same two run here, labelled the same way.
  */
+import { AI_OFF, aiFetch, safe } from './ai.ts';
 import { CONFIG } from './config.ts';
 import { mockRead } from './mock/reader.ts';
 import { templateVerdict } from './mock/verdict.ts';
@@ -73,7 +77,7 @@ async function* sse(body: ReadableStream<Uint8Array>): AsyncGenerator<{ event: s
 }
 
 async function liveRead(input: ReadInput, onTurn: (t: ReaderTurn) => void, signal?: AbortSignal): Promise<ReaderResult> {
-  const r = await fetch(`${CONFIG.apiBase}/read`, {
+  const r = await aiFetch('/read', {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'text/event-stream' },
     body: JSON.stringify(input),
@@ -81,7 +85,7 @@ async function liveRead(input: ReadInput, onTurn: (t: ReaderTurn) => void, signa
   });
   if (!r.ok || !r.body) {
     const body = await r.json().catch(() => null);
-    throw new Error(body?.error ?? `The reader answered ${r.status}.`);
+    throw new Error(safe(String(body?.error ?? `The reader answered ${r.status}.`)));
   }
   let n = 0;
   for await (const { event, data } of sse(r.body)) {
@@ -92,14 +96,22 @@ async function liveRead(input: ReadInput, onTurn: (t: ReaderTurn) => void, signa
       for (const t of fieldTurns(parsed as ReaderResult, n++)) onTurn(t);
       return parsed as ReaderResult;
     }
-    else if (event === 'error') throw new Error(parsed.error ?? parsed.message ?? 'The reader stopped.');
+    else if (event === 'error') throw new Error(safe(String(parsed.error ?? parsed.message ?? 'The reader stopped.')));
   }
   throw new Error('The reader closed the stream without a result.');
 }
 
 export async function read(input: ReadInput, onTurn: (t: ReaderTurn) => void, signal?: AbortSignal): Promise<{ result: ReaderResult; via: Live }> {
-  if (await useLive('/read')) return { result: await liveRead(input, onTurn, signal), via: 'live' };
-  return { result: await mockRead(input, onTurn, signal), via: 'replay' };
+  if (await useLive('/read')) {
+    try {
+      return { result: await liveRead(input, onTurn, signal), via: 'live' };
+    } catch (e) {
+      if (CONFIG.ai || signal?.aborted) throw e;
+    }
+  }
+  const result = await mockRead(input, onTurn, signal);
+  if (!CONFIG.ai) result.ai = AI_OFF;
+  return { result, via: 'replay' };
 }
 
 // ---------------------------------------------------------------- score
@@ -122,16 +134,23 @@ export async function score(result: ReaderResult, answers: Answers, signal?: Abo
 // ---------------------------------------------------------------- verdict
 
 export async function verdict(input: VerdictInput, signal?: AbortSignal): Promise<{ verdict: Verdict; via: Live }> {
-  if (!(await useLive('/verdict'))) {
+  if (await useLive('/verdict')) {
+    try {
+      const r = await aiFetch('/verdict', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(input),
+        signal,
+      });
+      if (!r.ok) throw new Error(`The verdict writer answered ${r.status}.`);
+      return { verdict: (await r.json()) as Verdict, via: 'live' };
+    } catch (e) {
+      if (CONFIG.ai || signal?.aborted) throw e;
+    }
+  } else {
     await new Promise((r) => setTimeout(r, 300));
-    return { verdict: templateVerdict(input), via: 'replay' };
   }
-  const r = await fetch(`${CONFIG.apiBase}/verdict`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(input),
-    signal,
-  });
-  if (!r.ok) throw new Error(`The verdict writer answered ${r.status}.`);
-  return { verdict: (await r.json()) as Verdict, via: 'live' };
+  const v = templateVerdict(input);
+  if (!CONFIG.ai) v.ai = AI_OFF;
+  return { verdict: v, via: 'replay' };
 }

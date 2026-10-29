@@ -6,8 +6,11 @@
  *   The build's default is the hosted API; the manifest's one host permission is that origin.
  * - `mode`: `auto` uses the live reader and verdict writer when the API has them and replays them otherwise;
  *   `replay` always replays; `live` never does, so a missing service is an error you can see.
+ * - `ai`: the AI reading switch, sent as `X-HushIQ-AI` on `/read` and `/verdict` (lib/ai.ts). Off, the services
+ *   run their rules reader and template writer and no model is called. On by default.
  *
- * No model key is ever here: every model call goes through the Hush IQ backend.
+ * No model key is here. The judged build has none at all; the classmates' build keeps the renter's own key apart,
+ * in lib/byok.ts, which the judged build never bundles.
  */
 import type { Answers } from './types.ts';
 
@@ -20,9 +23,10 @@ export type Mode = 'auto' | 'replay' | 'live';
 export interface Settings {
   apiBase: string;
   mode: Mode;
+  ai: boolean;
 }
 
-export const DEFAULT_SETTINGS: Settings = { apiBase: DEFAULT_API_BASE, mode: 'auto' };
+export const DEFAULT_SETTINGS: Settings = { apiBase: DEFAULT_API_BASE, mode: 'auto', ai: true };
 
 export const trimUrl = (s: string | undefined) => (s ?? '').trim().replace(/\/+$/, '');
 
@@ -30,9 +34,10 @@ export const trimUrl = (s: string | undefined) => (s ?? '').trim().replace(/\/+$
 export const CONFIG: Settings = { ...DEFAULT_SETTINGS };
 
 export async function load(): Promise<Settings> {
-  const got = await chrome.storage.local.get(['apiBase', 'mode']);
+  const got = await chrome.storage.local.get(['apiBase', 'mode', 'ai']);
   CONFIG.apiBase = trimUrl(got.apiBase as string | undefined) || DEFAULT_API_BASE;
   CONFIG.mode = (['auto', 'replay', 'live'] as Mode[]).includes(got.mode as Mode) ? (got.mode as Mode) : 'auto';
+  CONFIG.ai = got.ai !== false;
   return { ...CONFIG };
 }
 

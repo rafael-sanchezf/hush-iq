@@ -328,7 +328,8 @@ main {
 
 textarea,
 input[type='text'],
-input[type='url'] {
+input[type='url'],
+input[type='password'] {
   width: 100%;
   border: 1px solid var(--line);
   background: var(--card-2);

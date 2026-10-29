@@ -3,7 +3,7 @@
  * so the two read as one product.
  */
 import type { Live } from '../lib/client.ts';
-import type { Answers, Bother, Cap, EvidenceRef, Field, Observed, RangeCase, ReaderFields, ReaderTurn, Score, Source, Verdict } from '../lib/types.ts';
+import type { AiInfo, Answers, Bother, Cap, EvidenceRef, Field, Observed, RangeCase, ReaderFields, ReaderTurn, Score, Source, Verdict } from '../lib/types.ts';
 import { BOTHERS, VERDICTS } from '../lib/types.ts';
 import { BOTHER_WORDS, SOURCE_WORDS, addressLine, cleanEvidence, forWhom, hourLabel, hoursAsleep, observedLabel, pct, sideLabel, sideWords } from '../lib/words.ts';
 import { clear, glyph, h } from './dom.ts';
@@ -143,6 +143,8 @@ export interface ResultView {
   writer: Live;
   /** The photos as sent, so `photo:<i>` evidence can show its picture. */
   photos: string[];
+  /** The reader's `ai` label: `basic` when rules read it, with the message the panel shows. */
+  readerAi: AiInfo | null;
 }
 
 export function verdictCard(v: ResultView): HTMLElement {
@@ -223,7 +225,12 @@ export function hearCard(v: ResultView): HTMLElement {
     }
     para.append(span, ' ');
   }
-  const writerNote = verdict.writer !== 'template'
+  const basic = verdict.ai?.mode === 'basic';
+  // The reader's message is already at the top of the panel; say the writer's only when it is a different one.
+  const own = basic && verdict.ai!.message && verdict.ai!.message !== v.readerAi?.message ? `${verdict.ai!.message} ` : '';
+  const writerNote = basic
+    ? `${own}Written by the template, with no model. Every sentence cites the lines below.`
+    : verdict.writer !== 'template'
     ? `Written by ${WRITER_NAME[verdict.writer] ?? verdict.writer}${verdict.writer === 'muse-spark-open' ? ' on Baseten' : ''}. It may cite only the evidence lines below; the server and this panel both check.`
     : v.writer === 'live'
       ? 'The model did not answer in time, so the writer’s template wrote this, under the same rule: every sentence cites the lines below.'
@@ -264,11 +271,13 @@ export function sawCard(v: ResultView): HTMLElement {
     f.status !== 'read' ? 'Can’t tell' : key === 'side' ? sideLabel(f.value as string) : ['address', 'unit', 'floor'].includes(key) ? String(f.value) : observedLabel(key, f.value);
   return h('section', { class: 'card', 'aria-label': 'What the model saw' },
     h('div', { class: 'block-head' },
-      h('h3', null, v.reader === 'live' ? 'What the model saw' : 'What the replay read'),
+      h('h3', null, v.readerAi?.mode === 'basic' ? 'What the rules read' : v.reader === 'live' ? 'What the model saw' : 'What the replay read'),
       h('span', { class: 'small' }, 'Facts only, each with its line')),
-    v.reader === 'replay'
-      ? h('p', { class: 'small' }, 'Fixed rules stand in for Muse Spark until the live reader is hosted. They read the text only, never the photos.')
-      : null,
+    v.readerAi?.mode === 'basic'
+      ? h('p', { class: 'small' }, 'No model read this: fixed rules did, from the text only, never the photos.')
+      : v.reader === 'replay'
+        ? h('p', { class: 'small' }, 'Fixed rules stand in for Muse Spark until the live reader is hosted. They read the text only, never the photos.')
+        : null,
     h('div', { class: 'facts' }, rows.map(([k, key, f]) => h('div', { class: 'fact' },
       h('span', { class: 'k' }, k),
       h('span', { class: `v${f.status === 'read' ? '' : ' cant'}` }, value(key, f)),

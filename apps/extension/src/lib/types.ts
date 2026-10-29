@@ -158,6 +158,7 @@ export interface ReaderResult {
   location?: ScoreAddress | null;
   model?: string;
   mode?: 'live' | 'mock';
+  ai?: AiInfo;
 }
 
 export interface ReadInput {
@@ -170,6 +171,19 @@ export interface ReadInput {
    */
   photo_urls?: string[];
   answers?: Answers;
+}
+
+/**
+ * Who read or wrote this, from the shared AI switch contract. Every reader and verdict result carries it; `reason`
+ * and `message` are set whenever `mode` is `basic` (rules and template, no model call), and the panel shows `message`.
+ */
+export interface AiInfo {
+  mode: 'model' | 'basic';
+  provider: 'meta' | 'openai' | 'anthropic' | null;
+  model: string | null;
+  key: 'house' | 'caller' | null;
+  reason: null | 'switched_off' | 'house_off' | 'no_key' | 'key_rejected' | 'provider_busy' | 'provider_error';
+  message: string | null;
 }
 
 // ---------------------------------------------------------------- verdict
@@ -192,6 +206,7 @@ export interface Verdict {
   writer: 'muse-spark-open' | 'muse-spark-1.3' | 'template' | string;
   /** Each attempt, so a fallback is never silent: `{writer, attempt, ok, errors, why, ms}`. */
   trace?: { writer: string; attempt?: number; ok: boolean; errors?: string[]; why?: string; ms?: number }[];
+  ai?: AiInfo;
 }
 
 export interface VerdictInput {
