@@ -134,6 +134,22 @@ def _unit_core(value):
     return re.sub(r"\s+", "", v).lower()
 
 
+# New York's usual unit numbering: the number before the letter (3E, 12F) or the hundreds (503, 1203) is the floor.
+_UNIT_FLOOR = (re.compile(r"^(\d{1,2})[a-z]{1,2}$"), re.compile(r"^(\d{1,2})\d{2}$"))
+
+
+def floor_from_unit(value):
+    """The floor a unit number gives, or None when the unit does not follow the usual numbering (2, 14, PH, B, GF).
+    Used only when the listing never states the floor (Rafa, 2026-10-29: 520 2nd Avenue #3E read as no floor)."""
+    core = _unit_core(value)
+    for pattern in _UNIT_FLOOR:
+        m = pattern.match(core)
+        if m:
+            n = int(m.group(1))
+            return n if 1 <= n <= MAX_FLOOR else None
+    return None
+
+
 def _unit_stated(value, quote):
     core = _unit_core(value)
     q = quote.lower().replace("#", " ")

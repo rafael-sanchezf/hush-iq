@@ -53,7 +53,7 @@ def test_multipart_with_photos_and_answers(client):
     result = evs[-1][1]
     assert result["answers"] == {"sleep_from": 0, "sleep_until": 8, "day_bothers": True, "bothers": ["sirens"]}
     assert len(result["photo_readings"]) == 2
-    assert result["fields"]["side"]["value"] == "courtyard" and result["fields"]["floor"]["status"] == "cant_tell"
+    assert result["fields"]["side"]["value"] == "courtyard" and result["fields"]["floor"]["derived"]["from"] == "unit"
 
 
 def test_json_photos_are_data_urls(client):

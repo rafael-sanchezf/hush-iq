@@ -101,7 +101,9 @@ _ADDRESS = re.compile(r"\b\d{1,5}(?:-\d{1,4})?\s+(?:(?:East|West|North|South|E\.
                       r"(?:\d{1,3}(?:st|nd|rd|th)|[A-Z][a-z]+)(?:\s+[A-Z][a-z]+)?\s+"
                       r"(?:Street|St\.?|Avenue|Ave\.?|Place|Pl\.?|Road|Boulevard|Blvd\.?|Drive|Square|Terrace|Lane)"
                       r"|\b\d{1,5}\s+Broadway\b")
-_UNIT = re.compile(r"\b(?:Apt\.?|Apartment|Unit)\s*#?\s*([0-9]{1,3}[A-Z]{1,2}|[A-Z]{1,2}[0-9]{0,3}|[0-9]{1,4})\b")
+_UNIT = re.compile(r"\b(?:Apt\.?|Apartment|Unit)\s*#?\s*([0-9]{1,3}[A-Z]{1,2}|[A-Z]{1,2}[0-9]{0,3}|[0-9]{1,4})\b"
+                   r"|\S+\s#\s?([0-9]{1,3}[A-Z]{1,2})\b")   # "520 2nd Avenue #3E", as StreetEasy writes it; the
+                                                              # word before keeps the quote over the 4-character floor
 _FLOOR_WORDS = {w: i for i, w in enumerate(evidence._UNITS_TH) if w}
 _FLOOR = re.compile(r"\b(\d{1,3})(?:st|nd|rd|th)?[\s-]*(?:floor|fl)\b|\b(" + "|".join(_FLOOR_WORDS) + r")[\s-]*floor\b",
                     re.I)
@@ -126,7 +128,7 @@ def heuristic_fields(text):
     if m := _ADDRESS.search(text):
         fields["address"] = _read(m.group(0), m.group(0))
     if m := _UNIT.search(text):
-        fields["unit"] = _read(m.group(1), m.group(0))
+        fields["unit"] = _read(m.group(1) or m.group(2), m.group(0))
     if m := _FLOOR.search(text):
         floor = int(m.group(1)) if m.group(1) else _FLOOR_WORDS[m.group(2).lower()]
         fields["floor"] = _read(floor, m.group(0))

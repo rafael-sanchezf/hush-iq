@@ -31,7 +31,7 @@
   "05-courtyard-unit-only.txt": {
     "address": "235 East 10th Street",
     "unit": "3F",
-    "floor": null,
+    "floor": 3,
     "side": "courtyard",
     "position": "rear"
   },
@@ -61,7 +61,7 @@
   "07-tempting.txt": {
     "address": "222 West 14th Street",
     "unit": "9F",
-    "floor": null,
+    "floor": 9,
     "side": "unknown",
     "position": "unknown"
   }

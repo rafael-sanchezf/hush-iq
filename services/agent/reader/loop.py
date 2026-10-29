@@ -114,6 +114,24 @@ def _read_listing(listing, plan, scorer, turns):
             yield "turn", entry
         fields["floor"] = top_floor(fields["floor"], top, quote)
         notes.append(fields["floor"]["note"])
+    elif fields["floor"]["status"] != "read" and fields["unit"]["status"] == "read":
+        guess = evidence.floor_from_unit(fields["unit"]["value"])   # "#3E" and no floor: floor 3
+        if guess:
+            floors = None
+            if location:
+                n += 1
+                started = time.perf_counter()
+                try:
+                    floors = scorer.floors(location["bbl"])
+                    entry = {"n": n, "by": "code", "tool": "floors", "args": {"bbl": location["bbl"]},
+                             "result": {"floors": floors}, "ok": True, "ms": _ms(started)}
+                except ScoreError as e:
+                    entry = {"n": n, "by": "code", "tool": "floors", "args": {"bbl": location["bbl"]},
+                             "result": {"error": str(e)}, "ok": False, "ms": _ms(started)}
+                trace.append(entry)
+                yield "turn", entry
+            fields["floor"] = unit_floor(fields["floor"], guess, floors, fields["unit"])
+            notes.append(fields["floor"]["note"])
 
     if location:
         n += 1
@@ -210,6 +228,17 @@ def top_floor(field, floors, quote):
     return dict(evidence.cant_tell("floor"),
                 note=f"The listing says {quote!r}, but the city has no floor count for this building, so the floor "
                      f"is unknown.")
+
+
+def unit_floor(field, n, floors, unit):
+    """A floor the listing never states, from its unit number, kept only if the building has that many floors."""
+    u = unit["value"]
+    if floors and n > floors:
+        return dict(field, note=f"Unit {u} would be floor {n}, but the city counts {floors} floors in this building, so "
+                                f"the floor is unknown.")
+    return {"value": n, "status": "read", "evidence": unit["evidence"],
+            "derived": {"from": "unit", "unit": u, "floors": floors, "source": "the unit number"},
+            "note": f"Unit {u}: floor {n}, by the usual New York numbering. The listing does not state the floor."}
 
 
 def read(listing, **kwargs):

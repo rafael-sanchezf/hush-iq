@@ -158,11 +158,12 @@ def test_budget_exhaustion_returns_a_clean_partial_result(scorer):
     assert result["turns"] == {"used": 3, "budget": 3}
     assert result["fields"]["address"]["status"] == "read"          # accepted fields are kept
     assert result["fields"]["side"]["value"] == "rear"
-    assert result["fields"]["floor"] == {"value": None, "status": "cant_tell", "evidence": []}
-    assert scorer.scored[0]["floor"] is None and scorer.scored[0]["position"] == "rear"
+    floor = result["fields"]["floor"]   # the invented floor is refused; the unit, 11C, gives floor 11 instead
+    assert floor["value"] == 11 and floor["derived"]["from"] == "unit"
+    assert scorer.scored[0]["floor"] == 11 and scorer.scored[0]["position"] == "rear"
     assert loop.LAST_TURN in json.dumps(model.agent_requests[2]["input"])
     assert loop.LAST_TURN not in json.dumps(model.agent_requests[1]["input"])
-    assert [t["tool"] for t in result["trace"]] == ["submit_listing"] * 3 + ["locate", "score"]
+    assert [t["tool"] for t in result["trace"]] == ["submit_listing"] * 3 + ["locate", "floors", "score"]
     assert any("used its 3 turns" in n for n in result["notes"])
 
 
@@ -285,7 +286,7 @@ def test_a_too_short_quote_is_refused_as_too_short_then_fixed(scorer):
     assert result["status"] == "complete" and result["fields"]["floor"]["value"] == 18
 
 
-def test_a_unit_number_alone_is_not_a_floor(scorer):
+def test_a_unit_number_is_not_a_stated_floor_but_gives_one(scorer):
     text = "Apt 12F at 50 Murray Street. Alcove studio with a gym and a roof deck."
     fields = {"address": read("50 Murray Street", "50 Murray Street"), "unit": read("12F", "Apt 12F"),
               "floor": read(12, "Apt 12F"), "side": CANT}
@@ -293,7 +294,9 @@ def test_a_unit_number_alone_is_not_a_floor(scorer):
                       ("submit_listing", {"fields": dict(fields, floor=CANT)})])
     result = loop.read(listing(text), client=model.client, scorer=scorer)
     assert "a unit number like 4B is not a floor" in result["trace"][0]["result"]["refused"]["floor"]
-    assert result["fields"]["floor"]["status"] == "cant_tell" and scorer.scored[0]["floor"] is None
+    floor = result["fields"]["floor"]   # refused as a quote, then taken from the unit, marked derived
+    assert floor["value"] == 12 and floor["derived"] == {"from": "unit", "unit": "12F", "floors": 18, "source": "the unit number"}
+    assert scorer.scored[0]["floor"] == 12
 
 
 @pytest.mark.parametrize("text, floor", [
@@ -304,3 +307,30 @@ def test_a_unit_number_alone_is_not_a_floor(scorer):
 def test_the_offline_model_reads_garden_and_top_too(text, floor):
     result = loop.read(listing(text), client=mock.client(mock.HeuristicModel()), scorer=FakeScorer(floors=18))
     assert result["fields"]["floor"]["value"] == floor
+
+
+# ---------------------------------------------------------------- floor from the unit number (Rafa, 2026-10-29)
+def test_floor_from_unit_follows_new_york_numbering():
+    from reader.evidence import floor_from_unit
+    assert [floor_from_unit(u) for u in ("3E", "#3E", "Apt 12F", "4RE", "503", "1203", "2", "14", "PH", "B", "GF", "0A")] \
+        == [3, 3, 12, 4, 5, 12, None, None, None, None, None, None]
+
+
+def test_a_unit_gives_the_floor_when_the_listing_states_none():
+    from conftest import FakeScorer
+    text = "Renovated 1BR at 520 2nd Avenue #3E, New York, NY 10016. $4,100 a month, laundry in the building."
+    scorer = FakeScorer(floors=6)
+    result = loop.read(listing(text), client=mock.client(mock.HeuristicModel()), scorer=scorer)
+    floor = result["fields"]["floor"]
+    assert floor["value"] == 3 and floor["status"] == "read" and floor["derived"]["from"] == "unit"
+    assert "3E" in floor["note"] and scorer.scored[-1]["floor"] == 3
+
+
+def test_a_unit_floor_above_the_roof_is_dropped_and_a_stated_floor_wins():
+    from conftest import FakeScorer
+    text = "Renovated 1BR at 520 2nd Avenue #3E, New York, NY 10016."
+    low = loop.read(listing(text), client=mock.client(mock.HeuristicModel()), scorer=FakeScorer(floors=2))
+    assert low["fields"]["floor"]["status"] == "cant_tell" and "2 floors" in low["fields"]["floor"]["note"]
+    stated = loop.read(listing(text + " On the fourth floor."), client=mock.client(mock.HeuristicModel()),
+                       scorer=FakeScorer(floors=6))
+    assert stated["fields"]["floor"]["value"] == 4 and "derived" not in stated["fields"]["floor"]

@@ -150,11 +150,17 @@ Every entry of `fields` and `observed` has the same three keys. **Read `status`,
 | `cant_tell` | `null`; for `side` the string `"unknown"` | `[]` |
 
 A field may also carry `note`, a sentence for the UI, and `derived`, when the value was not in the listing as
-written. Today only `floor` does: "PH", "penthouse" or "top floor" with no number becomes the building's floor
-count from the city's PLUTO data, with
-`"derived": {"from": "top", "floors": 18, "source": "NYC PLUTO numfloors"}` and a note that says so, while the
-evidence keeps the listing's own words. If the address cannot be placed, or PLUTO has no floor count, the floor
-is `cant_tell`, with a note saying why. The note is repeated in `notes`.
+written. Today only `floor` does, two ways:
+
+- "PH", "penthouse" or "top floor" with no number becomes the building's floor count from the city's PLUTO data,
+  with `"derived": {"from": "top", "floors": 18, "source": "NYC PLUTO numfloors"}` and a note that says so, while
+  the evidence keeps the listing's own words. If the address cannot be placed, or PLUTO has no floor count, the
+  floor is `cant_tell`, with a note saying why.
+- A listing that never states the floor but gives a unit in New York's usual numbering (3E, 12F, 503, 1203) gets
+  the floor from the unit: `"derived": {"from": "unit", "unit": "3E", "floors": 6, "source": "the unit number"}`,
+  the unit's evidence, and a note. When PLUTO counts fewer floors than that, the floor stays `cant_tell` with a note.
+
+The note is repeated in `notes`.
 
 Evidence items:
 
@@ -167,7 +173,7 @@ Evidence items:
 |---|---|---|
 | `fields.address` | string | house number and street as written in the listing |
 | `fields.unit` | string | as written, without "Apt" or "#" |
-| `fields.floor` | integer, 1 to 120 | stated next to the word floor; garden level is 1; PH, penthouse or top floor is the building's floor count (`derived`). A unit number like 12F is not a floor |
+| `fields.floor` | integer, 1 to 120 | stated next to the word floor; garden level is 1; PH, penthouse or top floor is the building's floor count (`derived`). A unit number like 12F is not a stated floor; with no floor stated, it gives floor 12 (`derived`) |
 | `fields.side` | `street`, `rear`, `courtyard`, `corner` | |
 | `observed.view` | `street`, `courtyard`, `rear_yards`, `airshaft`, `park`, `water`, `skyline` | photos only |
 | `observed.windows` | `{"floor_to_ceiling": bool, "operable": bool or null}` | photos only |
