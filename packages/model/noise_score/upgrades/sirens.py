@@ -485,10 +485,22 @@ class _Index:
 
     def busiest(self, lat, lng):
         """Trips a day on the busiest street segment within the radius, all categories."""
-        best = 0.0
+        return self.busiest_at(lat, lng)[0]
+
+    def busiest_at(self, lat, lng):
+        """The busiest street segment within the radius: (trips a day, segment index or None)."""
+        best, at = 0.0, None
         for _d, (i,) in self.streets.near(lat, lng, self.radius):
-            best = max(best, sum(self.seg[i][5]) / self.days)
-        return best
+            n = sum(self.seg[i][5]) / self.days
+            if n > best:
+                best, at = n, i
+        return best, at
+
+    def name(self, i):
+        """A segment's street name from OpenStreetMap, or None where the way has none."""
+        names = self.doc.get("names", [])
+        nm = self.seg[i][4] if i is not None else None
+        return names[nm] if nm is not None and nm < len(names) else None
 
     def nearest(self, kind, lat, lng):
         best = None
@@ -516,6 +528,35 @@ def _index():
         except Exception:
             _cached["doc"], _cached["idx"] = None, None
     return _cached["idx"]
+
+
+def routes(lat, lng):
+    """The route numbers behind the sirens level, for a renter to read ([V12] in ENGINE_V2.md): trips a day on the
+    nearest street and on the busiest street within 300 m, and the nearest stations. Display only: never feeds a
+    level. None when the artifact is not built or the point is off the map."""
+    try:
+        idx = _index()
+        lat, lng = float(lat), float(lng)
+        if idx is None or not (math.isfinite(lat) and math.isfinite(lng)):
+            return None
+        covered = idx.rates(lat, lng)["covered"]
+        st = idx.street(lat, lng)
+        busy, at = idx.busiest_at(lat, lng)
+        near = {}
+        for kind, key in (("hospital", "hospital"), ("fire", "firehouse"), ("police", "police_station")):
+            hit = idx.nearest(kind, lat, lng)
+            near[key] = {"m": int(round(hit[0])), "name": hit[1]} if hit else None
+        return {
+            "covered": covered,
+            "nearest_street": ({"name": idx.name(st[1]), "m": int(round(st[0])),
+                                **{f"{c}_per_day": _r(v) for c, v in idx.per_day(st[1]).items()}} if covered and st else None),
+            "busiest_street": ({"name": idx.name(at), "trips_per_day": _r(busy)} if covered and at is not None else None),
+            "nearest": near,
+            "radius_m": int(idx.radius),
+            "window": list(idx.doc.get("window") or [WINDOW_FROM, WINDOW_TO]),
+        }
+    except Exception:   # display numbers must never take the score down
+        return None
 
 
 def route_level(rate_total, cal, params):

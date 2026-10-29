@@ -119,3 +119,37 @@ def test_nightlife_reads_local_businesses_and_keeps_its_key():
     res = v2.score(busy_inputs(), Unit(floor=2, position="front"), v2.Answers())
     night = next(i for i in res["ingredients"] if i["name"] == "nightlife")
     assert night["label"] == "Local businesses"
+
+
+# ---------------------------------------------------------------- [V12] numbers behind each source, display only
+from noise_score import upgrades as _upgrades  # noqa: E402
+from noise_score.upgrades import sirens as _sirens  # noqa: E402
+
+W57 = (40.76739, -73.983679)   # 315 West 57th Street
+
+
+@pytest.mark.skipif(_upgrades.load("sirens") is None, reason="sirens artifact not built")
+def test_siren_routes_give_trips_and_stations_in_numbers():
+    r = _sirens.routes(*W57)
+    assert r["covered"] is True and r["radius_m"] == 300
+    near = r["nearest_street"]
+    assert {"fire_per_day", "ambulance_per_day", "transport_per_day", "m", "name"} <= set(near)
+    assert r["busiest_street"]["trips_per_day"] >= near["fire_per_day"] + near["ambulance_per_day"] + near["transport_per_day"] - 0.2
+    assert set(r["nearest"]) == {"hospital", "firehouse", "police_station"} and all(v["m"] > 0 for v in r["nearest"].values())
+    assert _sirens.routes(0.0, 0.0)["covered"] is False and _sirens.routes(float("nan"), 0.0) is None
+
+
+@pytest.mark.skipif(_upgrades.load("sirens") is None, reason="sirens artifact not built")
+def test_numbers_carry_counts_never_internal_levels():
+    up = _sirens.upgrade(*W57, {"night": 50.0, "early": 50.0, "day": 52.0}, {})
+    nums = v2.numbers_of(up)
+    assert {"street_fire", "busiest_street", "hospital_m"} <= set(nums)
+    assert all(n["unit"] != "index" for n in nums.values())
+    assert nums["hospital_m"]["unit"] == "m" and nums["street_fire"]["kind"] == "new_input"
+    assert v2.numbers_of(None) == {}
+
+
+def test_every_ingredient_has_numbers_and_sirens_has_routes():
+    res = v2.score(busy_inputs(), Unit(floor=3, position="front"), v2.Answers())
+    assert all(isinstance(i["numbers"], dict) for i in res["ingredients"])
+    assert "routes" in next(i for i in res["ingredients"] if i["name"] == "sirens")

@@ -59,6 +59,18 @@ frozen Manhattan sample, and changes neither. v1 stays live at `/v1/score`.
   in the building, so a per-source bar shows the block, while `quieter_than` beside it is the source at this
   apartment's floor and side over the renter's hours. The score, verdict, caps and the weighted average never read
   it. (Rafa, 2026-10-29: "the bars by definition are not impacted by an apartment's floor".)
+- **V12 Numbers behind each source.** Display only, for a renter's hover; the score never reads them.
+  - Every ingredient carries `numbers`: its upgrade's numeric inputs and rules (counts, distances, rates,
+    shares), keyed by step, each `{label, value, unit, kind}`. A value is a number or a per-slot object. Internal
+    levels (unit `index`) are left out (V8).
+  - The sirens ingredient also carries `routes`. It is `null` when the upgrades are off:
+    - `covered`: the address is within 500 m of a routed street.
+    - `nearest_street`: the nearest routed street within 50 m, as `{name, m, fire_per_day, ambulance_per_day,
+      transport_per_day}`.
+    - `busiest_street`: the busiest routed street within `radius_m` (300), as `{name, trips_per_day}`.
+    - `nearest`: `{hospital, firehouse, police_station}`, each `{m, name}`.
+    - `window`: the twelve months of trips.
+  - Street names come from OpenStreetMap and are `null` where the way has no name.
 
 The `nightlife` source reads "Local businesses" wherever a renter sees it (restaurants, theatres and busy spots,
 not only bars); the API key stays `nightlife`.

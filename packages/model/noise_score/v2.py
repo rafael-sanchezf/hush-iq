@@ -311,6 +311,19 @@ def _upgraded(inputs, neutral, facts):
     return levels, ups
 
 
+def numbers_of(up):
+    """[V12] An upgrade's numeric inputs and rules, for a renter's hover: counts, distances, rates and shares, keyed
+    by step. Internal levels (unit "index") never leave the engine [V8]."""
+    out = {}
+    for s in (up.steps if up else []):
+        v = s.value
+        numeric = isinstance(v, (int, float)) and not isinstance(v, bool) or (
+            isinstance(v, dict) and v and all(isinstance(x, (int, float)) and not isinstance(x, bool) for x in v.values()))
+        if s.unit != "index" and numeric:
+            out[s.id.split(".", 1)[1]] = {"label": s.label, "value": v, "unit": s.unit, "kind": s.kind}
+    return out
+
+
 def score(inputs, unit=None, answers=None):
     """The v2 score for an address's pulls. Same inputs as model.score; the frozen ingredients supply the evidence."""
     answers = answers or Answers()
@@ -328,7 +341,12 @@ def score(inputs, unit=None, answers=None):
         "ticked": i["name"] in core["ticked"],
         "temporary": i["temporary"],
         "evidence": i["evidence"] + (ups[i["name"]].evidence if i["name"] in ups else []),
+        "numbers": numbers_of(ups.get(i["name"])),
     } for i in ings]
+    # [V12] the routes behind the sirens rank, display only; null when the upgrades are not in use
+    sirens = upgrades_apply.module("sirens") if ups else None
+    next(i for i in ingredients if i["name"] == "sirens")["routes"] = (
+        sirens.routes(inputs["address"]["lat"], inputs["address"]["lng"]) if sirens else None)
     return {
         "engine": "v2",
         "verdict": core["verdict"],
