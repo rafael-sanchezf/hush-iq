@@ -65,9 +65,9 @@ data: {"status": "complete", "fields": {...}, ...}
 - `error`: only on a server bug, instead of `result`: `{"error": "<type>: <message>"}`. Refusals, a model that
   runs out of turns and a Model API outage are not errors; they end in a `result`.
 
-Measured live (Oct 28, seven fixtures): a model turn takes 4 to 7 s, mostly reasoning; reading two photos in
-parallel takes 8 to 10 s; text-only listings finished in one turn and the photo listing in two. Then about
-0.2 s to locate and up to 8 s to score (the first score of an address pulls eight datasets; repeats are cached).
+Measured live (Oct 28, seven fixtures): a model turn takes 2 to 7 s (a submit_listing turn 4 to 7 s, mostly
+reasoning); reading two photos in parallel takes 8 to 10 s; text-only listings finished in one turn and the
+photo listing in two. Then about 0.2 s to locate and up to 8 s to score (the first score of an address pulls eight datasets; repeats are cached).
 End to end: 7 to 11 s for text, about 20 s with two photos.
 
 ### A turn
