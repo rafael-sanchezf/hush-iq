@@ -96,3 +96,68 @@ def test_new_check_and_collect(tmp_path):
     (d / "listing.txt").write_text("pasted text")
     lines, ready, problems = photo.check(tmp_path)
     assert ready == 1 and problems == 0
+
+
+# ---------------------------------------------------------------- photos only, against the text key (HIQ-80)
+def test_photo_tags_are_validated():
+    doc = photo.blank_labels("05")
+    doc["photo_tags"] = {"03.jpg": ["floor_plan", "printed_text"]}
+    assert photo.validate_labels(doc) == []
+    doc["photo_tags"] = {"03.jpg": ["selfie"]}
+    assert any("photo_tags" in e for e in photo.validate_labels(doc))
+
+
+def test_floor_is_compared_as_a_band():
+    assert [photo.band(n) for n in (1, 4, 5, 12, 13, 60)] == ["low", "low", "mid", "mid", "high", "high"]
+    assert photo.compared("floor", 3) == photo.compared("floor", 2) == "low"
+    assert photo.compared("floor", "top") == "cant_tell"                      # no floor count, no height
+    assert photo.compared("side", "corner") == "front" and photo.compared("side", "airshaft") == "rear"
+
+
+def test_the_example_scores_the_photos_against_its_text_with_and_without_the_floor_plan():
+    res = photo.score_text_key(photo.ROOT, include_example=True)
+    [ex] = res["listings"]
+    assert set(ex["keys"]) == {"floor", "ac_units", "wall_material"} and ex["tagged"] == ["04.png"]
+    assert set(ex["corrected"]) == {"view"}                    # the text's air shaft is the kitchen; Rafa labeled the street
+    every, clean = ex["runs"]["all"], ex["runs"]["clean"]
+    assert every["floor"]["outcome"] == "agrees"               # the plan prints APT 3C
+    assert clean["floor"]["outcome"] == "cant_tell"            # without it, nothing shows the height
+    assert every["wall_material"]["outcome"] == clean["wall_material"]["outcome"] == "disagrees"
+    assert every["side"] == {"outcome": "no_key", "photos": "front", "label": "front"}
+    table = res["table"]["clean"]["fields"]
+    assert table["floor"]["keys"] == 1 and table["floor"]["cant_tell"] == 1
+    assert table["side"]["claimed"] == {"front": 1} and table["side"]["label_agrees"] == 1
+    report = photo.text_key_report(res)
+    assert "floor (band)" in report and "Without the tagged photos (1 tagged)" in report
+
+
+def test_the_key_never_comes_from_the_model(tmp_path):
+    shutil.copytree(EXAMPLE, tmp_path / "00")
+    before = photo.score_text_key(tmp_path, include_example=True)["listings"][0]["keys"]
+    for name in ("model.photos.json", "model.photos-clean.json"):
+        out = json.loads((tmp_path / "00" / name).read_text())
+        out["fields"]["floor"] = {"value": 40, "status": "read", "evidence": [{"source": "photo:0", "what": "a skyline"}]}
+        (tmp_path / "00" / name).write_text(json.dumps(out))
+    res = photo.score_text_key(tmp_path, include_example=True)
+    assert res["listings"][0]["keys"] == before
+    assert res["listings"][0]["runs"]["all"]["floor"]["outcome"] == "disagrees"
+
+
+def test_a_photos_only_run_sends_no_text_and_drops_the_tagged_photos(tmp_path, monkeypatch):
+    shutil.copytree(EXAMPLE, tmp_path / "00")
+    for name in ("model.photos.json", "model.photos-clean.json"):
+        (tmp_path / "00" / name).unlink()
+    text_run = (tmp_path / "00" / "model.json").read_text()
+    sent = []
+    real = photo.A.Service.call
+
+    def spy(self, case, **inputs):
+        sent.append((inputs["text"], len(inputs["photos"])))
+        return real(self, case, **inputs)
+    monkeypatch.setattr(photo.A.Service, "call", spy)
+    lines = photo.run(tmp_path, "mock", "auto", include_example=True, photos_only=True)
+    assert sent == [("", 4), ("", 3)], lines
+    every = json.loads((tmp_path / "00" / "model.photos.json").read_text())
+    clean = json.loads((tmp_path / "00" / "model.photos-clean.json").read_text())
+    assert every["fields"]["floor"]["value"] == 3 and clean["fields"]["floor"]["status"] == "cant_tell"
+    assert (tmp_path / "00" / "model.json").read_text() == text_run          # the text run's output is left alone

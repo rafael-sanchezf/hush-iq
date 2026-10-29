@@ -8,7 +8,10 @@
     photo new [--link URL] make the next photo_test/<nn>/ folder from the template
     photo check            is every listing saved and labeled
     photo run              the reader on every listing, model.json beside labels.json (live by default)
+    photo run --photos-only  the reader on the photos alone, with and without the photos tagged as leaking
     photo score            per-field accuracy against the labels, and which fields reach the score
+    photo textkey          the photos-only runs against what each listing's text states
+    photo sync-rules       copy the text-key rules from hush_eval/textkey.py into labeler.html
     photo collect DIR      move labels-<nn>.json downloads (the labeler's Safari fallback) into their folders
 """
 import argparse
@@ -17,7 +20,7 @@ import sys
 from pathlib import Path
 
 from . import adapters as A
-from . import photo, runner
+from . import photo, runner, textkey
 
 
 def main(argv=None):
@@ -40,7 +43,7 @@ def main(argv=None):
     r.add_argument("--quiet", action="store_true")
 
     p = sub.add_parser("photo", help="the photo test")
-    p.add_argument("action", choices=["new", "check", "run", "score", "collect"])
+    p.add_argument("action", choices=["new", "check", "run", "score", "textkey", "sync-rules", "collect"])
     p.add_argument("dir", nargs="?", help="collect: the folder the labeler downloaded into")
     p.add_argument("--root", default=str(photo.ROOT))
     p.add_argument("--link", default="")
@@ -48,7 +51,8 @@ def main(argv=None):
     p.add_argument("--mock", action="store_true", help="run: replay model.fixture.json instead of the live reader")
     p.add_argument("--transport", default="auto", choices=["auto", "inproc", "http", "fixture"])
     p.add_argument("--force", action="store_true", help="run: overwrite model.json")
-    p.add_argument("--json", help="score: write the table as JSON here")
+    p.add_argument("--photos-only", action="store_true", help="run: send the photos and no text")
+    p.add_argument("--json", help="score, textkey: write the table as JSON here")
 
     a = ap.parse_args(argv)
     if a.cmd == "run":
@@ -79,13 +83,22 @@ def main(argv=None):
         print(f"\n{ready} ready, {problems} need work")
         return 0 if problems == 0 and ready else 1
     if a.action == "run":
-        print("\n".join(photo.run(root, "mock" if a.mock else "live", a.transport, a.example, a.force)))
+        print("\n".join(photo.run(root, "mock" if a.mock else "live", a.transport, a.example, a.force, a.photos_only)))
         return 0
     if a.action == "score":
         res = photo.score(root, a.example)
         print(photo.score_report(res))
         if a.json:
             Path(a.json).write_text(json.dumps(res, indent=2))
+        return 0
+    if a.action == "textkey":
+        res = photo.score_text_key(root, a.example)
+        print(photo.text_key_report(res))
+        if a.json:
+            Path(a.json).write_text(json.dumps(res, indent=2))
+        return 0
+    if a.action == "sync-rules":
+        print("labeler.html updated" if textkey.sync_labeler() else "labeler.html already has these rules")
         return 0
     if a.action == "collect":
         if not a.dir:

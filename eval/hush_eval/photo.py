@@ -4,8 +4,13 @@
     eval/photo_test/<nn>/photos/        every photo, saved by hand
     eval/photo_test/<nn>/labels.json    Rafa's labels, written by eval/labeler.html
     eval/photo_test/<nn>/model.json     the reader's result, written by `python -m hush_eval photo run`
+    eval/photo_test/<nn>/model.photos.json         the reader on the photos alone, no text (`photo run --photos-only`)
+    eval/photo_test/<nn>/model.photos-clean.json   the same without the photos Rafa tagged as leaking the answer
 
 Only template/ and the synthetic 00/ are tracked; the real listings stay on Rafa's disk (photo_test/.gitignore).
+
+The text key (textkey.py, HIQ-80) scores the photos-only run against what the listing's own text states, so the
+fields the text states need no photo labeling: a confirm click is the label.
 """
 import json
 import re
@@ -16,6 +21,7 @@ from pathlib import Path
 from . import adapters as A
 from . import checks as C
 from . import shapes as S
+from . import textkey as T
 
 ROOT = Path(__file__).resolve().parents[1] / "photo_test"
 SCHEMA = "hush-iq/photo-labels/1"
@@ -25,6 +31,13 @@ PHOTO_EXT = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".heic", ".avif"}
 MIN_ACCURACY = 0.85     # it is right on at least 85% of the listings where Rafa could tell,
 MAX_WRONG = 0.05        # wrong (a wrong value, or a value where Rafa could not tell) on under 5% of all listings,
 MIN_ANSWERABLE = 10     # and Rafa could tell on at least 10, so 2 of 2 does not pass.
+
+# Photos that print the answer: a floor plan with the unit number or a compass, a photo of a sign or a door
+# number. Rafa tags them in the labeler; the photos-only run is scored with them and without them.
+LEAK_TAGS = ("floor_plan", "printed_text")
+# A window view gives a height, not a number, so the photos-only floor is scored as a band.
+FLOOR_BANDS = (("low", 1, 4), ("mid", 5, 12), ("high", 13, S.FLOOR_MAX))
+PHOTOS_ONLY = {"all": "model.photos.json", "clean": "model.photos-clean.json"}
 
 
 def listing_dirs(root=ROOT, include_example=False):
@@ -70,6 +83,9 @@ def validate_labels(doc):
     pre = doc.get("prefilled", [])
     if not isinstance(pre, list) or any(p not in S.PHOTO_FIELDS for p in pre):
         errs.append(f"prefilled {pre!r} is not a list of field names")
+    tags = doc.get("photo_tags", {})
+    if not isinstance(tags, dict) or any(not isinstance(v, list) or any(t not in LEAK_TAGS for t in v) for v in tags.values()):
+        errs.append(f"photo_tags {tags!r} is not {{photo file: [{', '.join(LEAK_TAGS)}]}}")
     return errs
 
 
@@ -80,7 +96,7 @@ def complete(doc):
 
 def blank_labels(listing_id, link=""):
     return {"schema": SCHEMA, "listing": listing_id, "link": link,
-            "labels": {n: None for n in S.PHOTO_FIELDS}, "prefilled": [], "notes": "", "labeled_at": None}
+            "labels": {n: None for n in S.PHOTO_FIELDS}, "prefilled": [], "photo_tags": {}, "notes": "", "labeled_at": None}
 
 
 def load_json(p):
@@ -160,31 +176,145 @@ def score_report(res):
     return "\n".join(lines)
 
 
-# ---------------------------------------------------------------- run the reader on the set
-def run(root=ROOT, mode="live", transport="auto", include_example=False, force=False):
-    """Call the reader on each listing folder and save model.json beside the labels."""
-    svc = A.Service("reader", mode, transport)
-    lines = [f"reader: {svc.why}"]
+# ---------------------------------------------------------------- the text key: photos only, against the text
+AGREES, DISAGREES, NO_KEY = "agrees", "disagrees", "no_key"
+
+
+def band(floor):
+    n = C._int(floor) if not isinstance(floor, bool) else None
+    return next((name for name, lo, hi in FLOOR_BANDS if n is not None and lo <= n <= hi), None)
+
+
+def compared(field, value):
+    """A value as the text-key score compares it: the photo test's vocabulary, and the floor as a band. A floor of
+    "top" with no floor count gives no height, so it counts as can't tell."""
+    v = S.CANT_TELL if value is None else S.canonical(field, value)
+    if field == "floor" and v != S.CANT_TELL:
+        v = band(v) or S.CANT_TELL
+    return v
+
+
+def score_text_key(root=ROOT, include_example=False):
+    """The photos-only runs against the confirmed text key, field by field. Where the text states nothing, what the
+    photos claimed, and whether that matches a label Rafa gave from the photos."""
+    listings = []
     for d in listing_dirs(root, include_example):
-        if (d / "model.json").exists() and not force:
-            lines.append(f"{d.name} skipped, model.json exists (use --force)")
+        labels = load_json(d / "labels.json")
+        if labels is None or validate_labels(labels):
             continue
         text = (d / "listing.txt").read_text() if (d / "listing.txt").exists() else ""
-        photos = [A._photo_payload(p) for p in photos_of(d)]
-        case = {"listing": {"text": text, "photos": photos},
-                "fixtures": {"reader": load_json(d / "model.fixture.json")}}
-        try:
-            out, meta = svc.call(case, text=text, photos=photos)
-        except Exception as e:
-            lines.append(f"{d.name} FAILED {type(e).__name__}: {e}")
+        keys, waiting, corrected = T.confirmed(labels, text)
+        tagged = sorted(n for n, t in (labels.get("photo_tags") or {}).items() if t)
+        runs = {v: load_json(d / f) for v, f in PHOTOS_ONLY.items()}
+        if runs["clean"] is None and not tagged:
+            runs["clean"] = runs["all"]                    # nothing tagged: the clean run is the same run
+        pre = set(labels.get("prefilled") or [])
+        entry = {"listing": d.name, "keys": keys, "waiting": sorted(waiting), "corrected": corrected, "tagged": tagged,
+                 "runs": {}}
+        for variant, result in runs.items():
+            if result is None:
+                continue
+            got = model_answers(result)
+            per = {}
+            for field in S.PHOTO_FIELDS:
+                photos = compared(field, got.get(field))
+                if field in keys:
+                    said = compared(field, keys[field]["value"])
+                    outcome = C.ABSTAINED if photos == S.CANT_TELL else AGREES if photos == said else DISAGREES
+                    per[field] = {"outcome": outcome, "text": said, "photos": photos, "quote": keys[field]["quote"]}
+                else:
+                    label = labels["labels"].get(field)
+                    label = None if label in (None, S.CANT_TELL) or field in pre else compared(field, label)
+                    per[field] = {"outcome": NO_KEY, "photos": photos, "label": label}
+            entry["runs"][variant] = per
+        listings.append(entry)
+    return {"listings": listings, "table": {v: _key_table(listings, v) for v in PHOTOS_ONLY},
+            "keys": sum(len(e["keys"]) for e in listings), "waiting": sum(len(e["waiting"]) for e in listings),
+            "corrected": sum(len(e["corrected"]) for e in listings),
+            "tagged": sum(len(e["tagged"]) for e in listings)}
+
+
+def _key_table(listings, variant):
+    rows = {}
+    for field in S.PHOTO_FIELDS:
+        r = {"keys": 0, AGREES: 0, DISAGREES: 0, C.ABSTAINED: 0, "silent": 0, "claimed": {}, "labeled": 0, "label_agrees": 0}
+        for e in listings:
+            o = (e["runs"].get(variant) or {}).get(field)
+            if not o:
+                continue
+            if o["outcome"] != NO_KEY:
+                r["keys"] += 1
+                r[o["outcome"]] += 1
+                continue
+            r["silent"] += 1
+            if o["photos"] != S.CANT_TELL:
+                r["claimed"][o["photos"]] = r["claimed"].get(o["photos"], 0) + 1
+                if o["label"] is not None:
+                    r["labeled"] += 1
+                    r["label_agrees"] += o["label"] == o["photos"]
+        rows[field] = r
+    return {"listings": sum(1 for e in listings if variant in e["runs"]), "fields": rows}
+
+
+def text_key_report(res):
+    lines = [f"Photos only, against what the listing text states: {res['keys']} confirmed keys in "
+             f"{len(res['listings'])} listings ({res['waiting']} waiting for a confirm click, {res['corrected']} corrected by Rafa)",
+             "Floor is compared as a band: " + ", ".join(f"{n} {lo} to {hi}" if hi < S.FLOOR_MAX else f"{n} {lo} and up"
+                                                         for n, lo, hi in FLOOR_BANDS) + "."]
+    titles = {"all": "Every photo", "clean": f"Without the tagged photos ({res['tagged']} tagged)"}
+    for variant, t in res["table"].items():
+        lines += ["", f"{titles[variant]}: {t['listings']} listings",
+                  f"{'field':14} {'text key':>8} {'agrees':>7} {'disagrees':>9} {'cant_tell':>9}   text silent: photos claimed"
+                  f" (Rafa's photo label agrees)"]
+        for field, r in t["fields"].items():
+            claimed = ", ".join(f"{v} {n}" for v, n in sorted(r["claimed"].items())) or "-"
+            agree = f" ({r['label_agrees']} of {r['labeled']} labeled)" if r["labeled"] else ""
+            name = "floor (band)" if field == "floor" else field
+            lines.append(f"{name:14} {r['keys']:8d} {r[AGREES]:7d} {r[DISAGREES]:9d} {r[C.ABSTAINED]:9d}   "
+                         f"{claimed}{agree}")
+    lines += ["", "A key is a sentence of the listing's own text, found by the rules in hush_eval/textkey.py and "
+              "confirmed by Rafa's click. No model output is ever a key."]
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------- run the reader on the set
+def run(root=ROOT, mode="live", transport="auto", include_example=False, force=False, photos_only=False):
+    """Call the reader on each listing folder and save model.json beside the labels. With photos_only, the reader
+    gets no text: model.photos.json from every photo, and model.photos-clean.json without the tagged ones."""
+    svc = A.Service("reader", mode, transport)
+    lines = [f"reader: {svc.why}" + (", photos only: no listing text is sent" if photos_only else "")]
+    for d in listing_dirs(root, include_example):
+        text = (d / "listing.txt").read_text() if (d / "listing.txt").exists() else ""
+        if not photos_only:
+            lines.append(_read(svc, d, "model.json", text, photos_of(d), force))
             continue
-        if out is None:
-            lines.append(f"{d.name} no output ({svc.why})")
-            continue
-        (d / "model.json").write_text(json.dumps(out, indent=2, ensure_ascii=False) + "\n")
-        probs = C.reader_grounding(out or {}, {"text": text, "photos": photos})
-        lines.append(f"{d.name} {meta['latency_s']:.1f} s, {len([p for p in probs if p.hard])} grounding problems")
+        tags = (load_json(d / "labels.json") or {}).get("photo_tags") or {}
+        clean = [p for p in photos_of(d) if not tags.get(p.name)]
+        lines.append(_read(svc, d, PHOTOS_ONLY["all"], "", photos_of(d), force))
+        if len(clean) == len(photos_of(d)):
+            lines.append(f"{d.name} no photo tagged: the clean run is the same run")
+        elif not clean:
+            lines.append(f"{d.name} every photo is tagged: no clean run")
+        else:
+            lines.append(_read(svc, d, PHOTOS_ONLY["clean"], "", clean, force))
     return lines
+
+
+def _read(svc, d, out_name, text, photo_paths, force):
+    if (d / out_name).exists() and not force:
+        return f"{d.name} skipped, {out_name} exists (use --force)"
+    photos = [A._photo_payload(p) for p in photo_paths]
+    case = {"listing": {"text": text, "photos": photos},
+            "fixtures": {"reader": load_json(d / out_name.replace(".json", ".fixture.json"))}}
+    try:
+        out, meta = svc.call(case, text=text, photos=photos)
+    except Exception as e:
+        return f"{d.name} FAILED {type(e).__name__}: {e}"
+    if out is None:
+        return f"{d.name} no output ({svc.why})"
+    (d / out_name).write_text(json.dumps(out, indent=2, ensure_ascii=False) + "\n")
+    probs = C.reader_grounding(out or {}, {"text": text, "photos": photos})
+    return f"{d.name} {out_name}: {len(photos)} photos, {meta['latency_s']:.1f} s, {len([p for p in probs if p.hard])} grounding problems"
 
 
 # ---------------------------------------------------------------- the browser fallback

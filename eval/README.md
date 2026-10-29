@@ -5,7 +5,8 @@ Hackathon work, Oct 28 (cards HIQ-25 and HIQ-46). Two things live here:
 - **The 20-case eval** runs on every change in CI, for free. It checks that no model output reaching a renter
   invents a source, and that the listing reader gets the facts right.
 - **The photo test** scores the reader on 20 listings Rafa saves and labels by hand. Its per-field accuracy
-  decides which photo fields reach the score.
+  decides which photo fields reach the score. A second score gives the reader the photos alone and checks them
+  against what the listing's own text states, which needs no extra labeling.
 
 Stdlib Python 3.12, no install. Run everything from `eval/`.
 
@@ -171,8 +172,10 @@ photo_test/
   01/ ... 20/          Rafa's listings (gitignored: never in the public repo)
     listing.txt        the description, pasted as the listing shows it
     photos/            every photo, 01.png, 02.png, ...
-    labels.json        Rafa's labels, written by the labeler
+    labels.json        Rafa's labels and his photo tags, written by the labeler
     model.json         the reader's result, written by `photo run`
+    model.photos.json         the reader on the photos alone, written by `photo run --photos-only`
+    model.photos-clean.json   the same without the photos Rafa tagged
 ```
 
 `photo_test/.gitignore` keeps everything but `template/` and `00/` out of git. The listings and photos belong
@@ -186,8 +189,13 @@ to their owners, and the repo is public.
    1. Click **New listing**, then paste the link and the description.
    2. For each photo, right-click it on the listing, choose **Copy Image**, and press ⌘V in the labeler.
    3. Click **Save listing**. That creates the next numbered folder.
-3. Label each listing, about 30 seconds. Amber fields are pre-filled from the text; look at the photos, click
-   to confirm or correct, or click **Can't tell**. Press **Enter** to save `labels.json` and move to the next.
+3. Label each listing, about 25 seconds:
+   1. Amber fields are pre-filled from the text, with the words that say it underneath. If the text says that,
+      click **Confirm pre-fills**. These fields need no look at the photos.
+   2. For every other field, look at the photos and click an answer or **Can't tell**.
+   3. When a photo prints the answer, click **plan** or **text** on it: a floor plan, a unit number, a compass, a
+      street sign.
+   4. Press **Enter** to save `labels.json` and move to the next.
 4. Check: `python -m hush_eval photo check` prints one line per listing and "20 ready".
 
 Safari and Firefox cannot write to a folder. There the labeler reads the folder and saves each label as a
@@ -227,6 +235,41 @@ python -m hush_eval photo score    # per-field accuracy, and which fields reach 
 
 The defaults are `MIN_ACCURACY`, `MAX_WRONG` and `MIN_ANSWERABLE` in `hush_eval/photo.py`. The 20-case eval
 uses the same 85% and 5% in live mode.
+
+### Photos only, against the text (HIQ-80)
+
+When a listing's text states something a photo could also show ("faces the rear", "exposed brick", "12th
+floor"), that sentence is a free answer key. The reader gets the photos and no text, and the score asks whether
+it reaches the same answer.
+
+```bash
+python -m hush_eval photo run --photos-only   # model.photos.json, and model.photos-clean.json without tagged photos
+python -m hush_eval photo textkey             # the table below; --example adds the synthetic 00
+```
+
+- **The key never comes from a model.** The rules in `hush_eval/textkey.py` find it, and Rafa's click confirms it.
+  - Each rule needs a fact next to an orientation or a number: "faces the courtyard", "4th-floor", "central air".
+  - A sales claim ("quiet", "no street noise") or an amenity ("a landscaped courtyard") never makes a key.
+  - A text that points two ways gives no key for that field.
+  - A key Rafa changes is dropped, and the report counts it as corrected.
+- **The same rules everywhere.** The labeler pre-fills from them: `labeler.html` holds a copy, and
+  `photo sync-rules` refreshes it. The tests fail if the copy differs, and run the labeler's code in node to
+  check that it keys every case text the same way.
+- **Tagged photos** (`floor_plan`, `printed_text`) can print the answer, so each listing is scored twice: with
+  every photo, and without the tagged ones.
+- **The table** shows, per field, how many keys the photos agree with, disagree with, or can't tell. Where the
+  text is silent, it shows what the photos claimed, and whether that matches a label Rafa gave from the photos.
+- **Floor is a band**: low 1 to 4, mid 5 to 12, high 13 and up. A window view gives a height, not a number.
+- **Side uses the photo test's two values**: corner counts as front; courtyard and air shaft count as rear.
+
+On the synthetic 00 the effect shows:
+- Floor agrees with every photo, since the floor plan prints "APT 3C". Without the plan, it is can't tell.
+- The wall is a miss either way: the text says exposed brick, and the photos were read as concrete.
+
+**Labeling time.** On the 20 case texts, the rules state 1.75 of the 6 fields per listing, and 15 of 20
+listings state at least one. Each of those fields becomes a read of its quote instead of a look through the
+photos, with one click to confirm them all. That saves about 7 seconds a listing, or 2 to 3 minutes over 20.
+Real listings that say more save more. The text-key score itself needs no labeling beyond those clicks.
 
 ## CI
 
