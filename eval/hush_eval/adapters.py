@@ -155,6 +155,8 @@ class ReaderBinding:
                 FixtureScorer(case, mods.scoring.ScoreError), "mock"
         else:
             client, label = mods.client.make_client()
+            if label != "live":
+                raise Unreachable("live mode, but the reader built its mock client: no MODEL_API_KEY reached it")
             scorer = mods.scoring.HostedScorer()
         result = None
         for kind, data in mods.loop.read_listing(listing, client=client, scorer=scorer, mode=label):
@@ -236,8 +238,9 @@ class AdjustBinding:
     def call(self, mods, case, inputs, mode, on_turn):
         client = None
         if mode == "live":
-            llm = importlib.import_module("adjust.llm")
-            client = next((getattr(llm, f)() for f in ("make_client", "client") if callable(getattr(llm, f, None))), None)
+            client = importlib.import_module("adjust.llm").client_from_env()
+            if client is None:
+                raise Unreachable("live mode, but adjust.llm.client_from_env() found no MODEL_API_KEY")
         return mods.permits.read_permits(inputs["rows"], inputs["as_of"], client=client)
 
     def caps(self, mods):
