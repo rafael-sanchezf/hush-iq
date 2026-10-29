@@ -53,3 +53,12 @@ frozen Manhattan sample, and changes neither. v1 stays live at `/v1/score`.
   construction complaints add 2 a doubling. `noise_score/recal.py` recomputes each source on the same pulls, and
   the Manhattan sample from the pulls it was built from. Every change, its source and its check:
   `upgrades/RECALIBRATION.md`.
+- **V11 Block bars.** Each ingredient also carries `block_quieter_than`, display only: the same source ranked
+  against the same Manhattan sample at the building's typical apartment (middle residential floor, side unknown,
+  as V4 ranks the sample) with all 24 hours weighted equally. It is the same for every renter and every apartment
+  in the building, so a per-source bar shows the block, while `quieter_than` beside it is the source at this
+  apartment's floor and side over the renter's hours. The score, verdict, caps and the weighted average never read
+  it. (Rafa, 2026-10-29: "the bars by definition are not impacted by an apartment's floor".)
+
+The `nightlife` source reads "Local businesses" wherever a renter sees it (restaurants, theatres and busy spots,
+not only bars); the API key stays `nightlife`.

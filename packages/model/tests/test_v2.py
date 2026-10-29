@@ -90,3 +90,32 @@ def test_no_decibels_leave_the_engine(answers):
         assert banned not in text, banned
     assert res["verdict"] in baseline.VERDICTS
     assert {i["name"] for i in res["ingredients"]} == set(baseline.INGREDIENTS)
+
+
+# ---------------------------------------------------------------- [V11] block bars
+def test_block_bars_are_the_same_for_every_apartment_and_renter():
+    """The block's number does not move with the floor, the side or the answers; the apartment's does."""
+    runs = [v2.score(busy_inputs(), Unit(floor=f, position=p), a) for f, p, a in (
+        (2, "front", v2.Answers()), (12, "rear", v2.Answers(sleep=(1, 9), day_bothers=False, ticks=["traffic"])),
+        (None, "unknown", v2.Answers(ticks=["people"])))]
+    blocks = [{i["name"]: i["block_quieter_than"] for i in r["ingredients"]} for r in runs]
+    assert blocks[0] == blocks[1] == blocks[2]
+    assert {i["name"]: i["quieter_than"] for i in runs[0]["ingredients"]} != {i["name"]: i["quieter_than"] for i in runs[1]["ingredients"]}
+    assert all(0 <= v <= 100 for v in blocks[0].values())
+
+
+def test_block_bars_rank_the_typical_apartment_over_the_whole_day():
+    s = v2.uniform_slots()
+    assert (round(24 * s["night"]), round(24 * s["early"]), round(24 * s["day"])) == (7, 3, 14)
+    res = v2.score(busy_inputs(), Unit(floor=2, position="front"), v2.Answers())
+    pl = busy_inputs()["pluto"]
+    _, neutral = v2._neutral(busy_inputs())
+    levels, _ = v2._upgraded(busy_inputs(), neutral, baseline.building_facts(pl))
+    want = v2.block_ranks(levels, baseline.building_facts(pl))
+    assert {i["name"]: i["block_quieter_than"] for i in res["ingredients"]} == {n: round(r, 1) for n, r in want.items()}
+
+
+def test_nightlife_reads_local_businesses_and_keeps_its_key():
+    res = v2.score(busy_inputs(), Unit(floor=2, position="front"), v2.Answers())
+    night = next(i for i in res["ingredients"] if i["name"] == "nightlife")
+    assert night["label"] == "Local businesses"

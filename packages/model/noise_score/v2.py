@@ -36,6 +36,11 @@ VERDICTS = baseline.VERDICTS
 EPS = 1e-6
 
 
+# What a renter reads where it differs from the frozen ingredient's label: nightlife covers restaurants, theatres and
+# other busy spots, not only bars (Rafa, 2026-10-29). The API key stays `nightlife`.
+LABEL_OVERRIDES = {"nightlife": "Local businesses"}
+
+
 # ---------------------------------------------------------------- the renter's three taps
 @dataclass
 class Answers:
@@ -58,6 +63,14 @@ def slot_weights(answers):
         w[model.window_of(h)] += V.ASLEEP_HOUR_WEIGHT if _asleep(h, *answers.sleep) else awake
     total = sum(w.values())
     return {s: v / total for s, v in w.items()}
+
+
+def uniform_slots():
+    """[V11] Every hour of the day weighs the same: each slot's share is its hours over 24."""
+    w = {s: 0.0 for s in model.WINDOWS}
+    for h in range(24):
+        w[model.window_of(h)] += 1.0
+    return {s: v / 24 for s, v in w.items()}
 
 
 def source_weights(answers):
@@ -202,6 +215,16 @@ def reference_for(slots, weights, b=None):
 
 
 # ---------------------------------------------------------------- the verdict
+def block_ranks(neutral, facts, b=None):
+    """[V11] Each source for the block, display only: the building's typical apartment (middle floor, side unknown,
+    as the sample is ranked) over all 24 hours equally, against the same Manhattan. The same for every renter and
+    every apartment in the building, so a bar shows the street, not the apartment; the score, verdict and caps never
+    read it (Rafa, 2026-10-29: "the bars by definition are not impacted by an apartment's floor")."""
+    slots = uniform_slots()
+    ref = reference_for(slots, source_weights(Answers())[0], b)
+    return ref.ranks(source_levels(neutral, facts, typical_unit(facts), slots))
+
+
 def _verdict(neutral, facts, unit, ref, ticked):
     ranks = ref.ranks(source_levels(neutral, facts, unit, ref.slots))
     quieter_than = ref.average_ranker.quieter_than_rank(ref.average(ranks))
@@ -252,6 +275,7 @@ def score_levels(neutral, facts, unit=None, answers=None, b=None):
         "caps": main["caps"],
         "range": rng,
         "ranks": main["ranks"],
+        "block_ranks": {n: round(r, 1) for n, r in block_ranks(neutral, facts, b).items()},
         "weights": {n: round(100 * w, 1) for n, w in weights.items()},
         "ticked": sorted(ticked),
         "slot_weights": {s: round(100 * w, 1) for s, w in slots.items()},
@@ -296,8 +320,9 @@ def score(inputs, unit=None, answers=None):
     levels, ups = _upgraded(inputs, neutral, facts)
     core = score_levels(levels, facts, unit, answers)
     ingredients = [{
-        "name": i["name"], "label": i["label"],
+        "name": i["name"], "label": LABEL_OVERRIDES.get(i["name"], i["label"]),
         "quieter_than": core["ranks"][i["name"]],
+        "block_quieter_than": core["block_ranks"][i["name"]],
         "verdict": baseline.verdict(core["ranks"][i["name"]]),
         "weight": core["weights"][i["name"]],
         "ticked": i["name"] in core["ticked"],
@@ -332,7 +357,7 @@ def score(inputs, unit=None, answers=None):
 
 
 # ---------------------------------------------------------------- the math board
-LABELS = {"street": "Street", "nightlife": "Nightlife", "building": "Neighbors", "sirens": "Sirens",
+LABELS = {"street": "Street", "nightlife": "Local businesses", "building": "Neighbors", "sirens": "Sirens",
           "construction": "Construction"}
 
 
@@ -357,6 +382,7 @@ def explain(inputs, unit=None, answers=None, label=None):
         n = i["name"]
         up = ups.get(n) or upgrades.passthrough(n, neutral[n])
         sources.append({"name": n, "label": LABELS[n], "weight": core["weights"][n], "rank": core["ranks"][n],
+                        "block_rank": core["block_ranks"][n],
                         "slot_levels": {s: round(levels[n][s], 1) for s in model.WINDOWS},
                         "position_adj": round(adj[n], 1), "number": round(number[n], 1),
                         "evidence": i["evidence"] + up.evidence, "steps": [asdict(s) for s in up.steps]})
