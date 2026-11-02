@@ -1,0 +1,334 @@
+{
+  "id": "13-corner-unit",
+  "about": "A corner unit with windows on two streets faces the street: front.",
+  "tags": [
+    "corner",
+    "permits"
+  ],
+  "listing": {
+    "text": "Corner unit on the 22nd floor at 200 Water Street, with windows on Fulton Street and Water Street. Convertible two-bedroom with floor-to-ceiling windows and split-system heating and cooling. Gym, roof deck and laundry on every floor.",
+    "photos": []
+  },
+  "gold": {
+    "address": "200 Water Street",
+    "unit": null,
+    "floor": 22,
+    "side": "front",
+    "observed": {
+      "windows": "floor_to_ceiling",
+      "ac_units": "no"
+    },
+    "building_floors": 31
+  },
+  "answers": {
+    "sleep_from": 0,
+    "sleep_until": 8,
+    "day_bothers": true,
+    "bothers": [
+      "construction"
+    ]
+  },
+  "pull": {
+    "permits": [
+      {
+        "work_permit": "M00001301-I1",
+        "work_type": "Full Demolition",
+        "job_description": "Full demolition of a 4-story commercial building",
+        "issued_date": "2026-08-03",
+        "expired_date": "2027-02-03",
+        "estimated_job_costs": "900000",
+        "house_no": "210",
+        "street_name": "WATER STREET"
+      }
+    ],
+    "as_of": "2026-10-28"
+  },
+  "fixtures": {
+    "reader": {
+      "status": "complete",
+      "stopped": "submitted",
+      "fields": {
+        "address": {
+          "value": "200 Water Street",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "200 Water Street",
+              "start": 33,
+              "end": 49
+            }
+          ]
+        },
+        "unit": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "floor": {
+          "value": 22,
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "on the 22nd floor",
+              "start": 12,
+              "end": 29
+            }
+          ]
+        },
+        "side": {
+          "value": "corner",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "Corner unit",
+              "start": 0,
+              "end": 11
+            }
+          ]
+        }
+      },
+      "position": "front",
+      "observed": {
+        "view": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "windows": {
+          "value": {
+            "floor_to_ceiling": true,
+            "operable": null
+          },
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "floor-to-ceiling windows",
+              "start": 128,
+              "end": 152
+            }
+          ]
+        },
+        "ac_units": {
+          "value": "split",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "split-system heating and cooling",
+              "start": 157,
+              "end": 189
+            }
+          ]
+        },
+        "wall_material": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "score": {
+        "engine": "v2",
+        "verdict": "Typical",
+        "quieter_than": 59.7,
+        "uncapped_verdict": "Typical",
+        "caps": [],
+        "range": null,
+        "ingredients": [
+          {
+            "name": "street",
+            "label": "Street",
+            "quieter_than": 81.3,
+            "verdict": "Very quiet",
+            "weight": 25.4,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "WATER STREET: major street, 3 travel lanes, 25 mph, 15 m away"
+            ]
+          },
+          {
+            "name": "nightlife",
+            "label": "Nightlife",
+            "quieter_than": 48.8,
+            "verdict": "Typical",
+            "weight": 11.9,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "4 licensed venues within 150 m: 1 bars, 3 restaurants"
+            ]
+          },
+          {
+            "name": "building",
+            "label": "Building",
+            "quieter_than": 75.9,
+            "verdict": "Quiet",
+            "weight": 15.9,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "37 residential noise complaints to 311 at this building in 24 months"
+            ]
+          },
+          {
+            "name": "sirens",
+            "label": "Sirens",
+            "quieter_than": 87.2,
+            "verdict": "Very quiet",
+            "weight": 15.9,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "4 emergency facilities within 600 m"
+            ]
+          },
+          {
+            "name": "construction",
+            "label": "Construction",
+            "quieter_than": 23.7,
+            "verdict": "Loud",
+            "weight": 31.0,
+            "ticked": true,
+            "temporary": true,
+            "evidence": [
+              "1 active DOB permit on this block"
+            ]
+          }
+        ],
+        "answers": {
+          "sleep": {
+            "from": 0,
+            "until": 8
+          },
+          "day_bothers": true,
+          "ticks": [
+            "construction"
+          ]
+        },
+        "unit": {
+          "floor": 22,
+          "floor_from": "listing",
+          "side": "front",
+          "side_from": "listing",
+          "building_floors": 31
+        },
+        "address": {
+          "label": "200 WATER STREET, New York, NY, USA",
+          "bbl": "1000750001",
+          "borough": "Manhattan"
+        }
+      },
+      "score_engine": "v2",
+      "needs": [],
+      "trace": [
+        {
+          "n": 1,
+          "by": "model",
+          "tool": "submit_listing",
+          "ok": true
+        }
+      ],
+      "mode": "fixture"
+    },
+    "verdict": {
+      "evidence": [
+        {
+          "id": "E1",
+          "text": "Overall for these sleep hours: Typical, quieter than 59.7% of Manhattan apartments"
+        },
+        {
+          "id": "E2",
+          "text": "Street: quieter than 81.3% of Manhattan apartments; WATER STREET: major street, 3 travel lanes, 25 mph, 15 m away"
+        },
+        {
+          "id": "E3",
+          "text": "Nightlife: quieter than 48.8% of Manhattan apartments; 4 licensed venues within 150 m: 1 bars, 3 restaurants"
+        },
+        {
+          "id": "E4",
+          "text": "Building: quieter than 75.9% of Manhattan apartments; 37 residential noise complaints to 311 at this building in 24 months"
+        },
+        {
+          "id": "E5",
+          "text": "Sirens: quieter than 87.2% of Manhattan apartments; 4 emergency facilities within 600 m"
+        },
+        {
+          "id": "E6",
+          "text": "Construction: quieter than 23.7% of Manhattan apartments; 1 active DOB permit on this block"
+        },
+        {
+          "id": "E7",
+          "text": "Floor 22 on the street side, both from the listing"
+        }
+      ],
+      "sentences": [
+        {
+          "text": "For the hours you sleep, this apartment is Typical for Manhattan: quieter than 59.7% of apartments.",
+          "cites": [
+            "E1"
+          ]
+        },
+        {
+          "text": "What you will hear most is construction, quieter than only 23.7% of Manhattan.",
+          "cites": [
+            "E6"
+          ]
+        },
+        {
+          "text": "Floor 22 on the street side is what the listing says, so the verdict has no range.",
+          "cites": [
+            "E7"
+          ]
+        }
+      ],
+      "writer": "template"
+    },
+    "adjust": {
+      "source": "construction",
+      "as_of": "2026-10-28",
+      "reader": "fixture",
+      "readings": [
+        {
+          "id": "M00001301-I1",
+          "work_type": "Full Demolition",
+          "kind": {
+            "value": "demolition",
+            "status": "read",
+            "evidence": [
+              {
+                "source": "permit:M00001301-I1",
+                "quote": "Full demolition"
+              }
+            ]
+          },
+          "duration": {
+            "value": "months",
+            "status": "read",
+            "evidence": [
+              {
+                "source": "permit:M00001301-I1",
+                "quote": "Full demolition"
+              }
+            ]
+          }
+        }
+      ],
+      "adjustment": {
+        "source": "construction",
+        "direction": "louder",
+        "size": 2,
+        "cap": 2,
+        "cites": [
+          "M00001301-I1"
+        ],
+        "reason": "A full demolition on the block is loud daytime work for months."
+      },
+      "why_none": null,
+      "refusals": []
+    }
+  }
+}

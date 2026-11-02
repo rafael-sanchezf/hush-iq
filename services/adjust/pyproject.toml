@@ -1,0 +1,18 @@
+[project]
+name = "hush-iq-adjust"
+version = "0.1.0"
+description = "Bounded adjustments over the frozen noise model: the permit reader (Muse Spark) and submit_adjustment."
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "httpx>=0.27",
+    "openai>=1.40",
+    "uvicorn>=0.30",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

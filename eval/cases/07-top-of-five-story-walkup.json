@@ -1,0 +1,265 @@
+{
+  "id": "07-top-of-five-story-walkup",
+  "about": "'Top floor of a five-story walk-up' gives the number; St. Marks Place spelled with a period.",
+  "tags": [
+    "top-floor",
+    "walk-up"
+  ],
+  "listing": {
+    "text": "Top floor of a five-story walk-up at 51 St. Marks Place. Two-bedroom with exposed brick, a skylight in the bath and a decorative fireplace. Bedroom windows face St. Marks Place. Laundromat on the corner. Great for roommates.",
+    "photos": []
+  },
+  "gold": {
+    "address": "51 Saint Marks Place",
+    "unit": null,
+    "floor": 5,
+    "side": "front",
+    "observed": {
+      "wall_material": "brick"
+    },
+    "building_floors": 5
+  },
+  "answers": {
+    "sleep_from": 2,
+    "sleep_until": 10,
+    "day_bothers": false,
+    "bothers": [
+      "people"
+    ]
+  },
+  "fixtures": {
+    "reader": {
+      "status": "complete",
+      "stopped": "submitted",
+      "fields": {
+        "address": {
+          "value": "51 St. Marks Place",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "51 St. Marks Place",
+              "start": 37,
+              "end": 55
+            }
+          ]
+        },
+        "unit": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "floor": {
+          "value": 5,
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "Top floor of a five-story walk-up",
+              "start": 0,
+              "end": 33
+            }
+          ]
+        },
+        "side": {
+          "value": "street",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "Bedroom windows face St. Marks Place",
+              "start": 140,
+              "end": 176
+            }
+          ]
+        }
+      },
+      "position": "front",
+      "observed": {
+        "view": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "windows": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "ac_units": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "wall_material": {
+          "value": "brick",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "exposed brick",
+              "start": 74,
+              "end": 87
+            }
+          ]
+        }
+      },
+      "score": {
+        "engine": "v2",
+        "verdict": "Typical",
+        "quieter_than": 47.7,
+        "uncapped_verdict": "Typical",
+        "caps": [],
+        "range": null,
+        "ingredients": [
+          {
+            "name": "street",
+            "label": "Street",
+            "quieter_than": 81.9,
+            "verdict": "Very quiet",
+            "weight": 24.6,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "ST MARKS PLACE: local street, 2 travel lanes, 25 mph, 9 m away"
+            ]
+          },
+          {
+            "name": "nightlife",
+            "label": "Nightlife",
+            "quieter_than": 27.9,
+            "verdict": "Loud",
+            "weight": 34.6,
+            "ticked": true,
+            "temporary": false,
+            "evidence": [
+              "13 licensed venues within 150 m: 3 bars, 10 restaurants"
+            ]
+          },
+          {
+            "name": "building",
+            "label": "Building",
+            "quieter_than": 21.2,
+            "verdict": "Loud",
+            "weight": 15.4,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "38 residential noise complaints to 311 at this building in 24 months"
+            ]
+          },
+          {
+            "name": "sirens",
+            "label": "Sirens",
+            "quieter_than": 40.6,
+            "verdict": "Typical",
+            "weight": 15.4,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "4 emergency facilities within 600 m"
+            ]
+          },
+          {
+            "name": "construction",
+            "label": "Construction",
+            "quieter_than": 84.1,
+            "verdict": "Very quiet",
+            "weight": 10.0,
+            "ticked": false,
+            "temporary": true,
+            "evidence": [
+              "no active DOB permits on this block"
+            ]
+          }
+        ],
+        "answers": {
+          "sleep": {
+            "from": 2,
+            "until": 10
+          },
+          "day_bothers": false,
+          "ticks": [
+            "people"
+          ]
+        },
+        "unit": {
+          "floor": 5,
+          "floor_from": "listing",
+          "side": "front",
+          "side_from": "listing",
+          "building_floors": 5
+        },
+        "address": {
+          "label": "51 ST MARK'S PLACE, New York, NY, USA",
+          "bbl": "1004500049",
+          "borough": "Manhattan"
+        }
+      },
+      "score_engine": "v2",
+      "needs": [],
+      "trace": [
+        {
+          "n": 1,
+          "by": "model",
+          "tool": "submit_listing",
+          "ok": true
+        }
+      ],
+      "mode": "fixture"
+    },
+    "verdict": {
+      "evidence": [
+        {
+          "id": "E1",
+          "text": "Overall for these sleep hours: Typical, quieter than 47.7% of Manhattan apartments"
+        },
+        {
+          "id": "E2",
+          "text": "Street: quieter than 81.9% of Manhattan apartments; ST MARKS PLACE: local street, 2 travel lanes, 25 mph, 9 m away"
+        },
+        {
+          "id": "E3",
+          "text": "Nightlife: quieter than 27.9% of Manhattan apartments; 13 licensed venues within 150 m: 3 bars, 10 restaurants"
+        },
+        {
+          "id": "E4",
+          "text": "Building: quieter than 21.2% of Manhattan apartments; 38 residential noise complaints to 311 at this building in 24 months"
+        },
+        {
+          "id": "E5",
+          "text": "Sirens: quieter than 40.6% of Manhattan apartments; 4 emergency facilities within 600 m"
+        },
+        {
+          "id": "E6",
+          "text": "Construction: quieter than 84.1% of Manhattan apartments; no active DOB permits on this block"
+        },
+        {
+          "id": "E7",
+          "text": "Floor 5 on the street side, both from the listing"
+        }
+      ],
+      "sentences": [
+        {
+          "text": "For the hours you sleep, this apartment is Typical for Manhattan: quieter than 47.7% of apartments.",
+          "cites": [
+            "E1"
+          ]
+        },
+        {
+          "text": "What you will hear most is building, quieter than only 21.2% of Manhattan.",
+          "cites": [
+            "E4"
+          ]
+        },
+        {
+          "text": "Floor 5 on the street side is what the listing says, so the verdict has no range.",
+          "cites": [
+            "E7"
+          ]
+        }
+      ],
+      "writer": "template"
+    }
+  }
+}
