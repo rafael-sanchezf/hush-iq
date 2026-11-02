@@ -255,10 +255,11 @@ def adjustments(adj, rows, caps):
 
 
 # ---------------------------------------------------------------- the AI switch (AI_SWITCH.md)
-AI_MODES = ("model", "basic")
+AI_MODES = ("model", "basic", "rules")   # rules: the permit reader with no model (services/adjust CONTRACT)
 AI_PROVIDERS = ("meta", "openai", "anthropic", None)
 AI_KEYS = ("house", "caller", None)
-AI_REASONS = (None, "switched_off", "house_off", "no_key", "key_rejected", "provider_busy", "provider_error")
+AI_REASONS = (None, "switched_off", "house_off", "no_key", "key_rejected", "provider_busy", "provider_error",
+              "checks_failed")   # checks_failed: the verdict's model drafts were refused, the template wrote
 
 
 def ai_switch(out, service, switch="on", provider=None, caller_key=False):
