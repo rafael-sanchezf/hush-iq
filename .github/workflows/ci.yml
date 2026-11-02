@@ -1,4 +1,5 @@
-# Every change: the model's tests, every service's tests, and the 20-case eval in mock mode and with AI off.
+# Every change: the model's tests, every service's tests, the one-origin host's (api/index.py), and the 20-case eval
+# in mock mode and with AI off.
 # No secrets: nothing here reads a key, and the offline plugin (eval/ci/pytest_offline.py) skips any test that
 # reaches for the internet instead of failing or deleting it. Hackathon work (HIQ-25).
 name: CI
@@ -71,6 +72,22 @@ jobs:
           done
           echo "services tested: $ran"
           if [ ${#failed[@]} -gt 0 ]; then echo "::error::failed: ${failed[*]}"; exit 1; fi
+
+  gateway:
+    name: One origin (api/index.py)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: install the root requirements only, as Vercel does
+        run: pip install pytest -r requirements.txt
+      - name: pytest, offline
+        env:
+          PYTHONPATH: ${{ github.workspace }}/eval/ci
+          NOISE_SCORE_CACHE: ${{ runner.temp }}/noise-cache
+        run: python -m pytest -p pytest_offline -ra tests
 
   eval:
     name: Eval, 20 cases, mock mode

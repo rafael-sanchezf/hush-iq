@@ -24,7 +24,8 @@ Everything after the import commit. The commit history of this repository is the
 the order they land:
 
 1. **Hosted API.** The FastAPI service deployed as a public endpoint (first on Vercel, Oct 26 night), open
-   CORS, cache in `/tmp`, a prefix shim. Commit "Hosted API".
+   CORS, cache in `/tmp`, a prefix shim. Commit "Hosted API". Since Nov 2 one host serves every piece
+   (`api/index.py`): the score API beside `/read`, `/verdict` and `/adjust/permits`, CORS open for POST.
 2. **Score engine v2** (`packages/model/noise_score/v2.py`, `/v2/score`). Each noise source is ranked against
    a fixed Manhattan sample, the ranks are averaged with weights set by the renter's answers (sleep hours,
    daytime noise, what bothers them), and any source in Manhattan's loudest 5% caps the verdict. Decibel-shaped

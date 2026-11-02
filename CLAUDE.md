@@ -11,6 +11,7 @@ apps/ios        SwiftUI app and NoiseKit (prior work; the class repo's history s
 apps/web        the website (hackathon)
 packages/model  the noise model and FastAPI (prior work, frozen: model.py, baseline.py, sources.py never change)
 services/agent  the Meta-model layer (hackathon)
+api/index.py    the one host: every route above on one Vercel origin (hackathon)
 HACKATHON.md    what existed at kickoff, what was built after, which model did what
 FEEDBACK.md     every rough edge met in the Meta Model API and the partner tools, for the submission form
 ```
