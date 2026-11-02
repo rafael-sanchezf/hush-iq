@@ -32,8 +32,12 @@ def test_floor_and_side_read_from_the_listing_carry_the_quote(lines):
     ls = lines("claremont")
     floor = next(l for l in ls if l.kind == "floor")
     side = next(l for l in ls if l.kind == "side")
-    assert floor.text == 'Floor 4 of 6, read from the listing: "4th floor, elevator building".'
-    assert side.text == "Facing the rear, seen in photo 3: bedroom window onto a courtyard."
+    assert floor.display() == 'Floor 4 of 6, read from the listing: "4th floor, elevator building".'
+    assert side.display() == "Facing the rear, seen in photo 3: bedroom window onto a courtyard."
+    assert floor.public()["text"] == floor.display() and floor.public()["quote"] == '"4th floor, elevator building"'
+    # the fact the checks see holds none of the listing's words (SEC-1)
+    assert floor.text == "Floor 4 of 6, read from the listing."
+    assert side.text == "Facing the rear, seen in photo 3."
     assert any(l.kind == "unit" and "4C" in l.text for l in ls)
 
 
@@ -80,7 +84,7 @@ def test_listing_quotes_lose_any_sound_level(lines):
                         "evidence": [{"source": "text", "quote": "new windows cut street noise by 30 dB, triple pane"}]}}
     ls = evidence.build(load("claremont"), None, fields)
     floor = next(l for l in ls if l.kind == "floor")
-    assert "30 dB" not in floor.text and "[sound level removed]" in floor.text
+    assert "30 dB" not in floor.display() and "[sound level removed]" in floor.quote
 
 
 @pytest.mark.parametrize("raw,expected", [

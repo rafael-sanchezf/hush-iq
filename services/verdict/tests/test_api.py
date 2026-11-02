@@ -19,7 +19,7 @@ def test_post_verdict_returns_evidence_and_cited_sentences(client):
     assert r.status_code == 200
     body = r.json()
     assert body["writer"] == "template"
-    assert set(body["evidence"][0]) == {"id", "text", "kind", "source"}
+    assert set(body["evidence"][0]) == {"id", "text", "kind", "source", "quote"}
     known = {e["id"] for e in body["evidence"]}
     assert body["sentences"] and all(set(s["cites"]) <= known and s["cites"] for s in body["sentences"])
     assert "dB" not in r.text and "decibel" not in r.text.lower()

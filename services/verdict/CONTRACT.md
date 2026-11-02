@@ -40,7 +40,7 @@ Request body:
 |---|---|---|
 | `score` | yes | Engine v2 (`engine: "v2"`) is the main input. A v1 response (has `score` and `ingredients`) is accepted and gives fewer lines: no per-source ranks, weights or range. Anything else is a 422. |
 | `answers` | no | The three taps in the v2 query names. `bothers` items are `traffic`, `people`, `neighbors`, `sirens`, `construction`; anything else is a 422. For a v2 score the answers the engine echoes win, because its numbers came from them; these fill in for a v1 score. |
-| `fields` | no | The listing reader's fields (`services/agent` CONTRACT): each `{value, status: "read" \| "cant_tell", evidence: [{source: "text", quote} \| {source: "photo:<i>", what}]}`. A read floor or side brings its quote into the evidence line; a read `unit` gets its own line. `observed` and anything else is ignored. |
+| `fields` | no | The listing reader's fields (`services/agent` CONTRACT): each `{value, status: "read" \| "cant_tell", evidence: [{source: "text", quote} \| {source: "photo:<i>", what}]}`. A read floor or side brings its quote to the evidence line's `quote`, never into the fact the checks run on; a read `unit` gets its own line. `observed` and anything else is ignored. |
 
 Query: `?writer=template` forces the template (the eval uses it to compare); the default `auto` uses the configured
 model.
@@ -70,7 +70,7 @@ sentences.)
 
 | Field | Shape |
 |---|---|
-| `evidence` | Every line sent to the writer, in order, ids `E1..En` with no gaps. `kind` and `source` let the page group them. |
+| `evidence` | Every line sent to the writer, in order, ids `E1..En` with no gaps. `kind` and `source` let the page group them. `quote` is the listing's own words (or what a photo showed) for a floor, side or unit line, else null; `text` shows them after a colon. The checks run on the line without them, so a sentence never passes on the listing's say-so (SEC-1). |
 | `sentences` | 1 to 6 sentences. Every `cites` is non-empty and every id is in `evidence`. Render each sentence with its cites as chips that open the line. |
 | `writer` | `"muse-spark-open"` (Baseten), `"muse-spark-1.3"` (Meta Model API, the second backend), the model id of a caller's key (`"gpt-6-luna"`, `"claude-haiku-5-5"`, ...) or `"template"`. |
 | `trace` | What each attempt drew, so a fallback is never silent: `{writer, attempt, ok, errors: [...], ms}` per model call, then `{writer: "template", ok: true, why}` if the template wrote. The website can show "the checks refused the first draft: it cited E41". A call that raised carries only the error class and status (`["RateLimitError (HTTP 429)"]`) and its `reason`, never the provider's message, which can quote the key. |

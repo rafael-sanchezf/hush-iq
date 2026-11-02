@@ -40,13 +40,19 @@ class EvidenceError(ValueError):
 @dataclass
 class Line:
     id: str
-    text: str
+    text: str                  # the fact: what the model reads as evidence and every check runs on
     kind: str                  # verdict | cap | rank | weight | detail | temporary | bothers | hours | daytime |
     source: str | None = None  # time_split | floor | side | unit | commercial | range | method | address
     data: dict = field(default_factory=dict)
+    quote: str | None = None   # the listing's own words, or what a photo showed: shown beside the fact, never checked
+                               # as one, since a listing can say anything after "4th floor" (SEC-1)
+
+    def display(self):
+        """The line as the renter reads it: the fact, then the listing's words."""
+        return f"{self.text[:-1]}: {self.quote}." if self.quote else self.text
 
     def public(self):
-        return {"id": self.id, "text": self.text, "kind": self.kind, "source": self.source}
+        return {"id": self.id, "text": self.display(), "kind": self.kind, "source": self.source, "quote": self.quote}
 
 
 # ---------------------------------------------------------------- small words
@@ -264,20 +270,22 @@ def details(source, raws):
 
 # ---------------------------------------------------------------- the reader's fields
 def quote(f):
-    """How the reader knew a field: a quoted line of the listing or what a photo showed. None if it could not tell."""
+    """How the reader knew a field, and its words: ("read from the listing", '"4th floor"'), ("seen in photo 3",
+    "bedroom window onto a courtyard"), or (None, None) if it could not tell. The words go in Line.quote, never in
+    the line's text."""
     if not isinstance(f, dict) or f.get("status") != "read":
-        return None
+        return None, None
     for e in f.get("evidence") or []:
         src = str(e.get("source") or "")
         if src == "text" and e.get("quote"):
-            return f'read from the listing: "{_short(e["quote"])}"'
+            return "read from the listing", f'"{_short(e["quote"])}"'
         if src.startswith("photo:") and e.get("what"):
             try:
                 n = int(src.split(":", 1)[1]) + 1
             except ValueError:
                 n = None
-            return (f"seen in photo {n}: " if n else "seen in a photo: ") + _short(e["what"])
-    return "read from the listing"
+            return (f"seen in photo {n}" if n else "seen in a photo"), _short(e["what"])
+    return "read from the listing", None
 
 
 def field_value(f):
@@ -307,10 +315,12 @@ def build(score, answers=None, fields=None):
         out = _v1(score, answers if isinstance(answers, dict) else {}, fields)
     else:
         raise EvidenceError("score is neither an engine v2 nor a v1 response")
-    lines = [Line(id=f"E{i}", text=scrub(text), kind=kind, source=source, data=data)
-             for i, (kind, source, text, data) in enumerate(out.items, 1)]
+    lines = []
+    for i, (kind, source, text, data) in enumerate(out.items, 1):
+        q = data.pop("quote", None)
+        lines.append(Line(id=f"E{i}", text=scrub(text), kind=kind, source=source, data=data, quote=q and scrub(q)))
     for line in lines:
-        assert not DECIBEL.search(line.text), line.text
+        assert not DECIBEL.search(line.display()), line.display()
     return lines
 
 
@@ -464,7 +474,8 @@ def _floor(out, floor, floors, how, fields):
         out.add("floor", "Floor unknown: the listing does not give one and the building's height is not on record.",
                 floor=None, how=None)
     elif how == "listing":
-        out.add("floor", f"Floor {floor}{of}, {quote(fields.get('floor')) or 'read from the listing'}.", floor=floor, how="listing")
+        said, words = quote(fields.get("floor"))
+        out.add("floor", f"Floor {floor}{of}, {said or 'read from the listing'}.", quote=words, floor=floor, how="listing")
     elif how == "expected":
         out.add("floor", f"Floor {floor} assumed: the listing does not give one, so this uses the middle apartment floor"
                 + (f" of the building's {floors} floors." if floors else "."), floor=floor, how="expected")
@@ -474,8 +485,9 @@ def _floor(out, floor, floors, how, fields):
 
 def _side(out, side, how, fields):
     if side in ("front", "rear"):
-        said = (quote(fields.get("side")) or "read from the listing") if how == "listing" else "as sent with the score"
-        out.add("side", f"{'Facing the street' if side == 'front' else 'Facing the rear'}, {said}.", side=side, how=how)
+        said, words = quote(fields.get("side")) if how == "listing" else ("as sent with the score", None)
+        out.add("side", f"{'Facing the street' if side == 'front' else 'Facing the rear'}, "
+                f"{said or 'read from the listing'}.", quote=words, side=side, how=how)
     else:
         out.add("side", "Side unknown: the listing does not say whether the apartment faces the street or the rear.",
                 side="unknown", how=None)
@@ -484,7 +496,8 @@ def _side(out, side, how, fields):
 def _unit(out, fields):
     v = field_value(fields.get("unit"))
     if v:
-        out.add("unit", f"Apartment {_short(v, 20)}, {quote(fields.get('unit'))}.", unit=str(v))
+        said, words = quote(fields.get("unit"))
+        out.add("unit", f"Apartment {_short(v, 20)}, {said}.", quote=words, unit=str(v))
 
 
 def _method(out, m):
