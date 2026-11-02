@@ -226,19 +226,20 @@ class ReaderBinding:
         L = mods.listing
         listing = L.Listing(text=inputs["text"], photos=[L.Photo.from_data_url(p, str(i)) for i, p in enumerate(inputs["photos"])],
                             answers=L.Answers.parse(inputs.get("answers") or {}))
+        kw = {"scorer": FixtureScorer(case, mods.scoring.ScoreError)}
         if mode == "mock":
-            client, scorer, label = mods.mock.client(reader_responder(mods.mock, (case.get("fixtures") or {}).get("reader") or {})), \
-                FixtureScorer(case, mods.scoring.ScoreError), "mock"
-        elif mode == "off":   # the reader's rules, what it runs today without a key (READER_MODE=mock); the recorded score
-            client, scorer, label = mods.mock.client(mods.mock.HeuristicModel()), FixtureScorer(case, mods.scoring.ScoreError), "mock"
+            kw.update(client=mods.mock.client(reader_responder(mods.mock, (case.get("fixtures") or {}).get("reader") or {})),
+                      mode="mock")
+        elif mode == "off":   # the reader's own AI-off plan (HIQ-75): its rules, labelled switched_off; the recorded score
+            kw["plan"] = mods.client.make_client(ai="off")
         else:
             _house_only(self, ai)
-            client, label = mods.client.make_client()
-            if label != "live":
-                raise Unreachable("live mode, but the reader built its mock client: no MODEL_API_KEY reached it")
-            scorer = mods.scoring.HostedScorer()
+            kw.update(plan=mods.client.make_client(), scorer=mods.scoring.HostedScorer())
+            if kw["plan"].ai["mode"] != "model":
+                raise Unreachable(f"live mode, but the reader runs basic ({kw['plan'].ai['reason']}): "
+                                  "no MODEL_API_KEY reached it")
         result = None
-        for kind, data in mods.loop.read_listing(listing, client=client, scorer=scorer, mode=label):
+        for kind, data in mods.loop.read_listing(listing, **kw):
             if kind == "turn":
                 on_turn(data)
             elif kind == "result":
@@ -356,6 +357,8 @@ class VerdictBinding:
             lines = mods.evidence.build(inputs["score"], inputs.get("answers"), inputs.get("fields"))
             kw["client"] = ScriptedClient({"sentences": self.draft(lines, (case.get("fixtures") or {}).get("verdict"))},
                                           model="meta-models/muse-spark-open-1026")
+        elif mode == "off" and _accepts(mods.verdict.write, "ai"):   # the writer's own switch (HIQ-76)
+            kw["ai"] = "off"
         elif mode == "off":
             kw["writer_choice"] = "template"
         else:
@@ -420,7 +423,8 @@ class Service:
         elif self.transport == "inproc":
             out = self.binding.call(self.mods, case, inputs, self.mode, turns.append, self.ai)
         else:
-            headers = self.ai.headers() if self.mode != "mock" else {}
+            # mock over HTTP sends AI off, so a server holding the house key never runs the paid model for it
+            headers = self.ai.headers() if self.mode != "mock" else {"X-HushIQ-AI": "off"}
             resp = _post(self.url.rstrip("/") + self.binding.path, self.binding.http_body(inputs), headers=headers)
             if "event-stream" in resp.headers.get("Content-Type", ""):
                 events = read_sse(resp)
