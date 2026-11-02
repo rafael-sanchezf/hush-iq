@@ -1,0 +1,19 @@
+# Only api/, packages/model and services/ run on Vercel (api/index.py). Keys never upload, even from a CLI deploy.
+.env
+**/.env
+.claude/
+apps/
+eval/
+tests/
+**/tests/
+**/fixtures/
+**/scripts/
+**/.venv/
+**/.cache/
+**/__pycache__/
+**/node_modules/
+packages/model/api/
+packages/model/validation/
+packages/model/upgrades/
+packages/model/eval_rows.json
+.github/
