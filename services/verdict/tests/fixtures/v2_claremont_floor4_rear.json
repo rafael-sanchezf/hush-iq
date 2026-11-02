@@ -1,0 +1,169 @@
+{
+ "engine": "v2",
+ "verdict": "Very quiet",
+ "quieter_than": 98.7,
+ "uncapped_verdict": "Very quiet",
+ "caps": [],
+ "range": null,
+ "ingredients": [
+  {
+   "name": "street",
+   "label": "Street",
+   "quieter_than": 83.3,
+   "verdict": "Very quiet",
+   "weight": 22.9,
+   "ticked": false,
+   "temporary": false,
+   "evidence": [
+    "CLAREMONT AVE: two lane, 2 travel lanes, 25 mph, bus or truck route, 36 m away",
+    "BROADWAY: two lane, 2 travel lanes, 25 mph, bus or truck route, 48 m away",
+    "7 vehicle noise complaints to 311 within 100 m in 24 months (engine idling 3, car/truck horn 3)"
+   ]
+  },
+  {
+   "name": "nightlife",
+   "label": "Nightlife",
+   "quieter_than": 92.0,
+   "verdict": "Very quiet",
+   "weight": 10.7,
+   "ticked": false,
+   "temporary": false,
+   "evidence": [
+    "2 licensed venues within 150 m: 1 restaurant, 1 venue",
+    "nearest loud: LICENSEE (venue), 500 RIVERSIDE DR, 125 m",
+    "nearest loud: LICENSEE (restaurant), 125 LASALLE ST, 125 m",
+    "33 party, music or loud-talking complaints within 150 m in 24 months; 18 of them 10 pm to 5 am"
+   ]
+  },
+  {
+   "name": "building",
+   "label": "Building",
+   "quieter_than": 62.0,
+   "verdict": "Quiet",
+   "weight": 14.3,
+   "ticked": false,
+   "temporary": false,
+   "evidence": [
+    "4 residential noise complaints to 311 at this building in 24 months, 61 units: 0.03 per unit-year vs 0.07 for Manhattan (0.5x after shrinkage) (banging/pounding 2, loud music/party 2)",
+    "built 1905: pre-war elevator building, masonry and plaster",
+    "class D4: elevator building"
+   ]
+  },
+  {
+   "name": "sirens",
+   "label": "Sirens",
+   "quieter_than": 89.0,
+   "verdict": "Very quiet",
+   "weight": 42.9,
+   "ticked": true,
+   "temporary": false,
+   "evidence": [
+    "2 emergency facilities within 600 m: 1 firehouse, 1 police station",
+    "NYPD 26TH PRECINCT (police station), 520 WEST 126 STREET, 417 m",
+    "ENGINE 37/LADDER 40 (firehouse), 415 WEST 125 STREET, 554 m"
+   ]
+  },
+  {
+   "name": "construction",
+   "label": "Construction",
+   "quieter_than": 91.7,
+   "verdict": "Very quiet",
+   "weight": 9.3,
+   "ticked": false,
+   "temporary": true,
+   "evidence": [
+    "2 construction noise complaints within 100 m in 24 months (noise: construction before/after hours (nm1) 1, noise: construction equipment (nc1) 1)",
+    "2 unexpired loud-work permits on this tax block: Structural 1, General Construction 1",
+    "120 Claremont Avenue: Structural to 2026-12-31",
+    "120 Claremont Avenue: General Construction to 2026-12-31"
+   ]
+  }
+ ],
+ "answers": {
+  "sleep": {
+   "from": 23,
+   "until": 7
+  },
+  "day_bothers": true,
+  "ticks": [
+   "sirens"
+  ]
+ },
+ "slot_weights": {
+  "night": 47.5,
+  "early": 17.5,
+  "day": 35.0
+ },
+ "unit": {
+  "floor": 4,
+  "floor_from": "listing",
+  "side": "rear",
+  "side_from": "listing",
+  "building_floors": 6,
+  "ground_floor_commercial": false
+ },
+ "address": {
+  "query": "140 Claremont Ave, Manhattan",
+  "label": "140 CLAREMONT AVENUE, New York, NY, USA",
+  "lat": 40.813047,
+  "lng": -73.961038,
+  "bbl": "1019930057",
+  "bin": "1059848",
+  "borough": "Manhattan"
+ },
+ "building_facts": {
+  "address": "140 CLAREMONT AVENUE",
+  "yearbuilt": "1905",
+  "numfloors": "6.0000000",
+  "bldgclass": "D4",
+  "unitsres": "61",
+  "unitstotal": "61"
+ },
+ "manhattan": {
+  "buildings": 298,
+  "apartments": 958418,
+  "as_of": "2026-10-22"
+ },
+ "as_of": "2026-10-29",
+ "lookback_months": 24,
+ "sources": [
+  {
+   "name": "NYC GeoSearch (address, BBL, BIN)",
+   "url": "https://geosearch.planninglabs.nyc/v2/search"
+  },
+  {
+   "name": "NYC 311 Service Requests",
+   "url": "https://data.cityofnewyork.us/resource/erm2-nwe9.json"
+  },
+  {
+   "name": "NYC PLUTO (year built, floors, units, class)",
+   "url": "https://data.cityofnewyork.us/resource/64uk-42ks.json"
+  },
+  {
+   "name": "NYC Street Centerline (road class, lanes, speed)",
+   "url": "https://data.cityofnewyork.us/resource/inkn-q76z.json"
+  },
+  {
+   "name": "DOB NOW approved permits (same tax block)",
+   "url": "https://data.cityofnewyork.us/resource/rbx6-tga4.json"
+  },
+  {
+   "name": "NYS Liquor Authority active licenses",
+   "url": "https://data.ny.gov/resource/9s3h-dpkz.json"
+  },
+  {
+   "name": "MTA subway stations (elevated structures)",
+   "url": "https://data.ny.gov/resource/39hk-dx4f.json"
+  },
+  {
+   "name": "NYC Facilities Database (hospitals, firehouses, police)",
+   "url": "https://data.cityofnewyork.us/resource/67g2-p84d.json"
+  }
+ ],
+ "caveats": [
+  "Every number here is a rank against Manhattan, not a sound measurement.",
+  "Each source is compared only with the same source elsewhere; the weights say which matters more.",
+  "311 counts measure who complains, not how loud it is.",
+  "Construction is temporary; permits expire."
+ ]
+}

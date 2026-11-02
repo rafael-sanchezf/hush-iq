@@ -1,0 +1,75 @@
+{
+ "model": "muse-spark-1.3",
+ "recorded": "2026-10-28",
+ "fixture": "permits_55_bethune_street.json",
+ "turns": [
+  [
+   [
+    "read_permits",
+    {
+     "readings": [
+      {
+       "id": "M01113570-I1-GC",
+       "kind": "facade",
+       "kind_quote": "EXTERIOR MASONRY RESTORATION",
+       "duration": "years",
+       "duration_quote": "EXTERIOR MASONRY RESTORATION, ROOF REPLACEMENTS, INSTALLATION OF NEW GREEN ROOFING"
+      },
+      {
+       "id": "M01265075-I1-PMM",
+       "kind": "other",
+       "kind_quote": "INSTALLATION OF TEMPORARY DEBRIS CHUTE",
+       "duration": "weeks",
+       "duration_quote": "INSTALLATION OF TEMPORARY DEBRIS CHUTE"
+      },
+      {
+       "id": "M01255421-S1-SH",
+       "kind": "scaffold_shed",
+       "kind_quote": "INSTL OF TEMP SIDEWALK SHED",
+       "duration": "weeks",
+       "duration_quote": "INSTL OF TEMP SIDEWALK SHED"
+      },
+      {
+       "id": "M01181311-I1-SC",
+       "kind": "scaffold_shed",
+       "kind_quote": "suspended scaffold",
+       "duration": "weeks",
+       "duration_quote": "Installation of suspended scaffold"
+      }
+     ]
+    }
+   ]
+  ],
+  [
+   [
+    "submit_adjustment",
+    {
+     "cites": [
+      "M01113570-I1-GC"
+     ],
+     "direction": "louder",
+     "reason": "Large exterior masonry and roof replacement nearby means long-running noisy outdoor work.",
+     "size": 1
+    }
+   ]
+  ]
+ ],
+ "adjustment": {
+  "source": "construction",
+  "direction": "louder",
+  "size": 1,
+  "cap": 2,
+  "cites": [
+   "M01113570-I1-GC"
+  ],
+  "reason": "Large exterior masonry and roof replacement nearby means long-running noisy outdoor work."
+ },
+ "why_none": null,
+ "usage": {
+  "calls": 2,
+  "prompt_tokens": 4547,
+  "completion_tokens": 3822,
+  "reasoning_tokens": 3366
+ },
+ "seconds": 13.6
+}

@@ -1,0 +1,145 @@
+{
+ "address": {
+  "query": "100 West 57th Street, Manhattan",
+  "label": "100 WEST 57 STREET, New York, NY, USA",
+  "bbl": "1010090029",
+  "borough": "Manhattan"
+ },
+ "as_of": "2026-10-28",
+ "source": "https://data.cityofnewyork.us/resource/rbx6-tga4.json",
+ "rows_on_block": 69,
+ "permits": [
+  {
+   "work_permit": "M00461800-I1-GC",
+   "work_type": "General Construction",
+   "job_description": "General construction work filed in conjunction with Alteration type 1 (no work) #: 123923068",
+   "house_no": "140",
+   "street_name": "WEST   57 STREET",
+   "bin": "1023462",
+   "issued_date": "2026-04-13T00:00:00.000",
+   "expired_date": "2027-01-15T00:00:00.000",
+   "estimated_job_costs": "14960259"
+  },
+  {
+   "work_permit": "M01143725-I1-GC",
+   "work_type": "General Construction",
+   "job_description": "PROPOSED INTERIOR NON-STRUCTURAL ALTERATION OF CELLAR & 1ST FLOOR. THE SCOPE IS LIMITED TO THE INTERIOR RENOVATION OF NON-LOAD WALLS, FLOORS, AND CIELING. NO CHANGE TO USE, EGRESS OR OCCUPANCY.",
+   "house_no": "142",
+   "street_name": "WEST   57 STREET",
+   "bin": "1085969",
+   "issued_date": "2026-03-11T00:00:00.000",
+   "expired_date": "2027-03-11T00:00:00.000",
+   "estimated_job_costs": "3278100"
+  },
+  {
+   "work_permit": "M00426213-I1-ST",
+   "work_type": "Structural",
+   "job_description": "Structural work in conjunction with ALT 1 #123923068 and GC M00461800",
+   "house_no": "140",
+   "street_name": "WEST   57 STREET",
+   "bin": "1023462",
+   "issued_date": "2026-03-20T00:00:00.000",
+   "expired_date": "2027-01-15T00:00:00.000",
+   "estimated_job_costs": "3249703.3"
+  },
+  {
+   "work_permit": "M01236656-I1-GC",
+   "work_type": "General Construction",
+   "job_description": "PROPOSED EXTERIOR ALTERATION FOR THE RENOVATION OF THE EXISTING PLAZA. NO CHANGE TO USE, EGRESS OR OCCUPANCY.",
+   "house_no": "142",
+   "street_name": "WEST   57 STREET",
+   "bin": "1085969",
+   "issued_date": "2026-01-22T00:00:00.000",
+   "expired_date": "2027-01-22T05:00:00.000",
+   "estimated_job_costs": "360000"
+  },
+  {
+   "work_permit": "M01192019-I1-GC",
+   "work_type": "General Construction",
+   "job_description": "OFFICE RENOVATION (Greystone 21C/22M and 22C/23M) WORK TO INCLUDE PARTITION, CEILING AND DOOR MODIFICATIONS AS INDICATED ON PLANS. NO CHANGE IN USE, EGRESS OR OCCUPANCY.",
+   "house_no": "152",
+   "street_name": "WEST   57 STREET",
+   "bin": "1084455",
+   "issued_date": "2025-12-01T00:00:00.000",
+   "expired_date": "2026-12-01T00:00:00.000",
+   "estimated_job_costs": "323100"
+  },
+  {
+   "work_permit": "M01143715-I1-ST",
+   "work_type": "Structural",
+   "job_description": "PARTIAL DEMOLITION OF FLOOR SLAB WITH BRACING FOR CONVENIENCE STAIR BUILD-OUT AS PER PLANS FILED. NO CHANGE TO USE, EGRESS OR OCCUPANCY.",
+   "house_no": "142",
+   "street_name": "WEST   57 STREET",
+   "bin": "1085969",
+   "issued_date": "2026-03-10T00:00:00.000",
+   "expired_date": "2027-03-10T00:00:00.000",
+   "estimated_job_costs": "200000"
+  },
+  {
+   "work_permit": "M01298489-I1-GC",
+   "work_type": "General Construction",
+   "job_description": "OFFICE RENOVATION(GREYSTONE 19C/20M) WORK TO INCLUDE PARTITION, CEILING AND DOOR MODIFICATIONS AS INDICATED ON PLANS. NO CHANGE IN USE, EGRESS OR OCCUPANCY.",
+   "house_no": "152",
+   "street_name": "WEST   57 STREET",
+   "bin": "1084455",
+   "issued_date": "2025-12-01T00:00:00.000",
+   "expired_date": "2026-12-01T00:00:00.000",
+   "estimated_job_costs": "161550"
+  },
+  {
+   "work_permit": "M01109932-I1-GC",
+   "work_type": "General Construction",
+   "job_description": "FILING FOR INTERIOR DEMO OF NON-LOAD BEARING PARTITIONS, FLOORS AND CEILING AS PER PLANS FILED. NO CHANGE TO USE EGRESS OR OCCUPANCY.",
+   "house_no": "142",
+   "street_name": "WEST   57 STREET",
+   "bin": "1085969",
+   "issued_date": "2026-02-25T00:00:00.000",
+   "expired_date": "2027-02-25T05:00:00.000",
+   "estimated_job_costs": "150000"
+  },
+  {
+   "work_permit": "M01192019-S4-ST",
+   "work_type": "Structural",
+   "job_description": "STRUCTURAL MODIFICATIONS (GREYSTONE 21C/22M and 22C/23M) AS INDICATED ON PLANS. NO CHANGE IN USE, EGRESS OR OCCUPANCY.",
+   "house_no": "152",
+   "street_name": "WEST   57 STREET",
+   "bin": "1084455",
+   "issued_date": "2025-12-02T00:00:00.000",
+   "expired_date": "2026-12-02T00:00:00.000",
+   "estimated_job_costs": "104950"
+  },
+  {
+   "work_permit": "M01194458-I1-GC",
+   "work_type": "General Construction",
+   "job_description": "FILING CHANGE OF USE IN PORTION OF THE CELLAR FROM STORAGE ACCESSORY TO OFFICE USE (UG VII) TO LOUNGE AREA ACCESSORY TO OFFICE USE (UG VII).",
+   "house_no": "142",
+   "street_name": "WEST   57 STREET",
+   "bin": "1085969",
+   "issued_date": "2026-06-10T00:00:00.000",
+   "expired_date": "2027-03-30T00:00:00.000",
+   "estimated_job_costs": "100776"
+  },
+  {
+   "work_permit": "M01192032-I1-GC",
+   "work_type": "General Construction",
+   "job_description": "OFFICE RENOVATION (Greystone Reno 59C/60M ) WORK TO INCLUDE PARTITION, CEILING AND DOOR MODIFICATIONS AS INDICATED ON PLANS. NO CHANGE IN USE, EGRESS OR OCCUPANCY.",
+   "house_no": "152",
+   "street_name": "WEST   57 STREET",
+   "bin": "1084455",
+   "issued_date": "2025-12-02T00:00:00.000",
+   "expired_date": "2026-12-02T00:00:00.000",
+   "estimated_job_costs": "99100"
+  },
+  {
+   "work_permit": "M01298489-S4-ST",
+   "work_type": "Structural",
+   "job_description": "OFFICE RENOVATION(GREYSTONE 19C/20M - 21M FRAMING PLAN) WORK TO INCLUDE STRUCTURAL MODIFICATIONS AS INDICATED ON PLANS. NO CHANGE IN USE, EGRESS OR OCCUPANCY.",
+   "house_no": "152",
+   "street_name": "WEST   57 STREET",
+   "bin": "1084455",
+   "issued_date": "2026-01-12T00:00:00.000",
+   "expired_date": "2026-12-31T00:00:00.000",
+   "estimated_job_costs": "75900"
+  }
+ ]
+}

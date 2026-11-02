@@ -1,0 +1,85 @@
+{
+  "fields": {
+    "address": {
+      "value": null,
+      "status": "cant_tell",
+      "evidence": []
+    },
+    "unit": {
+      "value": "3C",
+      "status": "read",
+      "evidence": [
+        {
+          "source": "photo:3",
+          "what": "the floor plan is labeled APT 3C"
+        }
+      ]
+    },
+    "floor": {
+      "value": 3,
+      "status": "read",
+      "evidence": [
+        {
+          "source": "photo:3",
+          "what": "the floor plan is labeled APT 3C"
+        }
+      ]
+    },
+    "side": {
+      "value": "street",
+      "status": "read",
+      "evidence": [
+        {
+          "source": "photo:3",
+          "what": "the plan prints West 78th Street along the living room and bedroom windows"
+        }
+      ]
+    }
+  },
+  "position": "front",
+  "observed": {
+    "view": {
+      "value": "street",
+      "status": "read",
+      "evidence": [
+        {
+          "source": "photo:0",
+          "what": "a row of brownstones across the street, seen through the living room window"
+        }
+      ]
+    },
+    "windows": {
+      "value": {
+        "floor_to_ceiling": false,
+        "operable": true
+      },
+      "status": "read",
+      "evidence": [
+        {
+          "source": "photo:0",
+          "what": "a double-hung window with a meeting rail"
+        }
+      ]
+    },
+    "ac_units": {
+      "value": "window",
+      "status": "read",
+      "evidence": [
+        {
+          "source": "photo:0",
+          "what": "a window AC unit in the lower sash"
+        }
+      ]
+    },
+    "wall_material": {
+      "value": "concrete",
+      "status": "read",
+      "evidence": [
+        {
+          "source": "photo:1",
+          "what": "a masonry wall"
+        }
+      ]
+    }
+  }
+}
