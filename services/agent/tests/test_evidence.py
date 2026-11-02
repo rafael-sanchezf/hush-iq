@@ -67,6 +67,20 @@ def test_address_and_unit_must_be_in_the_quote():
     assert stated("address", "315 West 86th Street", "315 W. 86th St.") is None
     assert stated("address", "315 West 86th Street", "West 86th Street")          # no house number
     assert stated("address", "315 West 87th Street", "315 West 86th Street")      # the model's own street
+    assert stated("address", "315 West 86th Street, New York, NY 10024", "315 W. 86th St.") is None
+    assert stated("address", "520 2nd Avenue", "520 Second Ave #3E") is None
+    assert stated("address", "2109 Broadway", "2109 B'way, Upper West Side") is None
+
+
+@pytest.mark.parametrize("value, quote", [
+    ("315 West 86th Street", "315 East 86th Street"),                            # the other side of Fifth Avenue
+    ("31-10 31st Street", "31-10 31st Avenue"),                                   # a street is not an avenue
+    ("450 Ludlow Street", "450 sq ft one-bedroom on Ludlow Street"),              # the number is not the house's
+])
+def test_an_address_quote_needs_the_house_number_then_the_same_street(value, quote):
+    """SEC-2: the old bag-of-tokens check dropped east, west, street and avenue and ignored order, so each of
+    these was accepted and GeoSearch scored a different building."""
+    assert stated("address", value, quote)
     assert stated("unit", "11C", "Apartment 11C") is None
     assert stated("unit", "#2A", "Unit 2A") is None
     assert stated("unit", "11", "Apartment 11C")

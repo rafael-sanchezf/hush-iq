@@ -11,6 +11,8 @@ They live here, in code the tools call, not in the prompt, so the agent cannot s
 """
 import re
 
+from .scoring import house_number, street_key
+
 SCORE_FIELDS = ("address", "unit", "floor", "side")
 OBSERVED_FIELDS = ("view", "windows", "ac_units", "wall_material")
 STATUSES = ("read", "cant_tell")
@@ -115,18 +117,20 @@ _SIDE_STATED = {
               r"[^.;]{0,60}\b(?:street|st\.?|avenue|ave\.?|broadway|boulevard|blvd\.?|place|road)\b",
 }
 
-_GENERIC = {"street", "st", "avenue", "ave", "east", "e", "west", "w", "north", "n", "south", "s", "new", "york",
-            "ny", "nyc", "manhattan", "usa", "the", "of", "and", "at", "apt", "apartment", "unit"}
-
-
-def _tokens(s):
-    return {re.sub(r"(?<=\d)(st|nd|rd|th)$", "", t) for t in re.findall(r"[a-z0-9-]+", s.lower())}
-
-
 def _address_stated(value, quote):
-    """Every specific token of the address (house number, street name) is in the quote."""
-    wanted = _tokens(value) - _GENERIC
-    return bool(wanted) and wanted <= _tokens(quote)
+    """The house number, then the same street, in the quote. Spelling is normalised ("315 W. 86th St." states
+    "315 West 86th Street"); direction and street type are not, so "315 East 86th Street", "31-10 31st Avenue" for
+    "31-10 31st Street" and "450 sq ft ... Ludlow Street" for "450 Ludlow Street" are refused: GeoSearch would
+    place a different building (SEC-2). The value's city, ZIP or unit after a comma is not required."""
+    head = re.split(r",|\s(?:apt|apartment|unit)\b|#", value, maxsplit=1, flags=re.I)[0]
+    house, street = house_number(head), street_key(head)
+    if not house or not street:
+        return False
+    for m in re.finditer(rf"(?<![\w-]){re.escape(house)}(?![\w-])", quote, re.I):
+        tail = street_key(quote[m.end():], numbered=False)
+        if tail == street or tail.startswith(street + " "):
+            return True
+    return False
 
 
 def _unit_core(value):
