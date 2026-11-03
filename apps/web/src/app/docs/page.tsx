@@ -37,7 +37,7 @@ const SCORE_EXAMPLE = `{
   "caveats": ["Every number here is a rank against Manhattan, not a sound measurement.", "…"]
 }`;
 
-const READ_EXAMPLE = `curl -N -X POST $READER_URL/read \\
+const READ_EXAMPLE = `curl -N -X POST https://hush-iq-api.vercel.app/read \\
   -H 'content-type: application/json' \\
   -d '{"text": "Two-bedroom walk-up #3F, 310 West 47th Street ... third-floor ... facing 47th Street",
        "photos": ["data:image/jpeg;base64,..."],
@@ -61,7 +61,8 @@ data: {"n": 5, "by": "code", "tool": "score", "ok": true,
        "result": {"engine": "v2", "verdict": "Very loud", "quieter_than": 8.7, "range": null}}
 
 event: result
-data: {"status": "complete", "fields": {...}, "position": "front", "observed": {...}, "score": {...}, "mode": "live"}`;
+data: {"status": "complete", "fields": {...}, "position": "front", "observed": {...}, "score": {...},
+       "ai": {"mode": "model", "provider": "meta", "model": "muse-spark-1.3", "key": "house", "reason": null, "message": null}}`;
 
 const FIELD_EXAMPLE = `"floor": {
   "value": 3,
@@ -128,7 +129,7 @@ export default function Docs() {
               <div className="endpoint-title">
                 <span className="method">GET</span>
                 <h2>/v2/score</h2>
-                <Status tone="v2">Deploying with engine v2</Status>
+                <Status tone="live">Live</Status>
               </div>
               <p>
                 One apartment, one renter. Each source of noise is ranked against the same source across Manhattan, and the ranks are averaged with the renter’s
@@ -191,7 +192,7 @@ export default function Docs() {
               <div className="endpoint-title">
                 <span className="method">POST</span>
                 <h2>/read</h2>
-                <Status tone="next">Built, not hosted yet</Status>
+                <Status tone="live">Live</Status>
               </div>
               <p>
                 The listing reader. Muse Spark reads the pasted text and the photos for facts about the unit, through tools that refuse any field without its
@@ -230,8 +231,51 @@ export default function Docs() {
                 <code>{FIELD_EXAMPLE}</code>
               </pre>
               <p className="foot-note">
-                Full contract: <a href={`${REPO_URL}/blob/main/services/agent/CONTRACT.md`}>services/agent/CONTRACT.md</a>. With no Meta key the service runs a
-                rule-based stand-in and says so with <code>"mode": "mock"</code>.
+                Full contract: <a href={`${REPO_URL}/blob/main/services/agent/CONTRACT.md`}>services/agent/CONTRACT.md</a>. With no model the service runs its
+                rule-based reader and says why in <code>ai.reason</code> and <code>ai.message</code>.
+              </p>
+            </article>
+
+            <article className="endpoint" id="models">
+              <div className="endpoint-title">
+                <h2 style={{ fontFamily: 'var(--display)' }}>Choosing the model</h2>
+              </div>
+              <p>
+                <code>/read</code>, <code>/verdict</code> and <code>/adjust/permits</code> take four optional headers, never query parameters, so a key never
+                lands in a URL or a log. With none, Muse Spark 1.3 reads on the house key.
+              </p>
+              <div className="table-wrap">
+                <table className="params">
+                  <thead>
+                    <tr>
+                      <th>Header</th>
+                      <th>Values</th>
+                      <th>Absent means</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><code>X-HushIQ-AI</code></td><td><code>on</code>, <code>off</code></td><td><code>on</code>; <code>off</code> runs the rules reader and the template, with no model call</td></tr>
+                    <tr><td><code>X-HushIQ-Provider</code></td><td><code>meta</code>, <code>openai</code>, <code>anthropic</code></td><td><code>meta</code></td></tr>
+                    <tr><td><code>X-HushIQ-Key</code></td><td>your key for that provider</td><td>the house key, Meta only</td></tr>
+                    <tr><td><code>X-HushIQ-Model</code></td><td>a model from that provider’s list (<code>GET /health/reader</code>)</td><td>the provider’s default</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>
+                Every result carries an <code>ai</code> object that says who read it. When no model ran, <code>reason</code> is one of <code>switched_off</code>,{' '}
+                <code>house_off</code>, <code>no_key</code>, <code>key_rejected</code>, <code>provider_busy</code> or <code>provider_error</code>, and{' '}
+                <code>message</code> says it in a sentence. A caller’s key that fails never falls back to the house key: the rules reader answers instead.
+              </p>
+              <pre className="code">
+                <code>{`"ai": {"mode": "basic", "provider": "openai", "model": null, "key": "caller", "reason": "key_rejected",
+       "message": "OpenAI rejected your key, so the basic reader read this listing."}`}</code>
+              </pre>
+              <p>
+                <code>POST /key-check</code> takes the same headers and no body, makes one call to the provider’s model list (no tokens spent) and answers{' '}
+                <code>{'{ok, provider, message}'}</code>.
+              </p>
+              <p className="foot-note">
+                The full rules: <a href={`${REPO_URL}/blob/main/services/agent/CONTRACT.md`}>services/agent/CONTRACT.md</a>, “Headers”.
               </p>
             </article>
 
@@ -239,7 +283,7 @@ export default function Docs() {
               <div className="endpoint-title">
                 <span className="method">POST</span>
                 <h2>/verdict</h2>
-                <Status tone="next">Built, not hosted yet</Status>
+                <Status tone="live">Live</Status>
               </div>
               <p>
                 The “what you’ll hear” paragraph for one renter. The service turns the score into numbered evidence lines, Muse Spark 1.3 on the Meta Model API writes
@@ -247,7 +291,7 @@ export default function Docs() {
                 number, name and kind of source in it appears in the lines it cites. A draft that fails is retried once, then the template writes.
               </p>
               <pre className="code">
-                <code>{`curl -X POST $VERDICT_URL/verdict -H 'content-type: application/json' \\
+                <code>{`curl -X POST https://hush-iq-api.vercel.app/verdict -H 'content-type: application/json' \\
   -d '{"score": <a /v2/score response>, "answers": {...}, "fields": <the reader's fields>}'`}</code>
               </pre>
               <pre className="code">
