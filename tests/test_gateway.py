@@ -28,6 +28,17 @@ def test_every_route_is_on_one_host(client):
     assert client.get("/api/index/health").status_code == 200          # the prefix Vercel's router may add
 
 
+def test_the_bare_host_is_an_index_not_the_prototype_page(client):
+    r = client.get("/")
+    assert r.status_code == 200 and r.headers["content-type"].startswith("application/json")
+    routes = r.json()["routes"]
+    assert "POST /read" in routes and "GET /v2/score" in routes
+    served = {(m, rt.path) for rt in index.gateway.routes for m in getattr(rt, "methods", ())}
+    for k in routes:
+        method, path = k.split(" ", 1)
+        assert (method, path) in served, k
+
+
 def test_head_answers_405_on_a_route_and_404_off_one(client):
     """The extension's auto mode: a HEAD that answers 404 means the route is missing and the panel replays it."""
     for path in ("/read", "/verdict", "/key-check"):

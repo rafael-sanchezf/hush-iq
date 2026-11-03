@@ -1,4 +1,4 @@
-# Assignment 4, Live API Data: Noise Score
+# Noise Score (iOS)
 
 Rafael Sanchez. The iOS client of Hush IQ; built as a course project in fall 2026, prior to the hackathon.
 
@@ -108,7 +108,7 @@ Built with Xcode 27.1 and SwiftUI, deployment target iOS 18, iPhone and iPad. No
 
 ## AI acknowledgement
 
-This assignment was done with the assistance of AI, in line with the course policy. The idea, the
+This app was built with the assistance of AI. The idea, the
 choice of data, the three questions, the scoring model and its weights, the design decisions and all
 of the written prose were composed by me, Rafael Sanchez. I orchestrated the work and AI assisted in
 the coding, so a good part of the Swift code was AI generated under my direction and I reviewed and

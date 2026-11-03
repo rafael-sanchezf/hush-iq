@@ -145,7 +145,7 @@ nightly bulk pull of the 311 noise rows into SQLite.
 ### T3. Socrata app token (default taken: none; you supply one as NOISE_SCORE_SOCRATA_TOKEN)
 Without a token the city rate-limits anonymous queries; with one (free, two minutes at
 data.cityofnewyork.us, Profile, Developer Settings) the limit is per app. Needed before scoring 20 live
-listings in one sitting. **Decide:** whether to register it under ras2369 now.
+listings in one sitting. **Decide:** whether to register one now.
 
 ### T4. Caching (default taken: every upstream pull cached on disk for 7 days under `.cache/`)
 A cold address takes 3 to 8 seconds (six serial pulls); a cached one is instant. **Decide:** nothing for

@@ -6,6 +6,7 @@ site and the extension send every call to one base URL.
     POST /verdict                            services/verdict, the verdict writer
     POST /adjust/permits                     services/adjust, the permit reader
     GET  /health                             this host; /health/reader and /health/verdict are each service's own
+    GET  /                                   this host's index: every route and its contract (CLM-5)
 
 Each service keeps its own app for running alone; this one copies their routes and leaves their middleware behind,
 so CORS is set once here, for GET and POST. Vercel runs this file (vercel.json); locally, from the repo root:
@@ -38,7 +39,7 @@ from verdict import api as verdict_api  # noqa: E402
 # reader gives its APIRouter, the one its own app includes.
 PIECES = {"score": score_api.app.router, "reader": reader_app.app.router, "verdict": verdict_api.app.router,
           "adjust": adjust_api.router}
-OWN = {"/health"}                                                   # answered here, for the whole host
+OWN = {"/", "/health"}                                              # answered here, for the whole host
 MOVED = {("reader", "/"): "/health/reader", ("verdict", "/health"): "/health/verdict"}
 
 gateway = FastAPI(title="Hush IQ", version=__version__,
@@ -61,6 +62,30 @@ for piece, router in PIECES.items():
             raise RuntimeError(f"{path} is served twice; give the {piece} one a place in MOVED")
         taken.add(path)
         gateway.router.routes.append(route)
+
+
+REPO = "https://github.com/rafael-sanchezf/hush-iq"
+ROUTES = {
+    "GET /v2/score": ("the score: address, unit and the renter's answers", "packages/model/README.md"),
+    "GET /v1/score": ("the frozen model's score and ingredients", "packages/model/README.md"),
+    "GET /v1/raw": ("the city data behind a score", "packages/model/README.md"),
+    "POST /read": ("the listing reader: text and photos in, fields with their quotes out, streamed",
+                   "services/agent/CONTRACT.md"),
+    "POST /key-check": ("checks a caller's own API key without reading anything", "services/agent/CONTRACT.md"),
+    "POST /verdict": ("the verdict writer: a paragraph whose every sentence cites the evidence sent",
+                      "services/verdict/CONTRACT.md"),
+    "POST /adjust/permits": ("the permit reader: construction permits on the tax block, read into a bounded adjustment",
+                             "services/adjust/CONTRACT.md"),
+    "GET /health": ("this host and its routes", None),
+}
+
+
+@gateway.get("/")
+def index():
+    """The bare host answers with what it serves, in place of the prototype's page (CLM-5)."""
+    return {"service": "Hush IQ", "version": __version__, "repo": REPO,
+            "routes": {k: {"what": what, "contract": f"{REPO}/blob/main/{doc}" if doc else None}
+                       for k, (what, doc) in ROUTES.items()}}
 
 
 @gateway.get("/health")

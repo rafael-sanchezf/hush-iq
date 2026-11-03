@@ -1,7 +1,7 @@
 # Personal Noise Score
 
 A unit-level, hour-aware noise score for NYC apartments, built from public data with no key. The
-prototype behind the Columbia HCD team project (Harry West, Fall 2026): one apartment, one renter, by
+prototype behind a university team project on human-centered design (fall 2026): one apartment, one renter, by
 hour, with the ingredients shown. HowLoud's Soundscore scores a point on the map once for everyone; this
 scores floor 2 differently from floor 6, night differently from day, and a light sleeper differently
 from a heavy one.
@@ -9,7 +9,7 @@ from a heavy one.
 ## Run it
 
 ```bash
-cd ~/code/noise-score
+cd packages/model
 uv venv .venv && uv pip install -e ".[dev]"
 .venv/bin/noise-score "158 Bedford Ave, Brooklyn" --floor 2 --position front --sleep light --bothers neighbors,people
 ```

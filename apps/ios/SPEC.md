@@ -2,12 +2,11 @@
 
 Written 2026-10-21 night. One SwiftUI app, two deliverables:
 
-1. **UI/UX Assignment 4, "Live API Data"** (ENGI E4502, 20 pts, due Thu 2026-10-22 11:59 PM ET, pushed to
-   GitLab `ENG4502/assignment_4` on branch `ras2369`). Canvas text: select any live API endpoint; download
-   live data and display it as a List with a separate detail view, or on a Map; ensure the app works in a
-   "no network" condition; no weather apps. Said in class: spend time on the design, it is a UI/UX class.
-2. **The HCD team project's prototype** (IEME E4201, Pitch & Prototype due Tue 2026-10-27): the Personal
-   Noise Score. The Python prototype at `~/code/noise-score` is the reference model. This app is the
+1. **A class assignment on live API data** (fall 2026, before the hackathon). The brief: select any live API
+   endpoint; download live data and display it as a List with a separate detail view, or on a Map; ensure the
+   app works in a "no network" condition; no weather apps. Said in class: spend time on the design.
+2. **A team project's prototype** (fall 2026): the Personal Noise Score. The Python prototype (now
+   `packages/model`) is the reference model. This app is the
    renter-facing client: three questions, then a score for one apartment by hour with the evidence shown.
 
 The live API is NYC Open Data (Socrata), no key: 311 noise complaints for the map and list, plus the six
@@ -121,9 +120,9 @@ must not break. iOS 18 APIs are fine (`Map` with `Annotation`, `@Observable`, `N
 
 ### The signature
 
-Same visual signature as the HW2 app (`~/code/ENG4502_assignment_2/Assignment2/Theme.swift`): corner radius 22,
+Same visual signature as the earlier class app's theme: corner radius 22,
 gutter 20, rounded bold numerals, greyscale first, **one accent colour per screen spent on one thing**
-(the instructor takes a point off for colour overuse). Images and spacing carry the hierarchy. Dynamic
+(colour overuse is marked down). Images and spacing carry the hierarchy. Dynamic
 Type must work; every tappable thing has an accessibility label. No third-party packages.
 
 Accent rule per screen: Score screen, the score ring. Nearby screen, the pins that match what bothers
@@ -202,4 +201,4 @@ Add M11 to the Python prototype so both models agree:
 
 Regenerate the four fixtures with the Python model including sirens, switch the Swift comparison test to
 `ScoreOptions(sirens: true)`, run `swift test`, build, run on the simulator, write README.md (purpose, the
-API, the screens, how offline works, files, AI acknowledgement in the HW2 wording), commit, push `ras2369`.
+API, the screens, how offline works, files, AI acknowledgement), commit, push.
