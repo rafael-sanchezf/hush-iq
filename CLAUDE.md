@@ -7,7 +7,7 @@ before any change: it is the line between prior work and hackathon work, and eve
 ## Layout
 
 ```
-apps/ios        SwiftUI app and NoiseKit (prior work; the class repo's history stays on GitLab)
+apps/ios        SwiftUI app and NoiseKit (prior work; its earlier history is not in this repository)
 apps/web        the website (hackathon)
 packages/model  the noise model and FastAPI (prior work, frozen: model.py, baseline.py, sources.py never change)
 services/agent  the Meta-model layer (hackathon)
@@ -32,9 +32,8 @@ FEEDBACK.md     every rough edge met in the Meta Model API and the partner tools
 
 ## The board
 
-This repo files to the Jira project **HIQ** on `rafasanchezfajardo12.atlassian.net`
-(`~/code/verso/scripts/jira/jira`, works from any directory, token in `~/code/verso/.env`; the rules in
-`~/.claude/JIRA.md`). One Epic per piece in `HACKATHON.md`; a branch is `HIQ-12-short-name` and the PR
+This repo files to the Jira project **HIQ** (the site, the CLI and the rules are in `~/.claude/JIRA.md`; the token
+never enters this repository). One Epic per piece in `HACKATHON.md`; a branch is `HIQ-12-short-name` and the PR
 title starts with the key. Rafa's items read "Verb: object (N min)" and sit in Ready (To Do until the board
 has the column), never Backlog. A question only he can answer is `jira ask`, never a guess. Close every
 session with each touched card in its true state.

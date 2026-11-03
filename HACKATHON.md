@@ -6,7 +6,7 @@ current with every commit so a judge can tell them apart without asking.
 
 ## What existed at kickoff (prior work, not demoed as new)
 
-Two things, both built before Oct 26 for a Columbia course sequence on human-centered design, and both
+Two things, both built before Oct 26 for a university course sequence on human-centered design, and both
 imported into this repository as snapshots in the first commit:
 
 | Piece | Where | Source commit | Last changed before kickoff |
