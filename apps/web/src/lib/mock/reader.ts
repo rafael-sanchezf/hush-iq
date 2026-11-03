@@ -92,8 +92,8 @@ export async function mockRead(input: ReadInput, onTurn: (t: ReaderTurn) => void
   if (sample?.id === 'claremont') {
     // The grounding check, as the live reader's submit_listing tool runs it: a field with no quoted line is refused.
     await emit({
-      kind: 'check', status: 'refused', title: 'submit_listing refused “side: rear”',
-      detail: 'No line of the listing says it. Sent back as can’t tell.',
+      kind: 'check', status: 'refused', title: 'Example: the live reader’s submit_listing refuses “side: rear”',
+      detail: 'Scripted for this sample: no line of the listing says it, so the live tool sends it back as can’t tell.',
     }, 650);
   }
   const readCount = [address, unit, floor, side].filter((f) => f.status === 'read').length;
