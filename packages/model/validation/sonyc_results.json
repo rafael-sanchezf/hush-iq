@@ -1,0 +1,6517 @@
+{
+ "dataset": {
+  "name": "SONYC-UST-V2",
+  "version": "2.3.0",
+  "zenodo_record": "3966543",
+  "paper": "https://arxiv.org/abs/2009.05188",
+  "license": "CC BY 4.0",
+  "files_used": [
+   "annotations.csv",
+   "dcase-ust-taxonomy.yaml",
+   "README.md"
+  ],
+  "audio_downloaded": false
+ },
+ "run_date": "2026-10-29",
+ "as_of": "2026-10-29",
+ "reused_today_levels": false,
+ "label_rule": "verified label when the clip has one, else majority of the 3 volunteers (more than half)",
+ "mapping": {
+  "street": [
+   "1_engine_presence"
+  ],
+  "construction": [
+   "2_machinery-impact_presence",
+   "4_powered-saw_presence"
+  ],
+  "nightlife": [
+   "6_music_presence",
+   "7_human-voice_presence"
+  ],
+  "sirens": [
+   "5-3_siren_presence"
+  ]
+ },
+ "skipped": {
+  "building": "neighbors have no outdoor sound tag, so there is no proxy to test against"
+ },
+ "slots": {
+  "night": [
+   22,
+   5
+  ],
+  "early": [
+   5,
+   8
+  ],
+  "day": [
+   8,
+   22
+  ]
+ },
+ "min_clips": 20,
+ "bootstrap": 2000,
+ "seed": 20261028,
+ "lot_distance_median_m": 0.5,
+ "scored_locations": 35,
+ "label_rule_max_shift": {
+  "shift": 0.322,
+  "cell": "construction night: +0.04 to +0.36"
+ },
+ "overview": {
+  "annotation_rows": 58527,
+  "clips": 17662,
+  "sensors": 43,
+  "tax_blocks": 28,
+  "locations": 38,
+  "verified_clips": 1177,
+  "years": [
+   2016,
+   2019
+  ],
+  "clips_by_slot": {
+   "night": 3052,
+   "early": 1674,
+   "day": 12936
+  },
+  "locations_with_min_clips": {
+   "night": 33,
+   "early": 26,
+   "day": 34
+  },
+  "distance_from_washington_square_km": [
+   {
+    "from_km": 0.0,
+    "to_km": 0.5,
+    "locations": 19,
+    "clips": 11192
+   },
+   {
+    "from_km": 0.5,
+    "to_km": 1.0,
+    "locations": 9,
+    "clips": 4891
+   },
+   {
+    "from_km": 1.0,
+    "to_km": 2.0,
+    "locations": 2,
+    "clips": 390
+   },
+   {
+    "from_km": 2.0,
+    "to_km": null,
+    "locations": 8,
+    "clips": 1189
+   }
+  ],
+  "share_of_clips_within_1km": 0.911,
+  "locations_beyond_2km": [
+   {
+    "id": "75:40.70717,-74.00499",
+    "lat": 40.70717,
+    "km": 2.7,
+    "clips": 72
+   },
+   {
+    "id": "789:40.75510,-73.99005",
+    "lat": 40.7551,
+    "km": 2.8,
+    "clips": 5
+   },
+   {
+    "id": "1260:40.75522,-73.98013",
+    "lat": 40.75522,
+    "km": 3.1,
+    "clips": 139
+   },
+   {
+    "id": "1277:40.75333,-73.97940",
+    "lat": 40.75333,
+    "km": 2.9,
+    "clips": 44
+   },
+   {
+    "id": "1297:40.75164,-73.97537",
+    "lat": 40.75164,
+    "km": 3.0,
+    "clips": 98
+   },
+   {
+    "id": "1315:40.75011,-73.97398",
+    "lat": 40.75011,
+    "km": 2.9,
+    "clips": 110
+   },
+   {
+    "id": "1393:40.77632,-73.96372",
+    "lat": 40.77632,
+    "km": 5.8,
+    "clips": 471
+   },
+   {
+    "id": "1496:40.77991,-73.96006",
+    "lat": 40.77991,
+    "km": 6.3,
+    "clips": 250
+   }
+  ]
+ },
+ "upgrades": {
+  "street": {
+   "module": true,
+   "artifact": true,
+   "artifact_bytes": 235922,
+   "error": null,
+   "tested": true,
+   "available": true,
+   "locations_upgraded": 35,
+   "locations_changed": 35,
+   "errors": []
+  },
+  "construction": {
+   "module": true,
+   "artifact": true,
+   "artifact_bytes": 222147,
+   "error": null,
+   "tested": true,
+   "available": true,
+   "locations_upgraded": 35,
+   "locations_changed": 35,
+   "errors": []
+  },
+  "nightlife": {
+   "module": true,
+   "artifact": true,
+   "artifact_bytes": 298218,
+   "error": null,
+   "tested": true,
+   "available": true,
+   "locations_upgraded": 35,
+   "locations_changed": 35,
+   "errors": []
+  },
+  "sirens": {
+   "module": true,
+   "artifact": true,
+   "artifact_bytes": 111848,
+   "error": null,
+   "tested": true,
+   "available": true,
+   "locations_upgraded": 35,
+   "locations_changed": 35,
+   "errors": []
+  },
+  "building": {
+   "module": true,
+   "artifact": true,
+   "artifact_bytes": 409177,
+   "error": null,
+   "tested": false,
+   "available": false
+  }
+ },
+ "results": [
+  {
+   "source": "street",
+   "slot": "night",
+   "n": 33,
+   "tags": [
+    "1_engine_presence"
+   ],
+   "share_mean": 0.3286,
+   "share_min": 0.1429,
+   "share_max": 0.7308,
+   "clips_in_slot": 3022,
+   "today": {
+    "rho": 0.197,
+    "ci90": [
+     -0.06,
+     0.435
+    ],
+    "ci90_block": [
+     -0.067,
+     0.431
+    ],
+    "distinct_levels": 33,
+    "rho_any_volunteer": 0.109
+   },
+   "recal": {
+    "rho": 0.231,
+    "ci90": [
+     -0.027,
+     0.468
+    ],
+    "ci90_block": [
+     -0.026,
+     0.45
+    ],
+    "distinct_levels": 33,
+    "rho_any_volunteer": 0.129
+   },
+   "upgraded": {
+    "rho": 0.339,
+    "ci90": [
+     0.088,
+     0.562
+    ],
+    "ci90_block": [
+     0.085,
+     0.55
+    ],
+    "distinct_levels": 33,
+    "rho_any_volunteer": 0.252,
+    "change_vs_today": {
+     "rho": 0.142,
+     "ci90": [
+      0.042,
+      0.245
+     ],
+     "ci90_block": [
+      0.051,
+      0.23
+     ]
+    }
+   }
+  },
+  {
+   "source": "street",
+   "slot": "early",
+   "n": 26,
+   "tags": [
+    "1_engine_presence"
+   ],
+   "share_mean": 0.3336,
+   "share_min": 0.1429,
+   "share_max": 0.6129,
+   "clips_in_slot": 1594,
+   "today": {
+    "rho": 0.263,
+    "ci90": [
+     -0.053,
+     0.536
+    ],
+    "ci90_block": [
+     -0.008,
+     0.516
+    ],
+    "distinct_levels": 26,
+    "rho_any_volunteer": 0.128
+   },
+   "recal": {
+    "rho": 0.236,
+    "ci90": [
+     -0.078,
+     0.513
+    ],
+    "ci90_block": [
+     -0.036,
+     0.5
+    ],
+    "distinct_levels": 26,
+    "rho_any_volunteer": 0.113
+   },
+   "upgraded": {
+    "rho": 0.463,
+    "ci90": [
+     0.181,
+     0.646
+    ],
+    "ci90_block": [
+     0.212,
+     0.653
+    ],
+    "distinct_levels": 25,
+    "rho_any_volunteer": 0.404,
+    "change_vs_today": {
+     "rho": 0.2,
+     "ci90": [
+      -0.03,
+      0.455
+     ],
+     "ci90_block": [
+      -0.009,
+      0.424
+     ]
+    }
+   }
+  },
+  {
+   "source": "street",
+   "slot": "day",
+   "n": 34,
+   "tags": [
+    "1_engine_presence"
+   ],
+   "share_mean": 0.2974,
+   "share_min": 0.1167,
+   "share_max": 0.76,
+   "clips_in_slot": 12905,
+   "today": {
+    "rho": 0.256,
+    "ci90": [
+     -0.024,
+     0.466
+    ],
+    "ci90_block": [
+     0.002,
+     0.478
+    ],
+    "distinct_levels": 34,
+    "rho_any_volunteer": 0.302
+   },
+   "recal": {
+    "rho": 0.323,
+    "ci90": [
+     0.053,
+     0.533
+    ],
+    "ci90_block": [
+     0.069,
+     0.553
+    ],
+    "distinct_levels": 34,
+    "rho_any_volunteer": 0.371
+   },
+   "upgraded": {
+    "rho": 0.399,
+    "ci90": [
+     0.11,
+     0.602
+    ],
+    "ci90_block": [
+     0.15,
+     0.632
+    ],
+    "distinct_levels": 33,
+    "rho_any_volunteer": 0.441,
+    "change_vs_today": {
+     "rho": 0.143,
+     "ci90": [
+      0.014,
+      0.282
+     ],
+     "ci90_block": [
+      0.017,
+      0.288
+     ]
+    }
+   }
+  },
+  {
+   "source": "construction",
+   "slot": "night",
+   "n": 33,
+   "tags": [
+    "2_machinery-impact_presence",
+    "4_powered-saw_presence"
+   ],
+   "share_mean": 0.0207,
+   "share_min": 0.0,
+   "share_max": 0.1613,
+   "clips_in_slot": 3022,
+   "today": {
+    "rho": 0.042,
+    "ci90": [
+     -0.283,
+     0.351
+    ],
+    "ci90_block": [
+     -0.28,
+     0.359
+    ],
+    "distinct_levels": 30,
+    "rho_any_volunteer": 0.364
+   },
+   "recal": {
+    "rho": 0.135,
+    "ci90": [
+     -0.19,
+     0.433
+    ],
+    "ci90_block": [
+     -0.177,
+     0.43
+    ],
+    "distinct_levels": 31,
+    "rho_any_volunteer": 0.439
+   },
+   "upgraded": {
+    "rho": 0.161,
+    "ci90": [
+     -0.156,
+     0.444
+    ],
+    "ci90_block": [
+     -0.152,
+     0.434
+    ],
+    "distinct_levels": 32,
+    "rho_any_volunteer": 0.508,
+    "change_vs_today": {
+     "rho": 0.119,
+     "ci90": [
+      -0.061,
+      0.295
+     ],
+     "ci90_block": [
+      -0.06,
+      0.3
+     ]
+    }
+   }
+  },
+  {
+   "source": "construction",
+   "slot": "early",
+   "n": 26,
+   "tags": [
+    "2_machinery-impact_presence",
+    "4_powered-saw_presence"
+   ],
+   "share_mean": 0.1264,
+   "share_min": 0.0,
+   "share_max": 0.3629,
+   "clips_in_slot": 1594,
+   "today": {
+    "rho": -0.131,
+    "ci90": [
+     -0.473,
+     0.244
+    ],
+    "ci90_block": [
+     -0.519,
+     0.225
+    ],
+    "distinct_levels": 24,
+    "rho_any_volunteer": -0.09
+   },
+   "recal": {
+    "rho": 0.12,
+    "ci90": [
+     -0.253,
+     0.469
+    ],
+    "ci90_block": [
+     -0.354,
+     0.439
+    ],
+    "distinct_levels": 24,
+    "rho_any_volunteer": 0.141
+   },
+   "upgraded": {
+    "rho": 0.159,
+    "ci90": [
+     -0.213,
+     0.498
+    ],
+    "ci90_block": [
+     -0.36,
+     0.49
+    ],
+    "distinct_levels": 26,
+    "rho_any_volunteer": 0.181,
+    "change_vs_today": {
+     "rho": 0.29,
+     "ci90": [
+      0.05,
+      0.54
+     ],
+     "ci90_block": [
+      -0.012,
+      0.554
+     ]
+    }
+   }
+  },
+  {
+   "source": "construction",
+   "slot": "day",
+   "n": 34,
+   "tags": [
+    "2_machinery-impact_presence",
+    "4_powered-saw_presence"
+   ],
+   "share_mean": 0.0982,
+   "share_min": 0.0,
+   "share_max": 0.2817,
+   "clips_in_slot": 12905,
+   "today": {
+    "rho": -0.216,
+    "ci90": [
+     -0.532,
+     0.119
+    ],
+    "ci90_block": [
+     -0.541,
+     0.114
+    ],
+    "distinct_levels": 31,
+    "rho_any_volunteer": -0.124
+   },
+   "recal": {
+    "rho": -0.21,
+    "ci90": [
+     -0.51,
+     0.11
+    ],
+    "ci90_block": [
+     -0.541,
+     0.109
+    ],
+    "distinct_levels": 32,
+    "rho_any_volunteer": -0.084
+   },
+   "upgraded": {
+    "rho": -0.262,
+    "ci90": [
+     -0.539,
+     0.045
+    ],
+    "ci90_block": [
+     -0.569,
+     0.053
+    ],
+    "distinct_levels": 34,
+    "rho_any_volunteer": -0.09,
+    "change_vs_today": {
+     "rho": -0.046,
+     "ci90": [
+      -0.25,
+      0.131
+     ],
+     "ci90_block": [
+      -0.26,
+      0.143
+     ]
+    }
+   }
+  },
+  {
+   "source": "nightlife",
+   "slot": "night",
+   "n": 33,
+   "tags": [
+    "6_music_presence",
+    "7_human-voice_presence"
+   ],
+   "share_mean": 0.2623,
+   "share_min": 0.0323,
+   "share_max": 0.75,
+   "clips_in_slot": 3022,
+   "today": {
+    "rho": 0.38,
+    "ci90": [
+     0.072,
+     0.618
+    ],
+    "ci90_block": [
+     0.072,
+     0.631
+    ],
+    "distinct_levels": 33,
+    "rho_any_volunteer": 0.494
+   },
+   "recal": {
+    "rho": 0.32,
+    "ci90": [
+     0.013,
+     0.562
+    ],
+    "ci90_block": [
+     0.01,
+     0.593
+    ],
+    "distinct_levels": 33,
+    "rho_any_volunteer": 0.448
+   },
+   "upgraded": {
+    "rho": 0.347,
+    "ci90": [
+     0.026,
+     0.598
+    ],
+    "ci90_block": [
+     0.036,
+     0.616
+    ],
+    "distinct_levels": 33,
+    "rho_any_volunteer": 0.479,
+    "change_vs_today": {
+     "rho": -0.033,
+     "ci90": [
+      -0.119,
+      0.059
+     ],
+     "ci90_block": [
+      -0.117,
+      0.065
+     ]
+    }
+   }
+  },
+  {
+   "source": "nightlife",
+   "slot": "early",
+   "n": 26,
+   "tags": [
+    "6_music_presence",
+    "7_human-voice_presence"
+   ],
+   "share_mean": 0.0549,
+   "share_min": 0.0,
+   "share_max": 0.197,
+   "clips_in_slot": 1594,
+   "today": {
+    "rho": -0.106,
+    "ci90": [
+     -0.46,
+     0.27
+    ],
+    "ci90_block": [
+     -0.504,
+     0.315
+    ],
+    "distinct_levels": 26,
+    "rho_any_volunteer": 0.068
+   },
+   "recal": {
+    "rho": -0.022,
+    "ci90": [
+     -0.404,
+     0.342
+    ],
+    "ci90_block": [
+     -0.446,
+     0.368
+    ],
+    "distinct_levels": 26,
+    "rho_any_volunteer": 0.148
+   },
+   "upgraded": {
+    "rho": 0.01,
+    "ci90": [
+     -0.382,
+     0.387
+    ],
+    "ci90_block": [
+     -0.438,
+     0.427
+    ],
+    "distinct_levels": 26,
+    "rho_any_volunteer": 0.189,
+    "change_vs_today": {
+     "rho": 0.116,
+     "ci90": [
+      -0.012,
+      0.261
+     ],
+     "ci90_block": [
+      -0.028,
+      0.269
+     ]
+    }
+   }
+  },
+  {
+   "source": "nightlife",
+   "slot": "day",
+   "n": 34,
+   "tags": [
+    "6_music_presence",
+    "7_human-voice_presence"
+   ],
+   "share_mean": 0.3082,
+   "share_min": 0.02,
+   "share_max": 0.755,
+   "clips_in_slot": 12905,
+   "today": {
+    "rho": 0.204,
+    "ci90": [
+     -0.101,
+     0.48
+    ],
+    "ci90_block": [
+     -0.087,
+     0.487
+    ],
+    "distinct_levels": 34,
+    "rho_any_volunteer": 0.259
+   },
+   "recal": {
+    "rho": 0.111,
+    "ci90": [
+     -0.192,
+     0.399
+    ],
+    "ci90_block": [
+     -0.182,
+     0.412
+    ],
+    "distinct_levels": 34,
+    "rho_any_volunteer": 0.134
+   },
+   "upgraded": {
+    "rho": 0.289,
+    "ci90": [
+     -0.017,
+     0.552
+    ],
+    "ci90_block": [
+     0.01,
+     0.561
+    ],
+    "distinct_levels": 34,
+    "rho_any_volunteer": 0.3,
+    "change_vs_today": {
+     "rho": 0.085,
+     "ci90": [
+      -0.01,
+      0.173
+     ],
+     "ci90_block": [
+      0.011,
+      0.172
+     ]
+    }
+   }
+  },
+  {
+   "source": "sirens",
+   "slot": "night",
+   "n": 33,
+   "tags": [
+    "5-3_siren_presence"
+   ],
+   "share_mean": 0.0446,
+   "share_min": 0.0,
+   "share_max": 0.1092,
+   "clips_in_slot": 3022,
+   "today": {
+    "rho": 0.158,
+    "ci90": [
+     -0.166,
+     0.436
+    ],
+    "ci90_block": [
+     -0.156,
+     0.436
+    ],
+    "distinct_levels": 33,
+    "rho_any_volunteer": 0.026
+   },
+   "recal": {
+    "rho": 0.161,
+    "ci90": [
+     -0.165,
+     0.446
+    ],
+    "ci90_block": [
+     -0.17,
+     0.451
+    ],
+    "distinct_levels": 33,
+    "rho_any_volunteer": 0.035
+   },
+   "upgraded": {
+    "rho": -0.017,
+    "ci90": [
+     -0.33,
+     0.298
+    ],
+    "ci90_block": [
+     -0.343,
+     0.3
+    ],
+    "distinct_levels": 33,
+    "rho_any_volunteer": -0.118,
+    "change_vs_today": {
+     "rho": -0.175,
+     "ci90": [
+      -0.361,
+      -0.002
+     ],
+     "ci90_block": [
+      -0.349,
+      -0.002
+     ]
+    }
+   }
+  },
+  {
+   "source": "sirens",
+   "slot": "early",
+   "n": 26,
+   "tags": [
+    "5-3_siren_presence"
+   ],
+   "share_mean": 0.0246,
+   "share_min": 0.0,
+   "share_max": 0.129,
+   "clips_in_slot": 1594,
+   "today": {
+    "rho": 0.434,
+    "ci90": [
+     0.071,
+     0.716
+    ],
+    "ci90_block": [
+     0.034,
+     0.725
+    ],
+    "distinct_levels": 26,
+    "rho_any_volunteer": 0.421
+   },
+   "recal": {
+    "rho": 0.402,
+    "ci90": [
+     0.039,
+     0.7
+    ],
+    "ci90_block": [
+     0.0,
+     0.702
+    ],
+    "distinct_levels": 26,
+    "rho_any_volunteer": 0.405
+   },
+   "upgraded": {
+    "rho": 0.485,
+    "ci90": [
+     0.182,
+     0.711
+    ],
+    "ci90_block": [
+     0.136,
+     0.744
+    ],
+    "distinct_levels": 26,
+    "rho_any_volunteer": 0.475,
+    "change_vs_today": {
+     "rho": 0.051,
+     "ci90": [
+      -0.151,
+      0.306
+     ],
+     "ci90_block": [
+      -0.131,
+      0.296
+     ]
+    }
+   }
+  },
+  {
+   "source": "sirens",
+   "slot": "day",
+   "n": 34,
+   "tags": [
+    "5-3_siren_presence"
+   ],
+   "share_mean": 0.0448,
+   "share_min": 0.0,
+   "share_max": 0.1326,
+   "clips_in_slot": 12905,
+   "today": {
+    "rho": 0.488,
+    "ci90": [
+     0.204,
+     0.734
+    ],
+    "ci90_block": [
+     0.207,
+     0.728
+    ],
+    "distinct_levels": 34,
+    "rho_any_volunteer": 0.41
+   },
+   "recal": {
+    "rho": 0.501,
+    "ci90": [
+     0.215,
+     0.744
+    ],
+    "ci90_block": [
+     0.227,
+     0.733
+    ],
+    "distinct_levels": 34,
+    "rho_any_volunteer": 0.421
+   },
+   "upgraded": {
+    "rho": 0.551,
+    "ci90": [
+     0.277,
+     0.772
+    ],
+    "ci90_block": [
+     0.286,
+     0.771
+    ],
+    "distinct_levels": 33,
+    "rho_any_volunteer": 0.541,
+    "change_vs_today": {
+     "rho": 0.063,
+     "ci90": [
+      -0.067,
+      0.217
+     ],
+     "ci90_block": [
+      -0.071,
+      0.203
+     ]
+    }
+   }
+  }
+ ],
+ "locations": [
+  {
+   "block": 75,
+   "lat": 40.70717,
+   "lng": -74.00499,
+   "sensors": [
+    15
+   ],
+   "verified": 0,
+   "clips": {
+    "night": 14,
+    "early": 8,
+    "day": 50
+   },
+   "id": "75:40.70717,-74.00499",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.2857142857142857,
+      "early": 0.375,
+      "day": 0.32
+     },
+     "construction": {
+      "night": 0.0,
+      "early": 0.0,
+      "day": 0.24
+     },
+     "nightlife": {
+      "night": 0.07142857142857142,
+      "early": 0.0,
+      "day": 0.02
+     },
+     "sirens": {
+      "night": 0.0,
+      "early": 0.125,
+      "day": 0.0
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.6428571428571429,
+      "early": 0.625,
+      "day": 0.54
+     },
+     "construction": {
+      "night": 0.0,
+      "early": 0.5,
+      "day": 0.5
+     },
+     "nightlife": {
+      "night": 0.21428571428571427,
+      "early": 0.0,
+      "day": 0.1
+     },
+     "sirens": {
+      "night": 0.0,
+      "early": 0.125,
+      "day": 0.02
+     }
+    }
+   },
+   "clips_total": 72,
+   "pulled_ok": true,
+   "bbl": "1000750009",
+   "lot_distance_m": 0.4,
+   "facts": {
+    "floors": 2,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 60.854,
+     "early": 64.364,
+     "day": 65.854
+    },
+    "nightlife": {
+     "night": 69.817,
+     "early": 52.028,
+     "day": 59.71
+    },
+    "building": {
+     "night": 54.838,
+     "early": 50.038,
+     "day": 52.538
+    },
+    "sirens": {
+     "night": 53.22,
+     "early": 54.22,
+     "day": 56.22
+    },
+    "construction": {
+     "night": 46.638,
+     "early": 58.638,
+     "day": 61.638
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 59.899,
+     "early": 63.409,
+     "day": 64.899
+    },
+    "nightlife": {
+     "night": 68.129,
+     "early": 50.34,
+     "day": 58.022
+    },
+    "building": {
+     "night": 54.838,
+     "early": 50.038,
+     "day": 52.538
+    },
+    "sirens": {
+     "night": 50.408,
+     "early": 51.408,
+     "day": 53.408
+    },
+    "construction": {
+     "night": 35.819,
+     "early": 47.819,
+     "day": 50.819
+    }
+   },
+   "pulled": {
+    "complaints": 526,
+    "liquor": 36,
+    "roads": 86,
+    "stations": 1,
+    "permits": 5,
+    "facilities": 3
+   },
+   "upgraded": {
+    "street": {
+     "night": 61.02,
+     "early": 65.2,
+     "day": 65.83
+    },
+    "construction": {
+     "night": 37.873,
+     "early": 47.834,
+     "day": 52.686
+    },
+    "nightlife": {
+     "night": 66.575,
+     "early": 48.925,
+     "day": 56.408
+    },
+    "sirens": {
+     "night": 49.777,
+     "early": 49.318,
+     "day": 52.046
+    }
+   }
+  },
+  {
+   "block": 198,
+   "lat": 40.71732,
+   "lng": -73.99993,
+   "sensors": [
+    51
+   ],
+   "verified": 10,
+   "clips": {
+    "night": 0,
+    "early": 0,
+    "day": 10
+   },
+   "id": "198:40.71732,-73.99993",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": null,
+      "early": null,
+      "day": 0.9
+     },
+     "construction": {
+      "night": null,
+      "early": null,
+      "day": 0.0
+     },
+     "nightlife": {
+      "night": null,
+      "early": null,
+      "day": 0.0
+     },
+     "sirens": {
+      "night": null,
+      "early": null,
+      "day": 0.1
+     }
+    },
+    "any": {
+     "street": {
+      "night": null,
+      "early": null,
+      "day": 0.9
+     },
+     "construction": {
+      "night": null,
+      "early": null,
+      "day": 0.0
+     },
+     "nightlife": {
+      "night": null,
+      "early": null,
+      "day": 0.0
+     },
+     "sirens": {
+      "night": null,
+      "early": null,
+      "day": 0.1
+     }
+    }
+   },
+   "clips_total": 10,
+   "pulled_ok": false
+  },
+  {
+   "block": 462,
+   "lat": 40.72783,
+   "lng": -73.98863,
+   "sensors": [
+    57
+   ],
+   "verified": 6,
+   "clips": {
+    "night": 0,
+    "early": 0,
+    "day": 6
+   },
+   "id": "462:40.72783,-73.98863",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": null,
+      "early": null,
+      "day": 0.8333333333333334
+     },
+     "construction": {
+      "night": null,
+      "early": null,
+      "day": 0.16666666666666666
+     },
+     "nightlife": {
+      "night": null,
+      "early": null,
+      "day": 0.16666666666666666
+     },
+     "sirens": {
+      "night": null,
+      "early": null,
+      "day": 0.0
+     }
+    },
+    "any": {
+     "street": {
+      "night": null,
+      "early": null,
+      "day": 0.8333333333333334
+     },
+     "construction": {
+      "night": null,
+      "early": null,
+      "day": 0.16666666666666666
+     },
+     "nightlife": {
+      "night": null,
+      "early": null,
+      "day": 0.16666666666666666
+     },
+     "sirens": {
+      "night": null,
+      "early": null,
+      "day": 0.0
+     }
+    }
+   },
+   "clips_total": 6,
+   "pulled_ok": false
+  },
+  {
+   "block": 465,
+   "lat": 40.72977,
+   "lng": -73.98812,
+   "sensors": [
+    13
+   ],
+   "verified": 14,
+   "clips": {
+    "night": 83,
+    "early": 20,
+    "day": 246
+   },
+   "id": "465:40.72977,-73.98812",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.2289156626506024,
+      "early": 0.15,
+      "day": 0.17479674796747968
+     },
+     "construction": {
+      "night": 0.0,
+      "early": 0.0,
+      "day": 0.12601626016260162
+     },
+     "nightlife": {
+      "night": 0.3253012048192771,
+      "early": 0.1,
+      "day": 0.34146341463414637
+     },
+     "sirens": {
+      "night": 0.04819277108433735,
+      "early": 0.05,
+      "day": 0.07723577235772358
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.5301204819277109,
+      "early": 0.8,
+      "day": 0.44308943089430897
+     },
+     "construction": {
+      "night": 0.04819277108433735,
+      "early": 0.0,
+      "day": 0.2886178861788618
+     },
+     "nightlife": {
+      "night": 0.5662650602409639,
+      "early": 0.25,
+      "day": 0.44715447154471544
+     },
+     "sirens": {
+      "night": 0.07228915662650602,
+      "early": 0.1,
+      "day": 0.1016260162601626
+     }
+    }
+   },
+   "clips_total": 349,
+   "pulled_ok": true,
+   "bbl": "1004650037",
+   "lot_distance_m": 0.7,
+   "facts": {
+    "floors": 6,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 56.247,
+     "early": 55.985,
+     "day": 60.705
+    },
+    "nightlife": {
+     "night": 73.424,
+     "early": 60.39,
+     "day": 65.424
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 53.733,
+     "early": 54.733,
+     "day": 56.733
+    },
+    "construction": {
+     "night": 41.517,
+     "early": 53.517,
+     "day": 56.517
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 55.985,
+     "early": 55.985,
+     "day": 60.705
+    },
+    "nightlife": {
+     "night": 70.999,
+     "early": 57.965,
+     "day": 62.999
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 50.716,
+     "early": 51.716,
+     "day": 53.716
+    },
+    "construction": {
+     "night": 33.259,
+     "early": 45.259,
+     "day": 48.259
+    }
+   },
+   "pulled": {
+    "complaints": 1426,
+    "liquor": 56,
+    "roads": 53,
+    "stations": 1,
+    "permits": 17,
+    "facilities": 5
+   },
+   "upgraded": {
+    "street": {
+     "night": 56.19,
+     "early": 56.28,
+     "day": 61.03
+    },
+    "construction": {
+     "night": 33.259,
+     "early": 45.259,
+     "day": 51.806
+    },
+    "nightlife": {
+     "night": 73.649,
+     "early": 58.076,
+     "day": 65.455
+    },
+    "sirens": {
+     "night": 50.192,
+     "early": 49.361,
+     "day": 52.608
+    }
+   }
+  },
+  {
+   "block": 481,
+   "lat": 40.72105,
+   "lng": -73.99728,
+   "sensors": [
+    10
+   ],
+   "verified": 56,
+   "clips": {
+    "night": 112,
+    "early": 35,
+    "day": 233
+   },
+   "id": "481:40.72105,-73.99728",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.35714285714285715,
+      "early": 0.42857142857142855,
+      "day": 0.3776824034334764
+     },
+     "construction": {
+      "night": 0.008928571428571428,
+      "early": 0.05714285714285714,
+      "day": 0.04291845493562232
+     },
+     "nightlife": {
+      "night": 0.2857142857142857,
+      "early": 0.02857142857142857,
+      "day": 0.30472103004291845
+     },
+     "sirens": {
+      "night": 0.026785714285714284,
+      "early": 0.02857142857142857,
+      "day": 0.1072961373390558
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.6160714285714286,
+      "early": 0.7428571428571429,
+      "day": 0.6094420600858369
+     },
+     "construction": {
+      "night": 0.13392857142857142,
+      "early": 0.17142857142857143,
+      "day": 0.18454935622317598
+     },
+     "nightlife": {
+      "night": 0.45535714285714285,
+      "early": 0.08571428571428572,
+      "day": 0.45064377682403434
+     },
+     "sirens": {
+      "night": 0.026785714285714284,
+      "early": 0.02857142857142857,
+      "day": 0.12446351931330472
+     }
+    }
+   },
+   "clips_total": 380,
+   "pulled_ok": true,
+   "bbl": "1004810001",
+   "lot_distance_m": 0.5,
+   "facts": {
+    "floors": 11,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 61.173,
+     "early": 65.418,
+     "day": 66.452
+    },
+    "nightlife": {
+     "night": 71.427,
+     "early": 53.638,
+     "day": 63.427
+    },
+    "building": {
+     "night": 42.7,
+     "early": 37.9,
+     "day": 40.4
+    },
+    "sirens": {
+     "night": 54.963,
+     "early": 55.963,
+     "day": 57.963
+    },
+    "construction": {
+     "night": 37.0,
+     "early": 49.0,
+     "day": 52.0
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 60.95,
+     "early": 64.23,
+     "day": 66.23
+    },
+    "nightlife": {
+     "night": 68.818,
+     "early": 51.029,
+     "day": 60.818
+    },
+    "building": {
+     "night": 42.7,
+     "early": 37.9,
+     "day": 40.4
+    },
+    "sirens": {
+     "night": 52.706,
+     "early": 53.706,
+     "day": 55.706
+    },
+    "construction": {
+     "night": 31.0,
+     "early": 43.0,
+     "day": 46.0
+    }
+   },
+   "pulled": {
+    "complaints": 702,
+    "liquor": 59,
+    "roads": 58,
+    "stations": 2,
+    "permits": 7,
+    "facilities": 4
+   },
+   "upgraded": {
+    "street": {
+     "night": 60.76,
+     "early": 64.19,
+     "day": 65.29
+    },
+    "construction": {
+     "night": 38.824,
+     "early": 43.057,
+     "day": 50.674
+    },
+    "nightlife": {
+     "night": 69.877,
+     "early": 51.298,
+     "day": 62.14
+    },
+    "sirens": {
+     "night": 53.571,
+     "early": 52.795,
+     "day": 55.577
+    }
+   }
+  },
+  {
+   "block": 523,
+   "lat": 40.72609,
+   "lng": -73.99682,
+   "sensors": [
+    12,
+    40
+   ],
+   "verified": 31,
+   "clips": {
+    "night": 119,
+    "early": 78,
+    "day": 1244
+   },
+   "id": "523:40.72609,-73.99682",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.2605042016806723,
+      "early": 0.38461538461538464,
+      "day": 0.2829581993569132
+     },
+     "construction": {
+      "night": 0.025210084033613446,
+      "early": 0.02564102564102564,
+      "day": 0.20257234726688103
+     },
+     "nightlife": {
+      "night": 0.31092436974789917,
+      "early": 0.05128205128205128,
+      "day": 0.04662379421221865
+     },
+     "sirens": {
+      "night": 0.01680672268907563,
+      "early": 0.01282051282051282,
+      "day": 0.012861736334405145
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.5210084033613446,
+      "early": 0.6538461538461539,
+      "day": 0.6816720257234726
+     },
+     "construction": {
+      "night": 0.12605042016806722,
+      "early": 0.3076923076923077,
+      "day": 0.5418006430868167
+     },
+     "nightlife": {
+      "night": 0.42016806722689076,
+      "early": 0.14102564102564102,
+      "day": 0.10771704180064309
+     },
+     "sirens": {
+      "night": 0.01680672268907563,
+      "early": 0.038461538461538464,
+      "day": 0.027331189710610933
+     }
+    }
+   },
+   "clips_total": 1441,
+   "pulled_ok": true,
+   "bbl": "1005230047",
+   "lot_distance_m": 0.5,
+   "facts": {
+    "floors": 5,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 58.654,
+     "early": 60.276,
+     "day": 66.847
+    },
+    "nightlife": {
+     "night": 60.656,
+     "early": 47.445,
+     "day": 56.707
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 51.579,
+     "early": 52.579,
+     "day": 54.579
+    },
+    "construction": {
+     "night": 36.0,
+     "early": 48.0,
+     "day": 51.0
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 58.654,
+     "early": 60.276,
+     "day": 65.276
+    },
+    "nightlife": {
+     "night": 58.999,
+     "early": 45.788,
+     "day": 55.051
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 48.585,
+     "early": 49.585,
+     "day": 51.585
+    },
+    "construction": {
+     "night": 32.0,
+     "early": 44.0,
+     "day": 47.0
+    }
+   },
+   "pulled": {
+    "complaints": 149,
+    "liquor": 18,
+    "roads": 69,
+    "stations": 3,
+    "permits": 6,
+    "facilities": 3
+   },
+   "upgraded": {
+    "street": {
+     "night": 60.44,
+     "early": 61.16,
+     "day": 66.17
+    },
+    "construction": {
+     "night": 37.003,
+     "early": 44.194,
+     "day": 50.434
+    },
+    "nightlife": {
+     "night": 58.075,
+     "early": 45.096,
+     "day": 53.965
+    },
+    "sirens": {
+     "night": 49.35,
+     "early": 48.492,
+     "day": 51.744
+    }
+   }
+  },
+  {
+   "block": 531,
+   "lat": 40.7275,
+   "lng": -73.99286,
+   "sensors": [
+    3
+   ],
+   "verified": 100,
+   "clips": {
+    "night": 174,
+    "early": 62,
+    "day": 362
+   },
+   "id": "531:40.72750,-73.99286",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.5402298850574713,
+      "early": 0.5645161290322581,
+      "day": 0.44751381215469616
+     },
+     "construction": {
+      "night": 0.028735632183908046,
+      "early": 0.03225806451612903,
+      "day": 0.0856353591160221
+     },
+     "nightlife": {
+      "night": 0.10344827586206896,
+      "early": 0.016129032258064516,
+      "day": 0.24033149171270718
+     },
+     "sirens": {
+      "night": 0.10919540229885058,
+      "early": 0.0967741935483871,
+      "day": 0.13259668508287292
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.7241379310344828,
+      "early": 0.7741935483870968,
+      "day": 0.6685082872928176
+     },
+     "construction": {
+      "night": 0.20689655172413793,
+      "early": 0.22580645161290322,
+      "day": 0.19889502762430938
+     },
+     "nightlife": {
+      "night": 0.1781609195402299,
+      "early": 0.12903225806451613,
+      "day": 0.38950276243093923
+     },
+     "sirens": {
+      "night": 0.13218390804597702,
+      "early": 0.12903225806451613,
+      "day": 0.17679558011049723
+     }
+    }
+   },
+   "clips_total": 598,
+   "pulled_ok": true,
+   "bbl": "1005310020",
+   "lot_distance_m": 0.5,
+   "facts": {
+    "floors": 4,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 55.283,
+     "early": 57.773,
+     "day": 59.773
+    },
+    "nightlife": {
+     "night": 68.821,
+     "early": 51.078,
+     "day": 59.601
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 57.8,
+     "early": 58.8,
+     "day": 60.8
+    },
+    "construction": {
+     "night": 42.229,
+     "early": 54.229,
+     "day": 57.229
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 55.283,
+     "early": 57.773,
+     "day": 59.773
+    },
+    "nightlife": {
+     "night": 66.934,
+     "early": 49.19,
+     "day": 57.714
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 57.271,
+     "early": 58.271,
+     "day": 60.271
+    },
+    "construction": {
+     "night": 36.615,
+     "early": 48.615,
+     "day": 51.615
+    }
+   },
+   "pulled": {
+    "complaints": 140,
+    "liquor": 23,
+    "roads": 72,
+    "stations": 3,
+    "permits": 17,
+    "facilities": 3
+   },
+   "upgraded": {
+    "street": {
+     "night": 54.72,
+     "early": 56.98,
+     "day": 58.79
+    },
+    "construction": {
+     "night": 46.917,
+     "early": 48.687,
+     "day": 55.833
+    },
+    "nightlife": {
+     "night": 64.867,
+     "early": 47.258,
+     "day": 55.084
+    },
+    "sirens": {
+     "night": 52.281,
+     "early": 51.517,
+     "day": 54.809
+    }
+   }
+  },
+  {
+   "block": 535,
+   "lat": 40.72898,
+   "lng": -73.99629,
+   "sensors": [
+    4,
+    23
+   ],
+   "verified": 141,
+   "clips": {
+    "night": 159,
+    "early": 95,
+    "day": 765
+   },
+   "id": "535:40.72898,-73.99629",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.36477987421383645,
+      "early": 0.3157894736842105,
+      "day": 0.265359477124183
+     },
+     "construction": {
+      "night": 0.018867924528301886,
+      "early": 0.2631578947368421,
+      "day": 0.12026143790849673
+     },
+     "nightlife": {
+      "night": 0.3584905660377358,
+      "early": 0.05263157894736842,
+      "day": 0.4117647058823529
+     },
+     "sirens": {
+      "night": 0.050314465408805034,
+      "early": 0.021052631578947368,
+      "day": 0.023529411764705882
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.5974842767295597,
+      "early": 0.5789473684210527,
+      "day": 0.5241830065359477
+     },
+     "construction": {
+      "night": 0.11320754716981132,
+      "early": 0.4631578947368421,
+      "day": 0.2758169934640523
+     },
+     "nightlife": {
+      "night": 0.44025157232704404,
+      "early": 0.1368421052631579,
+      "day": 0.5228758169934641
+     },
+     "sirens": {
+      "night": 0.07547169811320754,
+      "early": 0.042105263157894736,
+      "day": 0.032679738562091505
+     }
+    }
+   },
+   "clips_total": 1019,
+   "pulled_ok": true,
+   "bbl": "1005350001",
+   "lot_distance_m": 0.4,
+   "facts": {
+    "floors": 11,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 53.428,
+     "early": 55.919,
+     "day": 58.428
+    },
+    "nightlife": {
+     "night": 52.394,
+     "early": 39.887,
+     "day": 46.063
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 47.171,
+     "early": 48.171,
+     "day": 50.171
+    },
+    "construction": {
+     "night": 41.382,
+     "early": 53.382,
+     "day": 56.382
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 53.428,
+     "early": 55.919,
+     "day": 58.428
+    },
+    "nightlife": {
+     "night": 48.541,
+     "early": 36.034,
+     "day": 42.21
+    },
+    "building": {
+     "night": 46.325,
+     "early": 41.525,
+     "day": 44.025
+    },
+    "sirens": {
+     "night": 44.214,
+     "early": 45.214,
+     "day": 47.214
+    },
+    "construction": {
+     "night": 35.569,
+     "early": 47.569,
+     "day": 50.569
+    }
+   },
+   "pulled": {
+    "complaints": 74,
+    "liquor": 5,
+    "roads": 50,
+    "stations": 1,
+    "permits": 11,
+    "facilities": 1
+   },
+   "upgraded": {
+    "street": {
+     "night": 52.93,
+     "early": 55.05,
+     "day": 57.45
+    },
+    "construction": {
+     "night": 43.075,
+     "early": 48.656,
+     "day": 52.23
+    },
+    "nightlife": {
+     "night": 51.722,
+     "early": 39.455,
+     "day": 45.227
+    },
+    "sirens": {
+     "night": 42.53,
+     "early": 41.644,
+     "day": 45.185
+    }
+   }
+  },
+  {
+   "block": 538,
+   "lat": 40.72978,
+   "lng": -73.99791,
+   "sensors": [
+    31
+   ],
+   "verified": 24,
+   "clips": {
+    "night": 75,
+    "early": 69,
+    "day": 497
+   },
+   "id": "538:40.72978,-73.99791",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.21333333333333335,
+      "early": 0.18840579710144928,
+      "day": 0.13883299798792756
+     },
+     "construction": {
+      "night": 0.013333333333333334,
+      "early": 0.30434782608695654,
+      "day": 0.16901408450704225
+     },
+     "nightlife": {
+      "night": 0.29333333333333333,
+      "early": 0.0,
+      "day": 0.24949698189134809
+     },
+     "sirens": {
+      "night": 0.05333333333333334,
+      "early": 0.014492753623188406,
+      "day": 0.030181086519114688
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.4,
+      "early": 0.5072463768115942,
+      "day": 0.3460764587525151
+     },
+     "construction": {
+      "night": 0.09333333333333334,
+      "early": 0.5942028985507246,
+      "day": 0.2776659959758551
+     },
+     "nightlife": {
+      "night": 0.38666666666666666,
+      "early": 0.028985507246376812,
+      "day": 0.4044265593561368
+     },
+     "sirens": {
+      "night": 0.08,
+      "early": 0.028985507246376812,
+      "day": 0.04426559356136821
+     }
+    }
+   },
+   "clips_total": 641,
+   "pulled_ok": true,
+   "bbl": "1005380040",
+   "lot_distance_m": 0.3,
+   "facts": {
+    "floors": 11,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 57.717,
+     "early": 58.962,
+     "day": 62.34
+    },
+    "nightlife": {
+     "night": 71.092,
+     "early": 56.08,
+     "day": 63.092
+    },
+    "building": {
+     "night": 46.325,
+     "early": 41.525,
+     "day": 44.025
+    },
+    "sirens": {
+     "night": 50.086,
+     "early": 51.086,
+     "day": 53.086
+    },
+    "construction": {
+     "night": 33.68,
+     "early": 45.68,
+     "day": 48.68
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 57.192,
+     "early": 58.438,
+     "day": 61.816
+    },
+    "nightlife": {
+     "night": 69.398,
+     "early": 54.387,
+     "day": 61.398
+    },
+    "building": {
+     "night": 46.325,
+     "early": 41.525,
+     "day": 44.025
+    },
+    "sirens": {
+     "night": 46.667,
+     "early": 47.667,
+     "day": 49.667
+    },
+    "construction": {
+     "night": 29.34,
+     "early": 41.34,
+     "day": 44.34
+    }
+   },
+   "pulled": {
+    "complaints": 396,
+    "liquor": 27,
+    "roads": 43,
+    "stations": 0,
+    "permits": 0,
+    "facilities": 3
+   },
+   "upgraded": {
+    "street": {
+     "night": 56.55,
+     "early": 57.31,
+     "day": 60.53
+    },
+    "construction": {
+     "night": 29.34,
+     "early": 41.34,
+     "day": 48.422
+    },
+    "nightlife": {
+     "night": 68.187,
+     "early": 53.537,
+     "day": 60.865
+    },
+    "sirens": {
+     "night": 44.409,
+     "early": 43.586,
+     "day": 47.005
+    }
+   }
+  },
+  {
+   "block": 541,
+   "lat": 40.73033,
+   "lng": -73.9987,
+   "sensors": [
+    1
+   ],
+   "verified": 26,
+   "clips": {
+    "night": 139,
+    "early": 99,
+    "day": 908
+   },
+   "id": "541:40.73033,-73.99870",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.2949640287769784,
+      "early": 0.2222222222222222,
+      "day": 0.11674008810572688
+     },
+     "construction": {
+      "night": 0.0,
+      "early": 0.04040404040404041,
+      "day": 0.025330396475770924
+     },
+     "nightlife": {
+      "night": 0.2589928057553957,
+      "early": 0.06060606060606061,
+      "day": 0.3590308370044053
+     },
+     "sirens": {
+      "night": 0.02158273381294964,
+      "early": 0.020202020202020204,
+      "day": 0.02643171806167401
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.49640287769784175,
+      "early": 0.4444444444444444,
+      "day": 0.3590308370044053
+     },
+     "construction": {
+      "night": 0.09352517985611511,
+      "early": 0.1717171717171717,
+      "day": 0.1013215859030837
+     },
+     "nightlife": {
+      "night": 0.39568345323741005,
+      "early": 0.18181818181818182,
+      "day": 0.551762114537445
+     },
+     "sirens": {
+      "night": 0.02877697841726619,
+      "early": 0.030303030303030304,
+      "day": 0.0473568281938326
+     }
+    }
+   },
+   "clips_total": 1146,
+   "pulled_ok": true,
+   "bbl": "1005410018",
+   "lot_distance_m": 0.3,
+   "facts": {
+    "floors": 10,
+    "commercial": false
+   },
+   "today": {
+    "street": {
+     "night": 53.986,
+     "early": 55.608,
+     "day": 60.608
+    },
+    "nightlife": {
+     "night": 69.877,
+     "early": 52.088,
+     "day": 61.877
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 49.024,
+     "early": 50.024,
+     "day": 52.024
+    },
+    "construction": {
+     "night": 32.229,
+     "early": 44.229,
+     "day": 47.229
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 53.986,
+     "early": 55.608,
+     "day": 60.608
+    },
+    "nightlife": {
+     "night": 67.701,
+     "early": 49.912,
+     "day": 59.701
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 45.778,
+     "early": 46.778,
+     "day": 48.778
+    },
+    "construction": {
+     "night": 28.615,
+     "early": 40.615,
+     "day": 43.615
+    }
+   },
+   "pulled": {
+    "complaints": 510,
+    "liquor": 34,
+    "roads": 48,
+    "stations": 2,
+    "permits": 5,
+    "facilities": 2
+   },
+   "upgraded": {
+    "street": {
+     "night": 53.99,
+     "early": 55.61,
+     "day": 60.61
+    },
+    "construction": {
+     "night": 28.615,
+     "early": 40.615,
+     "day": 48.786
+    },
+    "nightlife": {
+     "night": 69.54,
+     "early": 50.752,
+     "day": 60.547
+    },
+    "sirens": {
+     "night": 45.427,
+     "early": 44.717,
+     "day": 47.778
+    }
+   }
+  },
+  {
+   "block": 541,
+   "lat": 40.73055,
+   "lng": -73.99949000000001,
+   "sensors": [
+    32,
+    41
+   ],
+   "verified": 40,
+   "clips": {
+    "night": 276,
+    "early": 88,
+    "day": 649
+   },
+   "id": "541:40.73055,-73.99949",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.17753623188405798,
+      "early": 0.3409090909090909,
+      "day": 0.23266563944530047
+     },
+     "construction": {
+      "night": 0.007246376811594203,
+      "early": 0.09090909090909091,
+      "day": 0.08628659476117104
+     },
+     "nightlife": {
+      "night": 0.5289855072463768,
+      "early": 0.06818181818181818,
+      "day": 0.42989214175654855
+     },
+     "sirens": {
+      "night": 0.043478260869565216,
+      "early": 0.011363636363636364,
+      "day": 0.05701078582434515
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.4601449275362319,
+      "early": 0.6022727272727273,
+      "day": 0.4884437596302003
+     },
+     "construction": {
+      "night": 0.07971014492753623,
+      "early": 0.32954545454545453,
+      "day": 0.2049306625577812
+     },
+     "nightlife": {
+      "night": 0.7028985507246377,
+      "early": 0.125,
+      "day": 0.5901386748844376
+     },
+     "sirens": {
+      "night": 0.07971014492753623,
+      "early": 0.045454545454545456,
+      "day": 0.07704160246533127
+     }
+    }
+   },
+   "clips_total": 1013,
+   "pulled_ok": true,
+   "bbl": "1005410001",
+   "lot_distance_m": 0.5,
+   "facts": {
+    "floors": 5,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 57.248,
+     "early": 57.47,
+     "day": 64.637
+    },
+    "nightlife": {
+     "night": 71.497,
+     "early": 56.005,
+     "day": 63.497
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 49.523,
+     "early": 50.523,
+     "day": 52.523
+    },
+    "construction": {
+     "night": 30.288,
+     "early": 42.288,
+     "day": 45.288
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 56.504,
+     "early": 57.47,
+     "day": 61.504
+    },
+    "nightlife": {
+     "night": 68.446,
+     "early": 52.953,
+     "day": 60.446
+    },
+    "building": {
+     "night": 48.325,
+     "early": 43.525,
+     "day": 46.025
+    },
+    "sirens": {
+     "night": 46.401,
+     "early": 47.401,
+     "day": 49.401
+    },
+    "construction": {
+     "night": 27.644,
+     "early": 39.644,
+     "day": 42.644
+    }
+   },
+   "pulled": {
+    "complaints": 1145,
+    "liquor": 50,
+    "roads": 51,
+    "stations": 2,
+    "permits": 5,
+    "facilities": 2
+   },
+   "upgraded": {
+    "street": {
+     "night": 56.5,
+     "early": 57.47,
+     "day": 61.5
+    },
+    "construction": {
+     "night": 27.644,
+     "early": 39.644,
+     "day": 45.498
+    },
+    "nightlife": {
+     "night": 72.659,
+     "early": 54.109,
+     "day": 63.565
+    },
+    "sirens": {
+     "night": 46.406,
+     "early": 45.731,
+     "day": 48.637
+    }
+   }
+  },
+  {
+   "block": 544,
+   "lat": 40.727920000000005,
+   "lng": -73.99176,
+   "sensors": [
+    34
+   ],
+   "verified": 23,
+   "clips": {
+    "night": 136,
+    "early": 63,
+    "day": 351
+   },
+   "id": "544:40.72792,-73.99176",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.35294117647058826,
+      "early": 0.42857142857142855,
+      "day": 0.41025641025641024
+     },
+     "construction": {
+      "night": 0.029411764705882353,
+      "early": 0.07936507936507936,
+      "day": 0.09686609686609686
+     },
+     "nightlife": {
+      "night": 0.2426470588235294,
+      "early": 0.031746031746031744,
+      "day": 0.2222222222222222
+     },
+     "sirens": {
+      "night": 0.08088235294117647,
+      "early": 0.06349206349206349,
+      "day": 0.08262108262108261
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.6470588235294118,
+      "early": 0.6825396825396826,
+      "day": 0.6809116809116809
+     },
+     "construction": {
+      "night": 0.19852941176470587,
+      "early": 0.3968253968253968,
+      "day": 0.25071225071225073
+     },
+     "nightlife": {
+      "night": 0.3897058823529412,
+      "early": 0.07936507936507936,
+      "day": 0.3903133903133903
+     },
+     "sirens": {
+      "night": 0.11029411764705882,
+      "early": 0.09523809523809523,
+      "day": 0.09971509971509972
+     }
+    }
+   },
+   "clips_total": 550,
+   "pulled_ok": true,
+   "bbl": "1005440050",
+   "lot_distance_m": 0.5,
+   "facts": {
+    "floors": 7,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 57.885,
+     "early": 59.919,
+     "day": 64.64
+    },
+    "nightlife": {
+     "night": 69.703,
+     "early": 51.259,
+     "day": 59.47
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 54.079,
+     "early": 55.079,
+     "day": 57.079
+    },
+    "construction": {
+     "night": 40.984,
+     "early": 52.984,
+     "day": 55.984
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 56.97,
+     "early": 59.004,
+     "day": 63.725
+    },
+    "nightlife": {
+     "night": 68.786,
+     "early": 50.342,
+     "day": 58.553
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 52.713,
+     "early": 53.713,
+     "day": 55.713
+    },
+    "construction": {
+     "night": 35.37,
+     "early": 47.37,
+     "day": 50.37
+    }
+   },
+   "pulled": {
+    "complaints": 239,
+    "liquor": 23,
+    "roads": 65,
+    "stations": 3,
+    "permits": 27,
+    "facilities": 2
+   },
+   "upgraded": {
+    "street": {
+     "night": 57.78,
+     "early": 59.43,
+     "day": 64.14
+    },
+    "construction": {
+     "night": 35.413,
+     "early": 47.371,
+     "day": 52.947
+    },
+    "nightlife": {
+     "night": 66.937,
+     "early": 48.828,
+     "day": 56.329
+    },
+    "sirens": {
+     "night": 50.21,
+     "early": 49.567,
+     "day": 52.699
+    }
+   }
+  },
+  {
+   "block": 546,
+   "lat": 40.72915,
+   "lng": -73.995,
+   "sensors": [
+    37
+   ],
+   "verified": 16,
+   "clips": {
+    "night": 34,
+    "early": 114,
+    "day": 387
+   },
+   "id": "546:40.72915,-73.99500",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.14705882352941177,
+      "early": 0.15789473684210525,
+      "day": 0.17829457364341086
+     },
+     "construction": {
+      "night": 0.0,
+      "early": 0.24561403508771928,
+      "day": 0.19121447028423771
+     },
+     "nightlife": {
+      "night": 0.29411764705882354,
+      "early": 0.02631578947368421,
+      "day": 0.2532299741602067
+     },
+     "sirens": {
+      "night": 0.058823529411764705,
+      "early": 0.0,
+      "day": 0.03875968992248062
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.4411764705882353,
+      "early": 0.43859649122807015,
+      "day": 0.4496124031007752
+     },
+     "construction": {
+      "night": 0.17647058823529413,
+      "early": 0.45614035087719296,
+      "day": 0.4289405684754522
+     },
+     "nightlife": {
+      "night": 0.4117647058823529,
+      "early": 0.08771929824561403,
+      "day": 0.39018087855297157
+     },
+     "sirens": {
+      "night": 0.11764705882352941,
+      "early": 0.008771929824561403,
+      "day": 0.06459948320413436
+     }
+    }
+   },
+   "clips_total": 535,
+   "pulled_ok": true,
+   "bbl": "1005460021",
+   "lot_distance_m": 0.4,
+   "facts": {
+    "floors": 8,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 54.639,
+     "early": 57.639,
+     "day": 59.639
+    },
+    "nightlife": {
+     "night": 60.901,
+     "early": 44.583,
+     "day": 54.549
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 48.294,
+     "early": 49.294,
+     "day": 51.294
+    },
+    "construction": {
+     "night": 44.651,
+     "early": 56.651,
+     "day": 59.651
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 54.639,
+     "early": 57.639,
+     "day": 59.639
+    },
+    "nightlife": {
+     "night": 58.707,
+     "early": 42.389,
+     "day": 52.355
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 45.617,
+     "early": 46.617,
+     "day": 48.617
+    },
+    "construction": {
+     "night": 39.037,
+     "early": 51.037,
+     "day": 54.037
+    }
+   },
+   "pulled": {
+    "complaints": 176,
+    "liquor": 16,
+    "roads": 48,
+    "stations": 2,
+    "permits": 19,
+    "facilities": 1
+   },
+   "upgraded": {
+    "street": {
+     "night": 54.37,
+     "early": 57.18,
+     "day": 59.13
+    },
+    "construction": {
+     "night": 44.083,
+     "early": 51.705,
+     "day": 58.725
+    },
+    "nightlife": {
+     "night": 59.809,
+     "early": 43.634,
+     "day": 53.373
+    },
+    "sirens": {
+     "night": 44.265,
+     "early": 43.422,
+     "day": 46.944
+    }
+   }
+  },
+  {
+   "block": 546,
+   "lat": 40.72947,
+   "lng": -73.99589,
+   "sensors": [
+    17
+   ],
+   "verified": 26,
+   "clips": {
+    "night": 16,
+    "early": 52,
+    "day": 181
+   },
+   "id": "546:40.72947,-73.99589",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.1875,
+      "early": 0.28846153846153844,
+      "day": 0.20441988950276244
+     },
+     "construction": {
+      "night": 0.0,
+      "early": 0.3269230769230769,
+      "day": 0.15469613259668508
+     },
+     "nightlife": {
+      "night": 0.4375,
+      "early": 0.057692307692307696,
+      "day": 0.3314917127071823
+     },
+     "sirens": {
+      "night": 0.0625,
+      "early": 0.0,
+      "day": 0.03314917127071823
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.25,
+      "early": 0.5769230769230769,
+      "day": 0.430939226519337
+     },
+     "construction": {
+      "night": 0.125,
+      "early": 0.5576923076923077,
+      "day": 0.3812154696132597
+     },
+     "nightlife": {
+      "night": 0.625,
+      "early": 0.09615384615384616,
+      "day": 0.4088397790055249
+     },
+     "sirens": {
+      "night": 0.125,
+      "early": 0.038461538461538464,
+      "day": 0.03867403314917127
+     }
+    }
+   },
+   "clips_total": 249,
+   "pulled_ok": true,
+   "bbl": "1005460011",
+   "lot_distance_m": 0.3,
+   "facts": {
+    "floors": 13,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 54.356,
+     "early": 57.356,
+     "day": 59.356
+    },
+    "nightlife": {
+     "night": 54.574,
+     "early": 42.066,
+     "day": 48.412
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 47.042,
+     "early": 48.042,
+     "day": 50.042
+    },
+    "construction": {
+     "night": 40.651,
+     "early": 52.651,
+     "day": 55.651
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 54.356,
+     "early": 57.356,
+     "day": 59.356
+    },
+    "nightlife": {
+     "night": 51.925,
+     "early": 39.418,
+     "day": 45.764
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 44.053,
+     "early": 45.053,
+     "day": 47.053
+    },
+    "construction": {
+     "night": 37.037,
+     "early": 49.037,
+     "day": 52.037
+    }
+   },
+   "pulled": {
+    "complaints": 84,
+    "liquor": 6,
+    "roads": 48,
+    "stations": 1,
+    "permits": 19,
+    "facilities": 1
+   },
+   "upgraded": {
+    "street": {
+     "night": 54.2,
+     "early": 57.08,
+     "day": 59.05
+    },
+    "construction": {
+     "night": 46.43,
+     "early": 50.879,
+     "day": 54.885
+    },
+    "nightlife": {
+     "night": 54.38,
+     "early": 42.099,
+     "day": 47.947
+    },
+    "sirens": {
+     "night": 42.723,
+     "early": 41.861,
+     "day": 45.385
+    }
+   }
+  },
+  {
+   "block": 546,
+   "lat": 40.72981,
+   "lng": -73.99586,
+   "sensors": [
+    35
+   ],
+   "verified": 17,
+   "clips": {
+    "night": 35,
+    "early": 49,
+    "day": 298
+   },
+   "id": "546:40.72981,-73.99586",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.14285714285714285,
+      "early": 0.14285714285714285,
+      "day": 0.14429530201342283
+     },
+     "construction": {
+      "night": 0.02857142857142857,
+      "early": 0.30612244897959184,
+      "day": 0.13087248322147652
+     },
+     "nightlife": {
+      "night": 0.3142857142857143,
+      "early": 0.10204081632653061,
+      "day": 0.42953020134228187
+     },
+     "sirens": {
+      "night": 0.02857142857142857,
+      "early": 0.0,
+      "day": 0.02348993288590604
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.4,
+      "early": 0.46938775510204084,
+      "day": 0.412751677852349
+     },
+     "construction": {
+      "night": 0.08571428571428572,
+      "early": 0.5714285714285714,
+      "day": 0.28859060402684567
+     },
+     "nightlife": {
+      "night": 0.4857142857142857,
+      "early": 0.22448979591836735,
+      "day": 0.5671140939597316
+     },
+     "sirens": {
+      "night": 0.02857142857142857,
+      "early": 0.0,
+      "day": 0.03355704697986577
+     }
+    }
+   },
+   "clips_total": 382,
+   "pulled_ok": true,
+   "bbl": "1005460008",
+   "lot_distance_m": 0.2,
+   "facts": {
+    "floors": 7,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 54.141,
+     "early": 57.141,
+     "day": 59.651
+    },
+    "nightlife": {
+     "night": 57.841,
+     "early": 41.576,
+     "day": 52.331
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 46.682,
+     "early": 47.682,
+     "day": 49.682
+    },
+    "construction": {
+     "night": 39.762,
+     "early": 51.762,
+     "day": 54.762
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 54.141,
+     "early": 57.141,
+     "day": 59.651
+    },
+    "nightlife": {
+     "night": 55.662,
+     "early": 39.398,
+     "day": 50.153
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 43.603,
+     "early": 44.603,
+     "day": 46.603
+    },
+    "construction": {
+     "night": 36.592,
+     "early": 48.592,
+     "day": 51.592
+    }
+   },
+   "pulled": {
+    "complaints": 406,
+    "liquor": 7,
+    "roads": 47,
+    "stations": 1,
+    "permits": 19,
+    "facilities": 1
+   },
+   "upgraded": {
+    "street": {
+     "night": 53.72,
+     "early": 56.4,
+     "day": 58.82
+    },
+    "construction": {
+     "night": 43.456,
+     "early": 49.606,
+     "day": 54.346
+    },
+    "nightlife": {
+     "night": 57.015,
+     "early": 41.044,
+     "day": 53.445
+    },
+    "sirens": {
+     "night": 42.569,
+     "early": 41.722,
+     "day": 45.226
+    }
+   }
+  },
+  {
+   "block": 547,
+   "lat": 40.72951,
+   "lng": -73.99425,
+   "sensors": [
+    7
+   ],
+   "verified": 53,
+   "clips": {
+    "night": 54,
+    "early": 51,
+    "day": 228
+   },
+   "id": "547:40.72951,-73.99425",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.3148148148148148,
+      "early": 0.3137254901960784,
+      "day": 0.25877192982456143
+     },
+     "construction": {
+      "night": 0.037037037037037035,
+      "early": 0.058823529411764705,
+      "day": 0.07456140350877193
+     },
+     "nightlife": {
+      "night": 0.16666666666666666,
+      "early": 0.058823529411764705,
+      "day": 0.2236842105263158
+     },
+     "sirens": {
+      "night": 0.05555555555555555,
+      "early": 0.0,
+      "day": 0.03508771929824561
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.6296296296296297,
+      "early": 0.5882352941176471,
+      "day": 0.5350877192982456
+     },
+     "construction": {
+      "night": 0.25925925925925924,
+      "early": 0.37254901960784315,
+      "day": 0.23684210526315788
+     },
+     "nightlife": {
+      "night": 0.18518518518518517,
+      "early": 0.11764705882352941,
+      "day": 0.30701754385964913
+     },
+     "sirens": {
+      "night": 0.07407407407407407,
+      "early": 0.0196078431372549,
+      "day": 0.06140350877192982
+     }
+    }
+   },
+   "clips_total": 333,
+   "pulled_ok": true,
+   "bbl": "1005470026",
+   "lot_distance_m": 0.7,
+   "facts": {
+    "floors": 6,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 55.146,
+     "early": 58.146,
+     "day": 60.146
+    },
+    "nightlife": {
+     "night": 58.83,
+     "early": 43.075,
+     "day": 49.786
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 49.976,
+     "early": 50.976,
+     "day": 52.976
+    },
+    "construction": {
+     "night": 37.253,
+     "early": 49.253,
+     "day": 52.253
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 55.146,
+     "early": 58.146,
+     "day": 60.146
+    },
+    "nightlife": {
+     "night": 56.695,
+     "early": 40.94,
+     "day": 47.651
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 47.062,
+     "early": 48.062,
+     "day": 50.062
+    },
+    "construction": {
+     "night": 34.61,
+     "early": 46.61,
+     "day": 49.61
+    }
+   },
+   "pulled": {
+    "complaints": 122,
+    "liquor": 7,
+    "roads": 50,
+    "stations": 2,
+    "permits": 18,
+    "facilities": 2
+   },
+   "upgraded": {
+    "street": {
+     "night": 54.6,
+     "early": 57.18,
+     "day": 59.05
+    },
+    "construction": {
+     "night": 35.559,
+     "early": 46.673,
+     "day": 56.646
+    },
+    "nightlife": {
+     "night": 56.714,
+     "early": 41.559,
+     "day": 48.025
+    },
+    "sirens": {
+     "night": 45.73,
+     "early": 44.887,
+     "day": 48.398
+    }
+   }
+  },
+  {
+   "block": 547,
+   "lat": 40.72951,
+   "lng": -73.99388,
+   "sensors": [
+    0,
+    25
+   ],
+   "verified": 96,
+   "clips": {
+    "night": 197,
+    "early": 118,
+    "day": 609
+   },
+   "id": "547:40.72951,-73.99388",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.41624365482233505,
+      "early": 0.5169491525423728,
+      "day": 0.41707717569786534
+     },
+     "construction": {
+      "night": 0.04568527918781726,
+      "early": 0.07627118644067797,
+      "day": 0.10673234811165845
+     },
+     "nightlife": {
+      "night": 0.1319796954314721,
+      "early": 0.0423728813559322,
+      "day": 0.2512315270935961
+     },
+     "sirens": {
+      "night": 0.06091370558375635,
+      "early": 0.00847457627118644,
+      "day": 0.047619047619047616
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.6852791878172588,
+      "early": 0.7542372881355932,
+      "day": 0.6338259441707718
+     },
+     "construction": {
+      "night": 0.233502538071066,
+      "early": 0.2711864406779661,
+      "day": 0.27257799671592775
+     },
+     "nightlife": {
+      "night": 0.22842639593908629,
+      "early": 0.11864406779661017,
+      "day": 0.3760262725779967
+     },
+     "sirens": {
+      "night": 0.07614213197969544,
+      "early": 0.01694915254237288,
+      "day": 0.06732348111658457
+     }
+    }
+   },
+   "clips_total": 924,
+   "pulled_ok": true,
+   "bbl": "1005470030",
+   "lot_distance_m": 0.3,
+   "facts": {
+    "floors": 12,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 55.129,
+     "early": 58.129,
+     "day": 60.129
+    },
+    "nightlife": {
+     "night": 57.348,
+     "early": 41.392,
+     "day": 49.348
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 50.214,
+     "early": 51.214,
+     "day": 53.214
+    },
+    "construction": {
+     "night": 38.306,
+     "early": 50.306,
+     "day": 53.306
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 55.129,
+     "early": 58.129,
+     "day": 60.129
+    },
+    "nightlife": {
+     "night": 55.197,
+     "early": 39.241,
+     "day": 47.197
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 47.36,
+     "early": 48.36,
+     "day": 50.36
+    },
+    "construction": {
+     "night": 35.136,
+     "early": 47.136,
+     "day": 50.136
+    }
+   },
+   "pulled": {
+    "complaints": 140,
+    "liquor": 6,
+    "roads": 61,
+    "stations": 2,
+    "permits": 18,
+    "facilities": 2
+   },
+   "upgraded": {
+    "street": {
+     "night": 58.24,
+     "early": 59.4,
+     "day": 61.58
+    },
+    "construction": {
+     "night": 36.683,
+     "early": 47.243,
+     "day": 56.483
+    },
+    "nightlife": {
+     "night": 54.619,
+     "early": 39.294,
+     "day": 47.271
+    },
+    "sirens": {
+     "night": 46.308,
+     "early": 45.504,
+     "day": 48.942
+    }
+   }
+  },
+  {
+   "block": 547,
+   "lat": 40.72978,
+   "lng": -73.99476999999999,
+   "sensors": [
+    22
+   ],
+   "verified": 13,
+   "clips": {
+    "night": 24,
+    "early": 29,
+    "day": 137
+   },
+   "id": "547:40.72978,-73.99477",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.2916666666666667,
+      "early": 0.3448275862068966,
+      "day": 0.23357664233576642
+     },
+     "construction": {
+      "night": 0.0,
+      "early": 0.1724137931034483,
+      "day": 0.0948905109489051
+     },
+     "nightlife": {
+      "night": 0.08333333333333333,
+      "early": 0.034482758620689655,
+      "day": 0.23357664233576642
+     },
+     "sirens": {
+      "night": 0.08333333333333333,
+      "early": 0.034482758620689655,
+      "day": 0.021897810218978103
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.5416666666666666,
+      "early": 0.6551724137931034,
+      "day": 0.5693430656934306
+     },
+     "construction": {
+      "night": 0.125,
+      "early": 0.3103448275862069,
+      "day": 0.24817518248175183
+     },
+     "nightlife": {
+      "night": 0.20833333333333334,
+      "early": 0.13793103448275862,
+      "day": 0.36496350364963503
+     },
+     "sirens": {
+      "night": 0.125,
+      "early": 0.034482758620689655,
+      "day": 0.0364963503649635
+     }
+    }
+   },
+   "clips_total": 190,
+   "pulled_ok": true,
+   "bbl": "1005470020",
+   "lot_distance_m": 0.3,
+   "facts": {
+    "floors": 6,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 53.687,
+     "early": 56.687,
+     "day": 59.197
+    },
+    "nightlife": {
+     "night": 62.311,
+     "early": 46.355,
+     "day": 52.795
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 49.395,
+     "early": 50.395,
+     "day": 52.395
+    },
+    "construction": {
+     "night": 35.966,
+     "early": 47.966,
+     "day": 50.966
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 53.687,
+     "early": 56.687,
+     "day": 59.197
+    },
+    "nightlife": {
+     "night": 60.666,
+     "early": 44.71,
+     "day": 51.15
+    },
+    "building": {
+     "night": 48.325,
+     "early": 43.525,
+     "day": 46.025
+    },
+    "sirens": {
+     "night": 46.303,
+     "early": 47.303,
+     "day": 49.303
+    },
+    "construction": {
+     "night": 33.966,
+     "early": 45.966,
+     "day": 48.966
+    }
+   },
+   "pulled": {
+    "complaints": 129,
+    "liquor": 8,
+    "roads": 49,
+    "stations": 2,
+    "permits": 18,
+    "facilities": 2
+   },
+   "upgraded": {
+    "street": {
+     "night": 53.24,
+     "early": 55.91,
+     "day": 58.31
+    },
+    "construction": {
+     "night": 33.966,
+     "early": 45.966,
+     "day": 55.839
+    },
+    "nightlife": {
+     "night": 60.43,
+     "early": 45.102,
+     "day": 51.155
+    },
+    "sirens": {
+     "night": 44.99,
+     "early": 44.136,
+     "day": 47.661
+    }
+   }
+  },
+  {
+   "block": 547,
+   "lat": 40.72996,
+   "lng": -73.99449,
+   "sensors": [
+    18
+   ],
+   "verified": 22,
+   "clips": {
+    "night": 89,
+    "early": 31,
+    "day": 305
+   },
+   "id": "547:40.72996,-73.99449",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.21348314606741572,
+      "early": 0.22580645161290322,
+      "day": 0.21967213114754097
+     },
+     "construction": {
+      "night": 0.0449438202247191,
+      "early": 0.0967741935483871,
+      "day": 0.05245901639344262
+     },
+     "nightlife": {
+      "night": 0.2808988764044944,
+      "early": 0.06451612903225806,
+      "day": 0.3770491803278688
+     },
+     "sirens": {
+      "night": 0.011235955056179775,
+      "early": 0.0,
+      "day": 0.03278688524590164
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.5730337078651685,
+      "early": 0.5483870967741935,
+      "day": 0.46557377049180326
+     },
+     "construction": {
+      "night": 0.14606741573033707,
+      "early": 0.3225806451612903,
+      "day": 0.28852459016393445
+     },
+     "nightlife": {
+      "night": 0.43820224719101125,
+      "early": 0.12903225806451613,
+      "day": 0.5311475409836065
+     },
+     "sirens": {
+      "night": 0.0449438202247191,
+      "early": 0.03225806451612903,
+      "day": 0.05245901639344262
+     }
+    }
+   },
+   "clips_total": 425,
+   "pulled_ok": true,
+   "bbl": "1005470015",
+   "lot_distance_m": 0.1,
+   "facts": {
+    "floors": 8,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 52.735,
+     "early": 55.735,
+     "day": 58.245
+    },
+    "nightlife": {
+     "night": 67.605,
+     "early": 52.815,
+     "day": 56.605
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 49.447,
+     "early": 50.447,
+     "day": 52.447
+    },
+    "construction": {
+     "night": 39.195,
+     "early": 51.195,
+     "day": 54.195
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 52.735,
+     "early": 55.735,
+     "day": 58.245
+    },
+    "nightlife": {
+     "night": 65.901,
+     "early": 51.112,
+     "day": 54.901
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 46.352,
+     "early": 47.352,
+     "day": 49.352
+    },
+    "construction": {
+     "night": 35.58,
+     "early": 47.58,
+     "day": 50.58
+    }
+   },
+   "pulled": {
+    "complaints": 142,
+    "liquor": 9,
+    "roads": 47,
+    "stations": 2,
+    "permits": 18,
+    "facilities": 2
+   },
+   "upgraded": {
+    "street": {
+     "night": 52.48,
+     "early": 55.31,
+     "day": 57.77
+    },
+    "construction": {
+     "night": 35.58,
+     "early": 47.58,
+     "day": 57.627
+    },
+    "nightlife": {
+     "night": 65.393,
+     "early": 51.234,
+     "day": 54.505
+    },
+    "sirens": {
+     "night": 45.046,
+     "early": 44.204,
+     "day": 47.693
+    }
+   }
+  },
+  {
+   "block": 547,
+   "lat": 40.73033,
+   "lng": -73.9956,
+   "sensors": [
+    27
+   ],
+   "verified": 25,
+   "clips": {
+    "night": 119,
+    "early": 124,
+    "day": 916
+   },
+   "id": "547:40.73033,-73.99560",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.17647058823529413,
+      "early": 0.22580645161290322,
+      "day": 0.16048034934497818
+     },
+     "construction": {
+      "night": 0.008403361344537815,
+      "early": 0.3629032258064516,
+      "day": 0.2816593886462882
+     },
+     "nightlife": {
+      "night": 0.44537815126050423,
+      "early": 0.0967741935483871,
+      "day": 0.361353711790393
+     },
+     "sirens": {
+      "night": 0.025210084033613446,
+      "early": 0.0,
+      "day": 0.014192139737991267
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.3949579831932773,
+      "early": 0.5,
+      "day": 0.40502183406113534
+     },
+     "construction": {
+      "night": 0.06722689075630252,
+      "early": 0.5887096774193549,
+      "day": 0.45524017467248906
+     },
+     "nightlife": {
+      "night": 0.5798319327731093,
+      "early": 0.16129032258064516,
+      "day": 0.5043668122270742
+     },
+     "sirens": {
+      "night": 0.05042016806722689,
+      "early": 0.0,
+      "day": 0.02947598253275109
+     }
+    }
+   },
+   "clips_total": 1159,
+   "pulled_ok": true,
+   "bbl": "1005470001",
+   "lot_distance_m": 0.5,
+   "facts": {
+    "floors": 10,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 56.083,
+     "early": 59.083,
+     "day": 61.593
+    },
+    "nightlife": {
+     "night": 60.343,
+     "early": 43.144,
+     "day": 53.899
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 46.264,
+     "early": 47.264,
+     "day": 49.264
+    },
+    "construction": {
+     "night": 37.253,
+     "early": 49.253,
+     "day": 52.253
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 55.954,
+     "early": 58.954,
+     "day": 61.464
+    },
+    "nightlife": {
+     "night": 58.071,
+     "early": 40.873,
+     "day": 51.628
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 43.08,
+     "early": 44.08,
+     "day": 46.08
+    },
+    "construction": {
+     "night": 34.61,
+     "early": 46.61,
+     "day": 49.61
+    }
+   },
+   "pulled": {
+    "complaints": 442,
+    "liquor": 7,
+    "roads": 46,
+    "stations": 1,
+    "permits": 18,
+    "facilities": 1
+   },
+   "upgraded": {
+    "street": {
+     "night": 55.54,
+     "early": 58.25,
+     "day": 60.66
+    },
+    "construction": {
+     "night": 34.61,
+     "early": 46.61,
+     "day": 52.543
+    },
+    "nightlife": {
+     "night": 58.26,
+     "early": 41.444,
+     "day": 53.919
+    },
+    "sirens": {
+     "night": 42.611,
+     "early": 41.793,
+     "day": 45.226
+    }
+   }
+  },
+  {
+   "block": 548,
+   "lat": 40.73059,
+   "lng": -73.99479000000001,
+   "sensors": [
+    9
+   ],
+   "verified": 49,
+   "clips": {
+    "night": 34,
+    "early": 32,
+    "day": 209
+   },
+   "id": "548:40.73059,-73.99479",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.2647058823529412,
+      "early": 0.3125,
+      "day": 0.22966507177033493
+     },
+     "construction": {
+      "night": 0.0,
+      "early": 0.09375,
+      "day": 0.1674641148325359
+     },
+     "nightlife": {
+      "night": 0.2647058823529412,
+      "early": 0.03125,
+      "day": 0.41626794258373206
+     },
+     "sirens": {
+      "night": 0.029411764705882353,
+      "early": 0.0,
+      "day": 0.009569377990430622
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.5588235294117647,
+      "early": 0.71875,
+      "day": 0.3923444976076555
+     },
+     "construction": {
+      "night": 0.20588235294117646,
+      "early": 0.25,
+      "day": 0.3157894736842105
+     },
+     "nightlife": {
+      "night": 0.35294117647058826,
+      "early": 0.125,
+      "day": 0.507177033492823
+     },
+     "sirens": {
+      "night": 0.029411764705882353,
+      "early": 0.0,
+      "day": 0.019138755980861243
+     }
+    }
+   },
+   "clips_total": 275,
+   "pulled_ok": true,
+   "bbl": "1005480021",
+   "lot_distance_m": 0.1,
+   "facts": {
+    "floors": 9,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 52.123,
+     "early": 55.123,
+     "day": 57.633
+    },
+    "nightlife": {
+     "night": 65.34,
+     "early": 49.585,
+     "day": 58.962
+    },
+    "building": {
+     "night": 59.753,
+     "early": 54.953,
+     "day": 57.453
+    },
+    "sirens": {
+     "night": 48.911,
+     "early": 49.911,
+     "day": 51.911
+    },
+    "construction": {
+     "night": 37.838,
+     "early": 49.838,
+     "day": 52.838
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 52.123,
+     "early": 55.123,
+     "day": 57.633
+    },
+    "nightlife": {
+     "night": 63.413,
+     "early": 47.658,
+     "day": 57.034
+    },
+    "building": {
+     "night": 59.753,
+     "early": 54.953,
+     "day": 57.453
+    },
+    "sirens": {
+     "night": 45.646,
+     "early": 46.646,
+     "day": 48.646
+    },
+    "construction": {
+     "night": 32.919,
+     "early": 44.919,
+     "day": 47.919
+    }
+   },
+   "pulled": {
+    "complaints": 462,
+    "liquor": 10,
+    "roads": 45,
+    "stations": 2,
+    "permits": 16,
+    "facilities": 2
+   },
+   "upgraded": {
+    "street": {
+     "night": 52.12,
+     "early": 55.12,
+     "day": 57.63
+    },
+    "construction": {
+     "night": 32.919,
+     "early": 44.919,
+     "day": 53.017
+    },
+    "nightlife": {
+     "night": 63.066,
+     "early": 47.696,
+     "day": 58.823
+    },
+    "sirens": {
+     "night": 44.371,
+     "early": 43.549,
+     "day": 46.964
+    }
+   }
+  },
+  {
+   "block": 548,
+   "lat": 40.73118,
+   "lng": -73.99443000000001,
+   "sensors": [
+    2
+   ],
+   "verified": 20,
+   "clips": {
+    "night": 124,
+    "early": 62,
+    "day": 468
+   },
+   "id": "548:40.73118,-73.99443",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.4596774193548387,
+      "early": 0.6129032258064516,
+      "day": 0.4252136752136752
+     },
+     "construction": {
+      "night": 0.024193548387096774,
+      "early": 0.03225806451612903,
+      "day": 0.057692307692307696
+     },
+     "nightlife": {
+      "night": 0.21774193548387097,
+      "early": 0.04838709677419355,
+      "day": 0.37606837606837606
+     },
+     "sirens": {
+      "night": 0.024193548387096774,
+      "early": 0.016129032258064516,
+      "day": 0.03205128205128205
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.7580645161290323,
+      "early": 0.8064516129032258,
+      "day": 0.6837606837606838
+     },
+     "construction": {
+      "night": 0.1532258064516129,
+      "early": 0.20967741935483872,
+      "day": 0.20085470085470086
+     },
+     "nightlife": {
+      "night": 0.31451612903225806,
+      "early": 0.04838709677419355,
+      "day": 0.5213675213675214
+     },
+     "sirens": {
+      "night": 0.03225806451612903,
+      "early": 0.016129032258064516,
+      "day": 0.053418803418803416
+     }
+    }
+   },
+   "clips_total": 654,
+   "pulled_ok": true,
+   "bbl": "1005480012",
+   "lot_distance_m": 0.6,
+   "facts": {
+    "floors": 3,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 54.385,
+     "early": 57.385,
+     "day": 60.351
+    },
+    "nightlife": {
+     "night": 63.709,
+     "early": 47.7,
+     "day": 57.076
+    },
+    "building": {
+     "night": 42.7,
+     "early": 37.9,
+     "day": 40.4
+    },
+    "sirens": {
+     "night": 48.918,
+     "early": 49.918,
+     "day": 51.918
+    },
+    "construction": {
+     "night": 38.802,
+     "early": 50.802,
+     "day": 53.802
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 54.295,
+     "early": 57.295,
+     "day": 60.261
+    },
+    "nightlife": {
+     "night": 57.773,
+     "early": 41.763,
+     "day": 51.14
+    },
+    "building": {
+     "night": 43.7,
+     "early": 38.9,
+     "day": 41.4
+    },
+    "sirens": {
+     "night": 45.645,
+     "early": 46.645,
+     "day": 48.645
+    },
+    "construction": {
+     "night": 33.401,
+     "early": 45.401,
+     "day": 48.401
+    }
+   },
+   "pulled": {
+    "complaints": 495,
+    "liquor": 15,
+    "roads": 42,
+    "stations": 2,
+    "permits": 16,
+    "facilities": 2
+   },
+   "upgraded": {
+    "street": {
+     "night": 54.52,
+     "early": 57.93,
+     "day": 60.03
+    },
+    "construction": {
+     "night": 33.401,
+     "early": 45.401,
+     "day": 54.628
+    },
+    "nightlife": {
+     "night": 57.483,
+     "early": 41.837,
+     "day": 53.085
+    },
+    "sirens": {
+     "night": 44.37,
+     "early": 43.641,
+     "day": 46.914
+    }
+   }
+  },
+  {
+   "block": 550,
+   "lat": 40.73108,
+   "lng": -73.99556,
+   "sensors": [
+    29
+   ],
+   "verified": 48,
+   "clips": {
+    "night": 87,
+    "early": 53,
+    "day": 483
+   },
+   "id": "550:40.73108,-73.99556",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.14942528735632185,
+      "early": 0.20754716981132076,
+      "day": 0.15320910973084886
+     },
+     "construction": {
+      "night": 0.011494252873563218,
+      "early": 0.2641509433962264,
+      "day": 0.15527950310559005
+     },
+     "nightlife": {
+      "night": 0.367816091954023,
+      "early": 0.03773584905660377,
+      "day": 0.40372670807453415
+     },
+     "sirens": {
+      "night": 0.06896551724137931,
+      "early": 0.05660377358490566,
+      "day": 0.031055900621118012
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.3333333333333333,
+      "early": 0.6415094339622641,
+      "day": 0.39337474120082816
+     },
+     "construction": {
+      "night": 0.034482758620689655,
+      "early": 0.5094339622641509,
+      "day": 0.2836438923395445
+     },
+     "nightlife": {
+      "night": 0.4827586206896552,
+      "early": 0.11320754716981132,
+      "day": 0.5942028985507246
+     },
+     "sirens": {
+      "night": 0.09195402298850575,
+      "early": 0.05660377358490566,
+      "day": 0.053830227743271224
+     }
+    }
+   },
+   "clips_total": 623,
+   "pulled_ok": true,
+   "bbl": "1005500001",
+   "lot_distance_m": 0.2,
+   "facts": {
+    "floors": 4,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 56.398,
+     "early": 59.908,
+     "day": 62.364
+    },
+    "nightlife": {
+     "night": 62.874,
+     "early": 45.018,
+     "day": 55.772
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 49.985,
+     "early": 50.985,
+     "day": 52.985
+    },
+    "construction": {
+     "night": 37.288,
+     "early": 49.288,
+     "day": 52.288
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 56.132,
+     "early": 59.642,
+     "day": 62.098
+    },
+    "nightlife": {
+     "night": 57.218,
+     "early": 39.361,
+     "day": 50.116
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 46.54,
+     "early": 47.54,
+     "day": 49.54
+    },
+    "construction": {
+     "night": 32.644,
+     "early": 44.644,
+     "day": 47.644
+    }
+   },
+   "pulled": {
+    "complaints": 501,
+    "liquor": 12,
+    "roads": 46,
+    "stations": 1,
+    "permits": 12,
+    "facilities": 3
+   },
+   "upgraded": {
+    "street": {
+     "night": 55.68,
+     "early": 58.86,
+     "day": 61.22
+    },
+    "construction": {
+     "night": 32.644,
+     "early": 44.644,
+     "day": 49.718
+    },
+    "nightlife": {
+     "night": 56.373,
+     "early": 39.008,
+     "day": 51.529
+    },
+    "sirens": {
+     "night": 44.529,
+     "early": 43.832,
+     "day": 47.09
+    }
+   }
+  },
+  {
+   "block": 550,
+   "lat": 40.73142,
+   "lng": -73.99629,
+   "sensors": [
+    38
+   ],
+   "verified": 24,
+   "clips": {
+    "night": 68,
+    "early": 41,
+    "day": 315
+   },
+   "id": "550:40.73142,-73.99629",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.17647058823529413,
+      "early": 0.2682926829268293,
+      "day": 0.21587301587301588
+     },
+     "construction": {
+      "night": 0.04411764705882353,
+      "early": 0.24390243902439024,
+      "day": 0.17142857142857143
+     },
+     "nightlife": {
+      "night": 0.36764705882352944,
+      "early": 0.0,
+      "day": 0.4031746031746032
+     },
+     "sirens": {
+      "night": 0.07352941176470588,
+      "early": 0.024390243902439025,
+      "day": 0.0380952380952381
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.5588235294117647,
+      "early": 0.5121951219512195,
+      "day": 0.46984126984126984
+     },
+     "construction": {
+      "night": 0.11764705882352941,
+      "early": 0.5853658536585366,
+      "day": 0.29523809523809524
+     },
+     "nightlife": {
+      "night": 0.4411764705882353,
+      "early": 0.024390243902439025,
+      "day": 0.5365079365079365
+     },
+     "sirens": {
+      "night": 0.1323529411764706,
+      "early": 0.07317073170731707,
+      "day": 0.05396825396825397
+     }
+    }
+   },
+   "clips_total": 424,
+   "pulled_ok": true,
+   "bbl": "1005500013",
+   "lot_distance_m": 0.5,
+   "facts": {
+    "floors": 5,
+    "commercial": false
+   },
+   "today": {
+    "street": {
+     "night": 53.724,
+     "early": 57.234,
+     "day": 61.445
+    },
+    "nightlife": {
+     "night": 60.193,
+     "early": 43.086,
+     "day": 52.875
+    },
+    "building": {
+     "night": 42.7,
+     "early": 37.9,
+     "day": 40.4
+    },
+    "sirens": {
+     "night": 48.418,
+     "early": 49.418,
+     "day": 51.418
+    },
+    "construction": {
+     "night": 40.992,
+     "early": 52.992,
+     "day": 55.992
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 53.179,
+     "early": 56.689,
+     "day": 60.9
+    },
+    "nightlife": {
+     "night": 54.956,
+     "early": 37.849,
+     "day": 47.638
+    },
+    "building": {
+     "night": 42.7,
+     "early": 37.9,
+     "day": 40.4
+    },
+    "sirens": {
+     "night": 45.032,
+     "early": 46.032,
+     "day": 48.032
+    },
+    "construction": {
+     "night": 34.496,
+     "early": 46.496,
+     "day": 49.496
+    }
+   },
+   "pulled": {
+    "complaints": 616,
+    "liquor": 7,
+    "roads": 43,
+    "stations": 1,
+    "permits": 12,
+    "facilities": 2
+   },
+   "upgraded": {
+    "street": {
+     "night": 52.79,
+     "early": 56.02,
+     "day": 60.15
+    },
+    "construction": {
+     "night": 34.496,
+     "early": 46.496,
+     "day": 52.324
+    },
+    "nightlife": {
+     "night": 53.134,
+     "early": 36.454,
+     "day": 48.165
+    },
+    "sirens": {
+     "night": 44.076,
+     "early": 43.481,
+     "day": 46.62
+    }
+   }
+  },
+  {
+   "block": 551,
+   "lat": 40.73206,
+   "lng": -73.99763,
+   "sensors": [
+    24
+   ],
+   "verified": 29,
+   "clips": {
+    "night": 102,
+    "early": 31,
+    "day": 394
+   },
+   "id": "551:40.73206,-73.99763",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.2549019607843137,
+      "early": 0.25806451612903225,
+      "day": 0.21065989847715735
+     },
+     "construction": {
+      "night": 0.0196078431372549,
+      "early": 0.03225806451612903,
+      "day": 0.03553299492385787
+     },
+     "nightlife": {
+      "night": 0.20588235294117646,
+      "early": 0.03225806451612903,
+      "day": 0.41878172588832485
+     },
+     "sirens": {
+      "night": 0.0392156862745098,
+      "early": 0.12903225806451613,
+      "day": 0.03553299492385787
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.5686274509803921,
+      "early": 0.6129032258064516,
+      "day": 0.48223350253807107
+     },
+     "construction": {
+      "night": 0.1568627450980392,
+      "early": 0.06451612903225806,
+      "day": 0.14974619289340102
+     },
+     "nightlife": {
+      "night": 0.3333333333333333,
+      "early": 0.06451612903225806,
+      "day": 0.5736040609137056
+     },
+     "sirens": {
+      "night": 0.0784313725490196,
+      "early": 0.12903225806451613,
+      "day": 0.06852791878172589
+     }
+    }
+   },
+   "clips_total": 527,
+   "pulled_ok": true,
+   "bbl": "1005510008",
+   "lot_distance_m": 0.6,
+   "facts": {
+    "floors": 4,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 51.519,
+     "early": 54.519,
+     "day": 58.431
+    },
+    "nightlife": {
+     "night": 63.77,
+     "early": 47.944,
+     "day": 57.733
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 47.769,
+     "early": 48.769,
+     "day": 50.769
+    },
+    "construction": {
+     "night": 43.992,
+     "early": 55.992,
+     "day": 58.992
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 51.078,
+     "early": 54.078,
+     "day": 57.99
+    },
+    "nightlife": {
+     "night": 60.797,
+     "early": 44.97,
+     "day": 54.759
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 44.962,
+     "early": 45.962,
+     "day": 47.962
+    },
+    "construction": {
+     "night": 37.496,
+     "early": 49.496,
+     "day": 52.496
+    }
+   },
+   "pulled": {
+    "complaints": 362,
+    "liquor": 17,
+    "roads": 42,
+    "stations": 2,
+    "permits": 13,
+    "facilities": 1
+   },
+   "upgraded": {
+    "street": {
+     "night": 51.08,
+     "early": 54.08,
+     "day": 57.99
+    },
+    "construction": {
+     "night": 37.496,
+     "early": 49.496,
+     "day": 53.922
+    },
+    "nightlife": {
+     "night": 61.002,
+     "early": 45.631,
+     "day": 55.152
+    },
+    "sirens": {
+     "night": 45.807,
+     "early": 45.311,
+     "day": 48.216
+    }
+   }
+  },
+  {
+   "block": 556,
+   "lat": 40.73211,
+   "lng": -73.98926999999999,
+   "sensors": [
+    8
+   ],
+   "verified": 0,
+   "clips": {
+    "night": 27,
+    "early": 6,
+    "day": 53
+   },
+   "id": "556:40.73211,-73.98927",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.18518518518518517,
+      "early": 0.16666666666666666,
+      "day": 0.20754716981132076
+     },
+     "construction": {
+      "night": 0.0,
+      "early": 0.0,
+      "day": 0.03773584905660377
+     },
+     "nightlife": {
+      "night": 0.48148148148148145,
+      "early": 0.0,
+      "day": 0.20754716981132076
+     },
+     "sirens": {
+      "night": 0.037037037037037035,
+      "early": 0.0,
+      "day": 0.09433962264150944
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.4444444444444444,
+      "early": 0.5,
+      "day": 0.5094339622641509
+     },
+     "construction": {
+      "night": 0.1111111111111111,
+      "early": 0.16666666666666666,
+      "day": 0.18867924528301888
+     },
+     "nightlife": {
+      "night": 0.6296296296296297,
+      "early": 0.0,
+      "day": 0.3584905660377358
+     },
+     "sirens": {
+      "night": 0.037037037037037035,
+      "early": 0.16666666666666666,
+      "day": 0.09433962264150944
+     }
+    }
+   },
+   "clips_total": 86,
+   "pulled_ok": true,
+   "bbl": "1005560048",
+   "lot_distance_m": 0.4,
+   "facts": {
+    "floors": 26,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 53.468,
+     "early": 54.046,
+     "day": 57.8
+    },
+    "nightlife": {
+     "night": 72.048,
+     "early": 55.683,
+     "day": 63.503
+    },
+    "building": {
+     "night": 46.325,
+     "early": 41.525,
+     "day": 44.025
+    },
+    "sirens": {
+     "night": 56.383,
+     "early": 57.383,
+     "day": 59.383
+    },
+    "construction": {
+     "night": 44.178,
+     "early": 56.178,
+     "day": 59.178
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 53.468,
+     "early": 54.046,
+     "day": 57.8
+    },
+    "nightlife": {
+     "night": 71.524,
+     "early": 55.159,
+     "day": 62.979
+    },
+    "building": {
+     "night": 46.325,
+     "early": 41.525,
+     "day": 44.025
+    },
+    "sirens": {
+     "night": 54.536,
+     "early": 55.536,
+     "day": 57.536
+    },
+    "construction": {
+     "night": 36.089,
+     "early": 48.089,
+     "day": 51.089
+    }
+   },
+   "pulled": {
+    "complaints": 453,
+    "liquor": 38,
+    "roads": 44,
+    "stations": 5,
+    "permits": 19,
+    "facilities": 4
+   },
+   "upgraded": {
+    "street": {
+     "night": 53.02,
+     "early": 53.27,
+     "day": 56.91
+    },
+    "construction": {
+     "night": 36.089,
+     "early": 48.089,
+     "day": 54.557
+    },
+    "nightlife": {
+     "night": 69.319,
+     "early": 53.91,
+     "day": 61.389
+    },
+    "sirens": {
+     "night": 53.368,
+     "early": 52.455,
+     "day": 55.868
+    }
+   }
+  },
+  {
+   "block": 559,
+   "lat": 40.73365,
+   "lng": -73.98879000000001,
+   "sensors": [
+    46
+   ],
+   "verified": 16,
+   "clips": {
+    "night": 36,
+    "early": 6,
+    "day": 111
+   },
+   "id": "559:40.73365,-73.98879",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.3055555555555556,
+      "early": 0.16666666666666666,
+      "day": 0.26126126126126126
+     },
+     "construction": {
+      "night": 0.0,
+      "early": 0.0,
+      "day": 0.009009009009009009
+     },
+     "nightlife": {
+      "night": 0.75,
+      "early": 0.16666666666666666,
+      "day": 0.7297297297297297
+     },
+     "sirens": {
+      "night": 0.08333333333333333,
+      "early": 0.16666666666666666,
+      "day": 0.04504504504504504
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.4444444444444444,
+      "early": 0.8333333333333334,
+      "day": 0.46846846846846846
+     },
+     "construction": {
+      "night": 0.1388888888888889,
+      "early": 0.0,
+      "day": 0.08108108108108109
+     },
+     "nightlife": {
+      "night": 0.8333333333333334,
+      "early": 0.3333333333333333,
+      "day": 0.8738738738738738
+     },
+     "sirens": {
+      "night": 0.08333333333333333,
+      "early": 0.16666666666666666,
+      "day": 0.06306306306306306
+     }
+    }
+   },
+   "clips_total": 153,
+   "pulled_ok": true,
+   "bbl": "1005590016",
+   "lot_distance_m": 0.5,
+   "facts": {
+    "floors": 22,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 62.739,
+     "early": 63.984,
+     "day": 67.12
+    },
+    "nightlife": {
+     "night": 69.159,
+     "early": 51.782,
+     "day": 60.529
+    },
+    "building": {
+     "night": 46.325,
+     "early": 41.525,
+     "day": 44.025
+    },
+    "sirens": {
+     "night": 58.019,
+     "early": 59.019,
+     "day": 61.019
+    },
+    "construction": {
+     "night": 47.26,
+     "early": 59.26,
+     "day": 62.26
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 61.78,
+     "early": 63.025,
+     "day": 66.16
+    },
+    "nightlife": {
+     "night": 66.383,
+     "early": 49.006,
+     "day": 57.753
+    },
+    "building": {
+     "night": 46.325,
+     "early": 41.525,
+     "day": 44.025
+    },
+    "sirens": {
+     "night": 56.651,
+     "early": 57.651,
+     "day": 59.651
+    },
+    "construction": {
+     "night": 40.341,
+     "early": 52.341,
+     "day": 55.341
+    }
+   },
+   "pulled": {
+    "complaints": 512,
+    "liquor": 25,
+    "roads": 35,
+    "stations": 4,
+    "permits": 26,
+    "facilities": 5
+   },
+   "upgraded": {
+    "street": {
+     "night": 60.96,
+     "early": 61.66,
+     "day": 64.18
+    },
+    "construction": {
+     "night": 44.054,
+     "early": 52.341,
+     "day": 57.278
+    },
+    "nightlife": {
+     "night": 64.428,
+     "early": 47.995,
+     "day": 56.559
+    },
+    "sirens": {
+     "night": 54.472,
+     "early": 53.546,
+     "day": 56.974
+    }
+   }
+  },
+  {
+   "block": 568,
+   "lat": 40.73328,
+   "lng": -73.99446999999999,
+   "sensors": [
+    11
+   ],
+   "verified": 27,
+   "clips": {
+    "night": 46,
+    "early": 13,
+    "day": 273
+   },
+   "id": "568:40.73328,-73.99447",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.391304347826087,
+      "early": 0.23076923076923078,
+      "day": 0.29304029304029305
+     },
+     "construction": {
+      "night": 0.043478260869565216,
+      "early": 0.0,
+      "day": 0.1391941391941392
+     },
+     "nightlife": {
+      "night": 0.30434782608695654,
+      "early": 0.0,
+      "day": 0.3076923076923077
+     },
+     "sirens": {
+      "night": 0.06521739130434782,
+      "early": 0.0,
+      "day": 0.04395604395604396
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.6086956521739131,
+      "early": 0.38461538461538464,
+      "day": 0.5274725274725275
+     },
+     "construction": {
+      "night": 0.08695652173913043,
+      "early": 0.07692307692307693,
+      "day": 0.30036630036630035
+     },
+     "nightlife": {
+      "night": 0.3695652173913043,
+      "early": 0.07692307692307693,
+      "day": 0.4652014652014652
+     },
+     "sirens": {
+      "night": 0.06521739130434782,
+      "early": 0.0,
+      "day": 0.05860805860805861
+     }
+    }
+   },
+   "clips_total": 332,
+   "pulled_ok": true,
+   "bbl": "1005680031",
+   "lot_distance_m": 0.5,
+   "facts": {
+    "floors": 5,
+    "commercial": false
+   },
+   "today": {
+    "street": {
+     "night": 49.212,
+     "early": 52.668,
+     "day": 55.804
+    },
+    "nightlife": {
+     "night": 57.197,
+     "early": 45.231,
+     "day": 52.839
+    },
+    "building": {
+     "night": 46.7,
+     "early": 41.9,
+     "day": 44.4
+    },
+    "sirens": {
+     "night": 50.485,
+     "early": 51.485,
+     "day": 53.485
+    },
+    "construction": {
+     "night": 43.68,
+     "early": 55.68,
+     "day": 58.68
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 49.212,
+     "early": 52.668,
+     "day": 55.804
+    },
+    "nightlife": {
+     "night": 53.592,
+     "early": 41.626,
+     "day": 49.234
+    },
+    "building": {
+     "night": 46.7,
+     "early": 41.9,
+     "day": 44.4
+    },
+    "sirens": {
+     "night": 47.186,
+     "early": 48.186,
+     "day": 50.186
+    },
+    "construction": {
+     "night": 37.34,
+     "early": 49.34,
+     "day": 52.34
+    }
+   },
+   "pulled": {
+    "complaints": 251,
+    "liquor": 18,
+    "roads": 27,
+    "stations": 0,
+    "permits": 15,
+    "facilities": 3
+   },
+   "upgraded": {
+    "street": {
+     "night": 49.21,
+     "early": 52.67,
+     "day": 55.8
+    },
+    "construction": {
+     "night": 37.34,
+     "early": 49.34,
+     "day": 55.402
+    },
+    "nightlife": {
+     "night": 55.013,
+     "early": 42.672,
+     "day": 50.97
+    },
+    "sirens": {
+     "night": 44.626,
+     "early": 44.19,
+     "day": 47.088
+    }
+   }
+  },
+  {
+   "block": 568,
+   "lat": 40.73345,
+   "lng": -73.99501,
+   "sensors": [
+    19
+   ],
+   "verified": 6,
+   "clips": {
+    "night": 67,
+    "early": 20,
+    "day": 254
+   },
+   "id": "568:40.73345,-73.99501",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.417910447761194,
+      "early": 0.6,
+      "day": 0.3228346456692913
+     },
+     "construction": {
+      "night": 0.014925373134328358,
+      "early": 0.05,
+      "day": 0.03543307086614173
+     },
+     "nightlife": {
+      "night": 0.29850746268656714,
+      "early": 0.1,
+      "day": 0.41732283464566927
+     },
+     "sirens": {
+      "night": 0.014925373134328358,
+      "early": 0.0,
+      "day": 0.04330708661417323
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.6567164179104478,
+      "early": 0.9,
+      "day": 0.610236220472441
+     },
+     "construction": {
+      "night": 0.14925373134328357,
+      "early": 0.25,
+      "day": 0.15354330708661418
+     },
+     "nightlife": {
+      "night": 0.417910447761194,
+      "early": 0.1,
+      "day": 0.5590551181102362
+     },
+     "sirens": {
+      "night": 0.05970149253731343,
+      "early": 0.0,
+      "day": 0.08267716535433071
+     }
+    }
+   },
+   "clips_total": 341,
+   "pulled_ok": true,
+   "bbl": "1005680001",
+   "lot_distance_m": 0.6,
+   "facts": {
+    "floors": 15,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 54.552,
+     "early": 57.552,
+     "day": 59.965
+    },
+    "nightlife": {
+     "night": 53.749,
+     "early": 42.971,
+     "day": 49.481
+    },
+    "building": {
+     "night": 54.838,
+     "early": 50.038,
+     "day": 52.538
+    },
+    "sirens": {
+     "night": 49.111,
+     "early": 50.111,
+     "day": 52.111
+    },
+    "construction": {
+     "night": 44.838,
+     "early": 56.838,
+     "day": 59.838
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 54.552,
+     "early": 57.552,
+     "day": 59.965
+    },
+    "nightlife": {
+     "night": 51.694,
+     "early": 40.916,
+     "day": 47.426
+    },
+    "building": {
+     "night": 54.838,
+     "early": 50.038,
+     "day": 52.538
+    },
+    "sirens": {
+     "night": 45.886,
+     "early": 46.886,
+     "day": 48.886
+    },
+    "construction": {
+     "night": 37.919,
+     "early": 49.919,
+     "day": 52.919
+    }
+   },
+   "pulled": {
+    "complaints": 263,
+    "liquor": 10,
+    "roads": 24,
+    "stations": 0,
+    "permits": 15,
+    "facilities": 2
+   },
+   "upgraded": {
+    "street": {
+     "night": 54.71,
+     "early": 58.28,
+     "day": 60.0
+    },
+    "construction": {
+     "night": 37.919,
+     "early": 49.919,
+     "day": 55.649
+    },
+    "nightlife": {
+     "night": 52.146,
+     "early": 41.076,
+     "day": 48.088
+    },
+    "sirens": {
+     "night": 44.226,
+     "early": 43.839,
+     "day": 46.697
+    }
+   }
+  },
+  {
+   "block": 576,
+   "lat": 40.735009999999996,
+   "lng": -73.99479000000001,
+   "sensors": [
+    16
+   ],
+   "verified": 39,
+   "clips": {
+    "night": 129,
+    "early": 57,
+    "day": 421
+   },
+   "id": "576:40.73501,-73.99479",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.4263565891472868,
+      "early": 0.3684210526315789,
+      "day": 0.40380047505938244
+     },
+     "construction": {
+      "night": 0.0,
+      "early": 0.0,
+      "day": 0.03800475059382423
+     },
+     "nightlife": {
+      "night": 0.12403100775193798,
+      "early": 0.03508771929824561,
+      "day": 0.22327790973871733
+     },
+     "sirens": {
+      "night": 0.046511627906976744,
+      "early": 0.017543859649122806,
+      "day": 0.07600950118764846
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.7209302325581395,
+      "early": 0.7543859649122807,
+      "day": 0.6532066508313539
+     },
+     "construction": {
+      "night": 0.10077519379844961,
+      "early": 0.21052631578947367,
+      "day": 0.19477434679334918
+     },
+     "nightlife": {
+      "night": 0.24031007751937986,
+      "early": 0.15789473684210525,
+      "day": 0.37292161520190026
+     },
+     "sirens": {
+      "night": 0.06976744186046512,
+      "early": 0.05263157894736842,
+      "day": 0.10451306413301663
+     }
+    }
+   },
+   "clips_total": 607,
+   "pulled_ok": true,
+   "bbl": "1005760046",
+   "lot_distance_m": 0.3,
+   "facts": {
+    "floors": 8,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 56.472,
+     "early": 58.094,
+     "day": 61.06
+    },
+    "nightlife": {
+     "night": 54.909,
+     "early": 45.155,
+     "day": 52.373
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 52.212,
+     "early": 53.212,
+     "day": 55.212
+    },
+    "construction": {
+     "night": 50.0,
+     "early": 62.0,
+     "day": 65.0
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 56.472,
+     "early": 58.094,
+     "day": 61.06
+    },
+    "nightlife": {
+     "night": 54.055,
+     "early": 44.3,
+     "day": 51.518
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 48.875,
+     "early": 49.875,
+     "day": 51.875
+    },
+    "construction": {
+     "night": 44.929,
+     "early": 56.929,
+     "day": 59.929
+    }
+   },
+   "pulled": {
+    "complaints": 353,
+    "liquor": 9,
+    "roads": 21,
+    "stations": 2,
+    "permits": 39,
+    "facilities": 4
+   },
+   "upgraded": {
+    "street": {
+     "night": 56.61,
+     "early": 58.72,
+     "day": 61.08
+    },
+    "construction": {
+     "night": 47.498,
+     "early": 57.031,
+     "day": 63.635
+    },
+    "nightlife": {
+     "night": 53.863,
+     "early": 43.834,
+     "day": 51.115
+    },
+    "sirens": {
+     "night": 46.019,
+     "early": 45.725,
+     "day": 48.621
+    }
+   }
+  },
+  {
+   "block": 789,
+   "lat": 40.7551,
+   "lng": -73.99005,
+   "sensors": [
+    52
+   ],
+   "verified": 5,
+   "clips": {
+    "night": 0,
+    "early": 0,
+    "day": 5
+   },
+   "id": "789:40.75510,-73.99005",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": null,
+      "early": null,
+      "day": 0.8
+     },
+     "construction": {
+      "night": null,
+      "early": null,
+      "day": 0.0
+     },
+     "nightlife": {
+      "night": null,
+      "early": null,
+      "day": 0.4
+     },
+     "sirens": {
+      "night": null,
+      "early": null,
+      "day": 0.0
+     }
+    },
+    "any": {
+     "street": {
+      "night": null,
+      "early": null,
+      "day": 0.8
+     },
+     "construction": {
+      "night": null,
+      "early": null,
+      "day": 0.0
+     },
+     "nightlife": {
+      "night": null,
+      "early": null,
+      "day": 0.4
+     },
+     "sirens": {
+      "night": null,
+      "early": null,
+      "day": 0.0
+     }
+    }
+   },
+   "clips_total": 5,
+   "pulled_ok": false
+  },
+  {
+   "block": 843,
+   "lat": 40.73642,
+   "lng": -73.99150999999999,
+   "sensors": [
+    6
+   ],
+   "verified": 135,
+   "clips": {
+    "night": 227,
+    "early": 66,
+    "day": 808
+   },
+   "id": "843:40.73642,-73.99151",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.21585903083700442,
+      "early": 0.24242424242424243,
+      "day": 0.14108910891089108
+     },
+     "construction": {
+      "night": 0.02643171806167401,
+      "early": 0.030303030303030304,
+      "day": 0.024752475247524754
+     },
+     "nightlife": {
+      "night": 0.5022026431718062,
+      "early": 0.19696969696969696,
+      "day": 0.754950495049505
+     },
+     "sirens": {
+      "night": 0.03524229074889868,
+      "early": 0.015151515151515152,
+      "day": 0.04207920792079208
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.45374449339207046,
+      "early": 0.5757575757575758,
+      "day": 0.33663366336633666
+     },
+     "construction": {
+      "night": 0.12334801762114538,
+      "early": 0.18181818181818182,
+      "day": 0.09900990099009901
+     },
+     "nightlife": {
+      "night": 0.6079295154185022,
+      "early": 0.30303030303030304,
+      "day": 0.8527227722772277
+     },
+     "sirens": {
+      "night": 0.05286343612334802,
+      "early": 0.045454545454545456,
+      "day": 0.06064356435643564
+     }
+    }
+   },
+   "clips_total": 1101,
+   "pulled_ok": true,
+   "bbl": "1008430022",
+   "lot_distance_m": 0.4,
+   "facts": {
+    "floors": 12,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 56.703,
+     "early": 54.948,
+     "day": 64.622
+    },
+    "nightlife": {
+     "night": 70.18,
+     "early": 52.671,
+     "day": 62.46
+    },
+    "building": {
+     "night": 59.753,
+     "early": 54.953,
+     "day": 57.453
+    },
+    "sirens": {
+     "night": 52.965,
+     "early": 53.965,
+     "day": 55.965
+    },
+    "construction": {
+     "night": 40.992,
+     "early": 52.992,
+     "day": 55.992
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 54.439,
+     "early": 54.948,
+     "day": 59.439
+    },
+    "nightlife": {
+     "night": 68.466,
+     "early": 50.956,
+     "day": 60.745
+    },
+    "building": {
+     "night": 58.753,
+     "early": 53.953,
+     "day": 56.453
+    },
+    "sirens": {
+     "night": 50.878,
+     "early": 51.878,
+     "day": 53.878
+    },
+    "construction": {
+     "night": 34.496,
+     "early": 46.496,
+     "day": 49.496
+    }
+   },
+   "pulled": {
+    "complaints": 948,
+    "liquor": 23,
+    "roads": 40,
+    "stations": 3,
+    "permits": 40,
+    "facilities": 2
+   },
+   "upgraded": {
+    "street": {
+     "night": 54.44,
+     "early": 54.95,
+     "day": 59.44
+    },
+    "construction": {
+     "night": 34.496,
+     "early": 46.577,
+     "day": 52.848
+    },
+    "nightlife": {
+     "night": 68.67,
+     "early": 51.944,
+     "day": 63.95
+    },
+    "sirens": {
+     "night": 45.706,
+     "early": 45.376,
+     "day": 48.629
+    }
+   }
+  },
+  {
+   "block": 1260,
+   "lat": 40.75522,
+   "lng": -73.98013,
+   "sensors": [
+    30
+   ],
+   "verified": 3,
+   "clips": {
+    "night": 29,
+    "early": 10,
+    "day": 100
+   },
+   "id": "1260:40.75522,-73.98013",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.6551724137931034,
+      "early": 0.8,
+      "day": 0.76
+     },
+     "construction": {
+      "night": 0.0,
+      "early": 0.0,
+      "day": 0.01
+     },
+     "nightlife": {
+      "night": 0.10344827586206896,
+      "early": 0.0,
+      "day": 0.11
+     },
+     "sirens": {
+      "night": 0.0,
+      "early": 0.0,
+      "day": 0.01
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.8620689655172413,
+      "early": 0.9,
+      "day": 0.95
+     },
+     "construction": {
+      "night": 0.20689655172413793,
+      "early": 0.1,
+      "day": 0.2
+     },
+     "nightlife": {
+      "night": 0.1724137931034483,
+      "early": 0.1,
+      "day": 0.26
+     },
+     "sirens": {
+      "night": 0.06896551724137931,
+      "early": 0.0,
+      "day": 0.01
+     }
+    }
+   },
+   "clips_total": 139,
+   "pulled_ok": true,
+   "bbl": "1012607503",
+   "lot_distance_m": 0.6,
+   "facts": {
+    "floors": 26,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 59.244,
+     "early": 61.734,
+     "day": 65.489
+    },
+    "nightlife": {
+     "night": 65.271,
+     "early": 53.183,
+     "day": 57.023
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 52.533,
+     "early": 53.533,
+     "day": 55.533
+    },
+    "construction": {
+     "night": 47.006,
+     "early": 59.006,
+     "day": 62.006
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 59.244,
+     "early": 61.734,
+     "day": 65.489
+    },
+    "nightlife": {
+     "night": 64.183,
+     "early": 52.095,
+     "day": 55.936
+    },
+    "building": {
+     "night": 48.325,
+     "early": 43.525,
+     "day": 46.025
+    },
+    "sirens": {
+     "night": 50.916,
+     "early": 51.916,
+     "day": 53.916
+    },
+    "construction": {
+     "night": 41.192,
+     "early": 53.192,
+     "day": 56.192
+    }
+   },
+   "pulled": {
+    "complaints": 64,
+    "liquor": 47,
+    "roads": 28,
+    "stations": 2,
+    "permits": 52,
+    "facilities": 1
+   },
+   "upgraded": {
+    "street": {
+     "night": 60.15,
+     "early": 63.14,
+     "day": 66.76
+    },
+    "construction": {
+     "night": 52.74,
+     "early": 54.096,
+     "day": 59.784
+    },
+    "nightlife": {
+     "night": 62.946,
+     "early": 50.974,
+     "day": 54.884
+    },
+    "sirens": {
+     "night": 49.534,
+     "early": 49.437,
+     "day": 52.088
+    }
+   }
+  },
+  {
+   "block": 1277,
+   "lat": 40.75333,
+   "lng": -73.9794,
+   "sensors": [
+    26
+   ],
+   "verified": 1,
+   "clips": {
+    "night": 31,
+    "early": 3,
+    "day": 10
+   },
+   "id": "1277:40.75333,-73.97940",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.22580645161290322,
+      "early": 0.0,
+      "day": 0.0
+     },
+     "construction": {
+      "night": 0.16129032258064516,
+      "early": 0.0,
+      "day": 0.3
+     },
+     "nightlife": {
+      "night": 0.03225806451612903,
+      "early": 0.0,
+      "day": 0.2
+     },
+     "sirens": {
+      "night": 0.06451612903225806,
+      "early": 0.0,
+      "day": 0.1
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.5483870967741935,
+      "early": 0.3333333333333333,
+      "day": 0.1
+     },
+     "construction": {
+      "night": 0.5161290322580645,
+      "early": 1.0,
+      "day": 0.5
+     },
+     "nightlife": {
+      "night": 0.0967741935483871,
+      "early": 0.0,
+      "day": 0.4
+     },
+     "sirens": {
+      "night": 0.0967741935483871,
+      "early": 0.0,
+      "day": 0.1
+     }
+    }
+   },
+   "clips_total": 44,
+   "pulled_ok": true,
+   "bbl": "1012770014",
+   "lot_distance_m": 0.6,
+   "facts": {
+    "floors": 40,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 60.596,
+     "early": 63.596,
+     "day": 69.106
+    },
+    "nightlife": {
+     "night": 63.166,
+     "early": 51.82,
+     "day": 63.82
+    },
+    "building": {
+     "night": 54.838,
+     "early": 50.038,
+     "day": 52.538
+    },
+    "sirens": {
+     "night": 48.974,
+     "early": 49.974,
+     "day": 51.974
+    },
+    "construction": {
+     "night": 48.802,
+     "early": 60.802,
+     "day": 63.802
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 60.145,
+     "early": 63.145,
+     "day": 68.145
+    },
+    "nightlife": {
+     "night": 62.184,
+     "early": 50.838,
+     "day": 62.838
+    },
+    "building": {
+     "night": 55.838,
+     "early": 51.038,
+     "day": 53.538
+    },
+    "sirens": {
+     "night": 46.468,
+     "early": 47.468,
+     "day": 49.468
+    },
+    "construction": {
+     "night": 41.401,
+     "early": 53.401,
+     "day": 56.401
+    }
+   },
+   "pulled": {
+    "complaints": 226,
+    "liquor": 48,
+    "roads": 48,
+    "stations": 3,
+    "permits": 46,
+    "facilities": 1
+   },
+   "upgraded": {
+    "street": {
+     "night": 61.08,
+     "early": 65.39,
+     "day": 69.36
+    },
+    "construction": {
+     "night": 54.765,
+     "early": 54.497,
+     "day": 58.805
+    },
+    "nightlife": {
+     "night": 62.206,
+     "early": 50.857,
+     "day": 61.772
+    },
+    "sirens": {
+     "night": 47.623,
+     "early": 47.369,
+     "day": 50.102
+    }
+   }
+  },
+  {
+   "block": 1297,
+   "lat": 40.75164,
+   "lng": -73.97537,
+   "sensors": [
+    21
+   ],
+   "verified": 2,
+   "clips": {
+    "night": 26,
+    "early": 6,
+    "day": 66
+   },
+   "id": "1297:40.75164,-73.97537",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.7307692307692307,
+      "early": 0.6666666666666666,
+      "day": 0.5454545454545454
+     },
+     "construction": {
+      "night": 0.0,
+      "early": 0.16666666666666666,
+      "day": 0.015151515151515152
+     },
+     "nightlife": {
+      "night": 0.038461538461538464,
+      "early": 0.0,
+      "day": 0.18181818181818182
+     },
+     "sirens": {
+      "night": 0.0,
+      "early": 0.0,
+      "day": 0.07575757575757576
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.9230769230769231,
+      "early": 1.0,
+      "day": 0.8333333333333334
+     },
+     "construction": {
+      "night": 0.11538461538461539,
+      "early": 0.3333333333333333,
+      "day": 0.10606060606060606
+     },
+     "nightlife": {
+      "night": 0.15384615384615385,
+      "early": 0.0,
+      "day": 0.2878787878787879
+     },
+     "sirens": {
+      "night": 0.0,
+      "early": 0.0,
+      "day": 0.10606060606060606
+     }
+    }
+   },
+   "clips_total": 98,
+   "pulled_ok": true,
+   "bbl": "1012970023",
+   "lot_distance_m": 0.5,
+   "facts": {
+    "floors": 77,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 60.408,
+     "early": 63.408,
+     "day": 65.408
+    },
+    "nightlife": {
+     "night": 58.164,
+     "early": 46.497,
+     "day": 48.708
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 47.765,
+     "early": 48.765,
+     "day": 50.765
+    },
+    "construction": {
+     "night": 20.0,
+     "early": 32.0,
+     "day": 35.0
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 59.94,
+     "early": 62.94,
+     "day": 64.94
+    },
+    "nightlife": {
+     "night": 57.156,
+     "early": 45.489,
+     "day": 47.7
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 44.956,
+     "early": 45.956,
+     "day": 47.956
+    },
+    "construction": {
+     "night": 20.0,
+     "early": 32.0,
+     "day": 35.0
+    }
+   },
+   "pulled": {
+    "complaints": 48,
+    "liquor": 18,
+    "roads": 50,
+    "stations": 3,
+    "permits": 6,
+    "facilities": 1
+   },
+   "upgraded": {
+    "street": {
+     "night": 62.54,
+     "early": 64.97,
+     "day": 66.48
+    },
+    "construction": {
+     "night": 33.66,
+     "early": 33.086,
+     "day": 38.152
+    },
+    "nightlife": {
+     "night": 54.588,
+     "early": 43.871,
+     "day": 46.146
+    },
+    "sirens": {
+     "night": 47.71,
+     "early": 47.526,
+     "day": 50.416
+    }
+   }
+  },
+  {
+   "block": 1315,
+   "lat": 40.75011,
+   "lng": -73.97398000000001,
+   "sensors": [
+    28
+   ],
+   "verified": 1,
+   "clips": {
+    "night": 37,
+    "early": 9,
+    "day": 64
+   },
+   "id": "1315:40.75011,-73.97398",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.4594594594594595,
+      "early": 0.6666666666666666,
+      "day": 0.53125
+     },
+     "construction": {
+      "night": 0.02702702702702703,
+      "early": 0.0,
+      "day": 0.0
+     },
+     "nightlife": {
+      "night": 0.08108108108108109,
+      "early": 0.0,
+      "day": 0.171875
+     },
+     "sirens": {
+      "night": 0.0,
+      "early": 0.0,
+      "day": 0.0625
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.8918918918918919,
+      "early": 0.8888888888888888,
+      "day": 0.8125
+     },
+     "construction": {
+      "night": 0.2702702702702703,
+      "early": 0.2222222222222222,
+      "day": 0.15625
+     },
+     "nightlife": {
+      "night": 0.10810810810810811,
+      "early": 0.0,
+      "day": 0.40625
+     },
+     "sirens": {
+      "night": 0.02702702702702703,
+      "early": 0.0,
+      "day": 0.125
+     }
+    }
+   },
+   "clips_total": 110,
+   "pulled_ok": true,
+   "bbl": "1013150044",
+   "lot_distance_m": 0.3,
+   "facts": {
+    "floors": 40,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 62.221,
+     "early": 65.221,
+     "day": 68.466
+    },
+    "nightlife": {
+     "night": 53.022,
+     "early": 43.777,
+     "day": 50.287
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 52.26,
+     "early": 53.26,
+     "day": 55.26
+    },
+    "construction": {
+     "night": 50.0,
+     "early": 62.0,
+     "day": 65.0
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 61.766,
+     "early": 64.766,
+     "day": 68.011
+    },
+    "nightlife": {
+     "night": 47.856,
+     "early": 38.611,
+     "day": 45.12
+    },
+    "building": {
+     "night": 46.325,
+     "early": 41.525,
+     "day": 44.025
+    },
+    "sirens": {
+     "night": 50.574,
+     "early": 51.574,
+     "day": 53.574
+    },
+    "construction": {
+     "night": 43.138,
+     "early": 55.138,
+     "day": 58.138
+    }
+   },
+   "pulled": {
+    "complaints": 186,
+    "liquor": 12,
+    "roads": 38,
+    "stations": 2,
+    "permits": 27,
+    "facilities": 1
+   },
+   "upgraded": {
+    "street": {
+     "night": 61.78,
+     "early": 64.16,
+     "day": 67.82
+    },
+    "construction": {
+     "night": 48.911,
+     "early": 55.249,
+     "day": 59.568
+    },
+    "nightlife": {
+     "night": 46.209,
+     "early": 36.667,
+     "day": 43.827
+    },
+    "sirens": {
+     "night": 50.984,
+     "early": 50.848,
+     "day": 53.744
+    }
+   }
+  },
+  {
+   "block": 1393,
+   "lat": 40.77632,
+   "lng": -73.96372,
+   "sensors": [
+    20,
+    39
+   ],
+   "verified": 30,
+   "clips": {
+    "night": 75,
+    "early": 55,
+    "day": 341
+   },
+   "id": "1393:40.77632,-73.96372",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.5333333333333333,
+      "early": 0.5636363636363636,
+      "day": 0.41348973607038125
+     },
+     "construction": {
+      "night": 0.013333333333333334,
+      "early": 0.0,
+      "day": 0.07038123167155426
+     },
+     "nightlife": {
+      "night": 0.05333333333333334,
+      "early": 0.05454545454545454,
+      "day": 0.1348973607038123
+     },
+     "sirens": {
+      "night": 0.04,
+      "early": 0.01818181818181818,
+      "day": 0.05865102639296188
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.76,
+      "early": 0.8363636363636363,
+      "day": 0.6803519061583577
+     },
+     "construction": {
+      "night": 0.08,
+      "early": 0.14545454545454545,
+      "day": 0.21700879765395895
+     },
+     "nightlife": {
+      "night": 0.09333333333333334,
+      "early": 0.10909090909090909,
+      "day": 0.25513196480938416
+     },
+     "sirens": {
+      "night": 0.04,
+      "early": 0.03636363636363636,
+      "day": 0.08797653958944282
+     }
+    }
+   },
+   "clips_total": 471,
+   "pulled_ok": true,
+   "bbl": "1013930001",
+   "lot_distance_m": 0.6,
+   "facts": {
+    "floors": 3,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 53.618,
+     "early": 56.618,
+     "day": 58.618
+    },
+    "nightlife": {
+     "night": 46.9,
+     "early": 37.812,
+     "day": 40.145
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 49.894,
+     "early": 50.894,
+     "day": 52.894
+    },
+    "construction": {
+     "night": 28.0,
+     "early": 40.0,
+     "day": 43.0
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 53.618,
+     "early": 56.618,
+     "day": 58.618
+    },
+    "nightlife": {
+     "night": 42.297,
+     "early": 33.209,
+     "day": 35.542
+    },
+    "building": {
+     "night": 47.325,
+     "early": 42.525,
+     "day": 45.025
+    },
+    "sirens": {
+     "night": 47.117,
+     "early": 48.117,
+     "day": 50.117
+    },
+    "construction": {
+     "night": 28.0,
+     "early": 40.0,
+     "day": 43.0
+    }
+   },
+   "pulled": {
+    "complaints": 27,
+    "liquor": 5,
+    "roads": 40,
+    "stations": 0,
+    "permits": 23,
+    "facilities": 1
+   },
+   "upgraded": {
+    "street": {
+     "night": 54.12,
+     "early": 59.34,
+     "day": 59.35
+    },
+    "construction": {
+     "night": 28.0,
+     "early": 40.0,
+     "day": 46.149
+    },
+    "nightlife": {
+     "night": 44.818,
+     "early": 35.352,
+     "day": 39.734
+    },
+    "sirens": {
+     "night": 48.734,
+     "early": 48.731,
+     "day": 51.876
+    }
+   }
+  },
+  {
+   "block": 1496,
+   "lat": 40.77991,
+   "lng": -73.96006,
+   "sensors": [
+    33
+   ],
+   "verified": 3,
+   "clips": {
+    "night": 52,
+    "early": 19,
+    "day": 179
+   },
+   "id": "1496:40.77991,-73.96006",
+   "shares": {
+    "majority": {
+     "street": {
+      "night": 0.5,
+      "early": 0.631578947368421,
+      "day": 0.4134078212290503
+     },
+     "construction": {
+      "night": 0.0,
+      "early": 0.0,
+      "day": 0.0893854748603352
+     },
+     "nightlife": {
+      "night": 0.038461538461538464,
+      "early": 0.0,
+      "day": 0.1340782122905028
+     },
+     "sirens": {
+      "night": 0.07692307692307693,
+      "early": 0.0,
+      "day": 0.027932960893854747
+     }
+    },
+    "any": {
+     "street": {
+      "night": 0.7307692307692307,
+      "early": 0.7368421052631579,
+      "day": 0.7094972067039106
+     },
+     "construction": {
+      "night": 0.09615384615384616,
+      "early": 0.15789473684210525,
+      "day": 0.2346368715083799
+     },
+     "nightlife": {
+      "night": 0.057692307692307696,
+      "early": 0.21052631578947367,
+      "day": 0.2681564245810056
+     },
+     "sirens": {
+      "night": 0.09615384615384616,
+      "early": 0.0,
+      "day": 0.055865921787709494
+     }
+    }
+   },
+   "clips_total": 250,
+   "pulled_ok": true,
+   "bbl": "1014960013",
+   "lot_distance_m": 0.2,
+   "facts": {
+    "floors": 9,
+    "commercial": true
+   },
+   "today": {
+    "street": {
+     "night": 59.236,
+     "early": 61.27,
+     "day": 65.692
+    },
+    "nightlife": {
+     "night": 48.455,
+     "early": 40.455,
+     "day": 45.622
+    },
+    "building": {
+     "night": 42.7,
+     "early": 37.9,
+     "day": 40.4
+    },
+    "sirens": {
+     "night": 47.329,
+     "early": 48.329,
+     "day": 50.329
+    },
+    "construction": {
+     "night": 46.985,
+     "early": 58.985,
+     "day": 61.985
+    }
+   },
+   "recal": {
+    "street": {
+     "night": 59.236,
+     "early": 61.27,
+     "day": 65.692
+    },
+    "nightlife": {
+     "night": 37.455,
+     "early": 29.455,
+     "day": 34.622
+    },
+    "building": {
+     "night": 42.7,
+     "early": 37.9,
+     "day": 40.4
+    },
+    "sirens": {
+     "night": 44.177,
+     "early": 45.177,
+     "day": 47.177
+    },
+    "construction": {
+     "night": 39.476,
+     "early": 51.476,
+     "day": 54.476
+    }
+   },
+   "pulled": {
+    "complaints": 131,
+    "liquor": 3,
+    "roads": 41,
+    "stations": 0,
+    "permits": 24,
+    "facilities": 2
+   },
+   "upgraded": {
+    "street": {
+     "night": 60.58,
+     "early": 62.48,
+     "day": 67.04
+    },
+    "construction": {
+     "night": 39.476,
+     "early": 51.487,
+     "day": 57.75
+    },
+    "nightlife": {
+     "night": 38.833,
+     "early": 30.227,
+     "day": 36.506
+    },
+    "sirens": {
+     "night": 43.822,
+     "early": 44.088,
+     "day": 47.379
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,75 @@
+{
+  "fields": {
+    "address": {
+      "value": null,
+      "status": "cant_tell",
+      "evidence": []
+    },
+    "unit": {
+      "value": null,
+      "status": "cant_tell",
+      "evidence": []
+    },
+    "floor": {
+      "value": null,
+      "status": "cant_tell",
+      "evidence": []
+    },
+    "side": {
+      "value": "street",
+      "status": "read",
+      "evidence": [
+        {
+          "source": "photo:0",
+          "what": "the living room window looks across the street at a row of brownstones"
+        }
+      ]
+    }
+  },
+  "position": "front",
+  "observed": {
+    "view": {
+      "value": "street",
+      "status": "read",
+      "evidence": [
+        {
+          "source": "photo:0",
+          "what": "a row of brownstones across the street, seen through the living room window"
+        }
+      ]
+    },
+    "windows": {
+      "value": {
+        "floor_to_ceiling": false,
+        "operable": true
+      },
+      "status": "read",
+      "evidence": [
+        {
+          "source": "photo:0",
+          "what": "a double-hung window with a meeting rail"
+        }
+      ]
+    },
+    "ac_units": {
+      "value": "window",
+      "status": "read",
+      "evidence": [
+        {
+          "source": "photo:0",
+          "what": "a window AC unit in the lower sash"
+        }
+      ]
+    },
+    "wall_material": {
+      "value": "concrete",
+      "status": "read",
+      "evidence": [
+        {
+          "source": "photo:1",
+          "what": "a masonry wall"
+        }
+      ]
+    }
+  }
+}
