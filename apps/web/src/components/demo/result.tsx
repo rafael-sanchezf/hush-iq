@@ -197,7 +197,7 @@ export function Result({ score, verdict, dropped, fields, observed, answers, ser
                     ? 'The verdict writer did not answer, so this page’s copy of its template wrote this, under the same rule: every sentence cites the lines below.'
                     : services.verdict === 'live'
                     ? 'The writer’s model did not write this one, so its template did, under the same rule: every sentence cites the lines below.'
-                    : 'Written by the verdict writer’s template until Muse Spark Open is deployed. Same rule: every sentence cites the lines below.'}
+                    : 'Written by the verdict writer’s template until the verdict service is deployed. Same rule: every sentence cites the lines below.'}
                 {refusedDrafts(verdict)}
                 {dropped ? ` ${dropped} citation${dropped > 1 ? 's' : ''} pointed at no line and ${dropped > 1 ? 'were' : 'was'} removed.` : ''}
               </p>

@@ -242,7 +242,7 @@ export default function Docs() {
                 <Status tone="next">Built, not hosted yet</Status>
               </div>
               <p>
-                The “what you’ll hear” paragraph for one renter. The service turns the score into numbered evidence lines, Muse Spark Open on Baseten writes
+                The “what you’ll hear” paragraph for one renter. The service turns the score into numbered evidence lines, Muse Spark 1.3 on the Meta Model API writes
                 sentences whose citations are limited to those ids, and code checks every sentence before it leaves: each cites a line it was sent, and every
                 number, name and kind of source in it appears in the lines it cites. A draft that fails is retried once, then the template writes.
               </p>
