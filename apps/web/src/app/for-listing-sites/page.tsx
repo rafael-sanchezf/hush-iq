@@ -128,7 +128,7 @@ export default function ForListingSites() {
             <h3>Honest limits</h3>
             <p>
               Ranks are against a 300-building Manhattan sample; addresses in the other boroughs score, but against Manhattan. There are no API keys or rate
-              limits yet, and the reader and verdict services are built but not hosted. Every number is a rank from public data, not a sound measurement.
+              limits yet; the reader and the verdict writer run on the same host as the score. Every number is a rank from public data, not a sound measurement.
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px 24px', marginTop: 6 }}>
               <Link href="/docs/" className="link-arrow">
