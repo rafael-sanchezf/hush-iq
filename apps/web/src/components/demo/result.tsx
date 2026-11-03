@@ -78,6 +78,12 @@ export function Result({ score, verdict, dropped, fields, observed, answers, ser
           <p className="for">
             {forWhom(answers)} <b>Quieter than {pct(score.quieter_than)} of Manhattan apartments.</b>
           </p>
+          {services.score === 'v1-replay' ? (
+            <p className="hours-note">
+              Approximate: the score API’s engine v2 did not answer, so this page replayed engine v2 of Oct 28 on its v1
+              ingredients.
+            </p>
+          ) : null}
           <div className="hours">
             <span className="k eyebrow" style={{ fontSize: 12 }}>How your hours count</span>
             <div className="hours-bar" aria-hidden="true">
@@ -187,8 +193,10 @@ export function Result({ score, verdict, dropped, fields, observed, answers, ser
               <p className="writer">
                 {verdict.writer !== 'template'
                   ? `Written by ${WRITER_NAME[verdict.writer] ?? verdict.writer}${verdict.writer === 'muse-spark-open' ? ' on Baseten' : ''}. It may cite only the evidence lines below; the server and this page both check.`
-                  : services.verdict === 'live'
-                    ? 'The model did not answer in time, so the writer’s template wrote this, under the same rule: every sentence cites the lines below.'
+                  : services.verdict === 'fallback'
+                    ? 'The verdict writer did not answer, so this page’s copy of its template wrote this, under the same rule: every sentence cites the lines below.'
+                    : services.verdict === 'live'
+                    ? 'The writer’s model did not write this one, so its template did, under the same rule: every sentence cites the lines below.'
                     : 'Written by the verdict writer’s template until Muse Spark Open is deployed. Same rule: every sentence cites the lines below.'}
                 {refusedDrafts(verdict)}
                 {dropped ? ` ${dropped} citation${dropped > 1 ? 's' : ''} pointed at no line and ${dropped > 1 ? 'were' : 'was'} removed.` : ''}

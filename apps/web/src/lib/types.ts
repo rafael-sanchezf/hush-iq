@@ -195,7 +195,8 @@ export interface VerdictInput {
 // ---------------------------------------------------------------- the client
 
 export interface Services {
-  reader: 'live' | 'mock';
-  verdict: 'live' | 'mock';
+  /** `fallback`: the live service was set but failed on the last run, so the stand-in ran. */
+  reader: 'live' | 'mock' | 'fallback';
+  verdict: 'live' | 'mock' | 'fallback';
   score: 'v2' | 'v1-replay';
 }

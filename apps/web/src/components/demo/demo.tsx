@@ -47,6 +47,7 @@ export function Demo() {
     setVerdict(null);
     const v = await writeVerdict({ score: s, answers: a, fields: r.fields }, signal);
     if (signal.aborted) return;
+    setSvc(currentServices());
     setVerdict(checkCitations(v));
   }, []);
 
@@ -62,9 +63,18 @@ export function Demo() {
     setVerdict(null);
     setError(null);
     try {
-      const r = await read({ text, photos: photos.map((p) => p.url), answers }, (t) => setTurns((prev) => [...prev, t]), ctl.signal);
+      const r = await read(
+        { text, photos: photos.map((p) => p.url), answers },
+        (t) => setTurns((prev) => [...prev, t]),
+        ctl.signal,
+        () => {
+          setTurns([]);
+          setSvc(currentServices());
+        },
+      );
       if (ctl.signal.aborted) return;
       setReading(r);
+      setSvc(currentServices());
       if (!r.score && (r.needs?.includes('address') || !r.fields.address.value)) {
         setPhase('asking');
         return;

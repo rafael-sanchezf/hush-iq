@@ -1,6 +1,8 @@
 /**
  * The demo's one door to the services. Each piece is live when its URL is set at build time (lib/env.ts) and a
- * replay otherwise, so the page works today and goes live service by service without a code change.
+ * replay otherwise, so the page works today and goes live service by service without a code change. A live
+ * service that fails, errs or runs past its time is replaced by its stand-in for that run, and the page says so
+ * (GO-11).
  */
 import { ENV } from './env.ts';
 import { mockRead } from './mock/reader.ts';
@@ -11,9 +13,28 @@ import { fieldTurns, normalizeTurn } from './turns.ts';
 import type { Answers, ReadInput, ReaderFields, ReaderResult, ReaderTurn, Score, Services, Verdict, VerdictInput } from './types.ts';
 
 
+/** How long a live service may take before the page stops waiting and runs its stand-in. */
+const READER_TIMEOUT_MS = 50_000;
+const VERDICT_TIMEOUT_MS = 30_000;
+
+/** What answered on the last run; `fallback` when the live service failed and the stand-in ran instead. */
+const ran: { reader: Services['reader'] | null; verdict: Services['verdict'] | null } = { reader: null, verdict: null };
+
 export function services(): Services {
-  return { reader: ENV.readerUrl ? 'live' : 'mock', verdict: ENV.verdictUrl ? 'live' : 'mock', score: scoreSource() };
+  return {
+    reader: ran.reader ?? (ENV.readerUrl ? 'live' : 'mock'),
+    verdict: ran.verdict ?? (ENV.verdictUrl ? 'live' : 'mock'),
+    score: scoreSource(),
+  };
 }
+
+function withTimeout(signal: AbortSignal | undefined, ms: number): AbortSignal {
+  const t = AbortSignal.timeout(ms);
+  return signal ? AbortSignal.any([signal, t]) : t;
+}
+
+/** A 4xx the renter can act on (a listing too short, a bad header): shown, not replaced by the replay. */
+class Refused extends Error {}
 
 // ---------------------------------------------------------------- reader
 
@@ -50,7 +71,9 @@ async function liveRead(input: ReadInput, onTurn: (t: ReaderTurn) => void, signa
   });
   if (!r.ok || !r.body) {
     const body = await r.json().catch(() => null);
-    throw new Error(body?.error ?? `The reader answered ${r.status}.`);
+    const message = body?.error ?? `The reader answered ${r.status}.`;
+    // 408, 413 (a body over the host's cap) and 429 are the host's trouble, not the listing's.
+    throw r.status >= 400 && r.status < 500 && ![408, 413, 429].includes(r.status) ? new Refused(message) : new Error(message);
   }
   let n = 0;
   for await (const { event, data } of sse(r.body)) {
@@ -66,8 +89,30 @@ async function liveRead(input: ReadInput, onTurn: (t: ReaderTurn) => void, signa
   throw new Error('The reader closed the stream without a result.');
 }
 
-export function read(input: ReadInput, onTurn: (t: ReaderTurn) => void, signal?: AbortSignal): Promise<ReaderResult> {
-  return ENV.readerUrl ? liveRead(input, onTurn, signal) : mockRead(input, onTurn, signal);
+/**
+ * Read a listing. When the live reader fails, `onFallback` fires (the panel clears its turns) and the replay
+ * reads it instead; services() then says `fallback` so the pill and the line under it say what ran.
+ */
+export async function read(
+  input: ReadInput,
+  onTurn: (t: ReaderTurn) => void,
+  signal?: AbortSignal,
+  onFallback?: (why: string) => void,
+): Promise<ReaderResult> {
+  if (!ENV.readerUrl) {
+    ran.reader = 'mock';
+    return mockRead(input, onTurn, signal);
+  }
+  try {
+    const r = await liveRead(input, onTurn, withTimeout(signal, READER_TIMEOUT_MS));
+    ran.reader = 'live';
+    return r;
+  } catch (e) {
+    if (signal?.aborted || e instanceof Refused) throw e;
+    ran.reader = 'fallback';
+    onFallback?.((e as Error).name === 'TimeoutError' ? 'timeout' : (e as Error).message);
+    return mockRead(input, onTurn, signal);
+  }
 }
 
 // ---------------------------------------------------------------- score
@@ -91,17 +136,26 @@ export async function score(result: ReaderResult, answers: Answers, address?: st
 
 export async function verdict(input: VerdictInput, signal?: AbortSignal): Promise<Verdict> {
   if (!ENV.verdictUrl) {
+    ran.verdict = 'mock';
     await new Promise((r) => setTimeout(r, 350));
     return templateVerdict(input);
   }
-  const r = await fetch(`${ENV.verdictUrl}/verdict`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(input),
-    signal,
-  });
-  if (!r.ok) throw new Error(`The verdict writer answered ${r.status}.`);
-  return (await r.json()) as Verdict;
+  try {
+    const r = await fetch(`${ENV.verdictUrl}/verdict`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(input),
+      signal: withTimeout(signal, VERDICT_TIMEOUT_MS),
+    });
+    if (!r.ok) throw new Error(`The verdict writer answered ${r.status}.`);
+    const v = (await r.json()) as Verdict;
+    ran.verdict = 'live';
+    return v;
+  } catch (e) {
+    if (signal?.aborted) throw e;
+    ran.verdict = 'fallback';
+    return templateVerdict(input);
+  }
 }
 
 export type { ReaderFields };

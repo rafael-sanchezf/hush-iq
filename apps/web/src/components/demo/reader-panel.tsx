@@ -7,7 +7,8 @@ import type { ReaderTurn, Services } from '@/lib/types';
 const GLYPH: Record<string, string> = { ok: '✓', cant_tell: '?', refused: '!', error: '×' };
 
 interface Props {
-  /** The reader's own mode from its last result, when it said: a live service with no key runs its mock. */
+  /** The reader's own mode from its last result, when it said: a live service with no key runs its mock. Null
+   * before a result, so the pill never says live before a live answer. */
   mode: 'live' | 'mock' | null;
   turns: ReaderTurn[];
   working: boolean;
@@ -21,22 +22,34 @@ interface Props {
 /** The reader's turns as they stream: what it read, the line it read it from, what it could not tell. */
 export function ReaderPanel({ mode, turns, working, workingLabel, services, asking, error, onAddress }: Props) {
   const [address, setAddress] = useState('');
-  const live = services.reader === 'live' && mode !== 'mock';
+  const live = services.reader === 'live' && mode === 'live';
+  const fell = services.reader === 'fallback';
+  const label = live ? 'Muse Spark, live'
+    : fell ? 'Replay, live reader down'
+      : services.reader === 'live' ? (mode === 'mock' ? 'Reader, no model key' : 'Live reader')
+        : 'Replay';
+  const title = live || services.reader === 'live' ? undefined
+    : fell ? 'The live reader failed or ran past 50 s on this run, so the replay read the listing.'
+      : 'The reader service is not deployed yet. This replay follows the same rules, without a model.';
   return (
     <section className="reader" aria-labelledby="reader-title">
       <div className="reader-head">
         <h3 id="reader-title">The reader</h3>
-        <span className={`pill${live ? ' ink' : ''}`} title={live ? undefined : 'The reader service is not deployed yet. This replay follows the same rules, without a model.'}>
+        <span className={`pill${live ? ' ink' : ''}`} title={title}>
           <span className="dot" />
-          {live ? 'Muse Spark, live' : services.reader === 'live' ? 'Reader, no model key' : 'Replay'}
+          {label}
         </span>
       </div>
       <p className="reader-sub">
         {live
           ? 'Muse Spark reads the text and the photos for facts about the unit. A tool refuses any field without its line.'
-          : services.reader === 'live'
-            ? 'The reader service is up but has no Meta key yet, so its rules stand in for the model. Same checks, no photos.'
-            : 'A scripted stand-in for Muse Spark until the reader is deployed. Same rule: a field without its quoted line is refused.'}
+          : fell
+            ? 'The live reader did not answer, so the replay read this listing: the same rules, without a model or the photos.'
+            : services.reader === 'live' && mode === 'mock'
+              ? 'The reader service is up but has no Meta key yet, so its rules stand in for the model. Same checks, no photos.'
+              : services.reader === 'live'
+                ? 'The hosted reader reads the text and the photos for facts about the unit. A tool refuses any field without its line.'
+                : 'A scripted stand-in for Muse Spark until the reader is deployed. Same rule: a field without its quoted line is refused.'}
       </p>
 
       {turns.length === 0 && !working ? (
