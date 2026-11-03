@@ -4,7 +4,7 @@
  * listing it came from, and anything it cannot find is "can't tell". It does not see photos; it says so.
  * Then it scores the building with the real engine (lib/score.ts) and streams each step as a turn.
  */
-import { getScore } from '../score.ts';
+import { ScoreDown, getScore } from '../score.ts';
 import type { Answers, EvidenceRef, Field, Observed, ReadInput, ReaderResult, ReaderTurn } from '../types.ts';
 import { DEFAULT_ANSWERS, addressLine, listWords, observedLabel, pct, sideLabel } from '../words.ts';
 import { extract } from './extract.ts';
@@ -116,7 +116,8 @@ export async function mockRead(input: ReadInput, onTurn: (t: ReaderTurn) => void
     ]);
   } catch (e) {
     if ((e as Error).name === 'AbortError') throw e;
-    await emit({ kind: 'geocode', status: 'error', title: 'Could not find that building', detail: (e as Error).message }, 0);
+    if (e instanceof ScoreDown) await emit({ kind: 'geocode', status: 'error', title: 'The score service did not answer' }, 0);
+    else await emit({ kind: 'geocode', status: 'error', title: 'Could not find that building', detail: (e as Error).message }, 0);
     throw e;
   }
   const facts = score.building_facts;

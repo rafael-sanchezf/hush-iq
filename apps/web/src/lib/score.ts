@@ -42,6 +42,13 @@ let v2Missing = false;
 
 export class ScoreError extends Error {}
 
+/** The score API could not be reached at all: not the address's fault (WEB-5). */
+export class ScoreDown extends ScoreError {
+  constructor() {
+    super('The score service did not answer. The three samples above still work.');
+  }
+}
+
 async function fetchJson(url: string, signal?: AbortSignal): Promise<{ status: number; body: unknown }> {
   const r = await fetch(url, { signal, headers: { accept: 'application/json' } });
   let body: unknown = null;
@@ -60,7 +67,9 @@ function v1Ingredients(address: string, signal?: AbortSignal): Promise<V1Respons
   let p = v1Cache.get(key);
   if (!p) {
     const q = new URLSearchParams({ address, position: 'front' });
-    p = fetchJson(`${ENV.scoreUrl}/v1/score?${q}`, signal).then(({ status, body }) => {
+    p = fetchJson(`${ENV.scoreUrl}/v1/score?${q}`, signal).catch((e) => {
+      throw (e as Error).name === 'AbortError' ? e : new ScoreDown();
+    }).then(({ status, body }) => {
       if (status !== 200) {
         const detail = (body as { detail?: string } | null)?.detail;
         throw new ScoreError(detail ? `The score API could not find that address: ${detail}` : `The score API answered ${status}.`);
