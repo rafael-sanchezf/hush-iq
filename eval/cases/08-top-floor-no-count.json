@@ -1,0 +1,265 @@
+{
+  "id": "08-top-floor-no-count",
+  "about": "'Top floor' with no floor count: 'top' or the building's 6 floors from PLUTO, never a guessed number.",
+  "tags": [
+    "top-floor"
+  ],
+  "listing": {
+    "text": "Top floor unit at 437 East 12th Street, nobody above you. Renovated one-bedroom with new windows, stainless appliances and a dishwasher. Lots of light. Close to Tompkins Square Park. Cats ok.",
+    "photos": []
+  },
+  "gold": {
+    "address": "437 East 12th Street",
+    "unit": null,
+    "floor": "top",
+    "side": null,
+    "building_floors": 6
+  },
+  "answers": {
+    "sleep_from": 23,
+    "sleep_until": 7,
+    "day_bothers": true,
+    "bothers": [
+      "neighbors"
+    ]
+  },
+  "fixtures": {
+    "reader": {
+      "status": "complete",
+      "stopped": "submitted",
+      "fields": {
+        "address": {
+          "value": "437 East 12th Street",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "437 East 12th Street",
+              "start": 18,
+              "end": 38
+            }
+          ]
+        },
+        "unit": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "floor": {
+          "value": 6,
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "Top floor unit",
+              "start": 0,
+              "end": 14
+            }
+          ],
+          "derived": {
+            "from": "top",
+            "floors": 6,
+            "source": "NYC PLUTO numfloors"
+          }
+        },
+        "side": {
+          "value": "unknown",
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "position": "unknown",
+      "observed": {
+        "view": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "windows": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "ac_units": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "wall_material": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "score": {
+        "engine": "v2",
+        "verdict": "Typical",
+        "quieter_than": 53.0,
+        "uncapped_verdict": "Typical",
+        "caps": [],
+        "range": {
+          "loudest_case": {
+            "verdict": "Typical",
+            "quieter_than": 43.0,
+            "floor": 6,
+            "side": "front"
+          },
+          "quietest_case": {
+            "verdict": "Quiet",
+            "quieter_than": 70.4,
+            "floor": 6,
+            "side": "rear"
+          }
+        },
+        "ingredients": [
+          {
+            "name": "street",
+            "label": "Street",
+            "quieter_than": 56.5,
+            "verdict": "Typical",
+            "weight": 22.9,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "EAST 12 STREET: local street, 1 travel lane, 25 mph, 11 m away"
+            ]
+          },
+          {
+            "name": "nightlife",
+            "label": "Nightlife",
+            "quieter_than": 21.1,
+            "verdict": "Loud",
+            "weight": 10.7,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "4 licensed venues within 150 m: 2 bars, 2 restaurants"
+            ]
+          },
+          {
+            "name": "building",
+            "label": "Building",
+            "quieter_than": 42.7,
+            "verdict": "Typical",
+            "weight": 42.9,
+            "ticked": true,
+            "temporary": false,
+            "evidence": [
+              "40 residential noise complaints to 311 at this building in 24 months"
+            ]
+          },
+          {
+            "name": "sirens",
+            "label": "Sirens",
+            "quieter_than": 79.6,
+            "verdict": "Quiet",
+            "weight": 14.3,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "2 emergency facilities within 600 m"
+            ]
+          },
+          {
+            "name": "construction",
+            "label": "Construction",
+            "quieter_than": 87.4,
+            "verdict": "Very quiet",
+            "weight": 9.3,
+            "ticked": false,
+            "temporary": true,
+            "evidence": [
+              "no active DOB permits on this block"
+            ]
+          }
+        ],
+        "answers": {
+          "sleep": {
+            "from": 23,
+            "until": 7
+          },
+          "day_bothers": true,
+          "ticks": [
+            "neighbors"
+          ]
+        },
+        "unit": {
+          "floor": 6,
+          "floor_from": "listing",
+          "side": "unknown",
+          "side_from": "unknown",
+          "building_floors": 6
+        },
+        "address": {
+          "label": "437 EAST 12 STREET, New York, NY, USA",
+          "bbl": "1004400040",
+          "borough": "Manhattan"
+        }
+      },
+      "score_engine": "v2",
+      "needs": [],
+      "trace": [
+        {
+          "n": 1,
+          "by": "model",
+          "tool": "submit_listing",
+          "ok": true
+        }
+      ],
+      "mode": "fixture"
+    },
+    "verdict": {
+      "evidence": [
+        {
+          "id": "E1",
+          "text": "Overall for these sleep hours: Typical, quieter than 53.0% of Manhattan apartments"
+        },
+        {
+          "id": "E2",
+          "text": "Street: quieter than 56.5% of Manhattan apartments; EAST 12 STREET: local street, 1 travel lane, 25 mph, 11 m away"
+        },
+        {
+          "id": "E3",
+          "text": "Nightlife: quieter than 21.1% of Manhattan apartments; 4 licensed venues within 150 m: 2 bars, 2 restaurants"
+        },
+        {
+          "id": "E4",
+          "text": "Building: quieter than 42.7% of Manhattan apartments; 40 residential noise complaints to 311 at this building in 24 months"
+        },
+        {
+          "id": "E5",
+          "text": "Sirens: quieter than 79.6% of Manhattan apartments; 2 emergency facilities within 600 m"
+        },
+        {
+          "id": "E6",
+          "text": "Construction: quieter than 87.4% of Manhattan apartments; no active DOB permits on this block"
+        },
+        {
+          "id": "E7",
+          "text": "The listing leaves floor or side open: from Typical on the loudest floor and side to Quiet on the quietest"
+        }
+      ],
+      "sentences": [
+        {
+          "text": "For the hours you sleep, this apartment is Typical for Manhattan: quieter than 53.0% of apartments.",
+          "cites": [
+            "E1"
+          ]
+        },
+        {
+          "text": "What you will hear most is nightlife, quieter than only 21.1% of Manhattan.",
+          "cites": [
+            "E3"
+          ]
+        },
+        {
+          "text": "The listing does not settle the floor and side, so expect anything from Typical to Quiet.",
+          "cites": [
+            "E7"
+          ]
+        }
+      ],
+      "writer": "template"
+    }
+  }
+}

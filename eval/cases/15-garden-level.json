@@ -1,0 +1,256 @@
+{
+  "id": "15-garden-level",
+  "about": "Garden level is the first floor; a floor-through faces both ways, so side cannot be told.",
+  "tags": [
+    "garden-level"
+  ],
+  "listing": {
+    "text": "Garden-level floor-through in a brownstone at 21 West 76th Street. Private backyard, wood-burning fireplace and a washer and dryer in the unit. The front room faces the street and the bedroom opens onto the garden. One block from Central Park.",
+    "photos": []
+  },
+  "gold": {
+    "address": "21 West 76th Street",
+    "unit": null,
+    "floor": 1,
+    "side": null,
+    "building_floors": 4
+  },
+  "answers": {
+    "sleep_from": 23,
+    "sleep_until": 7,
+    "day_bothers": false,
+    "bothers": []
+  },
+  "fixtures": {
+    "reader": {
+      "status": "complete",
+      "stopped": "submitted",
+      "fields": {
+        "address": {
+          "value": "21 West 76th Street",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "21 West 76th Street",
+              "start": 46,
+              "end": 65
+            }
+          ]
+        },
+        "unit": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "floor": {
+          "value": 1,
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "Garden-level floor-through",
+              "start": 0,
+              "end": 26
+            }
+          ]
+        },
+        "side": {
+          "value": "unknown",
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "position": "unknown",
+      "observed": {
+        "view": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "windows": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "ac_units": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "wall_material": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "score": {
+        "engine": "v2",
+        "verdict": "Typical",
+        "quieter_than": 50.3,
+        "uncapped_verdict": "Typical",
+        "caps": [],
+        "range": {
+          "loudest_case": {
+            "verdict": "Loud",
+            "quieter_than": 38.8,
+            "floor": 1,
+            "side": "front"
+          },
+          "quietest_case": {
+            "verdict": "Quiet",
+            "quieter_than": 63.9,
+            "floor": 1,
+            "side": "rear"
+          }
+        },
+        "ingredients": [
+          {
+            "name": "street",
+            "label": "Street",
+            "quieter_than": 25.7,
+            "verdict": "Loud",
+            "weight": 32.0,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "WEST 76 STREET: local street, 1 travel lane, 25 mph, 8 m away"
+            ]
+          },
+          {
+            "name": "nightlife",
+            "label": "Nightlife",
+            "quieter_than": 67.3,
+            "verdict": "Quiet",
+            "weight": 15.0,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "15 licensed venues within 150 m: 6 bars, 9 restaurants"
+            ]
+          },
+          {
+            "name": "building",
+            "label": "Building",
+            "quieter_than": 56.2,
+            "verdict": "Typical",
+            "weight": 20.0,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "2 residential noise complaints to 311 at this building in 24 months"
+            ]
+          },
+          {
+            "name": "sirens",
+            "label": "Sirens",
+            "quieter_than": 70.8,
+            "verdict": "Quiet",
+            "weight": 20.0,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "1 emergency facilities within 600 m"
+            ]
+          },
+          {
+            "name": "construction",
+            "label": "Construction",
+            "quieter_than": 50.8,
+            "verdict": "Typical",
+            "weight": 13.0,
+            "ticked": false,
+            "temporary": true,
+            "evidence": [
+              "no active DOB permits on this block"
+            ]
+          }
+        ],
+        "answers": {
+          "sleep": {
+            "from": 23,
+            "until": 7
+          },
+          "day_bothers": false,
+          "ticks": []
+        },
+        "unit": {
+          "floor": 1,
+          "floor_from": "listing",
+          "side": "unknown",
+          "side_from": "unknown",
+          "building_floors": 4
+        },
+        "address": {
+          "label": "21 WEST 76 STREET, New York, NY, USA",
+          "bbl": "1011290018",
+          "borough": "Manhattan"
+        }
+      },
+      "score_engine": "v2",
+      "needs": [],
+      "trace": [
+        {
+          "n": 1,
+          "by": "model",
+          "tool": "submit_listing",
+          "ok": true
+        }
+      ],
+      "mode": "fixture"
+    },
+    "verdict": {
+      "evidence": [
+        {
+          "id": "E1",
+          "text": "Overall for these sleep hours: Typical, quieter than 50.3% of Manhattan apartments"
+        },
+        {
+          "id": "E2",
+          "text": "Street: quieter than 25.7% of Manhattan apartments; WEST 76 STREET: local street, 1 travel lane, 25 mph, 8 m away"
+        },
+        {
+          "id": "E3",
+          "text": "Nightlife: quieter than 67.3% of Manhattan apartments; 15 licensed venues within 150 m: 6 bars, 9 restaurants"
+        },
+        {
+          "id": "E4",
+          "text": "Building: quieter than 56.2% of Manhattan apartments; 2 residential noise complaints to 311 at this building in 24 months"
+        },
+        {
+          "id": "E5",
+          "text": "Sirens: quieter than 70.8% of Manhattan apartments; 1 emergency facilities within 600 m"
+        },
+        {
+          "id": "E6",
+          "text": "Construction: quieter than 50.8% of Manhattan apartments; no active DOB permits on this block"
+        },
+        {
+          "id": "E7",
+          "text": "The listing leaves floor or side open: from Loud on the loudest floor and side to Quiet on the quietest"
+        }
+      ],
+      "sentences": [
+        {
+          "text": "For the hours you sleep, this apartment is Typical for Manhattan: quieter than 50.3% of apartments.",
+          "cites": [
+            "E1"
+          ]
+        },
+        {
+          "text": "What you will hear most is street, quieter than only 25.7% of Manhattan.",
+          "cites": [
+            "E2"
+          ]
+        },
+        {
+          "text": "The listing does not settle the floor and side, so expect anything from Loud to Quiet.",
+          "cites": [
+            "E7"
+          ]
+        }
+      ],
+      "writer": "template"
+    }
+  }
+}

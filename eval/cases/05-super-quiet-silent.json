@@ -1,0 +1,256 @@
+{
+  "id": "05-super-quiet-silent",
+  "about": "Pure sales copy ('super quiet', 'serene') and two exposures: no floor, no side.",
+  "tags": [
+    "misleading-adjective",
+    "silent"
+  ],
+  "listing": {
+    "text": "Super quiet apartment! Serene, peaceful and calm, you will forget you live in Manhattan. One-bedroom at 75 West End Avenue with a windowed kitchen, two exposures and a large walk-in closet. The building has a pool, a gym and a 24-hour concierge.",
+    "photos": []
+  },
+  "gold": {
+    "address": "75 West End Avenue",
+    "unit": null,
+    "floor": null,
+    "side": null,
+    "building_floors": 37
+  },
+  "answers": {
+    "sleep_from": 23,
+    "sleep_until": 7,
+    "day_bothers": true,
+    "bothers": [
+      "traffic",
+      "people"
+    ]
+  },
+  "fixtures": {
+    "reader": {
+      "status": "complete",
+      "stopped": "submitted",
+      "fields": {
+        "address": {
+          "value": "75 West End Avenue",
+          "status": "read",
+          "evidence": [
+            {
+              "source": "text",
+              "quote": "75 West End Avenue",
+              "start": 104,
+              "end": 122
+            }
+          ]
+        },
+        "unit": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "floor": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "side": {
+          "value": "unknown",
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "position": "unknown",
+      "observed": {
+        "view": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "windows": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "ac_units": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        },
+        "wall_material": {
+          "value": null,
+          "status": "cant_tell",
+          "evidence": []
+        }
+      },
+      "score": {
+        "engine": "v2",
+        "verdict": "Typical",
+        "quieter_than": 41.8,
+        "uncapped_verdict": "Typical",
+        "caps": [],
+        "range": {
+          "loudest_case": {
+            "verdict": "Loud",
+            "quieter_than": 35.4,
+            "floor": 1,
+            "side": "front"
+          },
+          "quietest_case": {
+            "verdict": "Typical",
+            "quieter_than": 52.0,
+            "floor": 37,
+            "side": "rear"
+          }
+        },
+        "ingredients": [
+          {
+            "name": "street",
+            "label": "Street",
+            "quieter_than": 28.1,
+            "verdict": "Loud",
+            "weight": 49.5,
+            "ticked": true,
+            "temporary": false,
+            "evidence": [
+              "WEST END AVENUE: major street, 3 travel lanes, 25 mph, 22 m away"
+            ]
+          },
+          {
+            "name": "nightlife",
+            "label": "Nightlife",
+            "quieter_than": 77.2,
+            "verdict": "Quiet",
+            "weight": 23.2,
+            "ticked": true,
+            "temporary": false,
+            "evidence": [
+              "14 licensed venues within 150 m: 6 bars, 8 restaurants"
+            ]
+          },
+          {
+            "name": "building",
+            "label": "Building",
+            "quieter_than": 8.7,
+            "verdict": "Very loud",
+            "weight": 10.3,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "30 residential noise complaints to 311 at this building in 24 months"
+            ]
+          },
+          {
+            "name": "sirens",
+            "label": "Sirens",
+            "quieter_than": 63.9,
+            "verdict": "Quiet",
+            "weight": 10.3,
+            "ticked": false,
+            "temporary": false,
+            "evidence": [
+              "no hospital, firehouse or police station within 600 m"
+            ]
+          },
+          {
+            "name": "construction",
+            "label": "Construction",
+            "quieter_than": 37.3,
+            "verdict": "Loud",
+            "weight": 6.7,
+            "ticked": false,
+            "temporary": true,
+            "evidence": [
+              "no active DOB permits on this block"
+            ]
+          }
+        ],
+        "answers": {
+          "sleep": {
+            "from": 23,
+            "until": 7
+          },
+          "day_bothers": true,
+          "ticks": [
+            "traffic",
+            "people"
+          ]
+        },
+        "unit": {
+          "floor": 19,
+          "floor_from": "expected",
+          "side": "unknown",
+          "side_from": "unknown",
+          "building_floors": 37
+        },
+        "address": {
+          "label": "75 WEST END AVENUE, New York, NY, USA",
+          "bbl": "1011710063",
+          "borough": "Manhattan"
+        }
+      },
+      "score_engine": "v2",
+      "needs": [],
+      "trace": [
+        {
+          "n": 1,
+          "by": "model",
+          "tool": "submit_listing",
+          "ok": true
+        }
+      ],
+      "mode": "fixture"
+    },
+    "verdict": {
+      "evidence": [
+        {
+          "id": "E1",
+          "text": "Overall for these sleep hours: Typical, quieter than 41.8% of Manhattan apartments"
+        },
+        {
+          "id": "E2",
+          "text": "Street: quieter than 28.1% of Manhattan apartments; WEST END AVENUE: major street, 3 travel lanes, 25 mph, 22 m away"
+        },
+        {
+          "id": "E3",
+          "text": "Nightlife: quieter than 77.2% of Manhattan apartments; 14 licensed venues within 150 m: 6 bars, 8 restaurants"
+        },
+        {
+          "id": "E4",
+          "text": "Building: quieter than 8.7% of Manhattan apartments; 30 residential noise complaints to 311 at this building in 24 months"
+        },
+        {
+          "id": "E5",
+          "text": "Sirens: quieter than 63.9% of Manhattan apartments; no hospital, firehouse or police station within 600 m"
+        },
+        {
+          "id": "E6",
+          "text": "Construction: quieter than 37.3% of Manhattan apartments; no active DOB permits on this block"
+        },
+        {
+          "id": "E7",
+          "text": "The listing leaves floor or side open: from Loud on the loudest floor and side to Typical on the quietest"
+        }
+      ],
+      "sentences": [
+        {
+          "text": "For the hours you sleep, this apartment is Typical for Manhattan: quieter than 41.8% of apartments.",
+          "cites": [
+            "E1"
+          ]
+        },
+        {
+          "text": "What you will hear most is building, quieter than only 8.7% of Manhattan.",
+          "cites": [
+            "E4"
+          ]
+        },
+        {
+          "text": "The listing does not settle the floor and side, so expect anything from Loud to Typical.",
+          "cites": [
+            "E7"
+          ]
+        }
+      ],
+      "writer": "template"
+    }
+  }
+}
