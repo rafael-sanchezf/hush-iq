@@ -20,6 +20,20 @@ export { checkCitations } from './cite.ts';
 
 export type Live = 'live' | 'replay';
 
+/** How long a live service may take before the panel stops waiting (GO-11): then the replay runs, or with AI on, the
+ * panel says it timed out. */
+const READER_TIMEOUT_MS = 50_000;
+const VERDICT_TIMEOUT_MS = 30_000;
+
+function withTimeout(signal: AbortSignal | undefined, ms: number): AbortSignal {
+  const t = AbortSignal.timeout(ms);
+  return signal ? AbortSignal.any([signal, t]) : t;
+}
+
+function timedOut(e: unknown, what: string, ms: number): unknown {
+  return (e as Error)?.name === 'TimeoutError' ? new Error(`${what} took longer than ${ms / 1000} s. Try again.`) : e;
+}
+
 const probed = new Map<string, Promise<boolean>>();
 
 /** Does the API have this route? Cached per API base for the life of the panel. */
@@ -105,9 +119,10 @@ async function liveRead(input: ReadInput, onTurn: (t: ReaderTurn) => void, signa
 export async function read(input: ReadInput, onTurn: (t: ReaderTurn) => void, signal?: AbortSignal, ai = CONFIG.ai): Promise<{ result: ReaderResult; via: Live }> {
   if (await useLive('/read')) {
     try {
-      return { result: await liveRead(input, onTurn, signal, ai), via: 'live' };
+      return { result: await liveRead(input, onTurn, withTimeout(signal, READER_TIMEOUT_MS), ai), via: 'live' };
     } catch (e) {
-      if (ai || signal?.aborted) throw e;
+      if (signal?.aborted) throw e;
+      if (ai) throw timedOut(e, 'The reader', READER_TIMEOUT_MS);
     }
   }
   const result = await mockRead(input, onTurn, signal);
@@ -141,12 +156,13 @@ export async function verdict(input: VerdictInput, signal?: AbortSignal): Promis
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(input),
-        signal,
+        signal: withTimeout(signal, VERDICT_TIMEOUT_MS),
       });
       if (!r.ok) throw new Error(`The verdict writer answered ${r.status}.`);
       return { verdict: (await r.json()) as Verdict, via: 'live' };
     } catch (e) {
-      if (CONFIG.ai || signal?.aborted) throw e;
+      if (signal?.aborted) throw e;
+      if (CONFIG.ai) throw timedOut(e, 'The verdict writer', VERDICT_TIMEOUT_MS);
     }
   } else {
     await new Promise((r) => setTimeout(r, 300));

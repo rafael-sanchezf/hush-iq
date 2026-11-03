@@ -2,9 +2,10 @@
  * The reader takes photos as JPEG data URLs (services/agent/CONTRACT.md). A listing's photos live on the listing
  * site's image host. The extension may read the listing sites' own hosts and zillowstatic.com (StreetEasy's and
  * Zillow's photos); any other host works when it allows cross-origin reads, and the rest go as `photo_urls`.
- * Downscaled to 1280 px on the long side, as the website does with uploads.
+ * Downscaled to 1024 px on the long side, as the website does with uploads: eight come to about 2.5 MB, under the
+ * host's 4.5 MB request cap (HIQ-143).
  */
-const LONG_SIDE = 1280;
+const LONG_SIDE = 1024;
 const MAX_INLINE = 8;
 
 async function toDataUrl(url: string, signal?: AbortSignal): Promise<string> {
