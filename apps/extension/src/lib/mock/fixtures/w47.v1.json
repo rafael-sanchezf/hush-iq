@@ -1,0 +1,139 @@
+{
+ "address": {
+  "query": "310 W 47th St, Manhattan",
+  "label": "310 WEST 47 STREET, New York, NY, USA",
+  "lat": 40.760588,
+  "lng": -73.988383,
+  "bbl": "1010370040",
+  "bin": "1078874",
+  "borough": "Manhattan"
+ },
+ "unit": {
+  "floor": null,
+  "position": "front",
+  "top_floor": false,
+  "building_floors": 7,
+  "ground_floor_commercial": true
+ },
+ "building_facts": {
+  "address": "310 WEST 47 STREET",
+  "yearbuilt": "1910",
+  "numfloors": "7.0000000",
+  "bldgclass": "D7",
+  "unitsres": "65",
+  "unitstotal": "66"
+ },
+ "ingredients": [
+  {
+   "name": "street",
+   "label": "Street",
+   "levels": {
+    "night": 55.8,
+    "early": 55.8,
+    "day": 57.8
+   },
+   "evidence": [
+    "W  47 ST: one lane, 1 travel lane, 25 mph, bus or truck route, 20 m away",
+    "W  46 ST: two lane, 2 travel lanes, 25 mph, 57 m away",
+    "16 vehicle noise complaints to 311 within 100 m in 24 months (car/truck music 8, engine idling 5)"
+   ],
+   "temporary": false
+  },
+  {
+   "name": "nightlife",
+   "label": "Local businesses",
+   "levels": {
+    "night": 72.8,
+    "early": 55.4,
+    "day": 64.8
+   },
+   "evidence": [
+    "58 licensed venues within 150 m: 12 bars, 25 restaurants, 21 venues",
+    "nearest loud: DUTCH FREDS INC. (venue), 307 W 47th St, 33 m",
+    "nearest loud: W F RESTAURANTS INC (bar), 322 W 46TH STREET, 61 m",
+    "nearest loud: 741 EIGHTH AVENUE OWNERS LLC (bar), 305 W 46TH STREET, 64 m",
+    "435 party, music or loud-talking complaints within 150 m in 24 months; 206 of them 10 pm to 5 am"
+   ],
+   "temporary": false
+  },
+  {
+   "name": "building",
+   "label": "Building",
+   "levels": {
+    "night": 42.7,
+    "early": 37.9,
+    "day": 40.4
+   },
+   "evidence": [
+    "0 residential noise complaints to 311 at this building in 24 months, 65 units: 0.00 per unit-year vs 0.07 for Manhattan (0.1x after shrinkage)",
+    "built 1910: pre-war elevator building, masonry and plaster",
+    "class D7: elevator building"
+   ],
+   "temporary": false
+  },
+  {
+   "name": "sirens",
+   "label": "Sirens",
+   "levels": {
+    "night": 53.5,
+    "early": 54.5,
+    "day": 56.5
+   },
+   "evidence": [
+    "2 emergency facilities within 600 m: 1 firehouse, 1 police station",
+    "BATTALION 9/ENGINE 54/LADDER 4 (firehouse), 782 EIGHTH AVENUE, 132 m",
+    "MIDTWN NORTH POLICE STATION (police station), 306 WEST 54 STREET, 541 m"
+   ],
+   "temporary": false
+  },
+  {
+   "name": "construction",
+   "label": "Construction",
+   "levels": {
+    "night": 42.8,
+    "early": 54.8,
+    "day": 57.8
+   },
+   "evidence": [
+    "42 construction noise complaints within 100 m in 24 months (noise: construction before/after hours (nm1) 27, noise: jack hammering (nc2) 7)"
+   ],
+   "temporary": true
+  }
+ ],
+ "as_of": "2026-10-29",
+ "lookback_months": 24,
+ "sources": [
+  {
+   "name": "NYC GeoSearch (address, BBL, BIN)",
+   "url": "https://geosearch.planninglabs.nyc/v2/search"
+  },
+  {
+   "name": "NYC 311 Service Requests",
+   "url": "https://data.cityofnewyork.us/resource/erm2-nwe9.json"
+  },
+  {
+   "name": "NYC PLUTO (year built, floors, units, class)",
+   "url": "https://data.cityofnewyork.us/resource/64uk-42ks.json"
+  },
+  {
+   "name": "NYC Street Centerline (road class, lanes, speed)",
+   "url": "https://data.cityofnewyork.us/resource/inkn-q76z.json"
+  },
+  {
+   "name": "DOB NOW approved permits (same tax block)",
+   "url": "https://data.cityofnewyork.us/resource/rbx6-tga4.json"
+  },
+  {
+   "name": "NYS Liquor Authority active licenses",
+   "url": "https://data.ny.gov/resource/9s3h-dpkz.json"
+  },
+  {
+   "name": "MTA subway stations (elevated structures)",
+   "url": "https://data.ny.gov/resource/39hk-dx4f.json"
+  },
+  {
+   "name": "NYC Facilities Database (hospitals, firehouses, police)",
+   "url": "https://data.cityofnewyork.us/resource/67g2-p84d.json"
+  }
+ ]
+}

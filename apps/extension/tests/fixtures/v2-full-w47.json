@@ -1,0 +1,187 @@
+{
+ "engine": "v2",
+ "verdict": "Very loud",
+ "quieter_than": 8.7,
+ "uncapped_verdict": "Very loud",
+ "caps": [
+  {
+   "source": "nightlife",
+   "cap": "Loud",
+   "why": "in Manhattan's loudest 5%",
+   "applied": false
+  },
+  {
+   "source": "sirens",
+   "cap": "Loud",
+   "why": "in Manhattan's loudest 5%",
+   "applied": false
+  },
+  {
+   "source": "sirens",
+   "cap": "Typical",
+   "why": "you said it bothers you, and it is in Manhattan's loudest 10%",
+   "applied": false
+  }
+ ],
+ "range": null,
+ "ingredients": [
+  {
+   "name": "street",
+   "label": "Street",
+   "quieter_than": 32.3,
+   "verdict": "Loud",
+   "weight": 47.1,
+   "ticked": true,
+   "temporary": false,
+   "evidence": [
+    "W  47 ST: one lane, 1 travel lane, 25 mph, bus or truck route, 20 m away",
+    "W  46 ST: two lane, 2 travel lanes, 25 mph, 57 m away",
+    "16 vehicle noise complaints to 311 within 100 m in 24 months (car/truck music 8, engine idling 5)"
+   ]
+  },
+  {
+   "name": "nightlife",
+   "label": "Local businesses",
+   "quieter_than": 1.3,
+   "verdict": "Very loud",
+   "weight": 7.4,
+   "ticked": false,
+   "temporary": false,
+   "evidence": [
+    "58 licensed venues within 150 m: 12 bars, 25 restaurants, 21 venues",
+    "nearest loud: DUTCH FREDS INC. (venue), 307 W 47th St, 33 m",
+    "nearest loud: W F RESTAURANTS INC (bar), 322 W 46TH STREET, 61 m",
+    "nearest loud: 741 EIGHTH AVENUE OWNERS LLC (bar), 305 W 46TH STREET, 64 m",
+    "435 party, music or loud-talking complaints within 150 m in 24 months; 206 of them 10 pm to 5 am"
+   ]
+  },
+  {
+   "name": "building",
+   "label": "Building",
+   "quieter_than": 62.0,
+   "verdict": "Quiet",
+   "weight": 9.8,
+   "ticked": false,
+   "temporary": false,
+   "evidence": [
+    "0 residential noise complaints to 311 at this building in 24 months, 65 units: 0.00 per unit-year vs 0.07 for Manhattan (0.1x after shrinkage)",
+    "built 1910: pre-war elevator building, masonry and plaster",
+    "class D7: elevator building"
+   ]
+  },
+  {
+   "name": "sirens",
+   "label": "Sirens",
+   "quieter_than": 2.7,
+   "verdict": "Very loud",
+   "weight": 29.4,
+   "ticked": true,
+   "temporary": false,
+   "evidence": [
+    "2 emergency facilities within 600 m: 1 firehouse, 1 police station",
+    "BATTALION 9/ENGINE 54/LADDER 4 (firehouse), 782 EIGHTH AVENUE, 132 m",
+    "MIDTWN NORTH POLICE STATION (police station), 306 WEST 54 STREET, 541 m"
+   ]
+  },
+  {
+   "name": "construction",
+   "label": "Construction",
+   "quieter_than": 8.7,
+   "verdict": "Very loud",
+   "weight": 6.4,
+   "ticked": false,
+   "temporary": true,
+   "evidence": [
+    "42 construction noise complaints within 100 m in 24 months (noise: construction before/after hours (nm1) 27, noise: jack hammering (nc2) 7)"
+   ]
+  }
+ ],
+ "answers": {
+  "sleep": {
+   "from": 23,
+   "until": 7
+  },
+  "day_bothers": true,
+  "ticks": [
+   "traffic",
+   "sirens"
+  ]
+ },
+ "slot_weights": {
+  "night": 47.5,
+  "early": 17.5,
+  "day": 35.0
+ },
+ "unit": {
+  "floor": 3,
+  "floor_from": "listing",
+  "side": "front",
+  "side_from": "listing",
+  "building_floors": 7,
+  "ground_floor_commercial": true
+ },
+ "address": {
+  "query": "310 W 47th St, Manhattan",
+  "label": "310 WEST 47 STREET, New York, NY, USA",
+  "lat": 40.760588,
+  "lng": -73.988383,
+  "bbl": "1010370040",
+  "bin": "1078874",
+  "borough": "Manhattan"
+ },
+ "building_facts": {
+  "address": "310 WEST 47 STREET",
+  "yearbuilt": "1910",
+  "numfloors": "7.0000000",
+  "bldgclass": "D7",
+  "unitsres": "65",
+  "unitstotal": "66"
+ },
+ "manhattan": {
+  "buildings": 298,
+  "apartments": 958418,
+  "as_of": "2026-10-22"
+ },
+ "as_of": "2026-10-28",
+ "lookback_months": 24,
+ "sources": [
+  {
+   "name": "NYC GeoSearch (address, BBL, BIN)",
+   "url": "https://geosearch.planninglabs.nyc/v2/search"
+  },
+  {
+   "name": "NYC 311 Service Requests",
+   "url": "https://data.cityofnewyork.us/resource/erm2-nwe9.json"
+  },
+  {
+   "name": "NYC PLUTO (year built, floors, units, class)",
+   "url": "https://data.cityofnewyork.us/resource/64uk-42ks.json"
+  },
+  {
+   "name": "NYC Street Centerline (road class, lanes, speed)",
+   "url": "https://data.cityofnewyork.us/resource/inkn-q76z.json"
+  },
+  {
+   "name": "DOB NOW approved permits (same tax block)",
+   "url": "https://data.cityofnewyork.us/resource/rbx6-tga4.json"
+  },
+  {
+   "name": "NYS Liquor Authority active licenses",
+   "url": "https://data.ny.gov/resource/9s3h-dpkz.json"
+  },
+  {
+   "name": "MTA subway stations (elevated structures)",
+   "url": "https://data.ny.gov/resource/39hk-dx4f.json"
+  },
+  {
+   "name": "NYC Facilities Database (hospitals, firehouses, police)",
+   "url": "https://data.cityofnewyork.us/resource/67g2-p84d.json"
+  }
+ ],
+ "caveats": [
+  "Every number here is a rank against Manhattan, not a sound measurement.",
+  "Each source is compared only with the same source elsewhere; the weights say which matters more.",
+  "311 counts measure who complains, not how loud it is.",
+  "Construction is temporary; permits expire."
+ ]
+}

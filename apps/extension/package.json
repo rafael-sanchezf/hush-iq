@@ -1,0 +1,19 @@
+{
+  "name": "@hush-iq/extension",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:byok": "node scripts/build.mjs --byok",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "icons": "sh scripts/icons.sh"
+  },
+  "devDependencies": {
+    "@types/chrome": "~0.3.7",
+    "@types/node": "^22.20.2",
+    "esbuild": "~0.28.2",
+    "typescript": "~6.0.3"
+  }
+}
