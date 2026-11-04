@@ -29,7 +29,7 @@ export function ReaderPanel({ mode, turns, working, workingLabel, services, aski
       : services.reader === 'live' ? (mode === 'mock' ? 'Reader, no model key' : 'Live reader')
         : 'Replay';
   const title = live || services.reader === 'live' ? undefined
-    : fell ? 'The live reader failed or ran past 50 s on this run, so the replay read the listing.'
+    : fell ? 'The live reader failed or ran past two minutes on this run, so the replay read the listing.'
       : 'The reader service is not deployed yet. This replay follows the same rules, without a model.';
   return (
     <section className="reader" aria-labelledby="reader-title">

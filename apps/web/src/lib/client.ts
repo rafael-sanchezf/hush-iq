@@ -13,9 +13,10 @@ import { fieldTurns, normalizeTurn } from './turns.ts';
 import type { Answers, ReadInput, ReaderFields, ReaderResult, ReaderTurn, Score, Services, Verdict, VerdictInput } from './types.ts';
 
 
-/** How long a live service may take before the page stops waiting and runs its stand-in. */
-const READER_TIMEOUT_MS = 50_000;
-const VERDICT_TIMEOUT_MS = 30_000;
+/** How long a live service may take before the page stops waiting and runs its stand-in. Live reads ran 28 to 74 s
+ * in the eval of Nov 3, and the reader streams its turns meanwhile (HIQ-145). */
+const READER_TIMEOUT_MS = 120_000;
+const VERDICT_TIMEOUT_MS = 60_000;
 
 /** What answered on the last run; `fallback` when the live service failed and the stand-in ran instead. */
 const ran: { reader: Services['reader'] | null; verdict: Services['verdict'] | null } = { reader: null, verdict: null };
