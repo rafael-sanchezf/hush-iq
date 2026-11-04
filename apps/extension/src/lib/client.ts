@@ -22,8 +22,8 @@ export type Live = 'live' | 'replay';
 
 /** How long a live service may take before the panel stops waiting (GO-11): then the replay runs, or with AI on, the
  * panel says it timed out. */
-const READER_TIMEOUT_MS = 50_000;
-const VERDICT_TIMEOUT_MS = 30_000;
+const READER_TIMEOUT_MS = 120_000;   // live reads ran 28 to 74 s in the eval of Nov 3 (HIQ-145)
+const VERDICT_TIMEOUT_MS = 60_000;
 
 function withTimeout(signal: AbortSignal | undefined, ms: number): AbortSignal {
   const t = AbortSignal.timeout(ms);
