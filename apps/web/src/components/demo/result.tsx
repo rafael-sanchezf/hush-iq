@@ -78,6 +78,12 @@ export function Result({ score, verdict, dropped, fields, observed, answers, ser
           <p className="for">
             {forWhom(answers)} <b>Quieter than {pct(score.quieter_than)} of Manhattan apartments.</b>
           </p>
+          {score.coverage?.outside_manhattan ? (
+            <p className="hours-note">
+              {score.coverage.borough ?? 'This address'} is ranked against Manhattan, and the source corrections cover Manhattan only, so
+              read it as a rough guide.
+            </p>
+          ) : null}
           {services.score === 'v1-replay' ? (
             <p className="hours-note">
               Approximate: the score API’s engine v2 did not answer, so this page replayed engine v2 of Oct 28 on its v1

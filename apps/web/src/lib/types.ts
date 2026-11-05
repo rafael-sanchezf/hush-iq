@@ -62,9 +62,18 @@ export interface ScoreAddress {
   borough?: string;
 }
 
+/** Which borough the address is in, and that it is ranked against Manhattan either way (HIQ-138). */
+export interface Coverage {
+  borough: string | null;
+  outside_manhattan: boolean;
+  ranked_against: 'Manhattan';
+}
+
 export interface Score {
   engine: 'v2';
   verdict: VerdictWord;
+  /** Absent from a browser replay and from responses before Nov 4. */
+  coverage?: Coverage;
   quieter_than: number;
   uncapped_verdict: VerdictWord;
   caps: Cap[];

@@ -347,6 +347,7 @@ def score(inputs, unit=None, answers=None):
     sirens = upgrades_apply.module("sirens") if ups else None
     next(i for i in ingredients if i["name"] == "sirens")["routes"] = (
         sirens.routes(inputs["address"]["lat"], inputs["address"]["lng"]) if sirens else None)
+    coverage = coverage_of(inputs["address"])
     return {
         "engine": "v2",
         "verdict": core["verdict"],
@@ -370,8 +371,21 @@ def score(inputs, unit=None, answers=None):
             "Each source is compared only with the same source elsewhere; the weights say which matters more.",
             "311 counts measure who complains, not how loud it is.",
             "Construction is temporary; permits expire.",
-        ],
+        ] + ([OUTSIDE_MANHATTAN] if coverage["outside_manhattan"] else []),
+        "coverage": coverage,
     }
+
+
+# [HIQ-138, decision D3's default] The sample and the source upgrades are Manhattan's. Another borough still
+# scores, against Manhattan, and says so: its upgrades pass through, and its neighbours index is relative to
+# that borough's own 311 rate.
+OUTSIDE_MANHATTAN = "Ranked against Manhattan; the source upgrades cover Manhattan only."
+
+
+def coverage_of(address):
+    borough = (address or {}).get("borough")
+    return {"borough": borough, "outside_manhattan": bool(borough) and borough != "Manhattan",
+            "ranked_against": "Manhattan"}
 
 
 # ---------------------------------------------------------------- the math board

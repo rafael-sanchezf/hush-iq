@@ -16,6 +16,11 @@ function asleep(h: number, from: number, until: number): boolean {
 /** The three taps: sleep hours, daytime noise, what gets to you. They set the weights, never the facts. */
 export function Taps({ answers, onChange }: { answers: Answers; onChange: (a: Answers) => void }) {
   const set = (patch: Partial<Answers>) => onChange({ ...answers, ...patch });
+  // The same hour for both would be no sleep at all, which the score API refuses (HIQ-137): the other one moves.
+  const setSleep = (from: number, until: number, moved: 'from' | 'until') =>
+    from !== until ? set({ sleep_from: from, sleep_until: until })
+      : moved === 'from' ? set({ sleep_from: from, sleep_until: (from + 1) % 24 })
+        : set({ sleep_from: (until + 23) % 24, sleep_until: until });
   const toggle = (b: Bother) =>
     set({ bothers: answers.bothers.includes(b) ? answers.bothers.filter((x) => x !== b) : BOTHERS.filter((x) => x === b || answers.bothers.includes(x)) });
   const n = hoursAsleep(answers);
@@ -35,7 +40,7 @@ export function Taps({ answers, onChange }: { answers: Answers; onChange: (a: An
         <div className="sleep-pickers">
           <label className="select">
             <span>Asleep from</span>
-            <select value={answers.sleep_from} onChange={(e) => set({ sleep_from: Number(e.target.value) })}>
+            <select value={answers.sleep_from} onChange={(e) => setSleep(Number(e.target.value), answers.sleep_until, 'from')}>
               {HOURS.map((h) => (
                 <option key={h} value={h}>{hourLabel(h)}</option>
               ))}
@@ -43,7 +48,7 @@ export function Taps({ answers, onChange }: { answers: Answers; onChange: (a: An
           </label>
           <label className="select">
             <span>Until</span>
-            <select value={answers.sleep_until} onChange={(e) => set({ sleep_until: Number(e.target.value) })}>
+            <select value={answers.sleep_until} onChange={(e) => setSleep(answers.sleep_from, Number(e.target.value), 'until')}>
               {HOURS.map((h) => (
                 <option key={h} value={h}>{hourLabel(h)}</option>
               ))}

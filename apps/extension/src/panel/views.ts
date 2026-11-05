@@ -262,7 +262,10 @@ export function scoreCard(v: ResultView): HTMLElement {
   return h('section', { class: 'card verdict', 'aria-label': 'Your Hush score', 'aria-live': 'polite' },
     h('h2', { class: 'word' }, score.verdict, h('small', null, 'for Manhattan')),
     meter(score.verdict, score.range),
-    h('p', { class: 'for' }, h('b', null, `Quieter than ${rankWords(score)} of Manhattan apartments.`)));
+    h('p', { class: 'for' }, h('b', null, `Quieter than ${rankWords(score)} of Manhattan apartments.`)),
+    score.coverage?.outside_manhattan
+      ? h('p', { class: 'for' }, `${score.coverage.borough ?? 'This address'} is ranked against Manhattan, and the source corrections cover Manhattan only, so read it as a rough guide.`)
+      : null);
 }
 
 // ---------------------------------------------------------------- what informed the score (HIQ-140)
