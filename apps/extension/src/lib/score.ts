@@ -108,6 +108,7 @@ export async function getScore(address: string, unit: Unit, answers: Answers, si
       const { status, body } = await fetchJson(`${CONFIG.apiBase}/v2/score?${q}`, signal);
       if (status === 200 && (body as Score | null)?.engine === 'v2') return body as Score;
       if (status === 404) v2Missing = true;
+      else if (status === 422) throw new ScoreError((body as { detail?: string } | null)?.detail ?? 'The score API could not place that address.');
       else if (status === 502) throw new ScoreError((body as { detail?: string } | null)?.detail ?? 'The city data did not answer.');
     } catch (e) {
       if (e instanceof ScoreError || (e as Error).name === 'AbortError') throw e;

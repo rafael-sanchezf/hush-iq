@@ -4,6 +4,14 @@ Hackathon work, Oct 28. Code: `noise_score/v2.py`, numbers in `noise_score/confi
 `tests/test_v2.py`, endpoint `/v2/score`. It reads the frozen ingredients (M1 to M13 in `DECISIONS.md`) and the
 frozen Manhattan sample, and changes neither. v1 stays live at `/v1/score`.
 
+**Scope.** Every address is ranked against the Manhattan sample, and the source upgrades (V9) cover Manhattan
+only. An address in another borough still scores, and says so: `coverage.outside_manhattan` is true and the
+caveats add "Ranked against Manhattan; the source upgrades cover Manhattan only." Outside Manhattan the upgrades
+pass through, so construction reads quieter than it should, and the neighbours index is relative to that
+borough's own 311 rate (HIQ-138, decision D3's default). Before scoring, `/v2/score` refuses with a 422 a blank
+address, one without a house number, one GeoSearch cannot place, one it places on another house or street, a tick
+outside the five, and a sleep hour equal to the wake hour (HIQ-116, HIQ-137).
+
 ## Why a second engine
 
 1. **Sources are compared with themselves, never added.** v1 adds the five sources in decibels. That assumes a
