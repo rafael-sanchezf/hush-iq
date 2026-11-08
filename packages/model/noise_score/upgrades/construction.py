@@ -16,8 +16,10 @@ The two are merged with today's estimate inside this source, never by adding dec
          level. The share of work nights comes from the variances and permit hours; the level is the energy
          average of the two kinds of night.
 
-Permits are a snapshot (the artifact records its build date) and expire as work ends. Build offline with
-build(out_dir); at request time only the standard library is used.
+Permits are a snapshot (the artifact records its build date). "Active now" means running on the build date, for a
+renter and for the Manhattan sample alike, so the two stay comparable as the snapshot ages (HIQ-139); today's date
+only says how old the snapshot is. Build offline with build(out_dir); at request time only the standard library is
+used.
 """
 import datetime as dt
 import gzip
@@ -82,7 +84,7 @@ WEEKNIGHT_FACTOR = 5.0 / 7.0   # judgment: "weeknights only" or "Monday to Frida
 AHV_STATUS_OK = ("AHV Permit Issued", "Approved")   # sourced: statuses that are an issued variance
 
 # --- the snapshot
-STALE_DAYS = 90                # judgment: after 90 days the active-now flags are dropped and the board says rebuild
+STALE_DAYS = 90                # judgment: after 90 days the board says the snapshot needs a rebuild
 
 MAX_SPAN_M = 700.0             # judgment: "from X to Y" farther apart than this is read as the first cross street only
 NODE_GAP_M = 40.0              # judgment: two streets whose centreline ends do not meet are taken to cross if within 40 m
@@ -193,11 +195,11 @@ def _mean_weight(lat, lng, geom):
     return tot / n, dmin
 
 
-def _street_summary(idx, lat, lng, today_ord):
-    """Everything the board needs from the street permits near a point."""
+def _street_summary(idx, lat, lng, as_of_ord):
+    """Everything the board needs from the street permits near a point, with "active" as of `as_of_ord`: the build
+    date, the day the Manhattan sample was scored on."""
     out = {"sites": 0, "active": 0, "night_sites": 0, "intensity": 0.0, "p_night_keep": 1.0, "p_early_keep": 1.0,
            "nearest_active": None, "reach": 0}
-    fresh = today_ord - (idx.built.toordinal()) <= STALE_DAYS
     for _d, payload in idx.street.near(lat, lng, RADIUS_M):
         geom, recs = payload
         wbar, dmin = _mean_weight(lat, lng, geom)
@@ -205,7 +207,7 @@ def _street_summary(idx, lat, lng, today_ord):
             continue
         for kind, wc, owner, n, days, act_n, act_end, nhd, ehd in recs:
             wcw = WCLASS_WEIGHT[wc]
-            active = bool(act_n) and fresh and idx.built.toordinal() + act_end >= today_ord
+            active = bool(act_n) and idx.built.toordinal() + act_end >= as_of_ord
             out["sites"] += 1
             out["intensity"] += wcw * wbar * (days / float(WINDOW_DAYS) + (ACTIVE_NOW_YEARS if active else 0.0))
             if active:
@@ -248,7 +250,8 @@ def _evidence(street, ahv, built, window_note):
     if na:
         d, kind, owner, block = na
         where = f"on a block {_away(d)}" if block else _away(d)
-        ev.append(f"A {OWNER_NAMES[owner]} {KIND_NAMES[kind]} permit is active {where}.")
+        on = dt.date.fromisoformat(built)
+        ev.append(f"A {OWNER_NAMES[owner]} {KIND_NAMES[kind]} permit was active {where} on {on:%b} {on.day}.")
     if street["sites"]:
         s = f"{street['sites']} street-work sites within {int(RADIUS_M)} m in the past year"
         if street["night_sites"]:
@@ -280,10 +283,8 @@ def _upgrade(lat, lng, today, facts):
     idx = _index()
     if idx is None:
         return passthrough(NAME, t)
-    now = _now()
-    today_ord = now.toordinal()
-    age = today_ord - idx.built.toordinal()
-    street = _street_summary(idx, float(lat), float(lng), today_ord)
+    age = _now().toordinal() - idx.built.toordinal()
+    street = _street_summary(idx, float(lat), float(lng), idx.built.toordinal())
     ahv = _ahv_summary(idx, float(lat), float(lng))
 
     used = _headroom_used(t["day"])
@@ -298,7 +299,7 @@ def _upgrade(lat, lng, today, facts):
 
     built = idx.built.isoformat()
     stale = age > STALE_DAYS
-    snap = f"{built}, {max(age, 0)} days old" + (", stale: active-now flags dropped, rebuild" if stale else "")
+    snap = f"{built}, {max(age, 0)} days old" + (", stale: rebuild" if stale else "")
     r = lambda x, n=2: round(x, n)
     steps = [
         Step("construction.today", "Today's construction level", "today_input", {s: r(t[s], 1) for s in SLOTS}, "index",
@@ -311,16 +312,17 @@ def _upgrade(lat, lng, today, facts):
              ["construction.night_mix", "construction.early_mix"], "live"),
         Step("construction.snapshot", "Permit snapshot", "new_input", snap, "", "NYC DOT Street Construction Permits "
              f"(tqtj-sjs8) and DOB After Hour Variance Permits (g76y-dcqj), Manhattan, {WINDOW_DAYS} days to the build date",
-             "Permits are a snapshot: they expire as work ends. An active-now flag lapses at the permit end date and "
-             f"after {STALE_DAYS} days the board asks for a rebuild.", ["construction.street_intensity", "construction.night_share"],
+             "Permits are a snapshot. Active means running on the build date, for this address and the Manhattan sample "
+             f"alike, so the ranks stay comparable as it ages; after {STALE_DAYS} days the board asks for a rebuild.",
+             ["construction.street_intensity", "construction.night_share"],
              "new"),
         Step("construction.street_sites", "Street-work sites within 100 m", "new_input", street["sites"], "count",
              "NYC DOT Street Construction Permits (tqtj-sjs8)",
              "distinct place, weight class and permittee combinations with a permit in the past 12 months; permits of "
              "several kinds for one job at one place are merged", ["construction.street_intensity"], "new"),
-        Step("construction.street_active", "Of those, active now", "new_input", street["active"], "count",
-             "NYC DOT Street Construction Permits (tqtj-sjs8)", "a permit running on the build date whose end date has "
-             "not passed", ["construction.street_intensity"], "new"),
+        Step("construction.street_active", "Of those, active on the build date", "new_input", street["active"], "count",
+             "NYC DOT Street Construction Permits (tqtj-sjs8)", "a permit running on the build date, the day the "
+             "Manhattan sample was scored on", ["construction.street_intensity"], "new"),
         Step("construction.street_night_sites", "Of those, with night hours in the permit text", "new_input",
              street["night_sites"], "count", "NYC DOT Street Construction Permits (tqtj-sjs8), stipulation text",
              "permit text such as 'work 11pm-7am nightly'", ["construction.night_share", "construction.early_share"],

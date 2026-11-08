@@ -373,6 +373,8 @@ def score(inputs, unit=None, answers=None):
             "Construction is temporary; permits expire.",
         ] + ([OUTSIDE_MANHATTAN] if coverage["outside_manhattan"] else []),
         "coverage": coverage,
+        # [HIQ-133] Which of V9 and V10 this score ran with: an empty list means today's levels for everyone
+        "engine_data": {"recalibrated": bool(ups), "upgraded": [n for n in SOURCES if n in ups and ups[n].upgraded]},
     }
 
 

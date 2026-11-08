@@ -130,6 +130,9 @@ test('construction with the upgrade: active permits by kind and distance, then n
     'A Con Ed street opening permit is active on a block 30 m away; four open loud-work permits on this block (general construction), the last running to December 2026.',
     'Night work allowed on 12 nights in the past year by an after-hours variance 100 m away.',
   ]);
+  assert.deepEqual(sourceLines({ name: 'construction', evidence: ['A Con Ed street opening permit was active on a block 30 m away on Oct 28.'] }), [
+    'A Con Ed street opening permit was active on a block 30 m away on Oct 28.',
+  ]);
   assert.deepEqual(sourceLines({ name: 'construction', evidence: ['No DOT street-work permits or after-hours variances within 100 m in the past year.'] }), [
     'No DOT street-work permits or after-hours variances within 100 m in the past year.',
   ]);

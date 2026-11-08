@@ -8,12 +8,15 @@ same pulls (recal.py, [V10]), the sample from recal_sample.json.
 import hashlib
 import importlib
 import json
+import logging
 from pathlib import Path
 
 from . import DATA, SLOTS, passthrough
 
 SOURCES = ("street", "nightlife", "building", "sirens", "construction")
 UPGRADED = DATA / "manhattan_upgraded.json"
+REBUILD = "python -m noise_score.upgrades.apply"
+log = logging.getLogger(__name__)
 _mods = {}
 
 
@@ -94,6 +97,9 @@ def ready():
         if UPGRADED.exists():
             doc = json.loads(UPGRADED.read_text())
             if doc.get("fingerprint") != fingerprint() or not doc.get("fingerprint"):
+                # [HIQ-133] Never silent: every address now scores on today's levels, not the upgraded ones.
+                log.warning("manhattan_upgraded.json does not match the upgrade code, artifacts or research numbers on "
+                            "disk, so engine v2 scores every address without its upgrades. Rebuild: %s", REBUILD)
                 doc = None
         _ready = doc or False
     return _ready or None

@@ -223,25 +223,26 @@ def test_no_upgrade_ever_lowers_a_level():
         assert all(up.levels[s] >= TODAY[s] - 1e-9 for s in SLOTS)
 
 
-# ---------------------------------------------------------------- the snapshot expires
-def test_active_flags_lapse_when_the_snapshot_is_old(monkeypatch):
+# ---------------------------------------------------------------- the snapshot ages, the score does not [HIQ-139]
+def test_active_means_the_build_date_however_old_the_snapshot(monkeypatch):
+    """The Manhattan sample was scored with the permits running on the build date. A renter scored later counts the
+    same ones, or every renter would drift quieter than the sample as permits end."""
     d = doc([(30, 2, 100, True, 0, 0)])                       # active on 2026-10-28, ends 20 days later
     fresh = run(d)
     assert step(fresh, "construction.street_active").value == 1
-    monkeypatch.setattr(C, "_now", lambda: dt.date(2026, 12, 20))     # 53 days old, the permit has ended
-    ended = run(d)
-    assert step(ended, "construction.street_active").value == 0
-    monkeypatch.setattr(C, "_now", lambda: dt.date(2027, 3, 1))       # past STALE_DAYS
-    stale = run(d)
-    snap = step(stale, "construction.snapshot").value
+    for later in (dt.date(2026, 12, 20), dt.date(2027, 3, 1)):     # the permit has ended; then past STALE_DAYS
+        monkeypatch.setattr(C, "_now", lambda later=later: later)
+        aged = run(d)
+        assert step(aged, "construction.street_active").value == 1
+        assert aged.levels == fresh.levels
+    snap = step(aged, "construction.snapshot").value
     assert "stale" in snap and "rebuild" in snap
-    assert stale.levels["day"] < fresh.levels["day"]
 
 
 def test_the_board_says_permits_are_a_snapshot():
     up = run(doc([(30, 2, 100, True, 0, 0)]))
     snap = step(up, "construction.snapshot")
-    assert "2026-10-28" in snap.value and "snapshot" in snap.formula and "expire" in snap.formula
+    assert "2026-10-28" in snap.value and "snapshot" in snap.formula and "build date" in snap.formula
 
 
 # ---------------------------------------------------------------- evidence
@@ -249,7 +250,8 @@ def test_evidence_is_renter_facing_counts_and_distances():
     up = run(doc([(40, 2, 200, True, 600, 0), (60, 1, 100, False, 0, 0)], [(70, 120, 500, 0, 0)]))
     assert 1 <= len(up.evidence) <= 3
     text = " ".join(up.evidence)
-    assert "Con Ed street opening permit is active" in text and "40 m away" in text.replace("on a block ", "")
+    assert "Con Ed street opening permit was active" in text and "40 m away" in text.replace("on a block ", "")
+    assert "on Oct 28" in text
     assert "after-hours variance" in text and "120 nights" in text
     for bad in ("dB", "decibel", "index", "—", "–"):
         assert bad not in text

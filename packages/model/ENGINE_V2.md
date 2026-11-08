@@ -51,8 +51,12 @@ outside the five, and a sleep hour equal to the wake hour (HIQ-116, HIQ-137).
   upgrade are two estimates of the same sound, so a module combines them as a correction or an average inside
   its own source, never as a sum that counts the same noise twice. The Manhattan sample is upgraded the same way
   (`python -m noise_score.upgrades.apply`); the engine uses upgraded levels only when that sample was built with
-  the modules on disk, so a renter and the sample are always scored alike. `v2.explain()` returns every input
-  and rule as steps for the math board.
+  the modules on disk, so a renter and the sample are always scored alike. That fallback is never silent: it logs a
+  warning, `tests/test_upgrades_ready.py` fails until the sample is rebuilt, and every response says what it ran
+  with in `engine_data` (`recalibrated`, and the `upgraded` sources; empty means today's levels for everyone)
+  (HIQ-133). A snapshot ages, the score does not: construction counts a permit as active when it ran on the
+  artifact's build date, for a renter and the sample alike, and today's date only says how old the snapshot is
+  (HIQ-139). `v2.explain()` returns every input and rule as steps for the math board.
 - **V10 Research recalibration.** The numbers that move a rank, from the noise research of 2026-10-29: traffic,
   elevated rail and sirens lose nothing through 12 m above the floor-1 window and then 0.1 a metre (at most 6);
   bars and building sites keep 1 a floor (at most 8); the rear is 10 quieter for traffic, 8 for the rest; trucks

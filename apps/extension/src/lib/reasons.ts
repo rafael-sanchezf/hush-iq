@@ -508,9 +508,10 @@ function construction(ev: string[], _ctx: SourceContext, f: Facts): string[] {
       continue;
     }
     // The construction upgrade (packages/model/upgrades/construction.md): street permits, night-work variances.
-    m = e.match(/^A (.+) permit is active ((?:on a block )?(?:within 10 m|\d+ m away))\.$/);
+    // "was active ... on Oct 28" since HIQ-139 (active means on the snapshot's date); "is active" before it.
+    m = e.match(/^A (.+) permit (?:is|was) active ((?:on a block )?(?:within 10 m|\d+ m away))(?: on ([A-Z][a-z]{2} \d{1,2}))?\.$/);
     if (m) {
-      street = `a ${m[1]} permit is active ${m[2]}`;
+      street = m[3] ? `a ${m[1]} permit was active ${m[2]} on ${m[3]}` : `a ${m[1]} permit is active ${m[2]}`;
       streetKind = m[1];
       streetWhere = m[2];
       continue;
