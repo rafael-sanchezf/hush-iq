@@ -45,6 +45,7 @@ class Upgrade:
     levels: dict             # {slot: level}, combined, facade-neutral, internal
     steps: list              # [Step]
     evidence: list = field(default_factory=list)   # renter-facing sentences, counts and distances only
+    upgraded: bool = True    # False when the module passed today's level through: no data, or it failed
 
     def as_dict(self):
         return {"levels": self.levels, "steps": [asdict(s) for s in self.steps], "evidence": self.evidence}
@@ -67,7 +68,7 @@ def save(name, doc):
 
 def passthrough(name, today):
     """What a module returns when its data is missing: today's level, unchanged, said so on the board."""
-    return Upgrade(levels=dict(today), steps=[
+    return Upgrade(upgraded=False, levels=dict(today), steps=[
         Step(id=f"{name}.today", label="Today's estimate", kind="today_input", value=dict(today), unit="index",
              source="today's model", feeds=[f"{name}.level"]),
         Step(id=f"{name}.level", label="Source level", kind="result", value=dict(today), unit="index",
